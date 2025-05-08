@@ -142,12 +142,9 @@ class _HomePageState extends LocalizedState<HomePage> {
           ],
           header: Column(
             children: [
-              BackNavigationHelpHeaderWidget(
+              const BackNavigationHelpHeaderWidget(
                 showBackNavigation: false,
                 showHelp: false,
-                showcaseButton: ShowcaseButton(
-                  showcaseFor: showcaseKeys.toSet().toList(),
-                ),
               ),
               skipProgressBar
                   ? const SizedBox.shrink()
@@ -516,7 +513,8 @@ class _HomePageState extends LocalizedState<HomePage> {
         .map((label) => homeItemsShowcaseMap[label]!)
         .toList();
 
-    if ((envConfig.variables.envType == EnvType.demo && kReleaseMode) || envConfig.variables.envType == EnvType.uat) {
+    if ((envConfig.variables.envType == EnvType.demo && kReleaseMode) ||
+        envConfig.variables.envType == EnvType.uat) {
       filteredLabels.remove(i18.home.db);
     }
 

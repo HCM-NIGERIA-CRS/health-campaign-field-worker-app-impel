@@ -95,7 +95,9 @@ class _CustomSearchBeneficiaryPageState
             builder: (context, searchHouseholdsState) {
               return ScrollableContent(
                 header: const Column(children: [
-                  CustomBackNavigationHelpHeaderWidget(showHelp:true,),
+                  CustomBackNavigationHelpHeaderWidget(
+                    showHelp: false,
+                  ),
                 ]),
                 slivers: [
                   SliverToBoxAdapter(

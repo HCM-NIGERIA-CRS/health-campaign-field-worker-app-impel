@@ -945,28 +945,29 @@ class _CustomHouseholdOverviewPageState
                                                         sideEffectData,
                                                       )
                                                     : false,
-                                            isNotEligibleVAS:
-                                                RegistrationDeliverySingleton()
-                                                            .projectType
-                                                            ?.cycles !=
-                                                        null
-                                                    ? !checkEligibilityForAgeAndSideEffectAll(
-                                                        DigitDOBAgeConvertor(
-                                                          years: ageInYears,
-                                                          months: ageInMonths,
-                                                        ),
-                                                        RegistrationDeliverySingleton()
-                                                            .selectedProject
-                                                            ?.additionalDetails
-                                                            ?.additionalProjectType,
-                                                        (taskData ?? [])
-                                                                .isNotEmpty
-                                                            ? taskData
-                                                                ?.lastOrNull
-                                                            : null,
-                                                        sideEffectData,
-                                                      )
-                                                    : false,
+                                            isNotEligibleVAS: true,
+                                            // info disable vas flow , but code kept for future use
+                                            // RegistrationDeliverySingleton()
+                                            //             .projectType
+                                            //             ?.cycles !=
+                                            //         null
+                                            //     ? !checkEligibilityForAgeAndSideEffectAll(
+                                            //         DigitDOBAgeConvertor(
+                                            //           years: ageInYears,
+                                            //           months: ageInMonths,
+                                            //         ),
+                                            //         RegistrationDeliverySingleton()
+                                            //             .selectedProject
+                                            //             ?.additionalDetails
+                                            //             ?.additionalProjectType,
+                                            //         (taskData ?? [])
+                                            //                 .isNotEmpty
+                                            //             ? taskData
+                                            //                 ?.lastOrNull
+                                            //             : null,
+                                            //         sideEffectData,
+                                            //       )
+                                            //     : false,
                                             name: e.name?.givenName ?? ' - - ',
                                             years: (e.dateOfBirth == null
                                                 ? null
@@ -1004,15 +1005,7 @@ class _CustomHouseholdOverviewPageState
                                                         )
                                                     ? true
                                                     : false,
-                                            isVASDelivered: taskData == null
-                                                ? false
-                                                : taskData.isNotEmpty &&
-                                                        !checkStatusVAS(
-                                                          taskData,
-                                                          currentCycle,
-                                                        )
-                                                    ? true
-                                                    : false,
+                                            isVASDelivered: false,
                                             localizations: localizations,
                                             projectBeneficiaryClientReferenceId:
                                                 projectBeneficiaryId,
