@@ -1128,6 +1128,9 @@ class IndividualDetails {
   const IndividualDetails();
 
   String get individualsDetailsLabelText => 'INDIVIDUAL_LABEL_TEXT';
+  String get individualsDetailsHeadingLabelText => 'INDIVIDUAL_LABEL_HEAD_TEXT';
+  String get individualsRegistrationHeadingLabelText =>
+      'INDIVIDUAL_REGISTRATION_LABEL_HEADING_TEXT';
 
   String get nameLabelText => 'INDIVIDUAL_NAME_LABEL_TEXT';
 
