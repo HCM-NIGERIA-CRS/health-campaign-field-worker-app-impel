@@ -1127,6 +1127,9 @@ class SearchBeneficiary {
 class IndividualDetails {
   const IndividualDetails();
 
+  String get onlyAlphabetsValidationMessage =>
+      'INDIVIDUAL_DETAILS_ONLY_ALPHABETS_VALIDATION_MESSAGE';
+
   String get individualsDetailsLabelText => 'INDIVIDUAL_LABEL_TEXT';
   String get individualsDetailsHeadingLabelText => 'INDIVIDUAL_LABEL_HEAD_TEXT';
   String get individualsRegistrationHeadingLabelText =>
@@ -1161,6 +1164,9 @@ class IndividualDetails {
   String get mobileNumberInvalidFormatValidationMessage =>
       'INDIVIDUAL_DETAILS_INVALID_MOBILE_NUMBER';
 
+  String get mobileNumberLengthValidationMessage =>
+      'INDIVIDUAL_DETAILS_MOBILE_NUMBER_LENGTH';
+
   String get yearsHintText => 'YEARS_HINT_TEXT';
   String get monthsHintText => 'MONTHS_HINT_TEXT';
 
@@ -1171,6 +1177,7 @@ class IndividualDetails {
   String get yearsAndMonthsErrorText => 'ERR_YEARS_AND_MONTHS';
 
   String get linkVoucherToIndividual => 'LINK_VOUCHER_TO_INDIVIDUAL';
+  String get headAgeValidError => 'HEAD_VALID_AGE_ERROR_MESSAGE';
 }
 
 class BeneficiaryDetails {
