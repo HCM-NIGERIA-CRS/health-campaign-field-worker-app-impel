@@ -87,7 +87,9 @@ class _CustomSearchReferralReconciliationsPageState
                         builder: (context, searchState) {
                           return ScrollableContent(
                             header: const Column(children: [
-                              CustomBackNavigationHelpHeaderWidget(showHelp: true,),
+                              CustomBackNavigationHelpHeaderWidget(
+                                showHelp: false,
+                              ),
                             ]),
                             slivers: [
                               SliverToBoxAdapter(
@@ -106,7 +108,9 @@ class _CustomSearchReferralReconciliationsPageState
                                               i18.referralReconciliation
                                                   .searchReferralsHeader,
                                             ),
-                                            style: textTheme.headingXl.copyWith(color: theme.colorTheme.text.primary),
+                                            style: textTheme.headingXl.copyWith(
+                                                color: theme
+                                                    .colorTheme.text.primary),
                                             textAlign: TextAlign.left,
                                           ),
                                         ),

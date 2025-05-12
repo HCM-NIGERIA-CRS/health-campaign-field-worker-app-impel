@@ -127,7 +127,7 @@ class CustomHouseholdLocationPageState
                   Padding(
                     padding: EdgeInsets.only(bottom: spacer2),
                     child: CustomBackNavigationHelpHeaderWidget(
-                      showHelp: true,
+                      showHelp: false,
                     ),
                   ),
                 ],
@@ -339,16 +339,17 @@ class CustomHouseholdLocationPageState
                       margin: const EdgeInsets.all(spacer2),
                       children: [
                         DigitTextBlock(
-                            padding: EdgeInsets.zero,
-                            heading: (isCommunity)
-                                ? localizations.translate(
-                                    i18.householdLocation.clfLocationLabelText)
-                                : localizations.translate(
-                                    i18.householdLocation
-                                        .householdLocationLabelText,
-                                  ),
-                            headingStyle: textTheme.headingXl.copyWith(
-                                color: theme.colorTheme.text.primary),),
+                          padding: EdgeInsets.zero,
+                          heading: (isCommunity)
+                              ? localizations.translate(
+                                  i18.householdLocation.clfLocationLabelText)
+                              : localizations.translate(
+                                  i18.householdLocation
+                                      .householdLocationLabelText,
+                                ),
+                          headingStyle: textTheme.headingXl
+                              .copyWith(color: theme.colorTheme.text.primary),
+                        ),
                         householdLocationShowcaseData.administrativeArea
                             .buildWith(
                           child: ReactiveWrapperField(
