@@ -223,6 +223,14 @@ class CustomIndividualDetailsPageState
                 router.popUntil((route) =>
                     route.settings.name == SearchBeneficiaryRoute.name);
                 if (individualCaptured != null) {
+                  // info get the relevant project beneficiary here
+                  final projectBeneficiaryAddMember = householdMemberWrapper
+                      .projectBeneficiaries
+                      ?.where((e) =>
+                          e.beneficiaryClientReferenceId ==
+                          individualCaptured!.clientReferenceId)
+                      .toSet();
+
                   router.push(
                     BeneficiaryWrapperRoute(
                       wrapper: householdMemberWrapper,
@@ -231,7 +239,9 @@ class CustomIndividualDetailsPageState
                           eligibilityAssessmentType:
                               EligibilityAssessmentType.smc,
                           projectBeneficiaryClientReferenceId:
-                              individualCaptured?.clientReferenceId ?? "",
+                              projectBeneficiaryAddMember
+                                      ?.first.clientReferenceId ??
+                                  "",
                           individual: individualCaptured,
                           showBackButton: false,
                         ),

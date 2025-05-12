@@ -8,9 +8,15 @@ import 'package:registration_delivery/registration_delivery.dart';
 import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
 import 'package:registration_delivery/widgets/localized.dart';
+import '../../../blocs/registration_delivery/custom_search_household.dart';
+import '../../../models/entities/identifier_types.dart';
 import '../../../utils/i18_key_constants.dart' as i18_local;
+import 'package:registration_delivery/blocs/search_households/search_households.dart'
+    as registration_delivery;
+import 'package:collection/collection.dart';
 
 import '../../../utils/app_enums.dart';
+import '../../../widgets/digit_ui_component/custom_panel_card.dart';
 
 @RoutePage()
 class CustomHouseholdAcknowledgementPage extends LocalizedStatefulWidget {
@@ -33,6 +39,22 @@ class CustomHouseholdAcknowledgementPage extends LocalizedStatefulWidget {
 
 class CustomHouseholdAcknowledgementPageState
     extends LocalizedState<CustomHouseholdAcknowledgementPage> {
+  Map<String, String>? subtitleMap(
+      registration_delivery.HouseholdMemberWrapper? householdMember,
+      String? householdId) {
+    // String? beneficiaryId = householdMember?.members?.lastOrNull?.identifiers
+    //     ?.lastWhereOrNull((e) =>
+    //         e.identifierType == IdentifierTypes.uniqueBeneficiaryID.toValue())
+    //     ?.identifierId;
+
+    // return beneficiaryId == null
+    //     ? null
+    //     : {
+    //         'id': i18_local.beneficiaryDetails.beneficiaryId,
+    //         'value': beneficiaryId,
+    //       };
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -42,11 +64,13 @@ class CustomHouseholdAcknowledgementPageState
           builder: (context, householdState) {
             return Padding(
               padding: const EdgeInsets.all(spacer2),
-              child: PanelCard(
+              child: CustomPanelCard(
                 type: PanelType.success,
                 description: localizations.translate(
                   i18.acknowledgementSuccess.acknowledgementDescriptionText,
                 ),
+                subTitle: subtitleMap(householdState.householdMemberWrapper,
+                    householdState.householdMemberWrapper.household?.id),
                 title: localizations.translate(
                   i18.acknowledgementSuccess.acknowledgementLabelText,
                 ),

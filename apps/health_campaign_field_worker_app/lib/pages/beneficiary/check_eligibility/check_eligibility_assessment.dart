@@ -500,25 +500,13 @@ class _EligibilityChecklistViewPage
                                               widget.eligibilityAssessmentType),
                                     );
                                   } else if (ifReferral) {
-                                    widget.eligibilityAssessmentType ==
-                                            EligibilityAssessmentType.smc
-                                        ? router.push(
-                                            CustomReferBeneficiarySMCRoute(
-                                            projectBeneficiaryClientRefId:
-                                                projectBeneficiaryClientReferenceId ??
-                                                    "",
-                                            individual: widget.individual!,
-                                            referralReasons: referralReasons,
-                                          ))
-                                        : router.push(
-                                            CustomReferBeneficiaryVASRoute(
-                                              projectBeneficiaryClientRefId:
-                                                  projectBeneficiaryClientReferenceId ??
-                                                      "",
-                                              individual: widget.individual!,
-                                              referralReasons: referralReasons,
-                                            ),
-                                          );
+                                    router.push(CustomReferBeneficiarySMCRoute(
+                                      projectBeneficiaryClientRefId:
+                                          projectBeneficiaryClientReferenceId ??
+                                              "",
+                                      individual: widget.individual!,
+                                      referralReasons: referralReasons,
+                                    ));
                                   } else {
                                     if (widget.individual == null) {
                                       router.push(CustomBeneficiaryDetailsRoute(
