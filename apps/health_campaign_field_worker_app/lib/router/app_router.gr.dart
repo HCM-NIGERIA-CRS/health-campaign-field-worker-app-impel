@@ -85,6 +85,7 @@ abstract class _$AppRouter extends RootStackRouter {
         routeData: routeData,
         child: CustomBeneficiaryDetailsPage(
           eligibilityAssessmentType: args.eligibilityAssessmentType,
+          individualSelected: args.individualSelected,
           key: args.key,
           appLocalizations: args.appLocalizations,
         ),
@@ -132,6 +133,7 @@ abstract class _$AppRouter extends RootStackRouter {
           key: args.key,
           appLocalizations: args.appLocalizations,
           eligibilityAssessmentType: args.eligibilityAssessmentType,
+          selectedIndividual: args.selectedIndividual,
           isEditing: args.isEditing,
         ),
       );
@@ -188,6 +190,7 @@ abstract class _$AppRouter extends RootStackRouter {
           key: args.key,
           appLocalizations: args.appLocalizations,
           enableViewHousehold: args.enableViewHousehold,
+          isAddChild: args.isAddChild,
           eligibilityAssessmentType: args.eligibilityAssessmentType,
         ),
       );
@@ -427,6 +430,7 @@ abstract class _$AppRouter extends RootStackRouter {
           individual: args.individual,
           projectBeneficiaryClientReferenceId:
               args.projectBeneficiaryClientReferenceId,
+          showBackButton: args.showBackButton,
           eligibilityAssessmentType: args.eligibilityAssessmentType,
           appLocalizations: args.appLocalizations,
         ),
@@ -762,6 +766,7 @@ class CustomBeneficiaryDetailsRoute
     extends PageRouteInfo<CustomBeneficiaryDetailsRouteArgs> {
   CustomBeneficiaryDetailsRoute({
     required EligibilityAssessmentType eligibilityAssessmentType,
+    IndividualModel? individualSelected,
     Key? key,
     RegistrationDeliveryLocalization? appLocalizations,
     List<PageRouteInfo>? children,
@@ -769,6 +774,7 @@ class CustomBeneficiaryDetailsRoute
           CustomBeneficiaryDetailsRoute.name,
           args: CustomBeneficiaryDetailsRouteArgs(
             eligibilityAssessmentType: eligibilityAssessmentType,
+            individualSelected: individualSelected,
             key: key,
             appLocalizations: appLocalizations,
           ),
@@ -784,11 +790,14 @@ class CustomBeneficiaryDetailsRoute
 class CustomBeneficiaryDetailsRouteArgs {
   const CustomBeneficiaryDetailsRouteArgs({
     required this.eligibilityAssessmentType,
+    this.individualSelected,
     this.key,
     this.appLocalizations,
   });
 
   final EligibilityAssessmentType eligibilityAssessmentType;
+
+  final IndividualModel? individualSelected;
 
   final Key? key;
 
@@ -796,7 +805,7 @@ class CustomBeneficiaryDetailsRouteArgs {
 
   @override
   String toString() {
-    return 'CustomBeneficiaryDetailsRouteArgs{eligibilityAssessmentType: $eligibilityAssessmentType, key: $key, appLocalizations: $appLocalizations}';
+    return 'CustomBeneficiaryDetailsRouteArgs{eligibilityAssessmentType: $eligibilityAssessmentType, individualSelected: $individualSelected, key: $key, appLocalizations: $appLocalizations}';
   }
 }
 
@@ -925,6 +934,7 @@ class CustomDeliverInterventionRoute
     Key? key,
     RegistrationDeliveryLocalization? appLocalizations,
     required EligibilityAssessmentType eligibilityAssessmentType,
+    IndividualModel? selectedIndividual,
     bool isEditing = false,
     List<PageRouteInfo>? children,
   }) : super(
@@ -933,6 +943,7 @@ class CustomDeliverInterventionRoute
             key: key,
             appLocalizations: appLocalizations,
             eligibilityAssessmentType: eligibilityAssessmentType,
+            selectedIndividual: selectedIndividual,
             isEditing: isEditing,
           ),
           initialChildren: children,
@@ -949,6 +960,7 @@ class CustomDeliverInterventionRouteArgs {
     this.key,
     this.appLocalizations,
     required this.eligibilityAssessmentType,
+    this.selectedIndividual,
     this.isEditing = false,
   });
 
@@ -958,11 +970,13 @@ class CustomDeliverInterventionRouteArgs {
 
   final EligibilityAssessmentType eligibilityAssessmentType;
 
+  final IndividualModel? selectedIndividual;
+
   final bool isEditing;
 
   @override
   String toString() {
-    return 'CustomDeliverInterventionRouteArgs{key: $key, appLocalizations: $appLocalizations, eligibilityAssessmentType: $eligibilityAssessmentType, isEditing: $isEditing}';
+    return 'CustomDeliverInterventionRouteArgs{key: $key, appLocalizations: $appLocalizations, eligibilityAssessmentType: $eligibilityAssessmentType, selectedIndividual: $selectedIndividual, isEditing: $isEditing}';
   }
 }
 
@@ -1140,6 +1154,7 @@ class CustomHouseholdAcknowledgementRoute
     Key? key,
     RegistrationDeliveryLocalization? appLocalizations,
     bool? enableViewHousehold,
+    bool? isAddChild,
     required EligibilityAssessmentType eligibilityAssessmentType,
     List<PageRouteInfo>? children,
   }) : super(
@@ -1148,6 +1163,7 @@ class CustomHouseholdAcknowledgementRoute
             key: key,
             appLocalizations: appLocalizations,
             enableViewHousehold: enableViewHousehold,
+            isAddChild: isAddChild,
             eligibilityAssessmentType: eligibilityAssessmentType,
           ),
           initialChildren: children,
@@ -1164,6 +1180,7 @@ class CustomHouseholdAcknowledgementRouteArgs {
     this.key,
     this.appLocalizations,
     this.enableViewHousehold,
+    this.isAddChild,
     required this.eligibilityAssessmentType,
   });
 
@@ -1173,11 +1190,13 @@ class CustomHouseholdAcknowledgementRouteArgs {
 
   final bool? enableViewHousehold;
 
+  final bool? isAddChild;
+
   final EligibilityAssessmentType eligibilityAssessmentType;
 
   @override
   String toString() {
-    return 'CustomHouseholdAcknowledgementRouteArgs{key: $key, appLocalizations: $appLocalizations, enableViewHousehold: $enableViewHousehold, eligibilityAssessmentType: $eligibilityAssessmentType}';
+    return 'CustomHouseholdAcknowledgementRouteArgs{key: $key, appLocalizations: $appLocalizations, enableViewHousehold: $enableViewHousehold, isAddChild: $isAddChild, eligibilityAssessmentType: $eligibilityAssessmentType}';
   }
 }
 
@@ -2025,6 +2044,7 @@ class EligibilityChecklistViewRoute
     String? referralClientRefId,
     IndividualModel? individual,
     String? projectBeneficiaryClientReferenceId,
+    bool? showBackButton,
     required EligibilityAssessmentType eligibilityAssessmentType,
     AppLocalizations? appLocalizations,
     List<PageRouteInfo>? children,
@@ -2036,6 +2056,7 @@ class EligibilityChecklistViewRoute
             individual: individual,
             projectBeneficiaryClientReferenceId:
                 projectBeneficiaryClientReferenceId,
+            showBackButton: showBackButton,
             eligibilityAssessmentType: eligibilityAssessmentType,
             appLocalizations: appLocalizations,
           ),
@@ -2054,6 +2075,7 @@ class EligibilityChecklistViewRouteArgs {
     this.referralClientRefId,
     this.individual,
     this.projectBeneficiaryClientReferenceId,
+    this.showBackButton,
     required this.eligibilityAssessmentType,
     this.appLocalizations,
   });
@@ -2066,13 +2088,15 @@ class EligibilityChecklistViewRouteArgs {
 
   final String? projectBeneficiaryClientReferenceId;
 
+  final bool? showBackButton;
+
   final EligibilityAssessmentType eligibilityAssessmentType;
 
   final AppLocalizations? appLocalizations;
 
   @override
   String toString() {
-    return 'EligibilityChecklistViewRouteArgs{key: $key, referralClientRefId: $referralClientRefId, individual: $individual, projectBeneficiaryClientReferenceId: $projectBeneficiaryClientReferenceId, eligibilityAssessmentType: $eligibilityAssessmentType, appLocalizations: $appLocalizations}';
+    return 'EligibilityChecklistViewRouteArgs{key: $key, referralClientRefId: $referralClientRefId, individual: $individual, projectBeneficiaryClientReferenceId: $projectBeneficiaryClientReferenceId, showBackButton: $showBackButton, eligibilityAssessmentType: $eligibilityAssessmentType, appLocalizations: $appLocalizations}';
   }
 }
 

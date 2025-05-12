@@ -31,6 +31,7 @@ import 'package:registration_delivery/models/entities/status.dart';
 import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
 import 'package:registration_delivery/utils/utils.dart';
+import '../../utils/utils.dart';
 import '../../widgets/custom_back_navigation.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 import 'package:registration_delivery/widgets/member_card/member_card.dart';
@@ -82,6 +83,8 @@ class _CustomHouseholdOverviewPageState
       },
       child: BlocBuilder<HouseholdOverviewBloc, HouseholdOverviewState>(
         builder: (ctx, state) {
+          bool showAddMemberButton =
+              showAddMember(state.householdMemberWrapper);
           return Scaffold(
             body: state.loading
                 ? const Center(child: CircularProgressIndicator())
@@ -1015,20 +1018,21 @@ class _CustomHouseholdOverviewPageState
                                     ),
                                   ],
                                 ),
-                                DigitButton(
-                                  mainAxisSize: MainAxisSize.max,
-                                  onPressed: () => addIndividual(
-                                    context,
-                                    state.householdMemberWrapper.household,
+                                if (showAddMemberButton)
+                                  DigitButton(
+                                    mainAxisSize: MainAxisSize.max,
+                                    onPressed: () => addIndividual(
+                                      context,
+                                      state.householdMemberWrapper.household,
+                                    ),
+                                    label: localizations.translate(
+                                      i18.householdOverView
+                                          .householdOverViewAddActionText,
+                                    ),
+                                    prefixIcon: Icons.add_circle,
+                                    type: DigitButtonType.tertiary,
+                                    size: DigitButtonSize.large,
                                   ),
-                                  label: localizations.translate(
-                                    i18.householdOverView
-                                        .householdOverViewAddActionText,
-                                  ),
-                                  prefixIcon: Icons.add_circle,
-                                  type: DigitButtonType.tertiary,
-                                  size: DigitButtonSize.large,
-                                ),
                               ]),
                         ),
                       ],

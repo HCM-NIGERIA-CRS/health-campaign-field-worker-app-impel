@@ -11,6 +11,7 @@ import 'package:health_campaign_field_worker_app/widgets/custom_back_navigation.
 import 'package:registration_delivery/blocs/household_overview/household_overview.dart';
 import 'package:intl/intl.dart';
 import 'package:registration_delivery/models/entities/status.dart';
+import 'package:registration_delivery/utils/utils.dart';
 import 'package:survey_form/survey_form.dart';
 import 'package:registration_delivery/blocs/delivery_intervention/deliver_intervention.dart';
 import 'package:registration_delivery/blocs/search_households/search_households.dart';
@@ -37,12 +38,14 @@ class EligibilityChecklistViewPage extends LocalizedStatefulWidget {
   final IndividualModel? individual;
   final String? projectBeneficiaryClientReferenceId;
   final EligibilityAssessmentType eligibilityAssessmentType;
+  final bool? showBackButton;
 
   const EligibilityChecklistViewPage({
     super.key,
     this.referralClientRefId,
     this.individual,
     this.projectBeneficiaryClientReferenceId,
+    this.showBackButton,
     required this.eligibilityAssessmentType,
     super.appLocalizations,
   });
@@ -141,8 +144,9 @@ class _EligibilityChecklistViewPage
                         header: Column(children: [
                           if (!(context.isHealthFacilitySupervisor &&
                               widget.referralClientRefId != null))
-                            const CustomBackNavigationHelpHeaderWidget(
+                            CustomBackNavigationHelpHeaderWidget(
                               showHelp: true,
+                              showBackNavigation: widget.showBackButton ?? true,
                             ),
                         ]),
                         enableFixedButton: true,
@@ -516,9 +520,38 @@ class _EligibilityChecklistViewPage
                                             ),
                                           );
                                   } else {
-                                    router.push(CustomBeneficiaryDetailsRoute(
-                                        eligibilityAssessmentType:
-                                            widget.eligibilityAssessmentType));
+                                    if (widget.individual == null) {
+                                      router.push(CustomBeneficiaryDetailsRoute(
+                                          eligibilityAssessmentType: widget
+                                              .eligibilityAssessmentType));
+                                    } else {
+                                      final reloadState =
+                                          context.read<HouseholdOverviewBloc>();
+
+                                      if (widget.individual != null) {
+                                        reloadState.add(
+                                          HouseholdOverviewEvent
+                                              .selectedIndividual(
+                                            individualModel: widget.individual!,
+                                          ),
+                                        );
+
+                                        reloadState.add(
+                                          HouseholdOverviewReloadEvent(
+                                            projectId:
+                                                RegistrationDeliverySingleton()
+                                                    .projectId!,
+                                            projectBeneficiaryType:
+                                                RegistrationDeliverySingleton()
+                                                    .beneficiaryType!,
+                                          ),
+                                        );
+                                      }
+                                      router.push(CustomBeneficiaryDetailsRoute(
+                                          individualSelected: widget.individual,
+                                          eligibilityAssessmentType: widget
+                                              .eligibilityAssessmentType));
+                                    }
                                   }
                                 }
 

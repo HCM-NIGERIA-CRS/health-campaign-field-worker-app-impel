@@ -290,6 +290,7 @@ class CustomDoseAdministeredPageState
                                 ).then((value) => context.router.popAndPush(
                                       CustomHouseholdAcknowledgementRoute(
                                         enableViewHousehold: true,
+                                        isAddChild: true,
                                         eligibilityAssessmentType:
                                             widget.eligibilityAssessmentType,
                                       ),

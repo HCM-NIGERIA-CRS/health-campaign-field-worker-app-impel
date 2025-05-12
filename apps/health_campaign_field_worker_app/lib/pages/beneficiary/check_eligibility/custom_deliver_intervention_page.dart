@@ -41,11 +41,13 @@ import '../../../widgets/custom_back_navigation.dart';
 class CustomDeliverInterventionPage extends LocalizedStatefulWidget {
   final EligibilityAssessmentType eligibilityAssessmentType;
   final bool isEditing;
+  final IndividualModel? selectedIndividual;
 
   const CustomDeliverInterventionPage({
     super.key,
     super.appLocalizations,
     required this.eligibilityAssessmentType,
+    this.selectedIndividual,
     this.isEditing = false,
   });
 
@@ -229,7 +231,8 @@ class CustomDeliverInterventionPageState
                       ?.where(
                         (element) =>
                             element.beneficiaryClientReferenceId ==
-                            state.selectedIndividual?.clientReferenceId,
+                            (state?.selectedIndividual?.clientReferenceId ??
+                                widget?.selectedIndividual?.clientReferenceId),
                       )
                       .toList();
 
@@ -260,7 +263,8 @@ class CustomDeliverInterventionPageState
                                                       1]
                                               .deliveries?[
                                           deliveryInterventionState.dose - 1],
-                                      state.selectedIndividual,
+                                      state?.selectedIndividual ??
+                                          widget?.selectedIndividual,
                                       state.householdMemberWrapper.household)
                                   ?.productVariants)
                               : projectTypeModel?.resources

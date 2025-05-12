@@ -90,7 +90,7 @@ class CustomBeneficiaryProgressBarState
 
     // final target = targetModel?.targetNo ?? 0.0;
 
-    const int target = 70;
+    const int target = 60;
 
     return DigitCard(margin: const EdgeInsets.all(spacer2), children: [
       CustomProgressIndicatorContainer(
@@ -102,7 +102,6 @@ class CustomBeneficiaryProgressBarState
     ]);
   }
 }
-
 
 class CustomProgressIndicatorContainer extends StatelessWidget {
   final String label;
@@ -155,7 +154,8 @@ class CustomProgressIndicatorContainer extends StatelessWidget {
                   children: [
                     Text(
                       prefixLabel,
-                      style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorTheme.alert.success),
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(color: theme.colorTheme.alert.success),
                       textAlign: TextAlign.center,
                     ),
                     Text(
@@ -188,4 +188,3 @@ class CustomProgressIndicatorContainer extends StatelessWidget {
     );
   }
 }
-

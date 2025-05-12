@@ -753,6 +753,7 @@ class CustomBeneficiaryRegistrationBloc
           emit(value.copyWith(loading: false));
           emit(BeneficiaryRegistrationPersistedState(
             householdModel: value.householdModel,
+            individualModel: event.individualModel,
           ));
         }
       },

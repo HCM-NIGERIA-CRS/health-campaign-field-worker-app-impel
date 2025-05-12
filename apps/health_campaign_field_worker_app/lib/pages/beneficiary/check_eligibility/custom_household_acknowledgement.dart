@@ -8,6 +8,7 @@ import 'package:registration_delivery/registration_delivery.dart';
 import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
 import 'package:registration_delivery/widgets/localized.dart';
+import '../../../utils/i18_key_constants.dart' as i18_local;
 
 import '../../../utils/app_enums.dart';
 
@@ -15,11 +16,13 @@ import '../../../utils/app_enums.dart';
 class CustomHouseholdAcknowledgementPage extends LocalizedStatefulWidget {
   final bool? enableViewHousehold;
   final EligibilityAssessmentType eligibilityAssessmentType;
+  final bool? isAddChild;
 
   const CustomHouseholdAcknowledgementPage({
     super.key,
     super.appLocalizations,
     this.enableViewHousehold,
+    this.isAddChild,
     required this.eligibilityAssessmentType,
   });
 
@@ -49,9 +52,13 @@ class CustomHouseholdAcknowledgementPageState
                 ),
                 actions: [
                   DigitButton(
-                      label: localizations.translate(
-                        i18.householdDetails.viewHouseHoldDetailsAction,
-                      ),
+                      label: (widget?.isAddChild ?? false)
+                          ? localizations.translate(
+                              i18_local.householdDetails.treatNextChildAction,
+                            )
+                          : localizations.translate(
+                              i18.householdDetails.viewHouseHoldDetailsAction,
+                            ),
                       isDisabled: !(widget.enableViewHousehold ?? false),
                       onPressed: () {
                         final wrapper = context
@@ -65,19 +72,20 @@ class CustomHouseholdAcknowledgementPageState
                       },
                       type: DigitButtonType.primary,
                       size: DigitButtonSize.large),
-                  DigitButton(
-                      label: localizations.translate(
-                          i18.acknowledgementSuccess.actionLabelText),
-                      onPressed: () {
-                        context
-                            .read<SearchHouseholdsBloc>()
-                            .add(const SearchHouseholdsEvent.clear());
-                        final parent = context.router.parent() as StackRouter;
-                        // Pop twice to navigate back to the previous screen
-                        parent.popUntilRoot();
-                      },
-                      type: DigitButtonType.secondary,
-                      size: DigitButtonSize.large),
+                  if (widget?.isAddChild ?? true)
+                    DigitButton(
+                        label: localizations.translate(
+                            i18.acknowledgementSuccess.actionLabelText),
+                        onPressed: () {
+                          context
+                              .read<SearchHouseholdsBloc>()
+                              .add(const SearchHouseholdsEvent.clear());
+                          final parent = context.router.parent() as StackRouter;
+                          // Pop twice to navigate back to the previous screen
+                          parent.popUntilRoot();
+                        },
+                        type: DigitButtonType.secondary,
+                        size: DigitButtonSize.large),
                 ],
               ),
             );

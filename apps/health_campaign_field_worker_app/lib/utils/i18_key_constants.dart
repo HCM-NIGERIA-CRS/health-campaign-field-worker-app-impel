@@ -318,6 +318,8 @@ class HouseholdDetails {
   String get submitNo => 'SUBMIT_NO';
   String get householdConsentLabel => 'HOUSEHOLD_CONSENT_LABEL';
   String get cardAztTitle => 'HOUSEHOLD_CONSENT_LABELL';
+  String get treatNextChildAction =>
+      'VIEW_HOUSEHOLD_DETAILS_TREAT_NEXT_CHILD_ACTION_LABEL';
 }
 
 class ForgotPassword {

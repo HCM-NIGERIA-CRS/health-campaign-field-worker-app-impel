@@ -21,6 +21,7 @@ import 'package:registration_delivery/models/entities/additional_fields_type.dar
 import 'package:registration_delivery/models/entities/task.dart';
 import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
+import '../../../blocs/registration_delivery/custom_search_household.dart';
 import '../../../models/entities/identifier_types.dart';
 import '../../../router/app_router.dart';
 import '../../../utils/app_enums.dart';
@@ -40,8 +41,10 @@ import 'custom_record_delivery_cycle.dart';
 @RoutePage()
 class CustomBeneficiaryDetailsPage extends LocalizedStatefulWidget {
   final EligibilityAssessmentType eligibilityAssessmentType;
+  final IndividualModel? individualSelected;
   const CustomBeneficiaryDetailsPage({
     required this.eligibilityAssessmentType,
+    this.individualSelected,
     super.key,
     super.appLocalizations,
   });
@@ -82,375 +85,415 @@ class CustomBeneficiaryDetailsPageState
     final textTheme = theme.digitTextTheme(context);
 
     return ProductVariantBlocWrapper(
-      child: BlocBuilder<HouseholdOverviewBloc, HouseholdOverviewState>(
-        builder: (context, state) {
-          ProjectTypeModel? projectType =
-              widget.eligibilityAssessmentType == EligibilityAssessmentType.smc
-                  ? RegistrationDeliverySingleton()
-                      .selectedProject
-                      ?.additionalDetails
-                      ?.projectType
-                  : RegistrationDeliverySingleton()
-                      .selectedProject
-                      ?.additionalDetails
-                      ?.additionalProjectType;
-          final householdMemberWrapper = state.householdMemberWrapper;
-          // Filtering project beneficiaries based on the selected individual
-          final projectBeneficiary =
-              RegistrationDeliverySingleton().beneficiaryType !=
+      child:
+          BlocBuilder<CustomSearchHouseholdsBloc, CustomSearchHouseholdsState>(
+        builder: (context, searchHouseholdsState) {
+          return BlocBuilder<HouseholdOverviewBloc, HouseholdOverviewState>(
+            builder: (context, state) {
+              ProjectTypeModel? projectType =
+                  widget.eligibilityAssessmentType ==
+                          EligibilityAssessmentType.smc
+                      ? RegistrationDeliverySingleton()
+                          .selectedProject
+                          ?.additionalDetails
+                          ?.projectType
+                      : RegistrationDeliverySingleton()
+                          .selectedProject
+                          ?.additionalDetails
+                          ?.additionalProjectType;
+
+              final householdMemberWrapper = state.householdMemberWrapper;
+              // Filtering project beneficiaries based on the selected individual
+              final projectBeneficiary = RegistrationDeliverySingleton()
+                          .beneficiaryType !=
                       BeneficiaryType.individual
-                  ? [householdMemberWrapper.projectBeneficiaries?.first]
-                  : householdMemberWrapper.projectBeneficiaries
+                  ? [householdMemberWrapper?.projectBeneficiaries?.first]
+                  : householdMemberWrapper?.projectBeneficiaries
                       ?.where(
                         (element) =>
                             element.beneficiaryClientReferenceId ==
-                            state.selectedIndividual?.clientReferenceId,
+                            (state.selectedIndividual?.clientReferenceId ??
+                                widget?.individualSelected?.clientReferenceId),
                       )
                       .toList();
 
-          // Extracting task data related to the selected project beneficiary
+              // Extracting task data related to the selected project beneficiary
 
-          final taskData = state.householdMemberWrapper.tasks
-              ?.where((element) =>
-                  element.projectBeneficiaryClientReferenceId ==
-                      projectBeneficiary?.first?.clientReferenceId &&
-                  checkDeliveryType(element))
-              .toList();
-          final bloc = context.read<DeliverInterventionBloc>();
-          final lastDose = taskData != null && taskData.isNotEmpty
-              ? taskData.last.additionalFields?.fields
-                      .firstWhereOrNull(
-                        (e) =>
-                            e.key == AdditionalFieldsType.doseIndex.toValue(),
-                      )
-                      ?.value ??
-                  '1'
-              : '0';
-          final lastCycle = taskData != null && taskData.isNotEmpty
-              ? taskData.last.additionalFields?.fields
-                      .firstWhereOrNull(
-                        (e) =>
-                            e.key == AdditionalFieldsType.cycleIndex.toValue(),
-                      )
-                      ?.value ??
-                  '1'
-              : '1';
+              final taskData = state.householdMemberWrapper.tasks
+                  ?.where((element) =>
+                      element.projectBeneficiaryClientReferenceId ==
+                          projectBeneficiary?.first?.clientReferenceId &&
+                      checkDeliveryType(element))
+                  .toList();
+              final bloc = context.read<DeliverInterventionBloc>();
+              final lastDose = taskData != null && taskData.isNotEmpty
+                  ? taskData.last.additionalFields?.fields
+                          .firstWhereOrNull(
+                            (e) =>
+                                e.key ==
+                                AdditionalFieldsType.doseIndex.toValue(),
+                          )
+                          ?.value ??
+                      '1'
+                  : '0';
+              final lastCycle = taskData != null && taskData.isNotEmpty
+                  ? taskData.last.additionalFields?.fields
+                          .firstWhereOrNull(
+                            (e) =>
+                                e.key ==
+                                AdditionalFieldsType.cycleIndex.toValue(),
+                          )
+                          ?.value ??
+                      '1'
+                  : '1';
 
-          // [TODO] Need to move this to Bloc Lisitner or consumer
-          if (projectType != null) {
-            bloc.add(
-              DeliverInterventionEvent.setActiveCycleDose(
-                lastDose: taskData != null && taskData.isNotEmpty
-                    ? int.tryParse(
-                          lastDose,
-                        ) ??
-                        1
-                    : 0,
-                lastCycle: taskData != null && taskData.isNotEmpty
-                    ? int.tryParse(
-                          lastCycle,
-                        ) ??
-                        1
-                    : 1,
-                individualModel: state.selectedIndividual,
-                projectType: projectType,
-              ),
-            );
-          }
+              // [TODO] Need to move this to Bloc Lisitner or consumer
+              if (projectType != null) {
+                bloc.add(
+                  DeliverInterventionEvent.setActiveCycleDose(
+                    lastDose: taskData != null && taskData.isNotEmpty
+                        ? int.tryParse(
+                              lastDose,
+                            ) ??
+                            1
+                        : 0,
+                    lastCycle: taskData != null && taskData.isNotEmpty
+                        ? int.tryParse(
+                              lastCycle,
+                            ) ??
+                            1
+                        : 1,
+                    individualModel:
+                        state?.selectedIndividual ?? widget.individualSelected,
+                    projectType: projectType,
+                  ),
+                );
+              }
 
-          // Building the table content based on the DeliverInterventionState
+              // Building the table content based on the DeliverInterventionState
 
-          return BlocBuilder<ProductVariantBloc, ProductVariantState>(
-            builder: (context, productState) {
-              return productState.maybeWhen(
-                  orElse: () => const Offstage(),
-                  fetched: (productVariantsValue) {
-                    final variant = productState.whenOrNull(
-                      fetched: (productVariants) {
-                        return productVariants;
-                      },
-                    );
+              return BlocBuilder<ProductVariantBloc, ProductVariantState>(
+                builder: (context, productState) {
+                  return productState.maybeWhen(
+                      orElse: () => const Offstage(),
+                      fetched: (productVariantsValue) {
+                        final variant = productState.whenOrNull(
+                          fetched: (productVariants) {
+                            return productVariants;
+                          },
+                        );
 
-                    return Scaffold(
-                      body: ScrollableContent(
-                        enableFixedDigitButton: true,
-                        header: const Column(children: [
-                          CustomBackNavigationHelpHeaderWidget(
-                            showHelp: true,
-                          ),
-                        ]),
-                        footer: BlocBuilder<DeliverInterventionBloc,
-                            DeliverInterventionState>(
-                          builder: (context, deliverState) {
-                            final cycles = projectType?.cycles;
+                        return Scaffold(
+                          body: ScrollableContent(
+                            enableFixedDigitButton: true,
+                            header: const Column(children: [
+                              CustomBackNavigationHelpHeaderWidget(
+                                showHelp: true,
+                              ),
+                            ]),
+                            footer: BlocBuilder<DeliverInterventionBloc,
+                                DeliverInterventionState>(
+                              builder: (context, deliverState) {
+                                final cycles = projectType?.cycles;
 
-                            return cycles != null && cycles.isNotEmpty
-                                ? deliverState.hasCycleArrived
-                                    ? DigitCard(
+                                return cycles != null && cycles.isNotEmpty
+                                    ? deliverState.hasCycleArrived
+                                        ? DigitCard(
+                                            margin: const EdgeInsets.only(
+                                                top: spacer2),
+                                            children: [
+                                                DigitButton(
+                                                  label:
+                                                      '${localizations.translate(i18.beneficiaryDetails.recordCycle)} '
+                                                      '${(deliverState.cycle == 0 ? (deliverState.cycle + 1) : deliverState.cycle).toString()} ${localizations.translate(i18.deliverIntervention.dose)} '
+                                                      '${(deliverState.dose).toString()}',
+                                                  type: DigitButtonType.primary,
+                                                  size: DigitButtonSize.large,
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  onPressed: () async {
+                                                    final selectedCycle = cycles
+                                                        .firstWhereOrNull((c) =>
+                                                            c.id ==
+                                                            deliverState.cycle);
+                                                    if (selectedCycle != null) {
+                                                      bloc.add(
+                                                        DeliverInterventionEvent
+                                                            .selectFutureCycleDose(
+                                                          dose:
+                                                              deliverState.dose,
+                                                          cycle: projectType!
+                                                              .cycles!
+                                                              .firstWhere((c) =>
+                                                                  c.id ==
+                                                                  deliverState
+                                                                      .cycle),
+                                                          individualModel: state
+                                                              .selectedIndividual,
+                                                        ),
+                                                      );
+                                                      showCustomPopup(
+                                                        context: context,
+                                                        builder: (popUpContext) => Popup(
+                                                            title: localizations
+                                                                .translate(i18
+                                                                    .beneficiaryDetails
+                                                                    .resourcesTobeDelivered),
+                                                            type: PopUpType
+                                                                .simple,
+                                                            contentPadding:
+                                                                EdgeInsets.zero,
+                                                            additionalWidgets: [
+                                                              widget.eligibilityAssessmentType ==
+                                                                      EligibilityAssessmentType
+                                                                          .smc
+                                                                  ? buildTableContentSMC(
+                                                                      deliverState,
+                                                                      context,
+                                                                      variant,
+                                                                      state?.selectedIndividual ??
+                                                                          widget
+                                                                              .individualSelected,
+                                                                      state
+                                                                          .householdMemberWrapper
+                                                                          .household)
+                                                                  : buildTableContentVAS(
+                                                                      deliverState,
+                                                                      context,
+                                                                      variant,
+                                                                      state
+                                                                          .selectedIndividual,
+                                                                      state
+                                                                          .householdMemberWrapper
+                                                                          .household),
+                                                            ],
+                                                            actions: [
+                                                              DigitButton(
+                                                                  label: localizations
+                                                                      .translate(i18
+                                                                          .beneficiaryDetails
+                                                                          .ctaProceed),
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator
+                                                                        .of(
+                                                                      context,
+                                                                      rootNavigator:
+                                                                          true,
+                                                                    ).pop();
+                                                                    router.push(
+                                                                      CustomDeliverInterventionRoute(
+                                                                          eligibilityAssessmentType:
+                                                                              widget.eligibilityAssessmentType),
+                                                                    );
+                                                                  },
+                                                                  type: DigitButtonType
+                                                                      .primary,
+                                                                  size: DigitButtonSize
+                                                                      .large),
+                                                            ]),
+                                                      );
+                                                    }
+                                                  },
+                                                ),
+                                              ])
+                                        : const SizedBox.shrink()
+                                    : DigitCard(
                                         margin:
                                             const EdgeInsets.only(top: spacer2),
                                         children: [
                                             DigitButton(
-                                              label:
-                                                  '${localizations.translate(i18.beneficiaryDetails.recordCycle)} '
-                                                  '${(deliverState.cycle == 0 ? (deliverState.cycle + 1) : deliverState.cycle).toString()} ${localizations.translate(i18.deliverIntervention.dose)} '
-                                                  '${(deliverState.dose).toString()}',
+                                              label: localizations.translate(i18
+                                                  .householdOverView
+                                                  .householdOverViewActionText),
                                               type: DigitButtonType.primary,
                                               size: DigitButtonSize.large,
                                               mainAxisSize: MainAxisSize.max,
-                                              onPressed: () async {
-                                                final selectedCycle = cycles
-                                                    .firstWhereOrNull((c) =>
-                                                        c.id ==
-                                                        deliverState.cycle);
-                                                if (selectedCycle != null) {
-                                                  bloc.add(
-                                                    DeliverInterventionEvent
-                                                        .selectFutureCycleDose(
-                                                      dose: deliverState.dose,
-                                                      cycle: projectType!
-                                                          .cycles!
-                                                          .firstWhere((c) =>
-                                                              c.id ==
-                                                              deliverState
-                                                                  .cycle),
-                                                      individualModel: state
-                                                          .selectedIndividual,
-                                                    ),
-                                                  );
-                                                  showCustomPopup(
-                                                    context: context,
-                                                    builder: (popUpContext) => Popup(
-                                                        title: localizations
-                                                            .translate(i18
-                                                                .beneficiaryDetails
-                                                                .resourcesTobeDelivered),
-                                                        type: PopUpType.simple,
-                                                        contentPadding:
-                                                            EdgeInsets.zero,
-                                                        additionalWidgets: [
-                                                          widget.eligibilityAssessmentType ==
-                                                                  EligibilityAssessmentType
-                                                                      .smc
-                                                              ? buildTableContentSMC(
-                                                                  deliverState,
-                                                                  context,
-                                                                  variant,
-                                                                  state
-                                                                      .selectedIndividual,
-                                                                  state
-                                                                      .householdMemberWrapper
-                                                                      .household)
-                                                              : buildTableContentVAS(
-                                                                  deliverState,
-                                                                  context,
-                                                                  variant,
-                                                                  state
-                                                                      .selectedIndividual,
-                                                                  state
-                                                                      .householdMemberWrapper
-                                                                      .household),
-                                                        ],
-                                                        actions: [
-                                                          DigitButton(
-                                                              label: localizations
-                                                                  .translate(i18
-                                                                      .beneficiaryDetails
-                                                                      .ctaProceed),
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                  context,
-                                                                  rootNavigator:
-                                                                      true,
-                                                                ).pop();
-                                                                router.push(
-                                                                  CustomDeliverInterventionRoute(
-                                                                      eligibilityAssessmentType:
-                                                                          widget
-                                                                              .eligibilityAssessmentType),
-                                                                );
-                                                              },
-                                                              type:
-                                                                  DigitButtonType
-                                                                      .primary,
-                                                              size:
-                                                                  DigitButtonSize
-                                                                      .large),
-                                                        ]),
-                                                  );
-                                                }
+                                              onPressed: () {
+                                                context.router.push(
+                                                    CustomDeliverInterventionRoute(
+                                                        eligibilityAssessmentType:
+                                                            widget
+                                                                .eligibilityAssessmentType));
                                               },
                                             ),
-                                          ])
-                                    : const SizedBox.shrink()
-                                : DigitCard(
-                                    margin: const EdgeInsets.only(top: spacer2),
-                                    children: [
-                                        DigitButton(
-                                          label: localizations.translate(i18
-                                              .householdOverView
-                                              .householdOverViewActionText),
-                                          type: DigitButtonType.primary,
-                                          size: DigitButtonSize.large,
-                                          mainAxisSize: MainAxisSize.max,
-                                          onPressed: () {
-                                            context.router.push(
-                                                CustomDeliverInterventionRoute(
-                                                    eligibilityAssessmentType:
-                                                        widget
-                                                            .eligibilityAssessmentType));
-                                          },
-                                        ),
-                                      ]);
-                          },
-                        ),
-                        children: [
-                          DigitCard(
-                              margin: const EdgeInsets.all(spacer2),
-                              children: [
-                                Text(
-                                  localizations.translate(
-                                      widget.eligibilityAssessmentType ==
-                                              EligibilityAssessmentType.smc
-                                          ? i18_local.deliverIntervention
-                                              .deliversmcintervention
-                                          : i18_local.deliverIntervention
-                                              .deliverVASIntervention),
-                                  style: textTheme.headingXl.copyWith(
-                                      color: theme.colorTheme.text.primary),
-                                ),
-                                DigitTableCard(
-                                  element: {
-                                    localizations.translate(
-                                      RegistrationDeliverySingleton()
-                                                  .beneficiaryType !=
-                                              BeneficiaryType.individual
-                                          ? i18.householdOverView
-                                              .householdOverViewHouseholdHeadLabel
-                                          : i18.common.coreCommonName,
-                                    ): RegistrationDeliverySingleton()
-                                                .beneficiaryType !=
-                                            BeneficiaryType.individual
-                                        ? householdMemberWrapper
-                                            .headOfHousehold?.name?.givenName
-                                        : state.selectedIndividual?.name
-                                                ?.givenName ??
-                                            '--',
-                                    localizations.translate(i18_local
-                                        .beneficiaryDetails.beneficiaryId): () {
-                                      final String? beneficiaryId = state
-                                          .selectedIndividual?.identifiers
-                                          ?.lastWhereOrNull((e) =>
-                                              e.identifierType ==
-                                              IdentifierTypes
-                                                  .uniqueBeneficiaryID
-                                                  .toValue())
-                                          ?.identifierId;
-                                      return beneficiaryId ?? '--';
-                                    }(),
-                                    localizations.translate(
-                                      i18.common.coreCommonAge,
-                                    ): () {
-                                      final dob =
+                                          ]);
+                              },
+                            ),
+                            children: [
+                              DigitCard(
+                                  margin: const EdgeInsets.all(spacer2),
+                                  children: [
+                                    Text(
+                                      localizations.translate(
+                                          widget.eligibilityAssessmentType ==
+                                                  EligibilityAssessmentType.smc
+                                              ? i18_local.deliverIntervention
+                                                  .deliversmcintervention
+                                              : i18_local.deliverIntervention
+                                                  .deliverVASIntervention),
+                                      style: textTheme.headingXl.copyWith(
+                                          color: theme.colorTheme.text.primary),
+                                    ),
+                                    DigitTableCard(
+                                      element: {
+                                        localizations.translate(
                                           RegistrationDeliverySingleton()
                                                       .beneficiaryType !=
                                                   BeneficiaryType.individual
-                                              ? householdMemberWrapper
-                                                  .headOfHousehold?.dateOfBirth
-                                              : state.selectedIndividual
-                                                  ?.dateOfBirth;
-                                      if (dob == null || dob.isEmpty) {
-                                        return '--';
-                                      }
+                                              ? i18.householdOverView
+                                                  .householdOverViewHouseholdHeadLabel
+                                              : i18.common.coreCommonName,
+                                        ): RegistrationDeliverySingleton()
+                                                    .beneficiaryType !=
+                                                BeneficiaryType.individual
+                                            ? householdMemberWrapper
+                                                .headOfHousehold
+                                                ?.name
+                                                ?.givenName
+                                            : state.selectedIndividual?.name
+                                                    ?.givenName ??
+                                                widget.individualSelected?.name
+                                                    ?.givenName ??
+                                                '--',
+                                        localizations.translate(i18_local
+                                            .beneficiaryDetails
+                                            .beneficiaryId): () {
+                                          final String? beneficiaryId = state
+                                                  .selectedIndividual
+                                                  ?.identifiers
+                                                  ?.lastWhereOrNull((e) =>
+                                                      e.identifierType ==
+                                                      IdentifierTypes
+                                                          .uniqueBeneficiaryID
+                                                          .toValue())
+                                                  ?.identifierId ??
+                                              widget.individualSelected
+                                                  ?.identifiers
+                                                  ?.lastWhereOrNull((e) =>
+                                                      e.identifierType ==
+                                                      IdentifierTypes
+                                                          .uniqueBeneficiaryID
+                                                          .toValue())
+                                                  ?.identifierId;
+                                          return beneficiaryId ?? '--';
+                                        }(),
+                                        localizations.translate(
+                                          i18.common.coreCommonAge,
+                                        ): () {
+                                          final dob =
+                                              RegistrationDeliverySingleton()
+                                                          .beneficiaryType !=
+                                                      BeneficiaryType.individual
+                                                  ? householdMemberWrapper
+                                                      .headOfHousehold
+                                                      ?.dateOfBirth
+                                                  : state.selectedIndividual
+                                                          ?.dateOfBirth ??
+                                                      widget.individualSelected
+                                                          ?.dateOfBirth;
+                                          if (dob == null || dob.isEmpty) {
+                                            return '--';
+                                          }
 
-                                      final int years =
-                                          DigitDateUtils.calculateAge(
-                                        DigitDateUtils
-                                                .getFormattedDateToDateTime(
-                                                    dob) ??
-                                            DateTime.now(),
-                                      ).years;
-                                      final int months =
-                                          DigitDateUtils.calculateAge(
-                                        DigitDateUtils
-                                                .getFormattedDateToDateTime(
-                                                    dob) ??
-                                            DateTime.now(),
-                                      ).months;
+                                          final int years =
+                                              DigitDateUtils.calculateAge(
+                                            DigitDateUtils
+                                                    .getFormattedDateToDateTime(
+                                                        dob) ??
+                                                DateTime.now(),
+                                          ).years;
+                                          final int months =
+                                              DigitDateUtils.calculateAge(
+                                            DigitDateUtils
+                                                    .getFormattedDateToDateTime(
+                                                        dob) ??
+                                                DateTime.now(),
+                                          ).months;
 
-                                      return "$years ${localizations.translate(i18.memberCard.deliverDetailsYearText)} ${localizations.translate(months.toString().toUpperCase())} ${localizations.translate(i18.memberCard.deliverDetailsMonthsText)}";
-                                    }(),
-                                    localizations.translate(
-                                      i18.common.coreCommonGender,
-                                    ): RegistrationDeliverySingleton()
-                                                .beneficiaryType !=
-                                            BeneficiaryType.individual
-                                        ? householdMemberWrapper.headOfHousehold
-                                            ?.gender?.name.sentenceCase
-                                        : state.selectedIndividual?.gender?.name
-                                                .sentenceCase ??
-                                            '--',
-                                    localizations.translate(
-                                      i18.deliverIntervention
-                                          .dateOfRegistrationLabel,
-                                    ): () {
-                                      final date = projectBeneficiary
-                                          ?.first?.dateOfRegistration;
+                                          return "$years ${localizations.translate(i18.memberCard.deliverDetailsYearText)} ${localizations.translate(months.toString().toUpperCase())} ${localizations.translate(i18.memberCard.deliverDetailsMonthsText)}";
+                                        }(),
+                                        localizations.translate(
+                                          i18.common.coreCommonGender,
+                                        ): RegistrationDeliverySingleton()
+                                                    .beneficiaryType !=
+                                                BeneficiaryType.individual
+                                            ? householdMemberWrapper
+                                                .headOfHousehold
+                                                ?.gender
+                                                ?.name
+                                                .sentenceCase
+                                            : state.selectedIndividual?.gender
+                                                    ?.name.sentenceCase ??
+                                                widget
+                                                    .individualSelected
+                                                    ?.gender
+                                                    ?.name
+                                                    ?.sentenceCase ??
+                                                '--',
+                                        localizations.translate(
+                                          i18.deliverIntervention
+                                              .dateOfRegistrationLabel,
+                                        ): () {
+                                          final date = projectBeneficiary
+                                              ?.first?.dateOfRegistration;
 
-                                      final registrationDate =
-                                          DateTime.fromMillisecondsSinceEpoch(
-                                        date ??
-                                            DateTime.now()
-                                                .millisecondsSinceEpoch,
-                                      );
+                                          final registrationDate = DateTime
+                                              .fromMillisecondsSinceEpoch(
+                                            date ??
+                                                DateTime.now()
+                                                    .millisecondsSinceEpoch,
+                                          );
 
-                                      return DateFormat('dd MMMM yyyy')
-                                          .format(registrationDate);
-                                    }(),
-                                  },
-                                ),
-                              ]),
-                          if ((projectType?.cycles ?? []).isNotEmpty)
-                            DigitCard(
-                                margin: const EdgeInsets.all(spacer2),
-                                children: projectType?.cycles != null
-                                    ? [
-                                        BlocBuilder<DeliverInterventionBloc,
-                                            DeliverInterventionState>(
-                                          builder: (context, deliverState) {
-                                            return Column(
-                                              children: [
-                                                (projectType?.cycles ?? [])
-                                                        .isNotEmpty
-                                                    ? CustomRecordDeliveryCycle(
-                                                        projectCycles:
-                                                            projectType
-                                                                    ?.cycles ??
-                                                                [],
-                                                        taskData:
-                                                            taskData ?? [],
-                                                        individualModel: state
-                                                            .selectedIndividual,
-                                                      )
-                                                    : const Offstage(),
-                                              ],
-                                            );
-                                          },
-                                        ),
-                                      ]
-                                    : [])
-                        ],
-                      ),
-                    );
-                  },
-                  empty: () => Center(
-                        child: Text(
-                          localizations.translate(
-                            i18.deliverIntervention
-                                .checkForProductVariantsConfig,
+                                          return DateFormat('dd MMMM yyyy')
+                                              .format(registrationDate);
+                                        }(),
+                                      },
+                                    ),
+                                  ]),
+                              if ((projectType?.cycles ?? []).isNotEmpty)
+                                DigitCard(
+                                    margin: const EdgeInsets.all(spacer2),
+                                    children: projectType?.cycles != null
+                                        ? [
+                                            BlocBuilder<DeliverInterventionBloc,
+                                                DeliverInterventionState>(
+                                              builder: (context, deliverState) {
+                                                return Column(
+                                                  children: [
+                                                    (projectType?.cycles ?? [])
+                                                            .isNotEmpty
+                                                        ? CustomRecordDeliveryCycle(
+                                                            projectCycles:
+                                                                projectType
+                                                                        ?.cycles ??
+                                                                    [],
+                                                            taskData:
+                                                                taskData ?? [],
+                                                            individualModel: state
+                                                                .selectedIndividual,
+                                                          )
+                                                        : const Offstage(),
+                                                  ],
+                                                );
+                                              },
+                                            ),
+                                          ]
+                                        : [])
+                            ],
                           ),
-                        ),
-                      ));
+                        );
+                      },
+                      empty: () => Center(
+                            child: Text(
+                              localizations.translate(
+                                i18.deliverIntervention
+                                    .checkForProductVariantsConfig,
+                              ),
+                            ),
+                          ));
+                },
+              );
             },
           );
         },
