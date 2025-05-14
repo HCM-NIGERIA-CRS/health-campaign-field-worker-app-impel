@@ -106,11 +106,9 @@ bool redosePending(List<TaskModel>? tasks, ProjectCycle? selectedCycle) {
   if ((tasks ?? []).isEmpty) {
     return true;
   }
-
   if (selectedCycle == null) {
     return false;
   }
-
   // get the fist task which was marked as visited as this is the one which was created in redose flow
   TaskModel? redoseTask = tasks!
       .where(
@@ -134,13 +132,15 @@ bool redosePending(List<TaskModel>? tasks, ProjectCycle? selectedCycle) {
                   .toList() ??
               [])
           .isEmpty;
-
   return redosePending &&
-      (selectedCycle.mandatoryWaitSinceLastCycleInDays == null ||
-          diff <=
-              (selectedCycle.mandatoryWaitSinceLastCycleInDays ?? 0) *
+      (selectedCycle.mandatoryWaitSinceLastCycleInDays == null
+          ? diff <= 30 * 60 * 1000 // 30 minutes for now
+          : diff <=
+              (selectedCycle.mandatoryWaitSinceLastCycleInDays! *
+                  24 *
                   60 *
-                  1000);
+                  60 *
+                  1000)); // for any other modifications
 }
 
 bool checkBeneficiaryReferredSMC(List<TaskModel>? tasks) {
