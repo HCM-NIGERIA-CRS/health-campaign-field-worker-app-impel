@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:digit_data_model/data/local_store/sql_store/tables/individual.dart';
 import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/widgets/molecules/panel_cards.dart';
 import 'package:flutter/material.dart';
@@ -39,20 +40,28 @@ class CustomHouseholdAcknowledgementPage extends LocalizedStatefulWidget {
 
 class CustomHouseholdAcknowledgementPageState
     extends LocalizedState<CustomHouseholdAcknowledgementPage> {
-  Map<String, String>? subtitleMap(
-      registration_delivery.HouseholdMemberWrapper? householdMember,
-      String? householdId) {
-    // String? beneficiaryId = householdMember?.members?.lastOrNull?.identifiers
-    //     ?.lastWhereOrNull((e) =>
-    //         e.identifierType == IdentifierTypes.uniqueBeneficiaryID.toValue())
-    //     ?.identifierId;
+  Map<String, String>? subtitleMap({
+    required bool isAddChild,
+    required registration_delivery.HouseholdMemberWrapper? householdMember,
+  }) {
+    if (!isAddChild) return null;
 
-    // return beneficiaryId == null
-    //     ? null
-    //     : {
-    //         'id': i18_local.beneficiaryDetails.beneficiaryId,
-    //         'value': beneficiaryId,
-    //       };
+    final beneficiary = householdMember?.members?.lastOrNull;
+    final beneficiaryId = beneficiary?.identifiers
+        ?.lastWhereOrNull(
+          (e) =>
+              e.identifierType == IdentifierTypes.uniqueBeneficiaryID.toValue(),
+        )
+        ?.identifierId;
+
+    final name = beneficiary?.name?.givenName;
+
+    if (beneficiaryId == null || name == null) return null;
+
+    return {
+      'id': name,
+      'value': beneficiaryId,
+    };
   }
 
   @override
@@ -62,6 +71,15 @@ class CustomHouseholdAcknowledgementPageState
       child: Scaffold(
         body: BlocBuilder<HouseholdOverviewBloc, HouseholdOverviewState>(
           builder: (context, householdState) {
+            String beneficiaryId = householdState
+                    .selectedIndividual?.identifiers
+                    ?.lastWhereOrNull((e) =>
+                        e.identifierType ==
+                        IdentifierTypes.uniqueBeneficiaryID.toValue())
+                    ?.identifierId ??
+                "";
+            String name =
+                householdState.selectedIndividual?.name?.givenName ?? "";
             return Padding(
               padding: const EdgeInsets.all(spacer2),
               child: CustomPanelCard(
@@ -69,8 +87,10 @@ class CustomHouseholdAcknowledgementPageState
                 description: localizations.translate(
                   i18.acknowledgementSuccess.acknowledgementDescriptionText,
                 ),
-                subTitle: subtitleMap(householdState.householdMemberWrapper,
-                    householdState.householdMemberWrapper.household?.id),
+                subTitle: subtitleMap(
+                  isAddChild: widget.isAddChild ?? false,
+                  householdMember: householdState.householdMemberWrapper,
+                ),
                 title: localizations.translate(
                   i18.acknowledgementSuccess.acknowledgementLabelText,
                 ),
