@@ -133,10 +133,14 @@ bool redosePending(List<TaskModel>? tasks, ProjectCycle? selectedCycle) {
               [])
           .isEmpty;
   return redosePending &&
-      ( // selectedCycle.mandatoryWaitSinceLastCycleInDays == null ||
-          diff <= 30 * 60 * 1000
-      // * (selectedCycle.mandatoryWaitSinceLastCycleInDays ?? 0)
-      );
+      (selectedCycle.mandatoryWaitSinceLastCycleInDays == null
+          ? diff <= 30 * 60 * 1000 // 30 minutes
+          : diff <=
+              (selectedCycle.mandatoryWaitSinceLastCycleInDays! *
+                  24 *
+                  60 *
+                  60 *
+                  1000)); // for any other modifications
 }
 
 bool checkBeneficiaryReferredSMC(List<TaskModel>? tasks) {
