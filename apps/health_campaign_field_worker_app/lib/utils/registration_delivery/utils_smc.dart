@@ -134,7 +134,7 @@ bool redosePending(List<TaskModel>? tasks, ProjectCycle? selectedCycle) {
           .isEmpty;
   return redosePending &&
       (selectedCycle.mandatoryWaitSinceLastCycleInDays == null
-          ? diff <= 30 * 60 * 1000 // 30 minutes
+          ? diff <= 30 * 60 * 1000 // 30 minutes for now
           : diff <=
               (selectedCycle.mandatoryWaitSinceLastCycleInDays! *
                   24 *
