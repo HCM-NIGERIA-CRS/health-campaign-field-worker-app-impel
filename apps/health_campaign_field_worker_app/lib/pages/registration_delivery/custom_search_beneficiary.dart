@@ -561,7 +561,6 @@ class _CustomSearchBeneficiaryPageState
       customSearchHouseholdsBloc.add(
         const SearchHouseholdsClearEvent(),
       );
-
       return;
     } else {
       if (isProximityEnabled && searchController.text.trim().length < 3) {
