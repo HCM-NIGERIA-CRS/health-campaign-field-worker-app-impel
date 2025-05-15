@@ -172,8 +172,6 @@ class CustomHouseHoldDetailsPageState
                               loading,
                               isHeadOfHousehold,
                             ) async {
-                              final String householdid =
-                                  await generateHouseholdId();
                               var household = householdModel;
 
                               household ??= HouseholdModel(
@@ -240,7 +238,6 @@ class CustomHouseHoldDetailsPageState
                                         context.millisecondsSinceEpoch(),
                                   ),
                                   address: addressModel,
-                                  id: householdid,
                                   additionalFields: HouseholdAdditionalFields(
                                       version: 1, fields: []));
 

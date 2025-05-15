@@ -54,7 +54,6 @@ class CaregiverConsentPageState extends LocalizedState<CaregiverConsentPage> {
     final bloc = context.read<CustomBeneficiaryRegistrationBloc>();
     final router = context.router;
     var household = householdModel;
-    final String householdid = await generateHouseholdId();
 
     household ??= HouseholdModel(
       tenantId: RegistrationDeliverySingleton().tenantId,
@@ -98,7 +97,6 @@ class CaregiverConsentPageState extends LocalizedState<CaregiverConsentPage> {
           lastModifiedTime: context.millisecondsSinceEpoch(),
         ),
         address: addressModel,
-        id: householdid,
         additionalFields: HouseholdAdditionalFields(version: 1, fields: [
           const AdditionalField(
             "caregiver_consent_registration",
@@ -118,28 +116,6 @@ class CaregiverConsentPageState extends LocalizedState<CaregiverConsentPage> {
     context.router.push(CustomBeneficiaryAcknowledgementRoute(
         enableViewHousehold: true,
         acknowledgementType: AcknowledgementType.addHousehold));
-  }
-
-  Future<String> generateHouseholdId() async {
-    final userId = RegistrationDeliverySingleton().loggedInUserUuid;
-
-    final boundaryBloc = context.read<BoundaryBloc>().state;
-    final code = boundaryBloc.boundaryList.first.code;
-    final bname = boundaryBloc.boundaryList.first.name;
-
-    final locality = (code == null || bname == null)
-        ? null
-        : LocalityModel(code: code, name: bname);
-
-    final localityCode = locality!.code;
-
-    final ids = await UniqueIdGeneration().generateUniqueId(
-      localityCode: localityCode,
-      loggedInUserId: userId!,
-      returnCombinedIds: false,
-    );
-
-    return ids.first;
   }
 
   @override
