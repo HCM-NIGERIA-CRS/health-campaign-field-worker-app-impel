@@ -35,8 +35,6 @@ import '../../utils/constants.dart';
 import '../../utils/extensions/extensions.dart';
 import '../../utils/i18_key_constants.dart' as i18_local;
 
-// import 'package:multi_select_flutter/multi_select_flutter.dart';
-
 @RoutePage()
 class CustomStockDetailsPage extends LocalizedStatefulWidget {
   const CustomStockDetailsPage({
