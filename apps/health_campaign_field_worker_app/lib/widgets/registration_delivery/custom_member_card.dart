@@ -300,6 +300,7 @@ class CustomMemberCard extends StatelessWidget {
               if ((smcTasks ?? []).isEmpty) {
                 context.router.push(
                   EligibilityChecklistViewRoute(
+                    showBackButton: false,
                     projectBeneficiaryClientReferenceId:
                         projectBeneficiaryClientReferenceId,
                     individual: individual,
@@ -416,6 +417,7 @@ class CustomMemberCard extends StatelessWidget {
                 // );
                 context.router.push(
                   EligibilityChecklistViewRoute(
+                    showBackButton: false,
                     projectBeneficiaryClientReferenceId:
                         projectBeneficiaryClientReferenceId,
                     individual: individual,
