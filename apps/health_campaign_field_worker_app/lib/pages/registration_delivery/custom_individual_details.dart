@@ -781,9 +781,6 @@ class CustomIndividualDetailsPageState
                                 child: ReactiveWrapperField(
                                   formControlName: _mobileNumberKey,
                                   validationMessages: {
-                                    'required': (_) => localizations.translate(
-                                          i18.common.corecommonRequired,
-                                        ),
                                     'minLength': (object) =>
                                         localizations.translate(i18_local
                                             .individualDetails
@@ -798,7 +795,7 @@ class CustomIndividualDetailsPageState
                                       i18.individualDetails
                                           .mobileNumberLabelText,
                                     ),
-                                    isRequired: widget.isHeadOfHousehold,
+                                    isRequired: false,
                                     child: DigitTextFormInput(
                                       keyboardType: TextInputType.number,
                                       maxLength: 11,
@@ -999,7 +996,6 @@ class CustomIndividualDetailsPageState
         //         localizations.translate(i18.common.coreCommonMobileNumber)),
         Validators.minLength(11),
         Validators.maxLength(11),
-        if (widget.isHeadOfHousehold) Validators.required,
         // Validators.required,
       ]),
     });
