@@ -101,10 +101,13 @@ class _EligibilityChecklistViewPage
         widget.projectBeneficiaryClientReferenceId;
 
     return WillPopScope(
-        onWillPop: context.isHealthFacilitySupervisor &&
-                widget.referralClientRefId != null
-            ? () async => false
-            : () async => _onBackPressed(context, ifIneligible),
+        onWillPop:
+            widget.showBackButton != null && widget.showBackButton == false
+                ? () async => false
+                : context.isHealthFacilitySupervisor &&
+                        widget.referralClientRefId != null
+                    ? () async => false
+                    : () async => _onBackPressed(context, ifIneligible),
         child: Scaffold(body:
             BlocBuilder<location.LocationBloc, location.LocationState>(
                 builder: (context, locationState) {
