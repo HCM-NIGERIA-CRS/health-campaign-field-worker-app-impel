@@ -428,9 +428,21 @@ class HomeShowcase {
 class StockDetails {
   const StockDetails();
 
+  String get cddCodeLabel => 'CDD_CODE_LABEL';
+
+  String get quantityCapsuleReceivedLabel =>
+      'STOCK_DETAILS_CAPSULE_QUANTITY_RECEIVED';
+
+  String get quantityCapsuleSentLabel => 'STOCK_DETAILS_CAPSULE_QUANTITY_SENT';
+
+  String get quantityCapsuleReturnedLabel =>
+      'STOCK_DETAILS_CAPSULE_QUANTITY_RETURNED';
+
   String get batchNumberLabel {
     return 'STOCK_DETAILS_BATCH_NUMBER';
   }
+
+  String get transportTypeLabel => 'STOCK_DETAILS_TYPE_OF_TRANSPORT_LABEL';
 
   String get quantityUnusedReturnedLabel =>
       'STOCK_DETAILS_UNUSED_QUANTITY_RETURNED';
@@ -440,12 +452,37 @@ class StockDetails {
 
   String get quantityReturnedMaxError =>
       'STOCK_DETAILS_RETURNED_MAX_QUANTITY_ERROR';
+
+  String get productRequired => 'STOCK_DETAILS_PRODUCT_IS_REQUIRED';
+
+  String get manageStockLabel => 'STOCK_DETAILS_MANAGE_STOCK_LABEL';
+
+  String get recordStockReturnedDescription =>
+      'STOCK_DETAILS_RECORD_STOCK_RETURNED_DESCRIPTION';
 }
 
 class InventoryReportDetails {
   const InventoryReportDetails();
   String get partialReturnedQuantityLabel =>
       "INVENTORY_REPORT_DETAILS_PARTIAL_RETURNED_QUANTITY_LABEL";
+
+  String get commentIsRequiredText => "COMMENT_IS_REQUIRED_TEXT";
+
+  String get checkTheQuantityReceivedText => 'CHECK_THE_QUANTITY_RECEIEVED_TEXT';
+
+  String get stockReceiptDetailsText => 'STOCK_RECEIPT_DETAILS_TEXT';
+
+  String get receivedFromText => 'RECEIVED_FROM_TEXT';
+
+  String get quantityReceivedByWarehouse => 'QUANTITY_RECEIVED_BY_WAREHOUSE';
+
+  String get actualQuantityReceived => 'ACTUAL_QUANTITY_RECEIVED';
+
+  String get commentsText => 'COMMENTS_TEXT';
+
+  String get waybillNumberText => 'WAYBILL_NUMBER_TEXT';
+
+  String get batchNumberText => 'BATCH_NUMBER_TEXT';
 }
 
 class SelectStockShowcase {
@@ -477,6 +514,10 @@ class WarehouseDetailsShowcase {
 
   String get warehouseName {
     return 'WAREHOUSE_DETAILS_SHOWCASE_WAREHOUSE_NAME';
+  }
+
+  String get dateOfReturn {
+    return 'WAREHOUSE_DETAILS_SHOWCASE_DATE_OF_RETURN';
   }
 }
 
@@ -829,6 +870,22 @@ class Home {
 class AcknowledgementSuccess {
   const AcknowledgementSuccess();
 
+  String get mrrnNumberDescription => "MRRN_NUMBER_DESCRIPTION";
+
+  String get mrrnNumberHeading => "MRRN_NUMBER_HEADING";
+
+  String get minNumberLabel => 'MIN_NUMBER_LABEL';
+
+  String get minNumberDescription => "MIN_NUMBER_DESCRIPTION";
+
+  String get minNumberHeading => "MIN_NUMBER_HEADING";
+
+  String get mrnNumberLabel => 'MRN_NUMBER_LABEL';
+
+  String get mrnNumberDescription => "MRN_NUMBER_DESCRIPTION";
+
+  String get mrnNumberHeading => "MRN_NUMBER_HEADING";
+
   String get actionLabelText => 'ACKNOWLEDGEMENT_SUCCESS_ACTION_LABEL_TEXT';
 
   String get acknowledgementDescriptionText =>
@@ -841,6 +898,13 @@ class AcknowledgementSuccess {
   String get dataDownloadedSuccessLabel => 'DATA_DOWNLOADED_SUCCESS_LABEL';
   String get referAcknowledgementLabelText =>
       'REFER_ACKNOWLEDGEMENT_SUCCESS_LABEL_TEXT';
+
+  String get createNewTransactions => 'CREATE_NEW_TRANSACTION';
+
+  String get viewtransactions => 'VIEW_TRANSACTIONS';
+
+  String get transactionAcknowledgementDescriptionText =>
+      'MATERIAL_RECEIPT_CREATED_SUCCESSFULLY';
 }
 
 class ProjectSelection {
@@ -997,6 +1061,10 @@ class SyncDialog {
 class StockReconciliationShowcase {
   const StockReconciliationShowcase();
 
+  String get warehouseLabel {
+    return 'STOCK_RECONCILIATION_SHOWCASE_WAREHOUSE_LABEL';
+  }
+
   String get warehouseName {
     return 'STOCK_RECONCILIATION_SHOWCASE_WAREHOUSE_NAME';
   }
@@ -1027,6 +1095,10 @@ class StockReconciliationShowcase {
 
   String get comments {
     return 'STOCK_RECONCILIATION_SHOWCASE_COMMENTS';
+  }
+
+  String get cddCodeLabel {
+    return 'CDD_CODE_LABEL';
   }
 }
 
@@ -1063,6 +1135,10 @@ class StockDetailsReturnedShowcase {
 
   String get comments {
     return 'STOCK_DETAILS_RETURNED_SHOWCASE_COMMENT';
+  }
+
+  String get expiry {
+    return 'EXPIRY';
   }
 }
 
@@ -1114,8 +1190,12 @@ class SearchBeneficiary {
 
   String get statisticsLabelText => 'BENEFICIARY_STATISTICS_LABEL_TEXT';
 
+  String get searchBeneficiaryReferralHintText => 'SEARCH_BENEFICIARY_REFERRAL_HINT_TEXT';
+
   String get searchIndividualLabelText =>
       'BENEFICIARY_STATISTICS_SEARCH_INDIVIDUAL_LABEL';
+
+  String get searchBeneficiaryLabelText => 'SEARCH_BENEFICIARY_LABEL_TEXT';
 
   String get noOfHouseholdsRegistered => 'NO_OF_HOUSEHOLDS_REGISTERED';
 
@@ -1139,6 +1219,8 @@ class SearchBeneficiary {
   String get monthsAbbr => 'MONTHS_ABBR';
 
   String get proximityLabel => 'PROXIMITY_LABEL';
+  String get beneficiaryIdValidInfoDescription =>
+      'BENEFICIARY_ID_VALID_INFO_DESCRIPTION';
 }
 
 class IndividualDetails {
@@ -1202,15 +1284,29 @@ class IndividualDetails {
 
 class BeneficiaryDetails {
   const BeneficiaryDetails();
+
+  String get validationForExcessStock =>
+      "ERROR_VALIDATIN_FOR_EXCESS_STOCK_DISPATCH";
+  String get errorHeader => "ERROR_VALIDATION_HEADER";
+  String get goToHome => "GO_BACK_HOME";
+  String get insufficientStockMessage => 'INSUFFICIENT_STOCK_MESSAGE_REGISTER';
+  String get insufficientStockMessageDelivery =>
+      'INSUFFICIENT_SMC_STOCK_MESSAGE_DELIVERY';
+
   String get insufficientStockHeading => 'INSUFFICIENT_STOCK_HEADING';
   String get insufficientAZTStockMessage => 'INSUFFICIENT_AZT_STOCK_MESSAGE';
   String get insufficientAZTStockMessageDelivery =>
       'INSUFFICIENT_STOCK_MESSAGE_ADMINISTRATION';
 
+  String get blueVasZeroQuantity => 'BLUE_VAS_ZERO_QUANTITY';
+  String get redVasZeroQuantity => 'RED_VAS_ZERO_QUANTITY';
+
   String get householdId => 'HOUSEHOLD_ID_TEXT';
   String get beneficiaryId => 'BENEFICIARY_ID_TEXT';
   String get backToHouseholdDetails => 'BACK_TO_HOUSEHOLD_DETAILS';
   String get beneficiaryDoseUnit => 'BENEFICIARY_DETAILS_DOSE_UNIT';
+  String get spaq1DoseUnit => 'SPAQ1_STOCK_ZERO';
+  String get spaq2DoseUnit => 'SPAQ2_STOCK_ZERO';
 
   String get beneficiarysDetailsLabelText => 'BENEFICIARY_DETAILS_LABEL_TEXT';
   String get beneficiarysDetailsEditIconLabelText =>
@@ -1287,6 +1383,8 @@ class BeneficiaryDetails {
   String get insufficientStorageContent =>
       'INSUFFICIENT_STORAGE_WARNING_CONTENT';
   String get recordCycle => 'BENEFICIARY_DETAILS_RECORD_CYCLE';
+
+  String get currentSmcCycleLabel => 'BENEFICIARY_DETAILS_CURRENT_SMC_CYCLE';
 }
 
 class PrivacyPolicy {
