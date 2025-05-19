@@ -291,38 +291,39 @@ class _CustomSearchBeneficiaryPageState
                                                 ),
                                               )
                                             ]),
-                                            Row(
-                                              children: [
-                                                Switch(
-                                                  value:
-                                                      isSearchByBeneficaryIdEnabled,
-                                                  onChanged: (value) {
-                                                    customSearchHouseholdsBloc
-                                                        .add(
-                                                      const SearchHouseholdsClearEvent(),
-                                                    );
-                                                    searchController.clear();
-                                                    context
-                                                        .read<
-                                                            IndividualGlobalSearchSMCBloc>()
-                                                        .add(const searchHouseholdSMCBloc
-                                                            .SearchHouseholdsSMCEvent.clear());
-                                                    setState(() {
-                                                      isSearchByBeneficaryIdEnabled =
-                                                          value;
-                                                      isProximityEnabled =
-                                                          false;
-                                                      searchController.clear();
-                                                      blocWrapper.clearEvent();
-                                                    });
-                                                  },
-                                                ),
-                                                Text(
-                                                  localizations.translate(
-                                                      'SEARCH_BY_BENEFICIARY_ID'),
-                                                ),
-                                              ],
-                                            )
+                                            // todo : disabled beneficiaryId search
+                                            // Row(
+                                            //   children: [
+                                            //     Switch(
+                                            //       value:
+                                            //           isSearchByBeneficaryIdEnabled,
+                                            //       onChanged: (value) {
+                                            //         customSearchHouseholdsBloc
+                                            //             .add(
+                                            //           const SearchHouseholdsClearEvent(),
+                                            //         );
+                                            //         searchController.clear();
+                                            //         context
+                                            //             .read<
+                                            //                 IndividualGlobalSearchSMCBloc>()
+                                            //             .add(const searchHouseholdSMCBloc
+                                            //                 .SearchHouseholdsSMCEvent.clear());
+                                            //         setState(() {
+                                            //           isSearchByBeneficaryIdEnabled =
+                                            //               value;
+                                            //           isProximityEnabled =
+                                            //               false;
+                                            //           searchController.clear();
+                                            //           blocWrapper.clearEvent();
+                                            //         });
+                                            //       },
+                                            //     ),
+                                            //     Text(
+                                            //       localizations.translate(
+                                            //           'SEARCH_BY_BENEFICIARY_ID'),
+                                            //     ),
+                                            //   ],
+                                            // )
                                           ],
                                         )
                                       : const Offstage(),

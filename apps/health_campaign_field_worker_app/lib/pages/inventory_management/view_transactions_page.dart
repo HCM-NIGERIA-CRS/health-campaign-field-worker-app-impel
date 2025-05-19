@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_campaign_field_worker_app/data/repositories/local/inventory_management/custom_stock.dart';
 import 'package:inventory_management/models/entities/stock.dart';
-import 'package:logger/logger.dart';
 
 import '../../blocs/inventory_management/stock_bloc.dart';
 import '../../router/app_router.dart';
@@ -36,8 +35,6 @@ class _ViewTransactionsScreenState extends State<ViewTransactionsScreen> {
     setState(() {
       stockList = result;
     });
-
-    Logger().i("Stock List: $stockList");
   }
 
   Map<String, List<StockModel>> groupStockByMrn(List<StockModel> stocks) {
