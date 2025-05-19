@@ -117,7 +117,8 @@ class _HomePageState extends LocalizedState<HomePage> {
     });
 
     if (!(roles.contains(RolesType.distributor.toValue()) ||
-        roles.contains(RolesType.registrar.toValue()))) {
+        roles.contains(RolesType.registrar.toValue()) ||
+        roles.contains(RolesType.communityDistributor.toValue()))) {
       skipProgressBar = true;
     }
 

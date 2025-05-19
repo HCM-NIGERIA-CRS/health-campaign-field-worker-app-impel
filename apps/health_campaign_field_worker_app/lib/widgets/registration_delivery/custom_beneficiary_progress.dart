@@ -36,11 +36,14 @@ class CustomBeneficiaryProgressBarState
   int current = 0;
 
   @override
+  @override
   void didChangeDependencies() {
-    final repository = context.read<
-            LocalRepository<ProjectBeneficiaryModel,
-                ProjectBeneficiarySearchModel>>()
-        as ProjectBeneficiaryLocalRepository;
+    final taskRepository =
+        context.read<LocalRepository<TaskModel, TaskSearchModel>>()
+            as CustomTaskLocalRepository;
+
+    final projectId = RegistrationDeliverySingleton().projectId;
+    final loggedInUserUuid = RegistrationDeliverySingleton().loggedInUserUuid;
 
     final now = DateTime.now();
     final gte = DateTime(
@@ -48,7 +51,6 @@ class CustomBeneficiaryProgressBarState
       now.month,
       now.day,
     );
-
     final lte = DateTime(
       now.year,
       now.month,
@@ -59,20 +61,50 @@ class CustomBeneficiaryProgressBarState
       999,
     );
 
-    repository.listenToChanges(
-      query: ProjectBeneficiarySearchModel(
-        projectId: [RegistrationDeliverySingleton().projectId.toString()],
+    taskRepository.listenToChanges(
+      query: TaskSearchModel(
+        status: Status.administeredSuccess.toValue(),
+        projectId: projectId,
+        createdBy: loggedInUserUuid,
+        plannedEndDate: lte.millisecondsSinceEpoch,
+        plannedStartDate: gte.millisecondsSinceEpoch,
       ),
-      listener: (data) {
+      listener: (taskData) async {
         if (mounted) {
-          setState(() {
-            current = data
-                .where((element) =>
-                    element.dateOfRegistrationTime.isAfter(gte) &&
-                    (element.isDeleted == false || element.isDeleted == null) &&
-                    element.dateOfRegistrationTime.isBefore(lte))
-                .length;
-          });
+          final now = DateTime.now();
+          final gte = DateTime(
+            now.year,
+            now.month,
+            now.day,
+          );
+          final lte = DateTime(
+            now.year,
+            now.month,
+            now.day,
+            23,
+            59,
+            59,
+            999,
+          );
+          TaskSearchModel taskSearchQuery = TaskSearchModel(
+            status: Status.administeredSuccess.toValue(),
+            createdBy: loggedInUserUuid,
+            plannedEndDate: lte.millisecondsSinceEpoch,
+            plannedStartDate: gte.millisecondsSinceEpoch,
+            projectId: projectId,
+          );
+          List<TaskModel> results =
+              await taskRepository.progressBarSearch(taskSearchQuery);
+          final groupedEntries = results.groupListsBy(
+            (element) => element.projectBeneficiaryClientReferenceId,
+          );
+          if (mounted) {
+            setState(() {
+              if (mounted) {
+                current = groupedEntries.entries.length;
+              }
+            });
+          }
         }
       },
     );

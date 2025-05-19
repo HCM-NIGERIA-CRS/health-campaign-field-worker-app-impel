@@ -1287,6 +1287,7 @@ class BeneficiaryDetails {
   String get insufficientStorageContent =>
       'INSUFFICIENT_STORAGE_WARNING_CONTENT';
   String get recordCycle => 'BENEFICIARY_DETAILS_RECORD_CYCLE';
+  String get invalidChildCount => 'INVALID_CHILD_COUNT_MESSAGE';
 }
 
 class PrivacyPolicy {

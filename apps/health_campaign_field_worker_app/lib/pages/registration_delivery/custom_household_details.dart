@@ -1,4 +1,6 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:digit_components/widgets/atoms/digit_integer_form_picker.dart';
+import 'package:digit_components/widgets/atoms/digit_toaster.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/household_type.dart';
 import 'package:digit_ui_components/digit_components.dart';
@@ -21,6 +23,7 @@ import 'package:registration_delivery/router/registration_delivery_router.gm.dar
 import 'package:registration_delivery/utils/constants.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
 import 'package:registration_delivery/utils/utils.dart';
+import '../../utils/i18_key_constants.dart' as i18_local;
 import 'package:registration_delivery/widgets/back_navigation_help_header.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 import 'package:registration_delivery/widgets/showcase/config/showcase_constants.dart';
@@ -46,6 +49,7 @@ class CustomHouseHoldDetailsPageState
     extends LocalizedState<CustomHouseHoldDetailsPage> {
   static const _dateOfRegistrationKey = 'dateOfRegistration';
   static const _memberCountKey = 'memberCount';
+  static const _childrenCountKey = 'childrenCount';
 
   // Define controllers
   final TextEditingController _pregnantWomenController =
@@ -100,6 +104,7 @@ class CustomHouseHoldDetailsPageState
             _memberController.text =
                 form.control(_memberCountKey).value.toString();
           }
+          int children = form.control(_childrenCountKey).value as int;
           return BlocConsumer<CustomBeneficiaryRegistrationBloc,
               BeneficiaryRegistrationState>(
             listener: (context, state) {
@@ -154,10 +159,20 @@ class CustomHouseHoldDetailsPageState
                           final memberCount =
                               form.control(_memberCountKey).value as int;
 
+                          final children =
+                              form.control(_childrenCountKey).value as int;
+
                           final dateOfRegistration = form
                               .control(_dateOfRegistrationKey)
                               .value as DateTime;
-
+                          if ((memberCount < children)) {
+                            DigitToast.show(context,
+                                options: DigitToastOptions(
+                                    localizations.translate(i18_local
+                                        .beneficiaryDetails.invalidChildCount),
+                                    true,
+                                    theme));
+                          }
                           registrationState.maybeWhen(
                             orElse: () {
                               return;
@@ -447,6 +462,31 @@ class CustomHouseHoldDetailsPageState
                               ),
                             ),
                           ),
+                          householdDetailsShowcaseData
+                              .numberOfChildrenBelow5InHousehold
+                              .buildWith(
+                            child: DigitIntegerFormPicker(
+                              minimum: 0,
+                              maximum: 20,
+                              form: form,
+                              formControlName: _childrenCountKey,
+                              onChange: () {
+                                int children =
+                                    form.control(_childrenCountKey).value;
+                                int memberCount =
+                                    form.control(_memberCountKey).value;
+                                form.control(_childrenCountKey).value =
+                                    memberCount < children
+                                        ? memberCount
+                                        : children;
+                              },
+                              label: localizations.translate(
+                                i18.householdDetails
+                                    .noOfChildrenBelow5YearsLabel,
+                              ),
+                              incrementer: true,
+                            ),
+                          ),
                         ]),
                   ),
                 ],
@@ -475,6 +515,23 @@ class CustomHouseHoldDetailsPageState
     return fb.group(<String, Object>{
       _dateOfRegistrationKey:
           FormControl<DateTime>(value: registrationDate, validators: []),
+      _childrenCountKey: FormControl<int>(
+        value: household?.additionalFields?.fields
+                    .where(
+                        (h) => h.key == AdditionalFieldsType.children.toValue())
+                    .firstOrNull
+                    ?.value !=
+                null
+            ? int.tryParse(household?.additionalFields?.fields
+                    .where(
+                        (h) => h.key == AdditionalFieldsType.children.toValue())
+                    .firstOrNull
+                    ?.value
+                    .toString() ??
+                '0')
+            : 0,
+        validators: [Validators.max<int>(20)],
+      ),
       _memberCountKey: FormControl<int>(
         value: household?.memberCount ?? 1,
       ),
