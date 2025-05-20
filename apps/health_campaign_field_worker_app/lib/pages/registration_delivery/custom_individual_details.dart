@@ -557,6 +557,7 @@ class CustomIndividualDetailsPageState
                                             individual.name?.givenName ?? "",
                                             false,
                                             false);
+                                        context.router.maybePop();
                                       }
                                     },
                                     addMember: (
