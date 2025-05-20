@@ -299,11 +299,6 @@ bool showAddMember(HouseholdMemberWrapper? wrapper) {
 
   var membersAddedTillNow = wrapper?.members?.length ?? 0;
 
-  //reduce 1 , so that we get actual count excluding head
-  if (membersAddedTillNow > 0) {
-    membersAddedTillNow -= 1;
-  }
-
   return membersAddedTillNow < wrapper!.household!.memberCount!;
 }
 
