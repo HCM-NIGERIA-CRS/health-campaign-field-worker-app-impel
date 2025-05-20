@@ -172,6 +172,7 @@ class CustomHouseHoldDetailsPageState
                                         .beneficiaryDetails.invalidChildCount),
                                     true,
                                     theme));
+                            return;
                           }
                           registrationState.maybeWhen(
                             orElse: () {
@@ -254,7 +255,21 @@ class CustomHouseHoldDetailsPageState
                                   ),
                                   address: addressModel,
                                   additionalFields: HouseholdAdditionalFields(
-                                      version: 1, fields: []));
+                                      version: 1,
+                                      fields: [
+                                        //[TODO: Use pregnant women form value based on project config
+                                        ...?householdModel
+                                            ?.additionalFields?.fields
+                                            .where((e) =>
+                                                e.key !=
+                                                AdditionalFieldsType.children
+                                                    .toValue()),
+                                        AdditionalField(
+                                          AdditionalFieldsType.children
+                                              .toValue(),
+                                          children,
+                                        ),
+                                      ]));
 
                               bloc.add(
                                 BeneficiaryRegistrationSaveHouseholdDetailsEvent(
@@ -305,6 +320,20 @@ class CustomHouseHoldDetailsPageState
                                           1,
                                       fields: [
                                         //[TODO: Use pregnant women form value based on project config
+                                        ...?householdModel
+                                            .additionalFields?.fields
+                                            .where(
+                                          (e) =>
+                                              e.key !=
+                                              AdditionalFieldsType.children
+                                                  .toValue(),
+                                        ),
+
+                                        AdditionalField(
+                                          AdditionalFieldsType.children
+                                              .toValue(),
+                                          children,
+                                        ),
                                       ]));
 
                               bloc.add(

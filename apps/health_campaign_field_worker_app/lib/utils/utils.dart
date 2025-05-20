@@ -295,16 +295,41 @@ int getPregnantWomenCount(HouseholdModel? householdCaptured) {
 }
 
 bool showAddMember(HouseholdMemberWrapper? wrapper) {
-  if (wrapper?.household?.memberCount == null) return false;
+  int childrenCount = 0;
+  // assumption only child are added
+  if (wrapper?.household?.additionalFields?.fields == null) return false;
+  final childrenCountField = wrapper?.household?.additionalFields?.fields
+      .firstWhereOrNull(
+          (field) => field.key == AdditionalFieldsType.children.toValue());
 
-  var membersAddedTillNow = wrapper?.members?.length ?? 0;
+  if (childrenCountField?.value == null) {
+    return false;
+  } else if (childrenCountField?.value is String) {
+    childrenCount = int.tryParse(childrenCountField?.value ?? "0") ?? 0;
+  } else if (childrenCountField?.value is int) {
+    childrenCount = childrenCountField?.value;
+  }
 
-  //reduce 1 , so that we get actual count excluding head
+  int membersAddedTillNow = wrapper?.members?.length ?? 0;
+  // exclude the head from it
   if (membersAddedTillNow > 0) {
     membersAddedTillNow -= 1;
   }
 
-  return membersAddedTillNow < wrapper!.household!.memberCount!;
+  return membersAddedTillNow < (childrenCount);
+}
+
+dynamic getValueForTheKey(String key, HouseholdModel? householdModel) {
+  if (householdModel == null ||
+      householdModel.additionalFields == null ||
+      householdModel.additionalFields!.fields.isEmpty) {
+    return null;
+  }
+  final object = householdModel.additionalFields!.fields
+      .where((element) => element.key == key)
+      .firstOrNull;
+
+  return object == null ? object : object.value;
 }
 
 Map<String, dynamic>? customValidMobileNumber(
@@ -714,4 +739,50 @@ class LocalizationParams {
   Locale? get locale => _locale;
 
   bool? get exclude => _exclude;
+}
+
+class UniqueIdGeneration {
+  Future<Set<String>> generateUniqueId({
+    required String localityCode,
+    required String loggedInUserId,
+    required bool returnCombinedIds,
+  }) async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+
+    // Get the Android ID
+    String androidId = androidInfo.serialNumber == 'unknown'
+        ? androidInfo.id.replaceAll('.', '')
+        : androidInfo.serialNumber;
+
+    // Get current timestamp
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+
+    // Combine the Android ID with the timestamp
+    String combinedId = '$loggedInUserId$androidId$localityCode$timestamp';
+
+    // Generate SHA-256 hash
+    List<int> bytes = utf8.encode(combinedId);
+    Digest sha256Hash = sha256.convert(bytes);
+
+    // Convert the hash to a 12-character string and make it uppercase
+    String hashString = sha256Hash.toString();
+    String uniqueId = hashString.substring(0, 9).toUpperCase();
+
+    // // Add a hyphen every 4 characters, except the last
+    // String formattedUniqueId = uniqueId.replaceAllMapped(
+    //   RegExp(r'.{1,4}'),
+    //   (match) => '${match.group(0)}-',
+    // );
+
+    // // Remove the last hyphen
+    // formattedUniqueId =
+    //     formattedUniqueId.substring(0, formattedUniqueId.length - 1);
+
+    if (kDebugMode) {
+      print('uniqueId : $uniqueId');
+    }
+
+    return returnCombinedIds ? {uniqueId, combinedId} : {uniqueId};
+  }
 }

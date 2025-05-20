@@ -122,8 +122,8 @@ class CustomHouseholdAcknowledgementPageState
                             i18.acknowledgementSuccess.actionLabelText),
                         onPressed: () {
                           context
-                              .read<SearchHouseholdsBloc>()
-                              .add(const SearchHouseholdsEvent.clear());
+                              .read<CustomSearchHouseholdsBloc>()
+                              .add(const CustomSearchHouseholdsEvent.clear());
                           final parent = context.router.parent() as StackRouter;
                           // Pop twice to navigate back to the previous screen
                           parent.popUntilRoot();

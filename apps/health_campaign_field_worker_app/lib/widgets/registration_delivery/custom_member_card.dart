@@ -145,13 +145,13 @@ class CustomMemberCard extends StatelessWidget {
                 icon: Icons.check_circle,
                 iconText: localizations.translate(
                   isBeneficiaryInEligibleSMC
-                      ? i18_local.householdOverView
-                          .householdOverViewBeneficiaryInEligibleSMCLabel
+                      ? i18.householdOverView
+                          .householdOverViewNotEligibleIconLabel
                       : isBeneficiaryReferredSMC
-                          ? i18_local.householdOverView
-                              .householdOverViewBeneficiaryReferredSMCLabel
-                          : i18_local.householdOverView
-                              .householdOverViewSMCDeliveredIconLabel,
+                          ? i18.householdOverView
+                              .householdOverViewBeneficiaryReferredLabel
+                          : i18.householdOverView
+                              .householdOverViewDeliveredIconLabel,
                 ),
                 iconSize: 20,
                 iconTextColor:
