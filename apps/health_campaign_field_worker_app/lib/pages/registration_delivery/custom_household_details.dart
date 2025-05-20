@@ -414,50 +414,33 @@ class CustomHouseHoldDetailsPageState
                             child: ReactiveWrapperField(
                               formControlName: _memberCountKey,
                               builder: (field) => LabeledField(
-                                label: (RegistrationDeliverySingleton()
-                                            .householdType ==
-                                        HouseholdType.community)
-                                    ? localizations.translate(
-                                        i18.householdDetails
-                                            .noOfMembersCountCLFLabel,
-                                      )
-                                    : localizations.translate(
-                                        i18.householdDetails
-                                            .noOfMembersCountLabel,
-                                      ),
-                                child: DigitNumericFormInput(
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly
-                                  ],
-                                  minValue: 1,
-                                  maxValue: !isCommunity ? 30 : 1000000,
-                                  maxLength: 5,
-                                  step: 1,
-                                  editable: isCommunity,
-                                  controller:
-                                      isCommunity ? _memberController : null,
-                                  initialValue: isCommunity
-                                      ? null
-                                      : form
-                                          .control(_memberCountKey)
-                                          .value
-                                          .toString(),
-                                  onChange: (value) {
-                                    if (value.isEmpty) {
-                                      _memberController.text = '1';
-                                      form.control(_memberCountKey).value = 1;
-                                      return;
-                                    }
-                                    // Remove leading zeros
-                                    String newValue = value;
-
-                                    if (value == '0' && isCommunity) {
-                                      newValue = '1';
-                                    }
-                                    _memberController.text = newValue;
-                                    form.control(_memberCountKey).value =
-                                        int.parse(newValue);
+                                child: DigitIntegerFormPicker(
+                                  minimum: 1,
+                                  maximum: !isCommunity ? 30 : 1000000,
+                                  form: form,
+                                  formControlName: _memberCountKey,
+                                  onChange: () {
+                                    int children =
+                                        form.control(_childrenCountKey).value;
+                                    int memberCount =
+                                        form.control(_memberCountKey).value;
+                                    form.control(_childrenCountKey).value =
+                                        memberCount < children
+                                            ? memberCount
+                                            : children;
                                   },
+                                  label: (RegistrationDeliverySingleton()
+                                              .householdType ==
+                                          HouseholdType.community)
+                                      ? localizations.translate(
+                                          i18.householdDetails
+                                              .noOfMembersCountCLFLabel,
+                                        )
+                                      : localizations.translate(
+                                          i18.householdDetails
+                                              .noOfMembersCountLabel,
+                                        ),
+                                  incrementer: true,
                                 ),
                               ),
                             ),
