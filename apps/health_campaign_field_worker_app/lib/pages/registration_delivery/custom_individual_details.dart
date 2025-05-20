@@ -50,6 +50,7 @@ import '../../models/entities/identifier_types.dart';
 import '../../router/app_router.dart';
 import '../../utils/utils.dart' as local_utils;
 import '../../utils/registration_delivery/registration_delivery_utils.dart';
+import '../../utils/constants.dart' as local_constants;
 import 'custom_beneficiary_acknowledgement.dart';
 import '../../utils/i18_key_constants.dart' as i18_local;
 
@@ -231,23 +232,30 @@ class CustomIndividualDetailsPageState
                           individualCaptured!.clientReferenceId)
                       .toSet();
 
-                  router.push(
-                    BeneficiaryWrapperRoute(
-                      wrapper: householdMemberWrapper,
-                      children: [
-                        EligibilityChecklistViewRoute(
-                          eligibilityAssessmentType:
-                              EligibilityAssessmentType.smc,
-                          projectBeneficiaryClientReferenceId:
-                              projectBeneficiaryAddMember
-                                      ?.first.clientReferenceId ??
-                                  "",
-                          individual: individualCaptured,
-                          showBackButton: false,
-                        ),
-                      ],
-                    ),
-                  );
+                  // assumption add individual here is used for creating child,
+                  //if invalid age send to overview no checklist
+                  if (verifyIfChildAgeValid(context, individualCaptured!)) {
+                    router.push(
+                      BeneficiaryWrapperRoute(
+                        wrapper: householdMemberWrapper,
+                        children: [
+                          EligibilityChecklistViewRoute(
+                            eligibilityAssessmentType:
+                                EligibilityAssessmentType.smc,
+                            projectBeneficiaryClientReferenceId:
+                                projectBeneficiaryAddMember
+                                        ?.first.clientReferenceId ??
+                                    "",
+                            individual: individualCaptured,
+                            showBackButton: false,
+                          ),
+                        ],
+                      ),
+                    );
+                  } else {
+                    router.push(BeneficiaryWrapperRoute(
+                        wrapper: householdMemberWrapper));
+                  }
                 } else {
                   router.push(CustomBeneficiaryAcknowledgementRoute(
                     enableViewHousehold: true,
@@ -825,6 +833,30 @@ class CustomIndividualDetailsPageState
         ),
       ),
     );
+  }
+
+  bool verifyIfChildAgeValid(BuildContext context, IndividualModel individual) {
+    if (individual.dateOfBirth == null) {
+      return false;
+    }
+
+    final dob = digits.DigitDateUtils.getFormattedDateToDateTime(
+        individual.dateOfBirth ?? "");
+
+    final individualAge = digits.DigitDateUtils.calculateAge(
+      dob,
+    );
+
+    final ageInMonths = local_utils.getAgeMonths(individualAge);
+    // set default from constants if config has null
+    final validMinAge =
+        context.selectedProject.additionalDetails?.projectType?.validMinAge ??
+            local_constants.Constants.validMinAge;
+    final validMaxAge =
+        context.selectedProject.additionalDetails?.projectType?.validMaxAge ??
+            local_constants.Constants.validMaxAge;
+
+    return validMinAge <= ageInMonths && ageInMonths <= validMaxAge;
   }
 
   IndividualModel _getIndividualModel(
