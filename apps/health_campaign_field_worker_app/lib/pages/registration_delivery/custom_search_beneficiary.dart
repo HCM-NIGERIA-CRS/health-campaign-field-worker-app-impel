@@ -33,6 +33,7 @@ import 'package:registration_delivery/widgets/status_filter/status_filter.dart';
 
 import '../../blocs/registration_delivery/custom_search_household.dart';
 import '../../router/app_router.dart';
+import '../../widgets/registration_delivery/custom_view_beneficiary_card.dart';
 
 @RoutePage()
 class CustomSearchBeneficiaryPage extends LocalizedStatefulWidget {
@@ -363,7 +364,7 @@ class _CustomSearchBeneficiaryPageState
 
                               return Container(
                                 margin: const EdgeInsets.only(bottom: spacer2),
-                                child: ViewBeneficiaryCard(
+                                child: CustomViewBeneficiaryCard(
                                   distance:
                                       isProximityEnabled ? distance : null,
                                   householdMember: householdMemberWrapper,

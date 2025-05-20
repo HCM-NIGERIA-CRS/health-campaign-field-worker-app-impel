@@ -399,8 +399,9 @@ class CustomIndividualDetailsPageState
 
                                   String localityCode = locality!.code;
 
-                                  beneficiaryId = await UniqueIdGeneration()
-                                      .generateUniqueId(
+                                  beneficiaryId =
+                                      await local_utils.UniqueIdGeneration()
+                                          .generateUniqueId(
                                     localityCode: localityCode,
                                     loggedInUserId: userId!,
                                     returnCombinedIds: false,

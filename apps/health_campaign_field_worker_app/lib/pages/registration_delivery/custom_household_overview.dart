@@ -18,6 +18,7 @@ import 'package:digit_ui_components/widgets/scrollable_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_campaign_field_worker_app/blocs/registration_delivery/custom_beneficairy_registration.dart';
+import 'package:registration_delivery/models/entities/additional_fields_type.dart';
 import 'package:survey_form/survey_form.dart';
 
 import 'package:registration_delivery/widgets/status_filter/status_filter.dart';
@@ -473,6 +474,11 @@ class _CustomHouseholdOverviewPageState
                                         bool shouldShowStatus =
                                             beneficiaryType ==
                                                 BeneficiaryType.household;
+                                        final childrenCount = getValueForTheKey(
+                                            AdditionalFieldsType.children
+                                                .toValue(),
+                                            state.householdMemberWrapper
+                                                .household);
 
                                         if (RegistrationDeliverySingleton()
                                                 .householdType ==
@@ -539,6 +545,10 @@ class _CustomHouseholdOverviewPageState
                                                       .memberCountText,
                                                 ): state.householdMemberWrapper
                                                     .household?.memberCount,
+                                                localizations.translate(
+                                                  i18.householdDetails
+                                                      .noOfChildrenBelow5YearsLabel,
+                                                ): childrenCount,
                                                 if (shouldShowStatus)
                                                   localizations.translate(i18
                                                           .beneficiaryDetails
