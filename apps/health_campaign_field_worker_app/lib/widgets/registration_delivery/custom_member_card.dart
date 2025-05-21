@@ -566,10 +566,12 @@ class CustomMemberCard extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: Text(
-                    " | $years ${localizations.translate(i18.memberCard.deliverDetailsYearText)} $months ${localizations.translate(i18.memberCard.deliverDetailsMonthsText)}",
-                    style: theme.textTheme.bodyMedium,
-                  ),
+                  child: isHead
+                      ? const Text("")
+                      : Text(
+                          " | $years ${localizations.translate(i18.memberCard.deliverDetailsYearText)} $months ${localizations.translate(i18.memberCard.deliverDetailsMonthsText)}",
+                          style: theme.textTheme.bodyMedium,
+                        ),
                 ),
               ],
             ),

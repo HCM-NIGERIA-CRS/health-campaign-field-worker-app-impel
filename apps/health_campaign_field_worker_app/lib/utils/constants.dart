@@ -94,6 +94,9 @@ class Constants {
   static const String reAdministeredKey = "reAdministered";
   static const String reDoseQuantityKey = 'reDoseQuantity';
   static const String healthFacility = 'Health Facility';
+  // specific to smc
+  static const int validMinAge = 3;
+  static const int validMaxAge = 59;
 
   static const int mlPerBottle = 30;
 
