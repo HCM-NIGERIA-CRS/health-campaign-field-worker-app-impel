@@ -1,3 +1,4 @@
+import 'package:attendance_management/attendance_management.dart';
 import 'package:attendance_management/models/entities/attendance_register.dart';
 import 'package:digit_components/theme/theme.dart';
 import 'package:digit_data_model/data_model.dart';
@@ -268,6 +269,18 @@ class MainApplicationState extends State<MainApplication>
                             individualRemoteRepository: ctx.read<
                                 RemoteRepository<IndividualModel,
                                     IndividualSearchModel>>(),
+                            attendanceLogLocalRepository: ctx.read<
+                                LocalRepository<AttendanceLogModel,
+                                    AttendanceLogSearchModel>>(),
+                            attendanceLogRemoteRepository: ctx.read<
+                                RemoteRepository<AttendanceLogModel,
+                                    AttendanceLogSearchModel>>(),
+                            attendanceLocalRepository: ctx.read<
+                                LocalRepository<AttendanceRegisterModel,
+                                    AttendanceRegisterSearchModel>>(),
+                            attendanceRemoteRepository: ctx.read<
+                                RemoteRepository<AttendanceRegisterModel,
+                                    AttendanceRegisterSearchModel>>(),
                             context: context,
                           ),
                         ),
