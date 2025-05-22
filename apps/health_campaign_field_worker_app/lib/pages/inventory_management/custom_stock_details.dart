@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
-import 'package:digit_components/widgets/atoms/digit_toaster.dart';
 // import 'package:digit_ui_components/widgets/atoms/digit_reactive_dropdown.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_scanner/blocs/scanner.dart';
@@ -10,17 +9,13 @@ import 'package:digit_ui_components/services/location_bloc.dart';
 import 'package:digit_ui_components/theme/digit_extended_theme.dart';
 import 'package:digit_ui_components/utils/component_utils.dart';
 import 'package:digit_ui_components/widgets/atoms/input_wrapper.dart';
-import 'package:digit_ui_components/widgets/atoms/pop_up_card.dart';
 import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
-import 'package:digit_ui_components/widgets/molecules/show_pop_up.dart';
-import 'package:digit_ui_components/widgets/atoms/digit_multiselect_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gs1_barcode_parser/gs1_barcode_parser.dart';
 import 'package:health_campaign_field_worker_app/pages/inventory_management/custom_stock_details_in_tabs.dart';
 import 'package:inventory_management/inventory_management.dart';
 import 'package:inventory_management/router/inventory_router.gm.dart';
-import 'package:inventory_management/utils/extensions/extensions.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 import 'package:inventory_management/utils/i18_key_constants.dart' as i18;
@@ -29,7 +24,6 @@ import 'package:inventory_management/blocs/product_variant.dart';
 import 'package:inventory_management/blocs/record_stock.dart';
 import 'package:inventory_management/widgets/back_navigation_help_header.dart';
 
-import '../../blocs/auth/auth.dart';
 import '../../blocs/inventory_management/stock_bloc.dart';
 import '../../utils/constants.dart';
 import '../../utils/extensions/extensions.dart';
@@ -50,15 +44,8 @@ class CustomStockDetailsPageState
     extends LocalizedState<CustomStockDetailsPage> {
   static const _productVariantKey = 'productVariant';
   static const _secondaryPartyKey = 'secondaryParty';
-  // static const _transactionQuantityKey = 'quantity';
-  // static const _transactionPartialQuantityKey = 'partialQuantity';
-  // static const _transactionReasonKey = 'transactionReason';
-  // static const _waybillNumberKey = 'waybillNumber';
-  // static const _waybillQuantityKey = 'waybillQuantity';
-  // static const _batchNumberKey = 'batchNumberKey';
   static const _vehicleNumberKey = 'vehicleNumber';
   static const _typeOfTransportKey = 'typeOfTransport';
-  // static const _commentsKey = 'comments';
   static const _deliveryTeamKey = 'deliveryTeam';
   bool deliveryTeamSelected = false;
   String? selectedFacilityId;
@@ -78,23 +65,8 @@ class CustomStockDetailsPageState
       _secondaryPartyKey: FormControl<String>(
         validators: [Validators.required],
       ),
-      // _transactionQuantityKey: FormControl<int>(validators: [
-      //   Validators.number(),
-      //   Validators.required,
-      //   Validators.min(0),
-      //   Validators.max(10000),
-      // ]),
-      // _transactionReasonKey: FormControl<String>(),
-      // _waybillNumberKey: FormControl<String>(
-      //   validators: [Validators.minLength(2), Validators.maxLength(200)],
-      // ),
-      // _waybillQuantityKey: FormControl<String>(),
-      // _batchNumberKey: FormControl<String>(
-      //   validators: [],
-      // ),
       _vehicleNumberKey: FormControl<String>(),
       _typeOfTransportKey: FormControl<String>(),
-      // _commentsKey: FormControl<String>(),
       _deliveryTeamKey: FormControl<String>(
         validators: deliveryTeamSelected ? [Validators.required] : [],
       ),
@@ -113,12 +85,9 @@ class CustomStockDetailsPageState
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.digitTextTheme(context);
-    final isDistributor = context.isDistributor;
     final isHealthFacilitySupervisor = context.isHealthFacilitySupervisor;
 
     bool isWareHouseMgr = InventorySingleton().isWareHouseMgr;
-
-    List<String> _selectedVariants = [];
 
     return PopScope(
       onPopInvoked: (didPop) {
@@ -269,8 +238,8 @@ class CustomStockDetailsPageState
                         footer: DigitCard(
                           margin: const EdgeInsets.fromLTRB(0, spacer2, 0, 0),
                           children: [
-                            ReactiveFormConsumer(
-                                builder: (context, form, child) {
+                            ReactiveFormConsumer(builder: (BuildContext context,
+                                FormGroup form, Widget? child) {
                               if (form
                                       .control(_deliveryTeamKey)
                                       .value
@@ -1106,23 +1075,31 @@ class CustomStockDetailsPageState
                                             [];
 
                                         if (context.selectedProject.address
-                                                ?.boundaryType ==
-                                            Constants.stateBoundaryLevel) {
+                                                    ?.boundaryType ==
+                                                Constants.stateBoundaryLevel ||
+                                            context.selectedProject.address
+                                                    ?.boundaryType ==
+                                                Constants
+                                                    .provinceBoundaryLevel) {
                                           filteredFacilities = entryType ==
                                                   StockRecordEntryType.receipt
-                                              ? facilities
+                                              ? allFacilities //TODO: changed from facilities
                                                   .where((element) =>
                                                       element.usage ==
                                                       Constants.centralFacility)
                                                   .toList()
-                                              : facilities
+                                              : allFacilities //TODO: changed from facilities
                                                   .where((element) =>
                                                       element.usage ==
                                                       Constants.lgaFacility)
                                                   .toList();
                                         } else if (context.selectedProject
-                                                .address?.boundaryType ==
-                                            Constants.lgaBoundaryLevel) {
+                                                    .address?.boundaryType ==
+                                                Constants.lgaBoundaryLevel ||
+                                            context.selectedProject.address
+                                                    ?.boundaryType ==
+                                                Constants
+                                                    .districtBoundaryLevel) {
                                           filteredFacilities = entryType ==
                                                   StockRecordEntryType.receipt
                                               ? allFacilities
@@ -1130,7 +1107,7 @@ class CustomStockDetailsPageState
                                                       element.usage ==
                                                       Constants.stateFacility)
                                                   .toList()
-                                              : facilities
+                                              : allFacilities //TODO: changed from facilities
                                                   .where((element) =>
                                                       element.usage ==
                                                       Constants.healthFacility)
@@ -1138,7 +1115,7 @@ class CustomStockDetailsPageState
                                         } else {
                                           filteredFacilities = context
                                                   .isDistributor
-                                              ? facilities
+                                              ? allFacilities //TODO: changed from facilities
                                                   .where((element) =>
                                                       element.usage ==
                                                       Constants.healthFacility)
@@ -1146,7 +1123,7 @@ class CustomStockDetailsPageState
                                               : entryType ==
                                                       StockRecordEntryType
                                                           .receipt
-                                                  ? facilities
+                                                  ? allFacilities //TODO: changed from facilities
                                                       .where((element) =>
                                                           element.usage ==
                                                           Constants.lgaFacility)
