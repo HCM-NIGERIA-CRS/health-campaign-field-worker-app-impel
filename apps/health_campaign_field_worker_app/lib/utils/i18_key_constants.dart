@@ -468,7 +468,8 @@ class InventoryReportDetails {
 
   String get commentIsRequiredText => "COMMENT_IS_REQUIRED_TEXT";
 
-  String get checkTheQuantityReceivedText => 'CHECK_THE_QUANTITY_RECEIEVED_TEXT';
+  String get checkTheQuantityReceivedText =>
+      'CHECK_THE_QUANTITY_RECEIEVED_TEXT';
 
   String get stockReceiptDetailsText => 'STOCK_RECEIPT_DETAILS_TEXT';
 
@@ -1190,7 +1191,8 @@ class SearchBeneficiary {
 
   String get statisticsLabelText => 'BENEFICIARY_STATISTICS_LABEL_TEXT';
 
-  String get searchBeneficiaryReferralHintText => 'SEARCH_BENEFICIARY_REFERRAL_HINT_TEXT';
+  String get searchBeneficiaryReferralHintText =>
+      'SEARCH_BENEFICIARY_REFERRAL_HINT_TEXT';
 
   String get searchIndividualLabelText =>
       'BENEFICIARY_STATISTICS_SEARCH_INDIVIDUAL_LABEL';
@@ -1385,6 +1387,7 @@ class BeneficiaryDetails {
   String get recordCycle => 'BENEFICIARY_DETAILS_RECORD_CYCLE';
 
   String get currentSmcCycleLabel => 'BENEFICIARY_DETAILS_CURRENT_SMC_CYCLE';
+  String get invalidChildCount => 'INVALID_CHILD_COUNT_MESSAGE';
 }
 
 class PrivacyPolicy {

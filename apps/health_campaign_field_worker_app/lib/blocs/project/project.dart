@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:attendance_management/models/entities/attendance_log.dart';
 import 'package:attendance_management/models/entities/attendance_register.dart';
+import 'package:attendance_management/attendance_management.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_dss/digit_dss.dart';
@@ -30,6 +31,7 @@ import '../../models/app_config/app_config_model.dart';
 import '../../models/auth/auth_model.dart';
 import '../../models/entities/roles_type.dart';
 import '../../models/data_model.dart';
+import '../../models/entities/roles_type.dart';
 import '../../utils/background_service.dart';
 import '../../utils/environment_config.dart';
 import '../../utils/least_level_boundary_singleton.dart';
@@ -139,11 +141,11 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     required this.mdmsRepository,
     required this.individualLocalRepository,
     required this.individualRemoteRepository,
-    required this.dashboardRemoteRepository,
     required this.attendanceRemoteRepository,
     required this.attendanceLocalRepository,
     required this.attendanceLogLocalRepository,
     required this.attendanceLogRemoteRepository,
+    required this.dashboardRemoteRepository,
     required this.stockLocalRepository,
     required this.stockRemoteRepository,
     required this.context,

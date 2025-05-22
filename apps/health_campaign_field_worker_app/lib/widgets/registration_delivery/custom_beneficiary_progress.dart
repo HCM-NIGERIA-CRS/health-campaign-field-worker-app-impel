@@ -5,18 +5,19 @@ import 'package:digit_components/widgets/digit_card.dart';
 import 'package:digit_data_model/data/data_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:registration_delivery/data/repositories/local/task.dart';
-import 'package:registration_delivery/models/entities/status.dart';
-import 'package:registration_delivery/models/entities/task.dart';
-import 'package:registration_delivery/registration_delivery.dart';
+import 'package:health_campaign_field_worker_app/models/entities/assessment_checklist/status.dart';
 
-import '../../data/repositories/custom_task.dart';
-// import '../../progress_indicator/progress_indicator.dart';
-import '../progress_indicator/progress_indicator.dart';
+import 'package:registration_delivery/data/repositories/local/project_beneficiary.dart';
+import 'package:registration_delivery/models/entities/project_beneficiary.dart';
+import 'package:registration_delivery/models/entities/task.dart';
+import 'package:registration_delivery/utils/utils.dart';
+import 'package:registration_delivery/widgets/progress_indicator/progress_indicator.dart';
 
 import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/theme/digit_extended_theme.dart';
 import 'package:flutter/material.dart';
+
+import '../../data/repositories/custom_task.dart';
 
 class CustomBeneficiaryProgressBar extends StatefulWidget {
   final String label;

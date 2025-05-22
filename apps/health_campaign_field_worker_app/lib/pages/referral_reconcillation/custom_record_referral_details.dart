@@ -152,8 +152,7 @@ class _CustomRecordReferralDetailsPageState
                                                         .control(
                                                             _referralReason)
                                                         .setErrors({'': true});
-                                                  }
-                                                  else if (form
+                                                  } else if (form
                                                           .control(
                                                               _beneficiaryIdKey)
                                                           .value ==
@@ -164,7 +163,7 @@ class _CustomRecordReferralDetailsPageState
                                                             _beneficiaryIdKey)
                                                         .setErrors({'': true});
                                                   }
-                                                  
+
                                                   form.markAllAsTouched();
 
                                                   if (viewOnly) {
@@ -845,6 +844,7 @@ class _CustomRecordReferralDetailsPageState
                                                     .value,
                                                 readOnly: viewOnly,
                                                 errorMessage: field.errorText,
+                                                isRequired: true,
                                               ),
                                             );
                                           }),

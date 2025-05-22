@@ -319,16 +319,41 @@ int getPregnantWomenCount(HouseholdModel? householdCaptured) {
 }
 
 bool showAddMember(HouseholdMemberWrapper? wrapper) {
-  if (wrapper?.household?.memberCount == null) return false;
+  int childrenCount = 0;
+  // assumption only child are added
+  if (wrapper?.household?.additionalFields?.fields == null) return false;
+  final childrenCountField = wrapper?.household?.additionalFields?.fields
+      .firstWhereOrNull(
+          (field) => field.key == AdditionalFieldsType.children.toValue());
 
-  var membersAddedTillNow = wrapper?.members?.length ?? 0;
+  if (childrenCountField?.value == null) {
+    return false;
+  } else if (childrenCountField?.value is String) {
+    childrenCount = int.tryParse(childrenCountField?.value ?? "0") ?? 0;
+  } else if (childrenCountField?.value is int) {
+    childrenCount = childrenCountField?.value;
+  }
 
-  //reduce 1 , so that we get actual count excluding head
+  int membersAddedTillNow = wrapper?.members?.length ?? 0;
+  // exclude the head from it
   if (membersAddedTillNow > 0) {
     membersAddedTillNow -= 1;
   }
 
-  return membersAddedTillNow < wrapper!.household!.memberCount!;
+  return membersAddedTillNow < (childrenCount);
+}
+
+dynamic getValueForTheKey(String key, HouseholdModel? householdModel) {
+  if (householdModel == null ||
+      householdModel.additionalFields == null ||
+      householdModel.additionalFields!.fields.isEmpty) {
+    return null;
+  }
+  final object = householdModel.additionalFields!.fields
+      .where((element) => element.key == key)
+      .firstOrNull;
+
+  return object == null ? object : object.value;
 }
 
 Map<String, dynamic>? customValidMobileNumber(

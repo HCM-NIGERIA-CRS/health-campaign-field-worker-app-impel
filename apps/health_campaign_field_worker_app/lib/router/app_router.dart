@@ -1,3 +1,5 @@
+import 'package:survey_form/router/survey_form_router.gm.dart';
+import 'package:survey_form/router/survey_form_router.dart';
 import 'package:attendance_management/router/attendance_router.dart';
 import 'package:attendance_management/router/attendance_router.gm.dart';
 import 'package:complaints/router/complaints_router.dart';
@@ -166,6 +168,25 @@ class AppRouter extends _$AppRouter {
           path: 'beneficiary-downsync-report',
         ),
         // INFO : Need to add Router of package Here
+        // SurveyForm Route
+        AutoRoute(
+            page: SurveyFormWrapperRoute.page,
+            path: 'surveyForm',
+            children: [
+              AutoRoute(
+                page: SurveyformRoute.page,
+                path: '',
+              ),
+              AutoRoute(
+                  page: SurveyFormBoundaryViewRoute.page,
+                  path: 'view-boundary'),
+              AutoRoute(page: SurveyFormViewRoute.page, path: 'view'),
+              AutoRoute(page: SurveyFormPreviewRoute.page, path: 'preview'),
+              AutoRoute(
+                  page: SurveyFormAcknowledgementRoute.page,
+                  path: 'surveyForm-acknowledgement'),
+            ]),
+
         // Attendance Route
         AutoRoute(
           page: ManageAttendanceRoute.page,

@@ -51,6 +51,7 @@ import '../../models/entities/identifier_types.dart';
 import '../../router/app_router.dart';
 import '../../utils/utils.dart' as local_utils;
 import '../../utils/registration_delivery/registration_delivery_utils.dart';
+import '../../utils/constants.dart' as local_constants;
 import 'custom_beneficiary_acknowledgement.dart';
 import '../../utils/i18_key_constants.dart' as i18_local;
 
@@ -232,23 +233,30 @@ class CustomIndividualDetailsPageState
                           individualCaptured!.clientReferenceId)
                       .toSet();
 
-                  router.push(
-                    BeneficiaryWrapperRoute(
-                      wrapper: householdMemberWrapper,
-                      children: [
-                        EligibilityChecklistViewRoute(
-                          eligibilityAssessmentType:
-                              EligibilityAssessmentType.smc,
-                          projectBeneficiaryClientReferenceId:
-                              projectBeneficiaryAddMember
-                                      ?.first.clientReferenceId ??
-                                  "",
-                          individual: individualCaptured,
-                          showBackButton: false,
-                        ),
-                      ],
-                    ),
-                  );
+                  // assumption add individual here is used for creating child,
+                  //if invalid age send to overview no checklist
+                  if (verifyIfChildAgeValid(context, individualCaptured!)) {
+                    router.push(
+                      BeneficiaryWrapperRoute(
+                        wrapper: householdMemberWrapper,
+                        children: [
+                          EligibilityChecklistViewRoute(
+                            eligibilityAssessmentType:
+                                EligibilityAssessmentType.smc,
+                            projectBeneficiaryClientReferenceId:
+                                projectBeneficiaryAddMember
+                                        ?.first.clientReferenceId ??
+                                    "",
+                            individual: individualCaptured,
+                            showBackButton: false,
+                          ),
+                        ],
+                      ),
+                    );
+                  } else {
+                    router.push(BeneficiaryWrapperRoute(
+                        wrapper: householdMemberWrapper));
+                  }
                 } else {
                   router.push(CustomBeneficiaryAcknowledgementRoute(
                     enableViewHousehold: true,
@@ -339,7 +347,8 @@ class CustomIndividualDetailsPageState
                                 );
 
                                 if (submit ?? false) {
-                                  if (form.control(_dobKey).value == null) {
+                                  if (!widget.isHeadOfHousehold &&
+                                      form.control(_dobKey).value == null) {
                                     setState(() {
                                       form
                                           .control(_dobKey)
@@ -360,32 +369,6 @@ class CustomIndividualDetailsPageState
                                   form.markAllAsTouched();
                                   if (!form.valid) return;
                                   FocusManager.instance.primaryFocus?.unfocus();
-
-                                  final age =
-                                      (form.control(_dobKey).value != null)
-                                          ? digits.DigitDateUtils.calculateAge(
-                                              form.control(_dobKey).value
-                                                  as DateTime,
-                                            )
-                                          : digits.DigitDateUtils.calculateAge(
-                                              DateTime.now(),
-                                            );
-
-                                  if (age.years < 18 &&
-                                      widget.isHeadOfHousehold) {
-                                    await DigitToast.show(
-                                      context,
-                                      options: DigitToastOptions(
-                                        localizations.translate(i18_local
-                                            .individualDetails
-                                            .headAgeValidError),
-                                        true,
-                                        theme,
-                                      ),
-                                    );
-
-                                    return;
-                                  }
 
                                   final boundaryBloc =
                                       context.read<BoundaryBloc>().state;
@@ -558,6 +541,7 @@ class CustomIndividualDetailsPageState
                                             individual.name?.givenName ?? "",
                                             false,
                                             false);
+                                        context.router.maybePop();
                                       }
                                     },
                                     addMember: (
@@ -707,44 +691,50 @@ class CustomIndividualDetailsPageState
                                 ),
                               ],
                             ),
-                            individualDetailsShowcaseData.dateOfBirth.buildWith(
-                              child: CustomDigitDobPicker(
-                                datePickerFormControl: _dobKey,
-                                datePickerLabel: localizations.translate(
-                                  i18.individualDetails.dobLabelText,
-                                ),
-                                ageFieldLabel: localizations.translate(
-                                  i18.individualDetails.ageLabelText,
-                                ),
-                                yearsHintLabel: localizations.translate(
-                                  i18.individualDetails.yearsHintText,
-                                ),
-                                separatorLabel: localizations.translate(
-                                  i18.individualDetails.separatorLabelText,
-                                ),
-                                yearsAndMonthsErrMsg: localizations.translate(
-                                  i18.individualDetails.yearsAndMonthsErrorText,
-                                ),
-                                initialDate: before150Years,
-                                onChangeOfFormControl: (formControl) {
-                                  // Handle changes to the control's value here
-                                  final value = formControl.value;
+                            Offstage(
+                              offstage: widget.isHeadOfHousehold,
+                              child: individualDetailsShowcaseData.dateOfBirth
+                                  .buildWith(
+                                child: CustomDigitDobPicker(
+                                  datePickerFormControl: _dobKey,
+                                  datePickerLabel: localizations.translate(
+                                    i18.individualDetails.dobLabelText,
+                                  ),
+                                  ageFieldLabel: localizations.translate(
+                                    i18.individualDetails.ageLabelText,
+                                  ),
+                                  yearsHintLabel: localizations.translate(
+                                    i18.individualDetails.yearsHintText,
+                                  ),
+                                  separatorLabel: localizations.translate(
+                                    i18.individualDetails.separatorLabelText,
+                                  ),
+                                  yearsAndMonthsErrMsg: localizations.translate(
+                                    i18.individualDetails
+                                        .yearsAndMonthsErrorText,
+                                  ),
+                                  initialDate: before150Years,
+                                  onChangeOfFormControl: (formControl) {
+                                    // Handle changes to the control's value here
+                                    final value = formControl.value;
 
-                                  digits.DigitDOBAge age =
-                                      digits.DigitDateUtils.calculateAge(value);
-                                  if ((age.years == 0 && age.months == 0) ||
-                                      age.months > 11 ||
-                                      (age.years >= 150 && age.months >= 0)) {
-                                    formControl.setErrors({'': true});
-                                  } else {
-                                    formControl.removeError('');
-                                  }
-                                },
-                                cancelText: localizations
-                                    .translate(i18.common.coreCommonCancel),
-                                confirmText: localizations
-                                    .translate(i18.common.coreCommonOk),
-                                monthsHintLabel: 'Month',
+                                    digits.DigitDOBAge age =
+                                        digits.DigitDateUtils.calculateAge(
+                                            value);
+                                    if ((age.years == 0 && age.months == 0) ||
+                                        age.months > 11 ||
+                                        (age.years >= 150 && age.months >= 0)) {
+                                      formControl.setErrors({'': true});
+                                    } else {
+                                      formControl.removeError('');
+                                    }
+                                  },
+                                  cancelText: localizations
+                                      .translate(i18.common.coreCommonCancel),
+                                  confirmText: localizations
+                                      .translate(i18.common.coreCommonOk),
+                                  monthsHintLabel: 'Month',
+                                ),
                               ),
                             ),
                             dropdown.DigitDropdown<String>(
@@ -825,6 +815,30 @@ class CustomIndividualDetailsPageState
         ),
       ),
     );
+  }
+
+  bool verifyIfChildAgeValid(BuildContext context, IndividualModel individual) {
+    if (individual.dateOfBirth == null) {
+      return false;
+    }
+
+    final dob = digits.DigitDateUtils.getFormattedDateToDateTime(
+        individual.dateOfBirth ?? "");
+
+    final individualAge = digits.DigitDateUtils.calculateAge(
+      dob,
+    );
+
+    final ageInMonths = local_utils.getAgeMonths(individualAge);
+    // set default from constants if config has null
+    final validMinAge =
+        context.selectedProject.additionalDetails?.projectType?.validMinAge ??
+            local_constants.Constants.validMinAge;
+    final validMaxAge =
+        context.selectedProject.additionalDetails?.projectType?.validMaxAge ??
+            local_constants.Constants.validMaxAge;
+
+    return validMinAge <= ageInMonths && ageInMonths <= validMaxAge;
   }
 
   IndividualModel _getIndividualModel(

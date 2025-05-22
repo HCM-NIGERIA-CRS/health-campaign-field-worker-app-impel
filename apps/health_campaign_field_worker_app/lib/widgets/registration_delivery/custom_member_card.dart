@@ -147,13 +147,13 @@ class CustomMemberCard extends StatelessWidget {
                 icon: Icons.check_circle,
                 iconText: localizations.translate(
                   isBeneficiaryInEligibleSMC
-                      ? i18_local.householdOverView
-                          .householdOverViewBeneficiaryInEligibleSMCLabel
+                      ? i18.householdOverView
+                          .householdOverViewNotEligibleIconLabel
                       : isBeneficiaryReferredSMC
-                          ? i18_local.householdOverView
-                              .householdOverViewBeneficiaryReferredSMCLabel
-                          : i18_local.householdOverView
-                              .householdOverViewSMCDeliveredIconLabel,
+                          ? i18.householdOverView
+                              .householdOverViewBeneficiaryReferredLabel
+                          : i18.householdOverView
+                              .householdOverViewDeliveredIconLabel,
                 ),
                 iconSize: 20,
                 iconTextColor:
@@ -302,6 +302,7 @@ class CustomMemberCard extends StatelessWidget {
               if ((smcTasks ?? []).isEmpty) {
                 context.router.push(
                   EligibilityChecklistViewRoute(
+                    showBackButton: false,
                     projectBeneficiaryClientReferenceId:
                         projectBeneficiaryClientReferenceId,
                     individual: individual,
@@ -467,6 +468,7 @@ class CustomMemberCard extends StatelessWidget {
                 // );
                 context.router.push(
                   EligibilityChecklistViewRoute(
+                    showBackButton: false,
                     projectBeneficiaryClientReferenceId:
                         projectBeneficiaryClientReferenceId,
                     individual: individual,
@@ -621,10 +623,12 @@ class CustomMemberCard extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: Text(
-                    " | $years ${localizations.translate(i18.memberCard.deliverDetailsYearText)} $months ${localizations.translate(i18.memberCard.deliverDetailsMonthsText)}",
-                    style: theme.textTheme.bodyMedium,
-                  ),
+                  child: isHead
+                      ? const Text("")
+                      : Text(
+                          " | $years ${localizations.translate(i18.memberCard.deliverDetailsYearText)} $months ${localizations.translate(i18.memberCard.deliverDetailsMonthsText)}",
+                          style: theme.textTheme.bodyMedium,
+                        ),
                 ),
               ],
             ),
