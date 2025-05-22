@@ -826,10 +826,10 @@ class CustomIndividualDetailsPageState
         individual.dateOfBirth ?? "");
 
     final individualAge = digits.DigitDateUtils.calculateAge(
-      dob,
+      dob!,
     );
 
-    final ageInMonths = local_utils.getAgeMonths(individualAge);
+    final ageInMonths = digits.DigitDateUtils.getAgeMonths(individualAge);
     // set default from constants if config has null
     final validMinAge =
         context.selectedProject.additionalDetails?.projectType?.validMinAge ??
