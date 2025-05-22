@@ -1,5 +1,8 @@
+import 'package:recase/recase.dart';
+import 'package:survey_form/router/survey_form_router.gm.dart';
+import 'package:survey_form/survey_form.dart';
+
 import 'package:referral_reconciliation/referral_reconciliation.dart';
-import 'package:referral_reconciliation/router/referral_reconciliation_router.gm.dart';
 
 import 'package:referral_reconciliation/blocs/search_referral_reconciliations.dart';
 import 'package:referral_reconciliation/referral_reconciliation.dart';
@@ -472,6 +475,23 @@ class _HomePageState extends LocalizedState<HomePage> {
           },
         ),
       ),
+      i18.home.mySurveyForm: homeShowcaseData.supervisorMySurveyForm.buildWith(
+        child: HomeItemCard(
+          enableCustomIcon: true,
+          customIcon: mySurveyFormSvg,
+          iconPadding: const EdgeInsets.all(spacer1),
+          icon: Icons.checklist,
+          customIconSize: spacer8,
+          label: i18.home.mySurveyForm,
+          onPressed: () {
+            if (isTriggerLocalisation) {
+              triggerLocalization();
+              isTriggerLocalisation = false;
+            }
+            context.router.push(SurveyFormWrapperRoute());
+          },
+        ),
+      ),
       i18.home.fileComplaint:
           homeShowcaseData.distributorFileComplaint.buildWith(
         child: HomeItemCard(
@@ -505,6 +525,9 @@ class _HomePageState extends LocalizedState<HomePage> {
 
     final Map<String, GlobalKey> homeItemsShowcaseMap = {
       // INFO : Need to add showcase keys of package Here
+      i18.home.mySurveyForm:
+          homeShowcaseData.supervisorMySurveyForm.showcaseKey,
+
       i18.home.manageAttendanceLabel:
           homeShowcaseData.manageAttendance.showcaseKey,
 
@@ -529,6 +552,8 @@ class _HomePageState extends LocalizedState<HomePage> {
 
     final homeItemsLabel = <String>[
       // INFO: Need to add items label of package Here
+      i18.home.mySurveyForm,
+
       i18.home.manageAttendanceLabel,
 
       i18.home.beneficiaryReferralLabel,
@@ -576,6 +601,9 @@ class _HomePageState extends LocalizedState<HomePage> {
               userId: context.loggedInUserUuid,
               localRepositories: [
                 // INFO : Need to add local repo of package Here
+                context
+                    .read<LocalRepository<ServiceModel, ServiceSearchModel>>(),
+
                 context.read<
                     LocalRepository<HFReferralModel, HFReferralSearchModel>>(),
 
@@ -620,6 +648,9 @@ class _HomePageState extends LocalizedState<HomePage> {
               ],
               remoteRepositories: [
                 // INFO : Need to add repo repo of package Here
+                context
+                    .read<RemoteRepository<ServiceModel, ServiceSearchModel>>(),
+
                 context.read<
                     RemoteRepository<HFReferralModel, HFReferralSearchModel>>(),
 
@@ -707,6 +738,21 @@ void setPackagesSingleton(BuildContext context) {
             dashboardConfigSchema ?? [], context.projectTypeCode ?? "");
         loadLocalization(context, appConfiguration);
         // INFO : Need to add singleton of package Here
+        SurveyFormSingleton().setInitialData(
+          projectId: context.projectId,
+          projectName: context.selectedProject.name,
+          loggedInIndividualId: context.loggedInIndividualId ?? '',
+          loggedInUserUuid: context.loggedInUserUuid,
+          appVersion: Constants().version,
+          roles: context.read<AuthBloc>().state.maybeMap(
+              orElse: () => const Offstage(),
+              authenticated: (res) {
+                return res.userModel.roles
+                    .map((e) => e.code.snakeCase.toUpperCase())
+                    .toList();
+              }),
+        );
+
         AttendanceSingleton().setInitialData(
             projectId: context.projectId,
             loggedInIndividualId: context.loggedInIndividualId ?? '',

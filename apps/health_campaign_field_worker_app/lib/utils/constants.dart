@@ -1,3 +1,4 @@
+import 'package:survey_form/survey_form.dart';
 import 'package:attendance_management/attendance_management.dart';
 import 'package:complaints/data/repositories/remote/pgr_service.dart';
 import 'package:referral_reconciliation/referral_reconciliation.dart';
@@ -164,6 +165,15 @@ class Constants {
       HFReferralLocalRepository(sql, HFReferralOpLogManager(isar)),
 
       HFReferralLocalRepository(sql, HFReferralOpLogManager(isar)),
+
+      ServiceDefinitionLocalRepository(
+        sql,
+        ServiceDefinitionOpLogManager(isar),
+      ),
+      ServiceLocalRepository(
+        sql,
+        ServiceOpLogManager(isar),
+      ),
     ];
   }
 
@@ -252,6 +262,10 @@ class Constants {
           HFReferralRemoteRepository(dio, actionMap: actions),
         if (value == DataModelType.hFReferral)
           HFReferralRemoteRepository(dio, actionMap: actions),
+        if (value == DataModelType.serviceDefinition)
+          ServiceDefinitionRemoteRepository(dio, actionMap: actions),
+        if (value == DataModelType.service)
+          ServiceRemoteRepository(dio, actionMap: actions),
       ]);
     }
 
@@ -297,6 +311,7 @@ class Constants {
     SyncServiceSingleton().registries?.registerSyncRegistries({
       DataModelType.complaints: (remote) => CustomSyncRegistry(remote),
     });
+    SurveyFormSingleton().setTenantId(envConfig.variables.tenantId);
     AttendanceSingleton().setTenantId(envConfig.variables.tenantId);
     InventorySingleton().setTenantId(tenantId: envConfig.variables.tenantId);
     RegistrationDeliverySingleton().setTenantId(envConfig.variables.tenantId);
