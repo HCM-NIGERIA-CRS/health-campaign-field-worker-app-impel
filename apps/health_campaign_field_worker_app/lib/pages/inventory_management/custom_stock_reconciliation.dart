@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:digit_components/widgets/atoms/digit_toaster.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/theme/digit_extended_theme.dart';
@@ -24,6 +25,8 @@ import 'package:inventory_management/blocs/stock_reconciliation.dart';
 import 'package:inventory_management/widgets/back_navigation_help_header.dart';
 import 'package:inventory_management/widgets/component_wrapper/facility_bloc_wrapper.dart';
 import 'package:inventory_management/widgets/component_wrapper/product_variant_bloc_wrapper.dart';
+
+import '../../utils/i18_key_constants.dart' as i18_local;
 
 @RoutePage()
 class CustomStockReconciliationPage extends LocalizedStatefulWidget {
@@ -142,6 +145,38 @@ class CustomStockReconciliationPageState
                                                 final bloc = ctx.read<
                                                     StockReconciliationBloc>();
 
+                                                var manualCount = int.tryParse(
+                                                    form
+                                                        .control(
+                                                            _manualCountKey)
+                                                        .value as String);
+                                                final comments = form
+                                                    .control(
+                                                      _reconciliationCommentsKey,
+                                                    )
+                                                    .value as String?;
+
+                                                if (manualCount != null &&
+                                                    manualCount !=
+                                                        stockState.stockInHand
+                                                            .toInt() &&
+                                                    (comments == null ||
+                                                        comments.trim().length <
+                                                            2)) {
+                                                  await DigitToast.show(
+                                                    context,
+                                                    options: DigitToastOptions(
+                                                      localizations.translate(
+                                                          i18_local.stockDetails
+                                                              .reconciliationCommentRequired),
+                                                      true,
+                                                      theme,
+                                                    ),
+                                                  );
+
+                                                  return;
+                                                }
+
                                                 final facilityId =
                                                     InventorySingleton()
                                                                 .isDistributor! &&
@@ -163,12 +198,6 @@ class CustomStockReconciliationPageState
                                                 final calculatedCount = form
                                                     .control(_manualCountKey)
                                                     .value as String;
-
-                                                final comments = form
-                                                    .control(
-                                                      _reconciliationCommentsKey,
-                                                    )
-                                                    .value as String?;
 
                                                 final model =
                                                     StockReconciliationModel(
@@ -422,6 +451,26 @@ class CustomStockReconciliationPageState
                                                       localizations.translate(
                                                     i18.common.noMatchFound,
                                                   ),
+                                                  selectedOption: (form
+                                                              .control(
+                                                                  _productVariantKey)
+                                                              .value !=
+                                                          null)
+                                                      ? DropdownItem(
+                                                          name: localizations.translate((form
+                                                                          .control(
+                                                                              _productVariantKey)
+                                                                          .value
+                                                                      as ProductVariantModel)
+                                                                  .sku ??
+                                                              (form.control(_productVariantKey).value
+                                                                      as ProductVariantModel)
+                                                                  .id),
+                                                          code: (form.control(_productVariantKey).value
+                                                                  as ProductVariantModel)
+                                                              .id)
+                                                      : const DropdownItem(
+                                                          name: '', code: ''),
                                                   items: productVariants
                                                       .map((variant) {
                                                     return DropdownItem(
