@@ -60,17 +60,14 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
   String? transactionType;
   String? transactionReason;
 
-  static const _productVariantKey = 'productVariant';
-  static const _secondaryPartyKey = 'secondaryParty';
   static const _transactionReasonKey = 'transactionReason';
   static const _transactionQuantityKey = 'quantity';
+  static const _transactionQuantityPartialKey = 'quantityPartial';
+  static const _transactionQuantityWastedKey = 'quantityWasted';
   static const _waybillNumberKey = 'waybillNumber';
   // static const _waybillQuantityKey = 'waybillQuantity';
   static const _batchNumberKey = 'batchNumberKey';
-  static const _vehicleNumberKey = 'vehicleNumber';
-  static const _typeOfTransportKey = 'typeOfTransport';
   static const _commentsKey = 'comments';
-  static const _deliveryTeamKey = 'deliveryTeam';
   List<InventoryTransportTypes> transportTypes = [];
 
   @override
@@ -154,6 +151,8 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                     ]),
           // _waybillQuantityKey:
           //     FormControl<String>(validators: [Validators.required]),
+          _transactionQuantityPartialKey: FormControl<int>(validators: []),
+          _transactionQuantityWastedKey: FormControl<int>(validators: []),
           _batchNumberKey: FormControl<String>(),
           _commentsKey: FormControl<String>(),
         }),
@@ -355,24 +354,22 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
     }
   }
 
-  Widget _buildTabContent(
-      BuildContext context, String productName, String receivedFrom) {
-    final theme = Theme.of(context);
-    final textTheme = theme.digitTextTheme(context);
-    final isDistributor = context.isDistributor;
-
+  Widget _buildTabContent(BuildContext context, String productName,
+      String receivedFrom, List<String> selectedProducts) {
     final stockState = context.read<RecordStockBloc>().state;
     bool isWareHouseMgr = InventorySingleton().isWareHouseMgr;
     final form = _forms[productName]!;
     StockRecordEntryType entryType = stockState.entryType;
     bool isLastTab = _tabController.index == _tabController.length - 1;
     String quantityCountLabel;
+    String quantityPartialCountLabel = "";
+    String quantityWastedCountLabel = "";
     String pageTitle;
 
     switch (entryType) {
       case StockRecordEntryType.receipt:
         pageTitle = i18.stockDetails.receivedPageTitle;
-        if (productName == "Blue VAS" || productName == "Red VAS") {
+        if (productName == Constants.spaq1 || productName == Constants.spaq2) {
           quantityCountLabel =
               i18_local.stockDetails.quantityCapsuleReceivedLabel;
         } else {
@@ -381,7 +378,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
         break;
       case StockRecordEntryType.dispatch:
         pageTitle = i18.stockDetails.issuedPageTitle;
-        if (productName == "Blue VAS" || productName == "Red VAS") {
+        if (productName == Constants.spaq1 || productName == Constants.spaq2) {
           quantityCountLabel = InventorySingleton().isWareHouseMgr
               ? i18_local.stockDetails.quantityCapsuleSentLabel
               : i18_local.stockDetails.quantityCapsuleReturnedLabel;
@@ -393,9 +390,13 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
         break;
       case StockRecordEntryType.returned:
         pageTitle = i18.stockDetails.returnedPageTitle;
-        if (productName == "Blue VAS" || productName == "Red VAS") {
+        if (productName == Constants.spaq1 || productName == Constants.spaq2) {
           quantityCountLabel =
               i18_local.stockDetails.quantityCapsuleReturnedLabel;
+          quantityPartialCountLabel =
+              i18_local.stockDetails.quantityCapsulePartialReturnedLabel;
+          quantityWastedCountLabel =
+              i18_local.stockDetails.quantityCapsulePartialWastedLabel;
         } else {
           quantityCountLabel = i18.stockDetails.quantityReturnedLabel;
         }
@@ -409,6 +410,41 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
         pageTitle = i18.stockDetails.damagedPageTitle;
         quantityCountLabel = i18.stockDetails.quantityDamagedLabel;
         break;
+    }
+    if (entryType == StockRecordEntryType.returned &&
+        context.isCommunityDistributor) {
+      form.control(_transactionQuantityPartialKey).setValidators(
+          InventorySingleton().isWareHouseMgr
+              ? [
+                  Validators.number(),
+                  Validators.required,
+                  Validators.min(0),
+                ]
+              : [
+                  Validators.number(),
+                  Validators.required,
+                  Validators.min(0),
+                  Validators.max(10000),
+                ],
+          autoValidate: true);
+    }
+
+    if (entryType == StockRecordEntryType.returned &&
+        context.isCommunityDistributor) {
+      form.control(_transactionQuantityWastedKey).setValidators(
+          InventorySingleton().isWareHouseMgr
+              ? [
+                  Validators.number(),
+                  Validators.required,
+                  Validators.min(0),
+                ]
+              : [
+                  Validators.number(),
+                  Validators.required,
+                  Validators.min(0),
+                  Validators.max(10000),
+                ],
+          autoValidate: true);
     }
 
     return _KeepAliveTabContent(
@@ -555,6 +591,102 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                             ),
                           );
                         }),
+                    if (entryType == StockRecordEntryType.returned &&
+                        context.isCommunityDistributor)
+                      ReactiveWrapperField(
+                          formControlName: _transactionQuantityPartialKey,
+                          validationMessages: {
+                            "number": (object) => localizations.translate(
+                                  '${quantityCountLabel}_ERROR',
+                                ),
+                            "max": (object) => localizations.translate(
+                                  '${quantityCountLabel}_MAX_ERROR',
+                                ),
+                            "min": (object) => localizations.translate(
+                                  '${quantityCountLabel}_MIN_ERROR',
+                                ),
+                          },
+                          showErrors: (control) =>
+                              control.invalid && control.touched,
+                          builder: (field) {
+                            return LabeledField(
+                              label: localizations.translate(
+                                quantityPartialCountLabel,
+                              ),
+                              isRequired: true,
+                              child: BaseDigitFormInput(
+                                errorMessage: field.errorText,
+                                keyboardType:
+                                    const TextInputType.numberWithOptions(
+                                  decimal: true,
+                                ),
+                                onChange: (val) {
+                                  field.control.markAsTouched();
+                                  if (val == "") {
+                                    field.control.value = null;
+                                    return;
+                                  }
+                                  if (int.parse(val) > 10000000000) {
+                                    field.control.value = 10000;
+                                  } else {
+                                    if (val != '') {
+                                      field.control.value = int.parse(val);
+                                    } else {
+                                      field.control.value = null;
+                                    }
+                                  }
+                                },
+                              ),
+                            );
+                          }),
+                    if (entryType == StockRecordEntryType.returned &&
+                        context.isCommunityDistributor)
+                      ReactiveWrapperField(
+                          formControlName: _transactionQuantityWastedKey,
+                          validationMessages: {
+                            "number": (object) => localizations.translate(
+                                  '${quantityCountLabel}_ERROR',
+                                ),
+                            "max": (object) => localizations.translate(
+                                  '${quantityCountLabel}_MAX_ERROR',
+                                ),
+                            "min": (object) => localizations.translate(
+                                  '${quantityCountLabel}_MIN_ERROR',
+                                ),
+                          },
+                          showErrors: (control) =>
+                              control.invalid && control.touched,
+                          builder: (field) {
+                            return LabeledField(
+                              label: localizations.translate(
+                                quantityWastedCountLabel,
+                              ),
+                              isRequired: true,
+                              child: BaseDigitFormInput(
+                                errorMessage: field.errorText,
+                                keyboardType:
+                                    const TextInputType.numberWithOptions(
+                                  decimal: true,
+                                ),
+                                onChange: (val) {
+                                  field.control.markAsTouched();
+                                  if (val == "") {
+                                    field.control.value = null;
+                                    return;
+                                  }
+                                  if (int.parse(val) > 10000000000) {
+                                    field.control.value = 10000;
+                                  } else {
+                                    if (val != '') {
+                                      field.control.value = int.parse(val);
+                                    } else {
+                                      field.control.value = null;
+                                    }
+                                  }
+                                },
+                              ),
+                            );
+                          }),
                     // ReactiveWrapperField(
                     //   formControlName: _waybillQuantityKey,
                     //   builder: (field) {
@@ -600,7 +732,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                   type: DigitButtonType.primary,
                   onPressed: () async {
                     if (form.valid) {
-                      await _saveCurrentTabData(productName);
+                      // await _saveCurrentTabData(productName);
 
                       if (_tabController.index < products.length - 1) {
                         if (form.valid) {
@@ -616,7 +748,8 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                           }
                           index++;
                         }
-                        await _handleFinalSubmission(context, entryType);
+                        await _handleFinalSubmission(
+                            context, entryType, selectedProducts);
                       }
                     } else {
                       form.markAllAsTouched();
@@ -645,7 +778,8 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
     );
   }
 
-  Future<void> _saveCurrentTabData(String productName) async {
+  Future<void> _saveCurrentTabData(
+      String productName, StockRecordEntryType entryType) async {
     final form = _forms[productName]!;
     final currentStock = _tabStocks[productName]!;
 
@@ -662,120 +796,20 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
             AdditionalField('batchNumber', form.control(_batchNumberKey).value),
           if (form.control(_commentsKey).value != null)
             AdditionalField('comments', form.control(_commentsKey).value),
+          if (form.control(_transactionQuantityPartialKey).value != null)
+            AdditionalField('partialQuantity',
+                form.control(_transactionQuantityPartialKey).value),
+          if (form.control(_transactionQuantityWastedKey).value != null)
+            AdditionalField('wastedQuantity',
+                form.control(_transactionQuantityWastedKey).value),
         ],
       ),
     );
-    final recordStock = context.read<RecordStockBloc>().state;
-    context.read<RecordStockBloc>().add(
-          RecordStockSaveStockDetailsEvent(
-            stockModel: currentStock,
-          ),
-        );
-
-    final isDistributor = context.isDistributor;
-
-    final ss = int.parse(
-        form.control(_transactionQuantityKey).value?.toString() ?? "0");
-
-//     if ((ss > context.spaq1 ||
-//             ss > context.spaq2 ||
-//             ss > context.blueVas ||
-//             ss > context.redVas) &&
-//         context.isDistributor &&
-//         recordStock.entryType == StockRecordEntryType.dispatch) {
-// //       showCustomPopup(
-// //         context: context,
-// //         builder: (popupContext) => Popup(
-// //           title:
-// //               localizations.translate(i18_local.beneficiaryDetails.errorHeader),
-// //           onOutsideTap: () {
-// //             Navigator.of(popupContext).pop(false);
-// //           },
-// //           description: localizations.translate(
-// //             i18_local.beneficiaryDetails.validationForExcessStock,
-// //           ),
-// //           type: PopUpType.simple,
-// //           actions: [
-// //             DigitButton(
-// //               label: localizations.translate(
-// //                 i18_local.common.coreCommonCancel,
-// //               ),
-// //               onPressed: () {
-// //                 Navigator.of(
-// //                   popupContext,
-// //                   rootNavigator: true,
-// //                 ).pop();
-// // //
-// //               },
-// //               type: DigitButtonType.primary,
-// //               size: DigitButtonSize.large,
-// //             ),
-// //           ],
-// //         ),
-// //       );
-
-//       return;
-//     }
-    // bool submit = false;
-    // if (_tabController.index == _tabController.length - 1) {
-    //   submit = await showCustomPopup(
-    //     context: context,
-    //     builder: (popupContext) => Popup(
-    //       title: localizations.translate(i18.stockDetails.dialogTitle),
-    //       onOutsideTap: () {
-    //         Navigator.of(popupContext).pop(false);
-    //       },
-    //       description: localizations.translate(
-    //         i18.stockDetails.dialogContent,
-    //       ),
-    //       type: PopUpType.simple,
-    //       actions: [
-    //         DigitButton(
-    //           label: localizations.translate(
-    //             i18.common.coreCommonSubmit,
-    //           ),
-    //           onPressed: () {
-    //             Navigator.of(
-    //               popupContext,
-    //               rootNavigator: true,
-    //             ).pop(true);
-    //             Navigator.of(context, rootNavigator: true).pop(true);
-    //             Navigator.of(context).push(
-    //               MaterialPageRoute(
-    //                 builder: (context) => CustomAcknowledgementPage(
-    //                   mrnNumber: _sharedMRN,
-    //                   stockRecords: _tabStocks.values.toList(),
-    //                 ),
-    //               ),
-    //             );
-    //             // todo : correct the routing here to show , page where we can see transactions
-    //           },
-    //           type: DigitButtonType.primary,
-    //           size: DigitButtonSize.large,
-    //         ),
-    //         DigitButton(
-    //           label: localizations.translate(
-    //             i18.common.coreCommonCancel,
-    //           ),
-    //           onPressed: () {
-    //             Navigator.of(
-    //               popupContext,
-    //               rootNavigator: true,
-    //             ).pop(false);
-    //           },
-    //           type: DigitButtonType.secondary,
-    //           size: DigitButtonSize.large,
-    //         ),
-    //       ],
-    //     ),
-    //   ) as bool;
-    // }
   }
 
-  Future<void> _handleFinalSubmission(
-      BuildContext context, StockRecordEntryType entryType) async {
-    final lastProduct = products.last.sku ?? '';
-
+  Future<void> _handleFinalSubmission(BuildContext context,
+      StockRecordEntryType entryType, List<String> selectedProducts) async {
+    final theme = Theme.of(context);
     final submit = await showCustomPopup(
       context: context,
       builder: (popupContext) => Popup(
@@ -796,11 +830,6 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
               Navigator.of(
                 popupContext,
               ).pop(true);
-              (context.router.parent() as StackRouter).maybePop();
-              context.router.push(CustomAcknowledgementRoute(
-                  mrnNumber: _sharedMRN,
-                  stockRecords: _tabStocks.values.toList(),
-                  entryType: entryType));
             },
             type: DigitButtonType.primary,
             size: DigitButtonSize.large,
@@ -823,7 +852,88 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
 
     if (submit && context.mounted) {
       // Loop through all stocks and dispatch individual events
+      int spaq1Count = context.spaq1;
+      int spaq2Count = context.spaq2;
+      int currentSpaq1Count = 0;
+      int currentSpaq2Count = 0;
+      for (var productName in selectedProducts) {
+        await _saveCurrentTabData(productName, entryType);
+      }
+
       for (final stockModel in _tabStocks.values) {
+        // int ss = int.parse(stockModel.quantity.toString());
+        int quantity = int.parse(stockModel.quantity.toString());
+        int quantityWasted = int.parse(stockModel.additionalFields?.fields
+                .firstWhereOrNull((element) => element.key == 'wastedQuantity')
+                ?.value
+                ?.toString() ??
+            '0');
+        final totalQty = ((entryType == StockRecordEntryType.dispatch ||
+                    entryType == StockRecordEntryType.returned)
+                ? quantity * -1
+                : quantity) -
+            quantityWasted;
+
+        String? productName = stockModel.additionalFields?.fields
+            .firstWhereOrNull((element) => element.key == 'productName')
+            ?.value;
+
+        // Custom logic based on productName
+        if (entryType == StockRecordEntryType.dispatch) {
+          if (productName == Constants.spaq1 && quantity > spaq1Count) {
+            await DigitToast.show(
+              context,
+              options: DigitToastOptions(
+                  localizations.translate(i18_local
+                      .beneficiaryDetails.validationForExcessStockDispatch),
+                  true,
+                  theme),
+            );
+            return;
+          } else if (productName == Constants.spaq2 && quantity > spaq2Count) {
+            await DigitToast.show(
+              context,
+              options: DigitToastOptions(
+                  localizations.translate(i18_local
+                      .beneficiaryDetails.validationForExcessStockDispatch),
+                  true,
+                  theme),
+            );
+            return;
+          }
+        } else if (entryType == StockRecordEntryType.returned) {
+          if (productName == Constants.spaq1 &&
+              (quantity + quantityWasted) > spaq1Count) {
+            await DigitToast.show(
+              context,
+              options: DigitToastOptions(
+                  localizations.translate(i18_local
+                      .beneficiaryDetails.validationForExcessStockReturn),
+                  true,
+                  theme),
+            );
+            return;
+          } else if (productName == Constants.spaq2 &&
+              (quantity + quantityWasted) > spaq2Count) {
+            await DigitToast.show(
+              context,
+              options: DigitToastOptions(
+                  localizations.translate(i18_local
+                      .beneficiaryDetails.validationForExcessStockReturn),
+                  true,
+                  theme),
+            );
+            return;
+          }
+        }
+
+        // Accumulate quantities based on product
+        if (productName == Constants.spaq1) {
+          currentSpaq1Count += totalQty;
+        } else if (productName == Constants.spaq2) {
+          currentSpaq2Count += totalQty;
+        }
+
         context.read<RecordStockBloc>().add(
               RecordStockSaveStockDetailsEvent(
                 stockModel: stockModel,
@@ -832,54 +942,22 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
         context.read<RecordStockBloc>().add(
               const RecordStockCreateStockEntryEvent(),
             );
-
-        if (InventorySingleton().isDistributor) {
-          int ss = int.parse(stockModel.quantity.toString());
-          final totalQty =
-              entryType == StockRecordEntryType.dispatch ? ss * -1 : ss;
-
-          int spaq1Count = context.spaq1;
-          int spaq2Count = context.spaq2;
-
-          int blueVasCount = context.blueVas;
-          int redVasCount = context.redVas;
-
-          String? productName = stockModel.additionalFields?.fields
-              .firstWhereOrNull((element) => element.key == 'productName')
-              ?.value;
-
-          // Custom logic based on productName
-          if (productName == Constants.spaq1) {
-            spaq1Count = totalQty;
-            spaq2Count = 0;
-            redVasCount = 0;
-            blueVasCount = 0;
-          } else if (productName == Constants.spaq2) {
-            spaq2Count = totalQty;
-            spaq1Count = 0;
-            redVasCount = 0;
-            blueVasCount = 0;
-          } else if (productName == Constants.blueVAS) {
-            blueVasCount = totalQty;
-            spaq1Count = 0;
-            spaq2Count = 0;
-            redVasCount = 0;
-          } else {
-            blueVasCount = 0;
-            spaq1Count = 0;
-            spaq2Count = 0;
-            redVasCount = totalQty;
-          }
-          context.read<AuthBloc>().add(
-                AuthAddSpaqCountsEvent(
-                  spaq1Count: spaq1Count,
-                  spaq2Count: spaq2Count,
-                  blueVasCount: blueVasCount,
-                  redVasCount: redVasCount,
-                ),
-              );
-        }
       }
+
+      context.read<AuthBloc>().add(
+            AuthAddSpaqCountsEvent(
+              spaq1Count: currentSpaq1Count,
+              spaq2Count: currentSpaq2Count,
+              blueVasCount: 0,
+              redVasCount: 0,
+            ),
+          );
+
+      (context.router.parent() as StackRouter).maybePop();
+      context.router.push(CustomAcknowledgementRoute(
+          mrnNumber: _sharedMRN,
+          stockRecords: _tabStocks.values.toList(),
+          entryType: entryType));
 
       //   Navigator.of(context).push(
       //     MaterialPageRoute(
@@ -915,7 +993,8 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
       body: TabBarView(
         controller: _tabController,
         children: selectedProducts
-            .map((product) => _buildTabContent(context, product, receivedFrom))
+            .map((product) => _buildTabContent(
+                context, product, receivedFrom, selectedProducts))
             .toList(),
       ),
     );
@@ -925,39 +1004,6 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
     if (_tabController.index < _tabController.length - 1) {
       _tabController.animateTo(_tabController.index + 1);
     }
-  }
-
-  String? wastageQuantity(FormGroup form, BuildContext context) {
-    final quantity = form.control(_transactionQuantityKey).value;
-    final partialBlisters = form.control(_transactionQuantityKey).value;
-
-    if (quantity == null || partialBlisters == null) {
-      return null;
-    }
-
-    int totalQuantity = 0;
-    int totalRemainingQuantityInMl = context.spaq1;
-
-    int totalExpectedUnusedBottles =
-        totalRemainingQuantityInMl ~/ Constants.mlPerBottle;
-
-    int totalExpectedPartialQuantityInMl =
-        totalRemainingQuantityInMl % Constants.mlPerBottle;
-
-    int totalExpectedPartialBottles =
-        totalRemainingQuantityInMl % Constants.mlPerBottle != 0 ? 1 : 0;
-
-    totalQuantity = quantity != null ? int.parse(quantity.toString()) : 0;
-
-    return (((totalExpectedUnusedBottles - totalQuantity) *
-                Constants.mlPerBottle) +
-            ((totalExpectedPartialBottles >
-                    (partialBlisters != null
-                        ? int.parse(partialBlisters.toString())
-                        : 0))
-                ? totalExpectedPartialQuantityInMl
-                : 0))
-        .toString();
   }
 
   num _getQuantityCount(Iterable<StockModel> stocks) {
