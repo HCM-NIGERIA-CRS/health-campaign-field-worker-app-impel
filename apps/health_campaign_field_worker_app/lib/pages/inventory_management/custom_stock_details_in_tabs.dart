@@ -732,8 +732,6 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                   type: DigitButtonType.primary,
                   onPressed: () async {
                     if (form.valid) {
-                      // await _saveCurrentTabData(productName);
-
                       if (_tabController.index < products.length - 1) {
                         if (form.valid) {
                           _tabController.animateTo(_tabController.index + 1);
