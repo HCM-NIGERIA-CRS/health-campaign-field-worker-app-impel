@@ -62,20 +62,14 @@ class CustomMinNumberPageState extends LocalizedState<CustomMinNumberPage> {
       transactionReason = 'RETURNED';
     } else if (widget.type == StockRecordEntryType.receipt) {
       transactionType = 'RECEIVED';
+      transactionReason = 'RECEIVED';
     } else if (widget.type == StockRecordEntryType.dispatch) {
       transactionType = 'DISPATCHED';
     }
 
     final filteredResult = result.where((stock) {
-      if (transactionType == null) return false;
-
-      if ((widget.type == StockRecordEntryType.dispatch) ||
-          (widget.type == StockRecordEntryType.receipt)) {
-        return stock.transactionType == transactionType;
-      } else {
-        return stock.transactionType == transactionType &&
-            stock.transactionReason == transactionReason;
-      }
+      return stock.transactionType == transactionType &&
+          stock.transactionReason == transactionReason;
     }).toList();
 
     Logger().i("Filtered Stock Count: ${filteredResult.length}");
