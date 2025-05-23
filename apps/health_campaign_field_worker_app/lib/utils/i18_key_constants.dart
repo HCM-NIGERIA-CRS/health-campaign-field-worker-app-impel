@@ -428,6 +428,8 @@ class HomeShowcase {
 class StockDetails {
   const StockDetails();
 
+  String get reconciliationCommentRequired => 'RECONCILIATION_COMMENT_REQUIRED';
+
   String get cddCodeLabel => 'CDD_CODE_LABEL';
 
   String get quantityCapsuleReceivedLabel =>
@@ -437,6 +439,12 @@ class StockDetails {
 
   String get quantityCapsuleReturnedLabel =>
       'STOCK_DETAILS_CAPSULE_QUANTITY_RETURNED';
+
+  String get quantityCapsulePartialReturnedLabel =>
+      'STOCK_DETAILS_CAPSULE_PARTIAL_QUANTITY_RETURNED';
+
+  String get quantityCapsulePartialWastedLabel =>
+      'STOCK_DETAILS_CAPSULE_PARTIAL_QUANTITY_WASTED';
 
   String get batchNumberLabel {
     return 'STOCK_DETAILS_BATCH_NUMBER';
@@ -1286,6 +1294,11 @@ class IndividualDetails {
 
 class BeneficiaryDetails {
   const BeneficiaryDetails();
+
+  String get validationForExcessStockReturn =>
+      "ERROR_VALIDATION_FOR_EXCESS_STOCK_RETURN";
+  String get validationForExcessStockDispatch =>
+      "ERROR_VALIDATION_FOR_EXCESS_STOCK_DISPATCH";
 
   String get validationForExcessStock =>
       "ERROR_VALIDATIN_FOR_EXCESS_STOCK_DISPATCH";
