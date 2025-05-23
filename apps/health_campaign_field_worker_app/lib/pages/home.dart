@@ -477,23 +477,6 @@ class _HomePageState extends LocalizedState<HomePage> {
           },
         ),
       ),
-      i18.home.mySurveyForm: homeShowcaseData.supervisorMySurveyForm.buildWith(
-        child: HomeItemCard(
-          enableCustomIcon: true,
-          customIcon: mySurveyFormSvg,
-          iconPadding: const EdgeInsets.all(spacer1),
-          icon: Icons.checklist,
-          customIconSize: spacer8,
-          label: i18.home.mySurveyForm,
-          onPressed: () {
-            if (isTriggerLocalisation) {
-              triggerLocalization();
-              isTriggerLocalisation = false;
-            }
-            context.router.push(SurveyFormWrapperRoute());
-          },
-        ),
-      ),
       i18.home.fileComplaint:
           homeShowcaseData.distributorFileComplaint.buildWith(
         child: HomeItemCard(
@@ -578,7 +561,6 @@ class _HomePageState extends LocalizedState<HomePage> {
       i18.home.manageAttendanceLabel,
 
       i18.home.beneficiaryReferralLabel,
-      i18.home.mySurveyForm,
       i18.home.beneficiaryLabel,
       i18.home.manageStockLabel,
       i18.home.stockReconciliationLabel,

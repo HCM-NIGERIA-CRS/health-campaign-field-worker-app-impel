@@ -689,7 +689,7 @@ class CaregiverConsent {
   String get caregiverConsentLabelText => 'CARE_GIVER_CONSENT_LABEL_TEXT';
 
   String get caregiverConsentDescriptionText =>
-      'CARE_GIVER_CONSENT_DESCRIPTION_TEXT';
+      'CARE_GIVER_CONSENT_DESCRIPTION_TEXT_SMC';
 
   String get caregiverConsentActionLabelText =>
       'CARE_GIVER_CONSENT_ACTION_LABEL_TEXT';

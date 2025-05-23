@@ -35,7 +35,7 @@ class CustomSplashAcknowledgementPageState
   void initState() {
     super.initState();
     if (widget.enableBackToSearch == false) {
-      Future.delayed(const Duration(seconds: 1), () {
+      Future.delayed(const Duration(milliseconds: 300), () {
         if (mounted) {
           try {
             context.router.push(CustomDoseAdministeredRoute(
