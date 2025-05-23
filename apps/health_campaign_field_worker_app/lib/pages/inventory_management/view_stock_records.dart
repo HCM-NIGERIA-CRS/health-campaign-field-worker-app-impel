@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:collection/collection.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/widgets/atoms/input_wrapper.dart';
@@ -86,6 +87,16 @@ class _ViewStockRecordsPageState extends LocalizedState<ViewStockRecordsPage>
 
   Widget _buildStockRecordTab(StockModel stock) {
     final senderIdToShowOnTab = stock.senderId;
+
+    String? partialQuantity = stock.additionalFields?.fields
+        .firstWhereOrNull((e) => e.key == "partialQuantity")
+        ?.value
+        .toString();
+
+    String? wastedQuantity = stock.additionalFields?.fields
+        .firstWhereOrNull((e) => e.key == "wastedQuantity")
+        ?.value
+        .toString();
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -193,6 +204,27 @@ class _ViewStockRecordsPageState extends LocalizedState<ViewStockRecordsPage>
                     readOnly: true,
                   ),
                   const SizedBox(height: 12),
+
+                  // Partial Quantity
+                  if (partialQuantity != null)
+                    InputField(
+                      type: InputType.text,
+                      label: 'Partial Quantity *',
+                      initialValue: partialQuantity,
+                      isDisabled: true,
+                      readOnly: true,
+                    ),
+                  if (partialQuantity != null) const SizedBox(height: 12),
+                  // Wasted Quantity
+                  if (wastedQuantity != null)
+                    InputField(
+                      type: InputType.text,
+                      label: 'Wasted Quantity *',
+                      initialValue: wastedQuantity,
+                      isDisabled: true,
+                      readOnly: true,
+                    ),
+                  if (wastedQuantity != null) const SizedBox(height: 12),
                   // Comments
                   InputField(
                     type: InputType.textArea,
