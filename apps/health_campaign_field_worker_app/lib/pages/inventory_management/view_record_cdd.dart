@@ -150,6 +150,12 @@ class _ViewStockRecordsCDDPageState
         );
       }).toList();
 
+      int spaq1Count = context.spaq1;
+      int spaq2Count = context.spaq2;
+
+      int currentSpaq1Count = 0;
+      int currentSpaq2Count = 0;
+
       for (final stock in updatedStocks) {
         context.read<RecordStockBloc>().add(
               RecordStockSaveStockDetailsEvent(
@@ -168,14 +174,16 @@ class _ViewStockRecordsCDDPageState
         if (int.parse(stock.quantity!) > stockReceived) {
           Toast.showToast(
             context,
-            message: localizations.translate(i18_local.inventoryReportDetails.commentIsRequiredText),
+            message: localizations.translate(
+                i18_local.inventoryReportDetails.commentIsRequiredText),
             type: ToastType.error,
             position: ToastPosition.aboveOneButtonFooter,
           );
         } else if (int.parse(stock.quantity!) < stockReceived) {
           Toast.showToast(
             context,
-            message: localizations.translate(i18_local.inventoryReportDetails.checkTheQuantityReceivedText),
+            message: localizations.translate(
+                i18_local.inventoryReportDetails.checkTheQuantityReceivedText),
             type: ToastType.error,
             position: ToastPosition.aboveOneButtonFooter,
           );
@@ -186,46 +194,25 @@ class _ViewStockRecordsCDDPageState
                 .value
                 .toString());
 
-            int spaq1Count = context.spaq1;
-            int spaq2Count = context.spaq2;
-
-            int blueVasCount = context.blueVas;
-            int redVasCount = context.redVas;
             String productName = stock.additionalFields?.fields
                 .firstWhereOrNull((element) => element.key == "productName")
                 ?.value;
 
+            // Accumulate quantities based on product
             if (productName == Constants.spaq1) {
-              spaq1Count = totalQty;
-              spaq2Count = 0;
-              redVasCount = 0;
-              blueVasCount = 0;
+              currentSpaq1Count += totalQty;
             } else if (productName == Constants.spaq2) {
-              spaq2Count = totalQty;
-              spaq1Count = 0;
-              redVasCount = 0;
-              blueVasCount = 0;
-            } else if (productName == Constants.blueVAS) {
-              blueVasCount = totalQty;
-              spaq1Count = 0;
-              spaq2Count = 0;
-              redVasCount = 0;
-            } else {
-              blueVasCount = 0;
-              spaq1Count = 0;
-              spaq2Count = 0;
-              redVasCount = totalQty;
+              currentSpaq2Count += totalQty;
             }
-
-            context.read<AuthBloc>().add(
-                  AuthAddSpaqCountsEvent(
-                    spaq1Count: spaq1Count,
-                    spaq2Count: spaq2Count,
-                    blueVasCount: blueVasCount,
-                    redVasCount: redVasCount,
-                  ),
-                );
           }
+          context.read<AuthBloc>().add(
+                AuthAddSpaqCountsEvent(
+                  spaq1Count: currentSpaq1Count,
+                  spaq2Count: currentSpaq2Count,
+                  blueVasCount: 0,
+                  redVasCount: 0,
+                ),
+              );
         }
 
         context.router.push(
@@ -299,7 +286,8 @@ class _ViewStockRecordsCDDPageState
                   const SizedBox(height: 12),
                   InputField(
                     type: InputType.text,
-                    label: i18_local.inventoryReportDetails.quantityReceivedByWarehouse,
+                    label: i18_local
+                        .inventoryReportDetails.quantityReceivedByWarehouse,
                     initialValue: stock.quantity ?? '',
                     isDisabled: true,
                     readOnly: true,
@@ -309,7 +297,8 @@ class _ViewStockRecordsCDDPageState
                     formControlName: 'quantityReceived',
                     builder: (field) => InputField(
                       type: InputType.text,
-                      label: i18_local.inventoryReportDetails.actualQuantityReceived,
+                      label: i18_local
+                          .inventoryReportDetails.actualQuantityReceived,
                       errorMessage: field.errorText,
                       keyboardType: TextInputType.number,
                       onChange: (value) {
@@ -378,20 +367,26 @@ class _ViewStockRecordsCDDPageState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    localizations.translate(i18_local.inventoryReportDetails.stockReceiptDetailsText),
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    localizations.translate(i18_local
+                        .inventoryReportDetails.stockReceiptDetailsText),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      Expanded(child: Text(localizations.translate(i18_local.acknowledgementSuccess.mrnNumberLabel))),
+                      Expanded(
+                          child: Text(localizations.translate(i18_local
+                              .acknowledgementSuccess.mrnNumberLabel))),
                       Expanded(child: Text(widget.mrnNumber)),
                     ],
                   ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      Expanded(child: Text(i18_local.inventoryReportDetails.receivedFromText)),
+                      Expanded(
+                          child: Text(i18_local
+                              .inventoryReportDetails.receivedFromText)),
                       Expanded(
                         child: Text(localizations
                             .translate('FAC_$senderIdToShowOnTab')),
