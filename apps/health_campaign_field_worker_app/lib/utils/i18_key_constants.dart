@@ -145,6 +145,7 @@ class Common {
   String get ageInMonths => 'AGE_IN_MONTHS_LABEL';
   String get locationCapturing => 'CAPTURING_LOCATION';
   String get profileUpdateSuccess => 'PROFILE_UPDATE_SUCCESS';
+  String get coreCommonOthersRequired => 'CORE_COMMON_OTHERS_REQUIRED';
 }
 
 class HouseholdOverView {
