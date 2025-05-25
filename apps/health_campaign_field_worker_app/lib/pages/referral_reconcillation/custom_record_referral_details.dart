@@ -50,7 +50,7 @@ class _CustomRecordReferralDetailsPageState
   static const _referralReason = 'referralReason';
   static const _referredByKey = 'referredBy';
   static const _genderKey = 'gender';
-  // static const _cycleKey = 'cycle';
+  static const _cycleKey = 'cycle';
   static const _beneficiaryIdKey = 'beneficiaryId';
   static const _referralCodeKey = 'referralCode';
   static const _ageKey = 'ageInMonths';
