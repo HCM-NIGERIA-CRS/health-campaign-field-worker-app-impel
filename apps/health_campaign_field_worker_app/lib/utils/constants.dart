@@ -105,6 +105,7 @@ class Constants {
   static const String lgaFacility = 'LGA Facility'; // specific to smc
   static const int validMinAge = 3;
   static const int validMaxAge = 59;
+  static const String pipeSeparator = '||';
 
   static const int mlPerBottle = 30;
   static const int apiCallLimit = 1000;

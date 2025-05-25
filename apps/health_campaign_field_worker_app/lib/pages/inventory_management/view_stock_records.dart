@@ -12,6 +12,9 @@ import 'package:inventory_management/utils/i18_key_constants.dart' as i18;
 import 'package:inventory_management/utils/utils.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 
+import '../../utils/extensions/extensions.dart';
+import '../../utils/utils.dart';
+
 @RoutePage()
 class ViewStockRecordsPage extends LocalizedStatefulWidget {
   final String mrnNumber;
@@ -89,12 +92,12 @@ class _ViewStockRecordsPageState extends LocalizedState<ViewStockRecordsPage>
     final senderIdToShowOnTab = stock.senderId;
 
     String? partialQuantity = stock.additionalFields?.fields
-        .firstWhereOrNull((e) => e.key == "partialQuantity")
+        .firstWhereOrNull((e) => e.key == "partialBlistersReturned")
         ?.value
         .toString();
 
     String? wastedQuantity = stock.additionalFields?.fields
-        .firstWhereOrNull((e) => e.key == "wastedQuantity")
+        .firstWhereOrNull((e) => e.key == "wastedBlistersReturned")
         ?.value
         .toString();
 
@@ -142,10 +145,14 @@ class _ViewStockRecordsPageState extends LocalizedState<ViewStockRecordsPage>
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Expanded(child: Text('Received From')),
                       Expanded(
-                          child: Text(localizations
-                              .translate('FAC_$senderIdToShowOnTab'))),
+                        child: Text(localizations.translate(getEntryTypeLabel(
+                            widget.stockRecords.firstOrNull))),
+                      ),
+                      Expanded(
+                          child: Text(localizations.translate(
+                              getSecondaryPartyValue(
+                                  widget.stockRecords.firstOrNull)))),
                     ],
                   ),
                 ],

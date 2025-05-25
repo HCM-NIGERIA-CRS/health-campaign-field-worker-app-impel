@@ -223,18 +223,13 @@ class CustomManageStocksPageState
               children: [
                 GestureDetector(
                   onTap: () {
-                    if (InventorySingleton().isDistributor) {
-                      context.router.push(QRScannerRoute());
-                      Navigator.of(context).pop();
-                    } else {
-                      context.router.push(
-                        RecordStockWrapperRoute(
-                          type: StockRecordEntryType.receipt,
-                        ),
-                      );
+                    context.router.push(
+                      RecordStockWrapperRoute(
+                        type: StockRecordEntryType.receipt,
+                      ),
+                    );
 
-                      Navigator.of(context).pop();
-                    }
+                    Navigator.of(context).pop();
                   },
                   child: Container(
                     width: double.infinity,
@@ -328,19 +323,12 @@ class CustomManageStocksPageState
               children: [
                 GestureDetector(
                   onTap: () {
-                    if (context.isCDD) {
-                      context.router.push(
-                        RecordStockWrapperRoute(
-                          type: StockRecordEntryType.returned,
-                        ),
-                      );
-                    } else {
-                      context.router.push(
-                        RecordStockWrapperRoute(
-                          type: StockRecordEntryType.dispatch,
-                        ),
-                      );
-                    }
+                    context.router.push(
+                      RecordStockWrapperRoute(
+                        type: StockRecordEntryType.dispatch,
+                      ),
+                    );
+
                     Navigator.of(context).pop();
                   },
                   child: Container(
@@ -379,19 +367,11 @@ class CustomManageStocksPageState
                 const SizedBox(height: 16), // Add spacing between buttons
                 GestureDetector(
                   onTap: () {
-                    if (context.isCDD) {
-                      context.router.push(
-                        CustomMinNumberRoute(
-                          type: StockRecordEntryType.returned,
-                        ),
-                      );
-                    } else {
-                      context.router.push(
-                        CustomMinNumberRoute(
-                          type: StockRecordEntryType.dispatch,
-                        ),
-                      );
-                    }
+                    context.router.push(
+                      CustomMinNumberRoute(
+                        type: StockRecordEntryType.dispatch,
+                      ),
+                    );
                     Navigator.of(context).pop();
                   },
                   child: Container(

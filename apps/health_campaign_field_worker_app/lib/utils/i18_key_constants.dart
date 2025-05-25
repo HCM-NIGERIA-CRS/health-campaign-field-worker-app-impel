@@ -443,10 +443,11 @@ class StockDetails {
 
   String get quantityCapsulePartialReturnedLabel =>
       'STOCK_DETAILS_CAPSULE_PARTIAL_QUANTITY_RETURNED';
-
+  String get selectTransactingPartyReturnedFrom =>
+      'STOCK_DETAILS_RETURNED_FROM';
   String get quantityCapsulePartialWastedLabel =>
       'STOCK_DETAILS_CAPSULE_PARTIAL_QUANTITY_WASTED';
-
+  String get returnedTo => 'STOCK_DETAILS_RETURNED_TO';
   String get batchNumberLabel {
     return 'STOCK_DETAILS_BATCH_NUMBER';
   }
