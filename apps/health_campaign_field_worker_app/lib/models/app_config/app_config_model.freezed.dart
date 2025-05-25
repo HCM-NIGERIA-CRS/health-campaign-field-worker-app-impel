@@ -925,6 +925,9 @@ mixin _$HCMWrapperModel {
   @JsonKey(name: 'DOWNSYNC-BANDWIDTH_BATCH_SIZE')
   List<BandWidthBatchSize> get downSyncBandWidthBatchSize =>
       throw _privateConstructorUsedError;
+  @JsonKey(name: 'BENEFICIARY_ID_CONFIG')
+  List<BeneficiaryIdConfig> get beneficiaryIdConfig =>
+      throw _privateConstructorUsedError;
   @JsonKey(name: 'HOUSEHOLD_DELETION_REASON_OPTIONS')
   List<DeletionReasonOptions> get householdDeletionReasonOptions =>
       throw _privateConstructorUsedError;
@@ -989,6 +992,8 @@ abstract class $HCMWrapperModelCopyWith<$Res> {
       List<BandWidthBatchSize> bandWidthBatchSize,
       @JsonKey(name: 'DOWNSYNC-BANDWIDTH_BATCH_SIZE')
       List<BandWidthBatchSize> downSyncBandWidthBatchSize,
+      @JsonKey(name: 'BENEFICIARY_ID_CONFIG')
+      List<BeneficiaryIdConfig> beneficiaryIdConfig,
       @JsonKey(name: 'HOUSEHOLD_DELETION_REASON_OPTIONS')
       List<DeletionReasonOptions> householdDeletionReasonOptions,
       @JsonKey(name: 'HOUSEHOLD_MEMBER_DELETION_REASON_OPTIONS')
@@ -1033,6 +1038,7 @@ class _$HCMWrapperModelCopyWithImpl<$Res, $Val extends HCMWrapperModel>
     Object? appConfig = null,
     Object? bandWidthBatchSize = null,
     Object? downSyncBandWidthBatchSize = null,
+    Object? beneficiaryIdConfig = null,
     Object? householdDeletionReasonOptions = null,
     Object? householdMemberDeletionReasonOptions = null,
     Object? backgroundServiceConfig = freezed,
@@ -1063,6 +1069,10 @@ class _$HCMWrapperModelCopyWithImpl<$Res, $Val extends HCMWrapperModel>
           ? _value.downSyncBandWidthBatchSize
           : downSyncBandWidthBatchSize // ignore: cast_nullable_to_non_nullable
               as List<BandWidthBatchSize>,
+      beneficiaryIdConfig: null == beneficiaryIdConfig
+          ? _value.beneficiaryIdConfig
+          : beneficiaryIdConfig // ignore: cast_nullable_to_non_nullable
+              as List<BeneficiaryIdConfig>,
       householdDeletionReasonOptions: null == householdDeletionReasonOptions
           ? _value.householdDeletionReasonOptions
           : householdDeletionReasonOptions // ignore: cast_nullable_to_non_nullable
@@ -1146,6 +1156,8 @@ abstract class _$$HCMWrapperModelImplCopyWith<$Res>
       List<BandWidthBatchSize> bandWidthBatchSize,
       @JsonKey(name: 'DOWNSYNC-BANDWIDTH_BATCH_SIZE')
       List<BandWidthBatchSize> downSyncBandWidthBatchSize,
+      @JsonKey(name: 'BENEFICIARY_ID_CONFIG')
+      List<BeneficiaryIdConfig> beneficiaryIdConfig,
       @JsonKey(name: 'HOUSEHOLD_DELETION_REASON_OPTIONS')
       List<DeletionReasonOptions> householdDeletionReasonOptions,
       @JsonKey(name: 'HOUSEHOLD_MEMBER_DELETION_REASON_OPTIONS')
@@ -1188,6 +1200,7 @@ class __$$HCMWrapperModelImplCopyWithImpl<$Res>
     Object? appConfig = null,
     Object? bandWidthBatchSize = null,
     Object? downSyncBandWidthBatchSize = null,
+    Object? beneficiaryIdConfig = null,
     Object? householdDeletionReasonOptions = null,
     Object? householdMemberDeletionReasonOptions = null,
     Object? backgroundServiceConfig = freezed,
@@ -1218,6 +1231,10 @@ class __$$HCMWrapperModelImplCopyWithImpl<$Res>
           ? _value._downSyncBandWidthBatchSize
           : downSyncBandWidthBatchSize // ignore: cast_nullable_to_non_nullable
               as List<BandWidthBatchSize>,
+      beneficiaryIdConfig: null == beneficiaryIdConfig
+          ? _value._beneficiaryIdConfig
+          : beneficiaryIdConfig // ignore: cast_nullable_to_non_nullable
+              as List<BeneficiaryIdConfig>,
       householdDeletionReasonOptions: null == householdDeletionReasonOptions
           ? _value._householdDeletionReasonOptions
           : householdDeletionReasonOptions // ignore: cast_nullable_to_non_nullable
@@ -1296,6 +1313,8 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
       required final List<BandWidthBatchSize> bandWidthBatchSize,
       @JsonKey(name: 'DOWNSYNC-BANDWIDTH_BATCH_SIZE')
       required final List<BandWidthBatchSize> downSyncBandWidthBatchSize,
+      @JsonKey(name: 'BENEFICIARY_ID_CONFIG')
+      required final List<BeneficiaryIdConfig> beneficiaryIdConfig,
       @JsonKey(name: 'HOUSEHOLD_DELETION_REASON_OPTIONS')
       required final List<DeletionReasonOptions> householdDeletionReasonOptions,
       @JsonKey(name: 'HOUSEHOLD_MEMBER_DELETION_REASON_OPTIONS')
@@ -1332,6 +1351,7 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
       : _appConfig = appConfig,
         _bandWidthBatchSize = bandWidthBatchSize,
         _downSyncBandWidthBatchSize = downSyncBandWidthBatchSize,
+        _beneficiaryIdConfig = beneficiaryIdConfig,
         _householdDeletionReasonOptions = householdDeletionReasonOptions,
         _householdMemberDeletionReasonOptions =
             householdMemberDeletionReasonOptions,
@@ -1380,6 +1400,16 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
       return _downSyncBandWidthBatchSize;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_downSyncBandWidthBatchSize);
+  }
+
+  final List<BeneficiaryIdConfig> _beneficiaryIdConfig;
+  @override
+  @JsonKey(name: 'BENEFICIARY_ID_CONFIG')
+  List<BeneficiaryIdConfig> get beneficiaryIdConfig {
+    if (_beneficiaryIdConfig is EqualUnmodifiableListView)
+      return _beneficiaryIdConfig;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_beneficiaryIdConfig);
   }
 
   final List<DeletionReasonOptions> _householdDeletionReasonOptions;
@@ -1557,7 +1587,7 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
 
   @override
   String toString() {
-    return 'HCMWrapperModel(appConfig: $appConfig, bandWidthBatchSize: $bandWidthBatchSize, downSyncBandWidthBatchSize: $downSyncBandWidthBatchSize, householdDeletionReasonOptions: $householdDeletionReasonOptions, householdMemberDeletionReasonOptions: $householdMemberDeletionReasonOptions, backgroundServiceConfig: $backgroundServiceConfig, checklistTypes: $checklistTypes, idTypeOptions: $idTypeOptions, deliveryCommentOptions: $deliveryCommentOptions, backendInterface: $backendInterface, callSupportOptions: $callSupportOptions, transportTypes: $transportTypes, symptomsTypeList: $symptomsTypeList, searchHouseHoldFilters: $searchHouseHoldFilters, searchCLFFilters: $searchCLFFilters, referralReasonList: $referralReasonList, houseStructureTypes: $houseStructureTypes, refusalReasons: $refusalReasons, firebaseConfig: $firebaseConfig)';
+    return 'HCMWrapperModel(appConfig: $appConfig, bandWidthBatchSize: $bandWidthBatchSize, downSyncBandWidthBatchSize: $downSyncBandWidthBatchSize, beneficiaryIdConfig: $beneficiaryIdConfig, householdDeletionReasonOptions: $householdDeletionReasonOptions, householdMemberDeletionReasonOptions: $householdMemberDeletionReasonOptions, backgroundServiceConfig: $backgroundServiceConfig, checklistTypes: $checklistTypes, idTypeOptions: $idTypeOptions, deliveryCommentOptions: $deliveryCommentOptions, backendInterface: $backendInterface, callSupportOptions: $callSupportOptions, transportTypes: $transportTypes, symptomsTypeList: $symptomsTypeList, searchHouseHoldFilters: $searchHouseHoldFilters, searchCLFFilters: $searchCLFFilters, referralReasonList: $referralReasonList, houseStructureTypes: $houseStructureTypes, refusalReasons: $refusalReasons, firebaseConfig: $firebaseConfig)';
   }
 
   @override
@@ -1572,6 +1602,8 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
             const DeepCollectionEquality().equals(
                 other._downSyncBandWidthBatchSize,
                 _downSyncBandWidthBatchSize) &&
+            const DeepCollectionEquality()
+                .equals(other._beneficiaryIdConfig, _beneficiaryIdConfig) &&
             const DeepCollectionEquality().equals(
                 other._householdDeletionReasonOptions,
                 _householdDeletionReasonOptions) &&
@@ -1615,6 +1647,7 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
         const DeepCollectionEquality().hash(_appConfig),
         const DeepCollectionEquality().hash(_bandWidthBatchSize),
         const DeepCollectionEquality().hash(_downSyncBandWidthBatchSize),
+        const DeepCollectionEquality().hash(_beneficiaryIdConfig),
         const DeepCollectionEquality().hash(_householdDeletionReasonOptions),
         const DeepCollectionEquality()
             .hash(_householdMemberDeletionReasonOptions),
@@ -1656,6 +1689,8 @@ abstract class _HCMWrapperModel implements HCMWrapperModel {
       required final List<BandWidthBatchSize> bandWidthBatchSize,
       @JsonKey(name: 'DOWNSYNC-BANDWIDTH_BATCH_SIZE')
       required final List<BandWidthBatchSize> downSyncBandWidthBatchSize,
+      @JsonKey(name: 'BENEFICIARY_ID_CONFIG')
+      required final List<BeneficiaryIdConfig> beneficiaryIdConfig,
       @JsonKey(name: 'HOUSEHOLD_DELETION_REASON_OPTIONS')
       required final List<DeletionReasonOptions> householdDeletionReasonOptions,
       @JsonKey(name: 'HOUSEHOLD_MEMBER_DELETION_REASON_OPTIONS')
@@ -1703,6 +1738,9 @@ abstract class _HCMWrapperModel implements HCMWrapperModel {
   @override
   @JsonKey(name: 'DOWNSYNC-BANDWIDTH_BATCH_SIZE')
   List<BandWidthBatchSize> get downSyncBandWidthBatchSize;
+  @override
+  @JsonKey(name: 'BENEFICIARY_ID_CONFIG')
+  List<BeneficiaryIdConfig> get beneficiaryIdConfig;
   @override
   @JsonKey(name: 'HOUSEHOLD_DELETION_REASON_OPTIONS')
   List<DeletionReasonOptions> get householdDeletionReasonOptions;
@@ -3334,6 +3372,176 @@ abstract class _BandWidthBatchSize implements BandWidthBatchSize {
   @override
   @JsonKey(ignore: true)
   _$$BandWidthBatchSizeImplCopyWith<_$BandWidthBatchSizeImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+BeneficiaryIdConfig _$BeneficiaryIdConfigFromJson(Map<String, dynamic> json) {
+  return _BeneficiaryIdConfig.fromJson(json);
+}
+
+/// @nodoc
+mixin _$BeneficiaryIdConfig {
+  @JsonKey(name: 'MIN_COUNT')
+  double get minCount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'BATCH_SIZE')
+  int get batchSize => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $BeneficiaryIdConfigCopyWith<BeneficiaryIdConfig> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $BeneficiaryIdConfigCopyWith<$Res> {
+  factory $BeneficiaryIdConfigCopyWith(
+          BeneficiaryIdConfig value, $Res Function(BeneficiaryIdConfig) then) =
+      _$BeneficiaryIdConfigCopyWithImpl<$Res, BeneficiaryIdConfig>;
+  @useResult
+  $Res call(
+      {@JsonKey(name: 'MIN_COUNT') double minCount,
+      @JsonKey(name: 'BATCH_SIZE') int batchSize});
+}
+
+/// @nodoc
+class _$BeneficiaryIdConfigCopyWithImpl<$Res, $Val extends BeneficiaryIdConfig>
+    implements $BeneficiaryIdConfigCopyWith<$Res> {
+  _$BeneficiaryIdConfigCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? minCount = null,
+    Object? batchSize = null,
+  }) {
+    return _then(_value.copyWith(
+      minCount: null == minCount
+          ? _value.minCount
+          : minCount // ignore: cast_nullable_to_non_nullable
+              as double,
+      batchSize: null == batchSize
+          ? _value.batchSize
+          : batchSize // ignore: cast_nullable_to_non_nullable
+              as int,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$BeneficiaryIdConfigImplCopyWith<$Res>
+    implements $BeneficiaryIdConfigCopyWith<$Res> {
+  factory _$$BeneficiaryIdConfigImplCopyWith(_$BeneficiaryIdConfigImpl value,
+          $Res Function(_$BeneficiaryIdConfigImpl) then) =
+      __$$BeneficiaryIdConfigImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {@JsonKey(name: 'MIN_COUNT') double minCount,
+      @JsonKey(name: 'BATCH_SIZE') int batchSize});
+}
+
+/// @nodoc
+class __$$BeneficiaryIdConfigImplCopyWithImpl<$Res>
+    extends _$BeneficiaryIdConfigCopyWithImpl<$Res, _$BeneficiaryIdConfigImpl>
+    implements _$$BeneficiaryIdConfigImplCopyWith<$Res> {
+  __$$BeneficiaryIdConfigImplCopyWithImpl(_$BeneficiaryIdConfigImpl _value,
+      $Res Function(_$BeneficiaryIdConfigImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? minCount = null,
+    Object? batchSize = null,
+  }) {
+    return _then(_$BeneficiaryIdConfigImpl(
+      minCount: null == minCount
+          ? _value.minCount
+          : minCount // ignore: cast_nullable_to_non_nullable
+              as double,
+      batchSize: null == batchSize
+          ? _value.batchSize
+          : batchSize // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$BeneficiaryIdConfigImpl implements _BeneficiaryIdConfig {
+  _$BeneficiaryIdConfigImpl(
+      {@JsonKey(name: 'MIN_COUNT') required this.minCount,
+      @JsonKey(name: 'BATCH_SIZE') required this.batchSize});
+
+  factory _$BeneficiaryIdConfigImpl.fromJson(Map<String, dynamic> json) =>
+      _$$BeneficiaryIdConfigImplFromJson(json);
+
+  @override
+  @JsonKey(name: 'MIN_COUNT')
+  final double minCount;
+  @override
+  @JsonKey(name: 'BATCH_SIZE')
+  final int batchSize;
+
+  @override
+  String toString() {
+    return 'BeneficiaryIdConfig(minCount: $minCount, batchSize: $batchSize)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$BeneficiaryIdConfigImpl &&
+            (identical(other.minCount, minCount) ||
+                other.minCount == minCount) &&
+            (identical(other.batchSize, batchSize) ||
+                other.batchSize == batchSize));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(runtimeType, minCount, batchSize);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$BeneficiaryIdConfigImplCopyWith<_$BeneficiaryIdConfigImpl> get copyWith =>
+      __$$BeneficiaryIdConfigImplCopyWithImpl<_$BeneficiaryIdConfigImpl>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$BeneficiaryIdConfigImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _BeneficiaryIdConfig implements BeneficiaryIdConfig {
+  factory _BeneficiaryIdConfig(
+          {@JsonKey(name: 'MIN_COUNT') required final double minCount,
+          @JsonKey(name: 'BATCH_SIZE') required final int batchSize}) =
+      _$BeneficiaryIdConfigImpl;
+
+  factory _BeneficiaryIdConfig.fromJson(Map<String, dynamic> json) =
+      _$BeneficiaryIdConfigImpl.fromJson;
+
+  @override
+  @JsonKey(name: 'MIN_COUNT')
+  double get minCount;
+  @override
+  @JsonKey(name: 'BATCH_SIZE')
+  int get batchSize;
+  @override
+  @JsonKey(ignore: true)
+  _$$BeneficiaryIdConfigImplCopyWith<_$BeneficiaryIdConfigImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 

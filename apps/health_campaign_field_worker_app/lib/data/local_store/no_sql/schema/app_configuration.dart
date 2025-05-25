@@ -78,6 +78,9 @@ class AppConfiguration {
   @Name('SEARCH_CLF_FILTERS')
   late List<SearchCLFFilters>? searchCLFFilters;
 
+  @Name('BENEFICIARY_ID_CONFIG')
+  late List<BeneficiaryIdConfig>? beneficiaryIdConfig;
+
   late List<ReferralReasons>? referralReasons;
   late List<HouseStructureTypes>? houseStructureTypes;
   late List<RefusalReasons>? refusalReasons;
@@ -152,6 +155,14 @@ class TransportTypes {
 class ComplaintTypes {
   late String name;
   late String code;
+}
+
+@embedded
+class BeneficiaryIdConfig {
+  @Name("MIN_COUNT")
+  late double minCount;
+  @Name("BATCH_SIZE")
+  late int batchSize;
 }
 
 @embedded

@@ -187,6 +187,15 @@ class MdmsRepository {
       return bandwidthBatchSizeElement;
     }).toList();
 
+    final List<BeneficiaryIdConfig>? beneficiaryIdConfig =
+        element?.beneficiaryIdConfig.map((e) {
+      final beneficiaryIdConfigElement = BeneficiaryIdConfig()
+        ..batchSize = e.batchSize
+        ..minCount = e.minCount;
+
+      return beneficiaryIdConfigElement;
+    }).toList();
+
     final List<BandwidthBatchSize>? downSyncBandWidthBatchSize =
         element?.downSyncBandWidthBatchSize.map((e) {
       final bandwidthBatchSizeElement = BandwidthBatchSize()
@@ -323,6 +332,7 @@ class MdmsRepository {
     appConfiguration.idTypeOptions = idTypeOptions;
     appConfiguration.privacyPolicyConfig = privacyPolicy;
     appConfiguration.deliveryCommentOptions = deliveryCommentOptions;
+    appConfiguration.beneficiaryIdConfig = beneficiaryIdConfig;
     appConfiguration.householdDeletionReasonOptions =
         householdDeletionReasonOptions;
     appConfiguration.householdMemberDeletionReasonOptions =
