@@ -19,21 +19,17 @@ import 'package:registration_delivery/blocs/delivery_intervention/deliver_interv
 import 'package:registration_delivery/blocs/household_overview/household_overview.dart';
 import 'package:registration_delivery/models/entities/additional_fields_type.dart';
 import 'package:registration_delivery/models/entities/task.dart';
-import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
 import '../../../blocs/registration_delivery/custom_search_household.dart';
-import '../../../models/entities/identifier_types.dart';
 import '../../../router/app_router.dart';
 import '../../../utils/app_enums.dart';
 import '../../../utils/i18_key_constants.dart' as i18_local;
 import '../../../models/entities/additional_fields_type.dart'
     as additional_fields_local;
 import 'package:registration_delivery/utils/utils.dart';
-import 'package:registration_delivery/widgets/back_navigation_help_header.dart';
 import 'package:registration_delivery/widgets/component_wrapper/product_variant_bloc_wrapper.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 import 'package:registration_delivery/widgets/table_card/table_card.dart';
-import 'package:registration_delivery/pages/beneficiary/widgets/record_delivery_cycle.dart';
 
 import '../../../widgets/registration_delivery/past_delivery_vas.dart';
 import 'custom_record_delivery_cycle.dart';
@@ -90,17 +86,10 @@ class CustomBeneficiaryDetailsPageState
         builder: (context, searchHouseholdsState) {
           return BlocBuilder<HouseholdOverviewBloc, HouseholdOverviewState>(
             builder: (context, state) {
-              ProjectTypeModel? projectType =
-                  widget.eligibilityAssessmentType ==
-                          EligibilityAssessmentType.smc
-                      ? RegistrationDeliverySingleton()
-                          .selectedProject
-                          ?.additionalDetails
-                          ?.projectType
-                      : RegistrationDeliverySingleton()
-                          .selectedProject
-                          ?.additionalDetails
-                          ?.additionalProjectType;
+              ProjectTypeModel? projectType = RegistrationDeliverySingleton()
+                  .selectedProject
+                  ?.additionalDetails
+                  ?.projectType;
 
               final householdMemberWrapper = state.householdMemberWrapper;
               // Filtering project beneficiaries based on the selected individual

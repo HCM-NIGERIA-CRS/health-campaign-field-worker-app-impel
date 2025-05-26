@@ -14,8 +14,6 @@ import 'package:registration_delivery/models/entities/task.dart';
 import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
 import '../../blocs/localization/app_localization.dart';
-import '../../models/entities/identifier_types.dart';
-// import '../../utils/registration_delivery/utils_smc.dart';
 import 'package:registration_delivery/utils/utils.dart';
 import '../../router/app_router.dart';
 import '../../utils/app_enums.dart';

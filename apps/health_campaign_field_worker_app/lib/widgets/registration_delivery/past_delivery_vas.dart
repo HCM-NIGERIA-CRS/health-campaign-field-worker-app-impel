@@ -46,10 +46,8 @@ Widget buildTableContentVAS(
 
   // Calculate the height of the container based on the number of items in the table
 
-  final ProjectTypeModel? projectType = RegistrationDeliverySingleton()
-      .selectedProject
-      ?.additionalDetails
-      ?.additionalProjectType;
+// info : setting null as this is not used
+  final ProjectTypeModel? projectType = null;
   final item =
       projectType?.cycles?[currentCycle - 1].deliveries?[currentDose - 1];
   final productVariants =
