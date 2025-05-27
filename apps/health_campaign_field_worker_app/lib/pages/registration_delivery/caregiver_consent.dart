@@ -50,7 +50,7 @@ class CaregiverConsentPage extends LocalizedStatefulWidget {
 class CaregiverConsentPageState extends LocalizedState<CaregiverConsentPage> {
   CaregiverConsentEnum selectedConsent = CaregiverConsentEnum.yes;
   final clickedStatus = ValueNotifier<bool>(false);
-  TextEditingController consentComment = TextEditingController();
+  // TextEditingController consentComment = TextEditingController();
 
   onSubmit(HouseholdModel? householdModel, AddressModel? addressModel) async {
     final bloc = context.read<CustomBeneficiaryRegistrationBloc>();
@@ -155,7 +155,7 @@ class CaregiverConsentPageState extends LocalizedState<CaregiverConsentPage> {
                   onPressed: () {
                     if (selectedConsent == CaregiverConsentEnum.yes) {
                       router.push(CustomHouseHoldDetailsRoute());
-                    } else if (consentComment.text.length >= 2) {
+                    } else {
                       registrationState.maybeWhen(orElse: () {
                         return;
                       }, create: (
@@ -208,18 +208,19 @@ class CaregiverConsentPageState extends LocalizedState<CaregiverConsentPage> {
                           onSubmit(householdModel, addressModel);
                         }
                       });
-                    } else {
-                      DigitToast.show(
-                        context,
-                        options: DigitToastOptions(
-                          localizations.translate(
-                              i18_local.common.coreCommonConsentReasonRequired),
-                          true,
-                          theme,
-                        ),
-                      );
-                      return;
                     }
+                    // else {
+                    //   DigitToast.show(
+                    //     context,
+                    //     options: DigitToastOptions(
+                    //       localizations.translate(
+                    //           i18_local.common.coreCommonConsentReasonRequired),
+                    //       true,
+                    //       theme,
+                    //     ),
+                    //   );
+                    return;
+                    // }
                   },
                 );
               },
