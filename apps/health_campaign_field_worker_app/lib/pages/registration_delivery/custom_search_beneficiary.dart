@@ -165,6 +165,11 @@ class _CustomSearchBeneficiaryPageState
                                     child: DigitSearchBar(
                                       controller: searchController,
                                       icon: const SizedBox.shrink(),
+                                      keyboardType:
+                                          // !isBeneficiaryIdSearchEnabled
+                                          true
+                                              ? TextInputType.text
+                                              : TextInputType.number,
                                       hintText: (RegistrationDeliverySingleton()
                                                   .householdType ==
                                               HouseholdType.community)
