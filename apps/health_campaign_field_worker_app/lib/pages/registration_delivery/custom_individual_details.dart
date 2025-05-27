@@ -1,6 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:digit_ui_components/widgets/molecules/show_pop_up.dart';
+import 'package:registration_delivery/blocs/app_localization.dart';
+import 'package:registration_delivery/blocs/unique_id/unique_id.dart';
+import 'package:registration_delivery/widgets/beneficiary/id_count_alert.dart';
 // import 'package:digit_components/utils/date_utils.dart' as digits;
 import '../../utils/date_utils.dart' as digits;
 import 'package:digit_components/widgets/atoms/digit_toaster.dart';
@@ -75,10 +79,20 @@ class CustomIndividualDetailsPageState
   static const _dobKey = 'dob';
   static const _genderKey = 'gender';
   static const _mobileNumberKey = 'mobileNumber';
+
   bool isDuplicateTag = false;
   static const maxLength = 200;
   final clickedStatus = ValueNotifier<bool>(false);
   DateTime now = DateTime.now();
+
+  bool _isProgressDialogVisible = false;
+  final ProgressDialog _progressDialog = ProgressDialog();
+
+  @override
+  void dispose() {
+    _progressDialog.dispose();
+    super.dispose();
+  }
 
   bool isEditIndividual = false;
   bool isAddIndividual = false;
@@ -93,6 +107,11 @@ class CustomIndividualDetailsPageState
 
   @override
   void initState() {
+    if (RegistrationDeliverySingleton()
+        .idTypeOptions!
+        .contains(IdentifierTypes.uniqueBeneficiaryID.toValue())) {
+      context.read<UniqueIdBloc>().add(const UniqueIdEvent.fetchIdCount());
+    }
     customSearchHouseholdsBloc = context.read<CustomSearchHouseholdsBloc>();
     super.initState();
   }
@@ -611,205 +630,226 @@ class CustomIndividualDetailsPageState
                       ]),
                   slivers: [
                     SliverToBoxAdapter(
-                      child: DigitCard(
-                          margin: const EdgeInsets.all(spacer2),
-                          children: [
-                            Text(
-                              localizations.translate(
-                                widget.isHeadOfHousehold
-                                    ? i18_local.individualDetails
-                                        .individualsDetailsHeadingLabelText
-                                    : i18_local.individualDetails
-                                        .individualsRegistrationHeadingLabelText,
-                              ),
-                              style: textTheme.headingXl.copyWith(
-                                color: theme.colorTheme.text.primary,
-                              ),
-                            ),
-                            Column(
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                          if (RegistrationDeliverySingleton()
+                              .idTypeOptions!
+                              .contains(IdentifierTypes.uniqueBeneficiaryID
+                                  .toValue()))
+                            displayUniqueIdCount(theme, form),
+                          DigitCard(
+                              margin: const EdgeInsets.all(spacer2),
                               children: [
-                                individualDetailsShowcaseData.nameOfIndividual
-                                    .buildWith(
-                                  child: ReactiveWrapperField(
-                                    formControlName: _individualNameKey,
-                                    validationMessages: {
-                                      'required': (object) =>
-                                          localizations.translate(
-                                            '${i18.individualDetails.nameLabelText}_IS_REQUIRED',
-                                          ),
-                                      'mobileNumber': (object) =>
-                                          localizations.translate(i18_local
-                                              .individualDetails
-                                              .mobileNumberLengthValidationMessage),
-                                      'maxLength': (object) => localizations
-                                          .translate(
-                                              i18.common.maxCharsRequired)
-                                          .replaceAll(
-                                              '{}', maxLength.toString()),
-                                    },
-                                    builder: (field) => LabeledField(
-                                      label: localizations.translate(
-                                        i18.individualDetails.nameLabelText,
-                                      ),
-                                      isRequired: true,
-                                      child: DigitTextFormInput(
-                                        initialValue: form
-                                            .control(_individualNameKey)
-                                            .value,
-                                        onChange: (value) {
-                                          form
-                                              .control(_individualNameKey)
-                                              .value = value;
+                                Text(
+                                  localizations.translate(
+                                    widget.isHeadOfHousehold
+                                        ? i18_local.individualDetails
+                                            .individualsDetailsHeadingLabelText
+                                        : i18_local.individualDetails
+                                            .individualsRegistrationHeadingLabelText,
+                                  ),
+                                  style: textTheme.headingXl.copyWith(
+                                    color: theme.colorTheme.text.primary,
+                                  ),
+                                ),
+                                Column(
+                                  children: [
+                                    individualDetailsShowcaseData
+                                        .nameOfIndividual
+                                        .buildWith(
+                                      child: ReactiveWrapperField(
+                                        formControlName: _individualNameKey,
+                                        validationMessages: {
+                                          'required': (object) =>
+                                              localizations.translate(
+                                                '${i18.individualDetails.nameLabelText}_IS_REQUIRED',
+                                              ),
+                                          'mobileNumber': (object) =>
+                                              localizations.translate(i18_local
+                                                  .individualDetails
+                                                  .mobileNumberLengthValidationMessage),
+                                          'maxLength': (object) => localizations
+                                              .translate(
+                                                  i18.common.maxCharsRequired)
+                                              .replaceAll(
+                                                  '{}', maxLength.toString()),
                                         },
-                                        errorMessage: field.errorText,
+                                        builder: (field) => LabeledField(
+                                          label: localizations.translate(
+                                            i18.individualDetails.nameLabelText,
+                                          ),
+                                          isRequired: true,
+                                          child: DigitTextFormInput(
+                                            initialValue: form
+                                                .control(_individualNameKey)
+                                                .value,
+                                            onChange: (value) {
+                                              form
+                                                  .control(_individualNameKey)
+                                                  .value = value;
+                                            },
+                                            errorMessage: field.errorText,
+                                          ),
+                                        ),
                                       ),
+                                    ),
+                                    if (widget.isHeadOfHousehold)
+                                      const SizedBox(
+                                        height: spacer2,
+                                      ),
+                                    Offstage(
+                                      offstage: !widget.isHeadOfHousehold,
+                                      child: DigitCheckbox(
+                                        capitalizeFirstLetter: false,
+                                        label: (RegistrationDeliverySingleton()
+                                                    .householdType ==
+                                                HouseholdType.community)
+                                            ? localizations.translate(i18
+                                                .individualDetails
+                                                .clfCheckboxLabelText)
+                                            : localizations.translate(
+                                                i18.individualDetails
+                                                    .checkboxLabelText,
+                                              ),
+                                        value: widget.isHeadOfHousehold,
+                                        readOnly: widget.isHeadOfHousehold,
+                                        checkboxThemeData:
+                                            DigitCheckboxThemeData(
+                                                disabledIconColor: theme
+                                                    .colorTheme
+                                                    .primary
+                                                    .primary1),
+                                        onChanged: (_) {},
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Offstage(
+                                  offstage: widget.isHeadOfHousehold,
+                                  child: individualDetailsShowcaseData
+                                      .dateOfBirth
+                                      .buildWith(
+                                    child: CustomDigitDobPicker(
+                                      datePickerFormControl: _dobKey,
+                                      datePickerLabel: localizations.translate(
+                                        i18.individualDetails.dobLabelText,
+                                      ),
+                                      ageFieldLabel: localizations.translate(
+                                        i18.individualDetails.ageLabelText,
+                                      ),
+                                      yearsHintLabel: localizations.translate(
+                                        i18.individualDetails.yearsHintText,
+                                      ),
+                                      separatorLabel: localizations.translate(
+                                        i18.individualDetails
+                                            .separatorLabelText,
+                                      ),
+                                      yearsAndMonthsErrMsg:
+                                          localizations.translate(
+                                        i18.individualDetails
+                                            .yearsAndMonthsErrorText,
+                                      ),
+                                      initialDate: before150Years,
+                                      onChangeOfFormControl: (formControl) {
+                                        // Handle changes to the control's value here
+                                        final value = formControl.value;
+
+                                        digits.DigitDOBAge age =
+                                            digits.DigitDateUtils.calculateAge(
+                                                value);
+                                        if ((age.years == 0 &&
+                                                age.months == 0) ||
+                                            age.months > 11 ||
+                                            (age.years >= 150 &&
+                                                age.months >= 0)) {
+                                          formControl.setErrors({'': true});
+                                        } else {
+                                          formControl.removeError('');
+                                        }
+                                      },
+                                      cancelText: localizations.translate(
+                                          i18.common.coreCommonCancel),
+                                      confirmText: localizations
+                                          .translate(i18.common.coreCommonOk),
+                                      monthsHintLabel: 'Month',
                                     ),
                                   ),
                                 ),
-                                if (widget.isHeadOfHousehold)
-                                  const SizedBox(
-                                    height: spacer2,
+                                dropdown.DigitDropdown<String>(
+                                  label: localizations.translate(
+                                    i18.individualDetails.genderLabelText,
                                   ),
-                                Offstage(
-                                  offstage: !widget.isHeadOfHousehold,
-                                  child: DigitCheckbox(
-                                    capitalizeFirstLetter: false,
-                                    label: (RegistrationDeliverySingleton()
-                                                .householdType ==
-                                            HouseholdType.community)
-                                        ? localizations.translate(i18
-                                            .individualDetails
-                                            .clfCheckboxLabelText)
-                                        : localizations.translate(
-                                            i18.individualDetails
-                                                .checkboxLabelText,
-                                          ),
-                                    value: widget.isHeadOfHousehold,
-                                    readOnly: widget.isHeadOfHousehold,
-                                    checkboxThemeData: DigitCheckboxThemeData(
-                                        disabledIconColor:
-                                            theme.colorTheme.primary.primary1),
-                                    onChanged: (_) {},
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Offstage(
-                              offstage: widget.isHeadOfHousehold,
-                              child: individualDetailsShowcaseData.dateOfBirth
-                                  .buildWith(
-                                child: CustomDigitDobPicker(
-                                  datePickerFormControl: _dobKey,
-                                  datePickerLabel: localizations.translate(
-                                    i18.individualDetails.dobLabelText,
-                                  ),
-                                  ageFieldLabel: localizations.translate(
-                                    i18.individualDetails.ageLabelText,
-                                  ),
-                                  yearsHintLabel: localizations.translate(
-                                    i18.individualDetails.yearsHintText,
-                                  ),
-                                  separatorLabel: localizations.translate(
-                                    i18.individualDetails.separatorLabelText,
-                                  ),
-                                  yearsAndMonthsErrMsg: localizations.translate(
-                                    i18.individualDetails
-                                        .yearsAndMonthsErrorText,
-                                  ),
-                                  initialDate: before150Years,
-                                  onChangeOfFormControl: (formControl) {
-                                    // Handle changes to the control's value here
-                                    final value = formControl.value;
-
-                                    digits.DigitDOBAge age =
-                                        digits.DigitDateUtils.calculateAge(
-                                            value);
-                                    if ((age.years == 0 && age.months == 0) ||
-                                        age.months > 11 ||
-                                        (age.years >= 150 && age.months >= 0)) {
-                                      formControl.setErrors({'': true});
+                                  valueMapper: (value) =>
+                                      localizations.translate(value),
+                                  initialValue: form.control(_genderKey).value,
+                                  menuItems: RegistrationDeliverySingleton()
+                                      .genderOptions!
+                                      .map((e) => e)
+                                      .toList(),
+                                  formControlName: _genderKey,
+                                  isRequired: true,
+                                  validationMessages: {
+                                    'required': (_) => localizations.translate(
+                                          i18.common.corecommonRequired,
+                                        ),
+                                  },
+                                  onChanged: (value) {
+                                    if (value != null && value.isNotEmpty) {
+                                      form.control(_genderKey).value = value;
                                     } else {
-                                      formControl.removeError('');
+                                      form.control(_genderKey).value = null;
+                                      form
+                                          .control(_genderKey)
+                                          .setErrors({'': true});
                                     }
                                   },
-                                  cancelText: localizations
-                                      .translate(i18.common.coreCommonCancel),
-                                  confirmText: localizations
-                                      .translate(i18.common.coreCommonOk),
-                                  monthsHintLabel: 'Month',
                                 ),
-                              ),
-                            ),
-                            dropdown.DigitDropdown<String>(
-                              label: localizations.translate(
-                                i18.individualDetails.genderLabelText,
-                              ),
-                              valueMapper: (value) =>
-                                  localizations.translate(value),
-                              initialValue: form.control(_genderKey).value,
-                              menuItems: RegistrationDeliverySingleton()
-                                  .genderOptions!
-                                  .map((e) => e)
-                                  .toList(),
-                              formControlName: _genderKey,
-                              isRequired: true,
-                              validationMessages: {
-                                'required': (_) => localizations.translate(
-                                      i18.common.corecommonRequired,
-                                    ),
-                              },
-                              onChanged: (value) {
-                                if (value != null && value.isNotEmpty) {
-                                  form.control(_genderKey).value = value;
-                                } else {
-                                  form.control(_genderKey).value = null;
-                                  form
-                                      .control(_genderKey)
-                                      .setErrors({'': true});
-                                }
-                              },
-                            ),
-                            individualDetailsShowcaseData.mobile.buildWith(
-                              child: Offstage(
-                                offstage: !widget.isHeadOfHousehold,
-                                child: ReactiveWrapperField(
-                                  formControlName: _mobileNumberKey,
-                                  validationMessages: {
-                                    'minLength': (object) =>
-                                        localizations.translate(i18_local
-                                            .individualDetails
-                                            .mobileNumberLengthValidationMessage),
-                                    'maxLength': (object) => localizations
-                                        .translate(i18_local.individualDetails
-                                            .mobileNumberLengthValidationMessage)
-                                        .replaceAll('{}', '11'),
-                                  },
-                                  builder: (field) => LabeledField(
-                                    label: localizations.translate(
-                                      i18.individualDetails
-                                          .mobileNumberLabelText,
-                                    ),
-                                    isRequired: false,
-                                    child: DigitTextFormInput(
-                                      keyboardType: TextInputType.number,
-                                      maxLength: 11,
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.digitsOnly,
-                                      ],
-                                      initialValue:
-                                          form.control(_mobileNumberKey).value,
-                                      onChange: (value) {
-                                        form.control(_mobileNumberKey).value =
-                                            value;
+                                individualDetailsShowcaseData.mobile.buildWith(
+                                  child: Offstage(
+                                    offstage: !widget.isHeadOfHousehold,
+                                    child: ReactiveWrapperField(
+                                      formControlName: _mobileNumberKey,
+                                      validationMessages: {
+                                        'minLength': (object) =>
+                                            localizations.translate(i18_local
+                                                .individualDetails
+                                                .mobileNumberLengthValidationMessage),
+                                        'maxLength': (object) => localizations
+                                            .translate(i18_local
+                                                .individualDetails
+                                                .mobileNumberLengthValidationMessage)
+                                            .replaceAll('{}', '11'),
                                       },
-                                      errorMessage: field.errorText,
+                                      builder: (field) => LabeledField(
+                                        label: localizations.translate(
+                                          i18.individualDetails
+                                              .mobileNumberLabelText,
+                                        ),
+                                        isRequired: false,
+                                        child: DigitTextFormInput(
+                                          keyboardType: TextInputType.number,
+                                          maxLength: 11,
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter
+                                                .digitsOnly,
+                                          ],
+                                          initialValue: form
+                                              .control(_mobileNumberKey)
+                                              .value,
+                                          onChange: (value) {
+                                            form
+                                                .control(_mobileNumberKey)
+                                                .value = value;
+                                          },
+                                          errorMessage: field.errorText,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ),
-                          ]),
-                    ),
+                              ]),
+                        ])),
                   ],
                 );
               },
@@ -1034,5 +1074,257 @@ class CustomIndividualDetailsPageState
         : null;
 
     return date;
+  }
+
+  displayUniqueIdCount(ThemeData theme, FormGroup form) {
+    int? idCount;
+    return BlocListener<UniqueIdBloc, UniqueIdState>(
+      listener: (context, state) {
+        state.maybeWhen(
+            orElse: () {},
+            idCount: (availableIdCount, totalCount) {
+              idCount = availableIdCount;
+              if (availableIdCount != 0 &&
+                  availableIdCount <
+                      RegistrationDeliverySingleton().beneficiaryIdMinCount!) {
+                showLowIdsAlert(
+                    context: context,
+                    localizations: localizations,
+                    availableCount: availableIdCount,
+                    shouldProceedFurther: (bool proceed) {});
+              } else if (availableIdCount <= 0) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  // if (form.control(_idNumberKey).value == null) {
+                  //   showNoIdsAlert(
+                  //       context: context,
+                  //       showSkip: form.control(_idTypeKey).value ==
+                  //               IdentifierTypes.uniqueBeneficiaryID.toValue()
+                  //           ? false
+                  //           : true,
+                  //       localizations: localizations,
+                  //       shouldProceedFurther: (bool skip) {});
+                  // }
+                });
+                setState(() {
+                  // if (form.control(_idTypeKey).value ==
+                  //         IdentifierTypes.uniqueBeneficiaryID.toValue() &&
+                  //     form.control(_idNumberKey).value == null) {
+                  //   form.control(_idTypeKey).value = null;
+                  //   form.control(_idNumberKey).value = null;
+                  // }
+                });
+              }
+            },
+            ids: (ids) {
+              _isProgressDialogVisible = false;
+            },
+            aUniqueId: (uniqueId) {
+              // form.control(_idNumberKey).value = uniqueId.id;
+            },
+            fetching: (currentCount, totalCount) {
+              if (_isProgressDialogVisible == false) {
+                _progressDialog.showProgressDialog(
+                  context: context,
+                  localizations: RegistrationDeliveryLocalization.of(context),
+                  currentCount: currentCount,
+                  totalCount: totalCount,
+                  theme: Theme.of(context),
+                );
+                _isProgressDialogVisible = true;
+              } else {
+                // To update progress:
+                _progressDialog.updateProgressDialog(
+                  currentCount: currentCount,
+                  totalCount: totalCount,
+                );
+              }
+            },
+            failed: (String? error) {
+              _progressDialog.closeProgressDialog();
+              _isProgressDialogVisible = false;
+              if (error != null) {
+                Toast.showToast(context,
+                    message: localizations.translate(
+                      i18.beneficiaryDetails.failedBeneficiaryIds,
+                    ),
+                    type: ToastType.error);
+              }
+            },
+            limitExceeded: (String? error) {
+              _progressDialog.closeProgressDialog();
+              _isProgressDialogVisible = false;
+              if (error != null) {
+                showCustomPopup(
+                    context: context,
+                    builder: (ctx) {
+                      return Popup(
+                        type: PopUpType.alert,
+                        onCrossTap: () {
+                          Navigator.of(ctx).pop();
+                        },
+                        actions: [
+                          DigitButton(
+                            capitalizeLetters: false,
+                            type: DigitButtonType.primary,
+                            size: DigitButtonSize.large,
+                            mainAxisSize: MainAxisSize.max,
+                            onPressed: () {
+                              Navigator.pop(ctx);
+                              context.read<UniqueIdBloc>().add(
+                                    const UniqueIdEvent
+                                        .fetchUniqueIdsFromServer(
+                                        reFetch: true),
+                                  );
+                            },
+                            label: localizations.translate(
+                                i18.beneficiaryDetails.beneficiaryIdsReFetch),
+                          ),
+                          DigitButton(
+                            capitalizeLetters: false,
+                            type: DigitButtonType.secondary,
+                            size: DigitButtonSize.large,
+                            mainAxisSize: MainAxisSize.max,
+                            onPressed: () {
+                              Navigator.pop(ctx);
+                            },
+                            label: localizations.translate(
+                              i18.common.corecommonclose,
+                            ),
+                          ),
+                        ],
+                        title: localizations.translate(
+                            i18.beneficiaryDetails.beneficiaryIdsLimitError),
+                      );
+                    });
+              }
+            },
+            noInternet: () {
+              _progressDialog.closeProgressDialog();
+              _isProgressDialogVisible = false;
+              showCustomPopup(
+                  context: context,
+                  builder: (ctx) {
+                    return Popup(
+                      type: PopUpType.alert,
+                      onCrossTap: () {
+                        Navigator.of(ctx).pop();
+                      },
+                      actions: [
+                        DigitButton(
+                          capitalizeLetters: false,
+                          type: DigitButtonType.primary,
+                          size: DigitButtonSize.large,
+                          mainAxisSize: MainAxisSize.max,
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+
+                            context.read<UniqueIdBloc>().add(
+                                  const UniqueIdEvent
+                                      .fetchUniqueIdsFromServer(),
+                                );
+                          },
+                          label: localizations.translate(
+                            i18.common.coreCommonDataSyncRetry,
+                          ),
+                        ),
+                        DigitButton(
+                          capitalizeLetters: false,
+                          type: DigitButtonType.secondary,
+                          size: DigitButtonSize.large,
+                          mainAxisSize: MainAxisSize.max,
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+                          },
+                          label: localizations.translate(
+                            i18.common.corecommonclose,
+                          ),
+                        ),
+                      ],
+                      title: localizations
+                          .translate(i18.common.coreCommonNoInternet),
+                      description: localizations.translate(
+                          i18.beneficiaryDetails.noInternetBeneficiaryIdsText),
+                    );
+                  });
+            });
+      },
+      child: BlocBuilder<UniqueIdBloc, UniqueIdState>(
+        builder: (context, state) {
+          if (state is! LoadingState && state is FetchedIdCountState ||
+              idCount != null) {
+            state.maybeWhen(
+              orElse: () {},
+              idCount: (availableIdCount, totalCount) {
+                idCount = availableIdCount;
+              },
+            );
+          }
+          return idCount != null
+              ? Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1,
+                      color: theme.colorTheme.text.disabled,
+                    ),
+                    borderRadius:
+                        const BorderRadius.all(Radius.circular(spacer2)),
+                    color: theme.colorTheme.primary.primaryBg,
+                  ),
+                  margin: const EdgeInsets.only(left: spacer2),
+                  padding: const EdgeInsets.all(spacer2),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        localizations.translate(
+                            i18.beneficiaryDetails.availableBeneficiaryIdsText),
+                        style: theme
+                            .digitTextTheme(context)
+                            .bodyXS
+                            .copyWith(color: theme.colorTheme.text.primary),
+                      ),
+                      Text(
+                        " $idCount",
+                        style: theme.digitTextTheme(context).headingXS.copyWith(
+                            color: idCount! <
+                                    RegistrationDeliverySingleton()
+                                        .beneficiaryIdMinCount!
+                                ? theme.colorTheme.alert.error
+                                : theme.colorTheme.primary.primary2),
+                      ),
+                    ],
+                  ),
+                )
+              : const Offstage();
+        },
+      ),
+    );
+  }
+
+  void getIdNumberIfExists(BeneficiaryRegistrationState state, FormGroup form) {
+    final individual = state.mapOrNull<IndividualModel>(
+      editIndividual: (value) {
+        if (value.projectBeneficiaryModel?.tag != null) {
+          context.read<DigitScannerBloc>().add(DigitScannerScanEvent(
+              barCode: [], qrCode: [value.projectBeneficiaryModel!.tag!]));
+        }
+
+        return value.individualModel;
+      },
+      create: (value) {
+        return value.individualModel;
+      },
+      summary: (value) {
+        return value.individualModel;
+      },
+    );
+    if (individual != null) {
+      var existingId = individual.identifiers?.lastWhereOrNull((id) =>
+          id.identifierType == IdentifierTypes.uniqueBeneficiaryID.toValue());
+
+      if (existingId != null) {
+        // form.control(_idNumberKey).value = existingId.identifierId;
+      }
+    }
   }
 }

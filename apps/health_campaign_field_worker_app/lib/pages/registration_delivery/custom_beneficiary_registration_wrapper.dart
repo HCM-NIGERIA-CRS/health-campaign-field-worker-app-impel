@@ -1,16 +1,20 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:digit_data_model/data/data_repository.dart';
 import 'package:digit_data_model/models/entities/individual.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:registration_delivery/blocs/household_overview/household_overview.dart';
 import 'package:registration_delivery/blocs/search_households/search_households.dart';
+import 'package:registration_delivery/blocs/unique_id/unique_id.dart';
 import 'package:registration_delivery/data/repositories/local/individual_global_search.dart';
+import 'package:registration_delivery/data/repositories/remote/unique_id_pool.dart';
 import 'package:registration_delivery/models/entities/household.dart';
 import 'package:registration_delivery/models/entities/household_member.dart';
 import 'package:registration_delivery/models/entities/project_beneficiary.dart';
 import 'package:registration_delivery/models/entities/referral.dart';
 import 'package:registration_delivery/models/entities/side_effect.dart';
 import 'package:registration_delivery/models/entities/task.dart';
+import 'package:registration_delivery/models/entities/unique_id_pool.dart';
 import 'package:registration_delivery/utils/extensions/extensions.dart';
 import 'package:registration_delivery/utils/utils.dart';
 
@@ -36,6 +40,8 @@ class CustomBeneficiaryRegistrationWrapperPage extends StatelessWidget
     final beneficiaryType = RegistrationDeliverySingleton().beneficiaryType;
     final individual =
         context.repository<IndividualModel, IndividualSearchModel>(context);
+    final uniqueIdRepo = context
+        .read<LocalRepository<UniqueIdPoolModel, UniqueIdPoolSearchModel>>();
 
     final household =
         context.repository<HouseholdModel, HouseholdSearchModel>(context);
@@ -108,16 +114,26 @@ class CustomBeneficiaryRegistrationWrapperPage extends StatelessWidget
             projectId: RegistrationDeliverySingleton().selectedProject!.id,
             projectBeneficiaryType:
                 RegistrationDeliverySingleton().beneficiaryType!)),
-      child: BlocProvider(
-        create: (context) => CustomBeneficiaryRegistrationBloc(
-          initialState,
-          individualRepository: individual,
-          householdRepository: household,
-          householdMemberRepository: householdMember,
-          projectBeneficiaryRepository: projectBeneficiary,
-          taskDataRepository: task,
-          beneficiaryType: beneficiaryType!,
-        ),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => UniqueIdBloc(
+                uniqueIdPoolLocalRepository: uniqueIdRepo,
+                uniqueIdPoolRemoteRepository:
+                    context.read<UniqueIdPoolRemoteRepository>()),
+          ),
+          BlocProvider(
+            create: (context) => CustomBeneficiaryRegistrationBloc(initialState,
+                individualRepository: individual,
+                householdRepository: household,
+                householdMemberRepository: householdMember,
+                projectBeneficiaryRepository: projectBeneficiary,
+                taskDataRepository: task,
+                beneficiaryType: beneficiaryType!,
+                uniqueIdPoolLocalRepository: uniqueIdRepo),
+            child: this,
+          ),
+        ],
         child: this,
       ),
     );

@@ -72,6 +72,11 @@ class CustomViewBeneficiaryCardState
         isFrozen: true,
       ),
       DigitTableColumn(
+        header:
+            localizations.translate(i18.beneficiaryDetails.beneficiaryIdHeader),
+        cellValue: 'beneficiaryId',
+      ),
+      DigitTableColumn(
         header: localizations.translate(i18.beneficiaryDetails.deliveryHeader),
         cellValue: 'delivery',
       ),
@@ -185,6 +190,17 @@ class CustomViewBeneficiaryCardState
                   : null,
             ].whereNotNull().join(' '),
             cellKey: 'beneficiary',
+          ),
+          DigitTableData(
+            e.identifiers!
+                    .lastWhereOrNull(
+                      (ind) =>
+                          ind.identifierType ==
+                          IdentifierTypes.uniqueBeneficiaryID.toValue(),
+                    )
+                    ?.identifierId ??
+                '--',
+            cellKey: 'beneficiaryId',
           ),
           DigitTableData(
             isHead
