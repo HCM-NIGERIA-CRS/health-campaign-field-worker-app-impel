@@ -13,11 +13,13 @@ import 'package:registration_delivery/blocs/search_households/search_households.
 import 'package:registration_delivery/models/entities/status.dart';
 import 'package:registration_delivery/models/entities/task.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
+import '../../utils/extensions/extensions.dart';
 import 'package:registration_delivery/utils/utils.dart';
 import 'package:registration_delivery/widgets/beneficiary/beneficiary_card.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 import '../../utils/i18_key_constants.dart' as i18_local;
 import '../../utils/registration_delivery/utils_smc.dart';
+import '../../utils/registration_delivery/utils_smc.dart' as util_local;
 
 class CustomViewBeneficiaryCard extends LocalizedStatefulWidget {
   final HouseholdMemberWrapper householdMember;
@@ -162,12 +164,14 @@ class CustomViewBeneficiaryCardState
         );
 
         final isBeneficiaryRefused = checkIfBeneficiaryRefused(taskData);
-        final isBeneficiaryIneligible = checkBeneficiaryInEligibleSMC(taskData);
-        final isBeneficiaryReferred = checkBeneficiaryReferredSMC(taskData);
+        final isBeneficiaryIneligible =
+            checkBeneficiaryInEligibleSMC(taskData, context.selectedCycle);
+        final isBeneficiaryReferred =
+            checkBeneficiaryReferredSMC(taskData, context.selectedCycle);
         final isHead = householdMember.headOfHousehold?.clientReferenceId ==
             e.clientReferenceId;
 
-        final isStatusReset = checkStatus(taskData, currentCycle);
+        final isStatusReset = util_local.checkStatusSMC(taskData, currentCycle);
 
         final rowTableData = [
           DigitTableData(
@@ -180,31 +184,36 @@ class CustomViewBeneficiaryCardState
             cellKey: 'beneficiary',
           ),
           DigitTableData(
-            isHead
-                ? localizations.translate(
-                    i18_local.householdOverView
-                        .householdOverViewHouseholderHeadLabel,
-                  )
-                : getTableCellText(
-                    CustomStatusKeys(
-                      isNotEligible,
-                      isBeneficiaryRefused,
-                      isBeneficiaryReferred,
-                      isBeneficiaryIneligible,
-                      isStatusReset,
-                    ),
-                    taskData,
-                  ),
+            "",
             cellKey: 'delivery',
-            style: TextStyle(
-              color: getTableCellTextColor(
-                isNotEligible: isNotEligible,
-                taskdata: taskData,
-                isBeneficiaryRefused:
-                    isBeneficiaryRefused || isBeneficiaryReferred,
-                isBeneficiaryIneligible: isBeneficiaryIneligible,
-                isStatusReset: isStatusReset,
-                theme: theme,
+            widget: Text(
+              isHead
+                  ? localizations.translate(
+                      i18_local.householdOverView
+                          .householdOverViewHouseholderHeadLabel,
+                    )
+                  : getTableCellText(
+                      CustomStatusKeys(
+                        isNotEligible,
+                        isBeneficiaryRefused,
+                        isBeneficiaryReferred,
+                        isBeneficiaryIneligible,
+                        isStatusReset,
+                      ),
+                      taskData,
+                    ),
+              style: TextStyle(
+                color: isHead
+                    ? theme.colorScheme.surfaceTint
+                    : getTableCellTextColor(
+                        isNotEligible: isNotEligible,
+                        taskdata: taskData,
+                        isBeneficiaryRefused:
+                            isBeneficiaryRefused || isBeneficiaryReferred,
+                        isBeneficiaryIneligible: isBeneficiaryIneligible,
+                        isStatusReset: isStatusReset,
+                        theme: theme,
+                      ),
               ),
             ),
           ),
