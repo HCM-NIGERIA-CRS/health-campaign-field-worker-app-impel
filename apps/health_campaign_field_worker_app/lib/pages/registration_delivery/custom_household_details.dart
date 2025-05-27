@@ -59,8 +59,8 @@ class CustomHouseHoldDetailsPageState
   final TextEditingController _childrenController = TextEditingController();
   final TextEditingController _memberController = TextEditingController();
 
-  submitWithNoChildren(
-      HouseholdModel? householdModel, AddressModel? addressModel) async {
+  submitWithNoChildren(HouseholdModel? householdModel,
+      AddressModel? addressModel, childCount) async {
     final submit = await showDialog(
       context: context,
       builder: (ctx) => Popup(
@@ -146,7 +146,11 @@ class CustomHouseHoldDetailsPageState
           additionalFields: HouseholdAdditionalFields(version: 1, fields: [
             const AdditionalField(
               "caregiver_consent_registration",
-              false,
+              true,
+            ),
+            AdditionalField(
+              "child_count",
+              childCount.toString(),
             ),
           ]));
 
@@ -298,7 +302,7 @@ class CustomHouseHoldDetailsPageState
                             ) async {
                               if (children <= 0) {
                                 await submitWithNoChildren(
-                                    householdModel, addressModel);
+                                    householdModel, addressModel, children);
                                 return;
                               }
 
