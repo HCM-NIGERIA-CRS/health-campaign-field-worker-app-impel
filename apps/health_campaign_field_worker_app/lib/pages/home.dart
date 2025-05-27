@@ -628,19 +628,12 @@ class _HomePageState extends LocalizedState<HomePage> {
                     LocalRepository<HFReferralModel, HFReferralSearchModel>>(),
 
                 context.read<
-                    LocalRepository<HFReferralModel, HFReferralSearchModel>>(),
-
-                context.read<
                     LocalRepository<AttendanceLogModel,
                         AttendanceLogSearchModel>>(),
 
                 context.read<
                     LocalRepository<PgrServiceModel, PgrServiceSearchModel>>(),
-                context.read<
-                    LocalRepository<HFReferralModel, HFReferralSearchModel>>(),
 
-                context
-                    .read<LocalRepository<ServiceModel, ServiceSearchModel>>(),
                 context.read<
                     LocalRepository<HouseholdModel, HouseholdSearchModel>>(),
                 context.read<
@@ -664,7 +657,6 @@ class _HomePageState extends LocalizedState<HomePage> {
                     LocalRepository<IndividualModel, IndividualSearchModel>>(),
                 // context.read<
                 //     LocalRepository<UserActionModel, UserActionSearchModel>>(),
-                context.read<LocalRepository<StockModel, StockSearchModel>>(),
               ],
               remoteRepositories: [
                 // INFO : Need to add repo repo of package Here
@@ -675,14 +667,8 @@ class _HomePageState extends LocalizedState<HomePage> {
                     RemoteRepository<HFReferralModel, HFReferralSearchModel>>(),
 
                 context.read<
-                    RemoteRepository<HFReferralModel, HFReferralSearchModel>>(),
-
-                context.read<
                     RemoteRepository<AttendanceLogModel,
                         AttendanceLogSearchModel>>(),
-
-                context.read<
-                    RemoteRepository<HFReferralModel, HFReferralSearchModel>>(),
 
                 context.read<
                     RemoteRepository<HouseholdModel, HouseholdSearchModel>>(),
@@ -707,8 +693,7 @@ class _HomePageState extends LocalizedState<HomePage> {
                     RemoteRepository<IndividualModel, IndividualSearchModel>>(),
                 context.read<
                     RemoteRepository<PgrServiceModel, PgrServiceSearchModel>>(),
-                context
-                    .read<RemoteRepository<ServiceModel, ServiceSearchModel>>()
+
                 // context.read<
                 //     RemoteRepository<UserActionModel, UserActionSearchModel>>(),
               ],
