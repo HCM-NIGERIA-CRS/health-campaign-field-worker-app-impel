@@ -1,4 +1,5 @@
-import 'package:auto_route/auto_route.dart';
+import 'package:digit_components/widgets/atoms/digit_toaster.dart';
+import 'package:digit_components/widgets/digit_dialog.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/widgets/atoms/input_wrapper.dart';
@@ -10,17 +11,17 @@ import 'package:inventory_management/models/entities/stock.dart';
 import 'package:inventory_management/models/entities/transaction_reason.dart';
 import 'package:inventory_management/models/entities/transaction_type.dart';
 import 'package:inventory_management/utils/i18_key_constants.dart' as i18;
+import '../../utils/i18_key_constants.dart' as i18_local;
+import 'package:registration_delivery/utils/i18_key_constants.dart' as i18_reg;
 import 'package:inventory_management/utils/utils.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:collection/collection.dart';
 
 import '../../blocs/auth/auth.dart';
 import '../../router/app_router.dart';
 import '../../utils/constants.dart';
 import '../../utils/extensions/extensions.dart';
-import 'package:collection/collection.dart';
-
-import '../../widgets/custom_back_navigation.dart';
 
 @RoutePage()
 class ViewStockRecordsLGAPage extends LocalizedStatefulWidget {
@@ -40,42 +41,140 @@ class ViewStockRecordsLGAPage extends LocalizedStatefulWidget {
 }
 
 class _ViewStockRecordsLGAPageState
-    extends LocalizedState<ViewStockRecordsLGAPage> {
-  late final FormGroup _form;
+    extends LocalizedState<ViewStockRecordsLGAPage>
+    with SingleTickerProviderStateMixin {
+  late final List<FormGroup> _forms;
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    _form = FormGroup({
-      'quantityReceived': FormControl<int>(
-        validators: [
-          Validators.required,
-          Validators.min(1),
-        ],
-      ),
-      'comments': FormControl<String>(),
-    });
-    final recordStockBloc = BlocProvider.of<RecordStockBloc>(context);
+    _forms = widget.stockRecords
+        .map((_) => FormGroup({
+              'quantityReceived': FormControl<int>(
+                validators: [
+                  Validators.required,
+                  Validators.min(1),
+                ],
+              ),
+              'comments': FormControl<String>(),
+            }))
+        .toList();
+    _tabController =
+        TabController(length: widget.stockRecords.length, vsync: this);
   }
 
   @override
   void dispose() {
-    _form.dispose();
+    for (final form in _forms) {
+      form.dispose();
+    }
+    _tabController.dispose();
     super.dispose();
   }
 
-  Future<void> _handleSubmission() async {
-    if (_form.valid) {
+  Future<void> _handleSubmission(List<StockModel> stockRecords) async {
+    final theme = Theme.of(context);
+    // Validate current form
+    final currentForm = _forms[_tabController.index];
+    currentForm.markAllAsTouched();
+    final quantityReceived = currentForm.control('quantityReceived').value;
+    final stockQuantity =
+        int.tryParse(stockRecords[_tabController.index].quantity ?? '0') ?? 0;
+    final currentComment = currentForm.control('comments').value;
+    if ((quantityReceived == null ||
+            (quantityReceived is int && quantityReceived < stockQuantity)) &&
+        (currentComment == null || currentComment.trim() == '')) {
+      await DigitToast.show(context,
+          options: DigitToastOptions('Comment is required', true, theme));
+      return;
+    }
+    if (quantityReceived == null ||
+        (quantityReceived is int && quantityReceived > stockQuantity)) {
+      await DigitToast.show(context,
+          options: DigitToastOptions(
+              'Received quantity can not be more than issued quantity',
+              true,
+              theme));
+      return;
+    }
+
+    if (!currentForm.valid) {
+      return;
+    }
+
+    if (_tabController.index < widget.stockRecords.length - 1) {
+      // Move to next tab
+      _tabController.animateTo(_tabController.index + 1);
+    } else {
+      final shouldSubmit = await DigitDialog.show<bool>(
+        context,
+        options: DigitDialogOptions(
+          titleText: localizations.translate(
+            i18_reg.deliverIntervention.dialogTitle,
+          ),
+          contentText: localizations.translate(
+            i18_reg.deliverIntervention.dialogContent,
+          ),
+          primaryAction: DigitDialogActions(
+            label: localizations.translate(
+              i18.common.coreCommonSubmit,
+            ),
+            action: (ctx) {
+              Navigator.of(ctx, rootNavigator: true).pop(true);
+            },
+          ),
+          secondaryAction: DigitDialogActions(
+            label: localizations.translate(
+              i18.common.coreCommonGoback,
+            ),
+            action: (ctx) {
+              Navigator.of(ctx, rootNavigator: true).pop(false);
+            },
+          ),
+        ),
+      );
+
+      if (!shouldSubmit!) return;
+      // Final submission - validate all forms
+      bool allValid = true;
+      for (int i = 0; i < _forms.length; i++) {
+        _forms[i].markAllAsTouched();
+        if (!_forms[i].valid) {
+          allValid = false;
+          _tabController.animateTo(i);
+          break;
+        }
+      }
+
+      if (!allValid) {
+        return;
+      }
+
+      // Proceed with final submission
+      context.read<RecordStockBloc>().add(
+            RecordStockSaveTransactionDetailsEvent(
+              dateOfRecord: DateTime.now(),
+              facilityModel: FacilityModel(
+                id: context.loggedInUserUuid,
+              ),
+              primaryId: context.loggedInUserUuid,
+              primaryType: "STAFF",
+            ),
+          );
+
       final updatedStocks = widget.stockRecords.map((stock) {
         final additionalFields = stock.additionalFields?.fields ?? [];
+        final form = _forms[widget.stockRecords.indexOf(stock)];
 
         final newFields = [
           ...additionalFields.where((field) =>
               field.key != 'quantityReceived' && field.key != 'comments'),
           AdditionalField('quantityReceived',
-              _form.control('quantityReceived').value.toString()),
-          if (_form.control('comments').value != null)
-            AdditionalField('comments', _form.control('comments').value),
+              form.control('quantityReceived').value.toString()),
+          if (form.control('comments').value != null)
+            AdditionalField('comments', form.control('comments').value),
+          const AdditionalField('received', 'true'),
         ];
 
         return stock.copyWith(
@@ -84,10 +183,11 @@ class _ViewStockRecordsLGAPageState
           clientReferenceId: IdGen.i.identifier,
           transactionType: TransactionType.received.toValue(),
           transactionReason: TransactionReason.received.toValue(),
-          quantity: _form.control('quantityReceived').value.toString(),
+          quantity: form.control('quantityReceived').value.toString(),
           additionalFields: stock.additionalFields?.copyWith(
             fields: newFields,
           ),
+          dateOfEntry: DateTime.now().millisecondsSinceEpoch,
           auditDetails: AuditDetails(
             createdBy: InventorySingleton().loggedInUserUuid,
             createdTime: context.millisecondsSinceEpoch(),
@@ -113,221 +213,237 @@ class _ViewStockRecordsLGAPageState
               const RecordStockCreateStockEntryEvent(),
             );
 
-        final totalQty =
-            int.parse(_form.control('quantityReceived').value.toString());
+        final totalQty = int.parse(_forms[updatedStocks.indexOf(stock)]
+            .control('quantityReceived')
+            .value
+            .toString());
 
-        int currentSpaq1Count = 0;
-        int currentSpaq2Count = 0;
+        int spaq1Count = 0;
+        int spaq2Count = 0;
 
         String productName = stock.additionalFields?.fields
             .firstWhereOrNull((element) => element.key == "productName")
             ?.value;
-        // Accumulate quantities based on product
+
         if (productName == Constants.spaq1) {
-          currentSpaq1Count += totalQty;
+          spaq1Count = totalQty;
         } else if (productName == Constants.spaq2) {
-          currentSpaq2Count += totalQty;
+          spaq2Count = totalQty;
         }
         context.read<AuthBloc>().add(
               AuthAddSpaqCountsEvent(
-                spaq1Count: currentSpaq1Count,
-                spaq2Count: currentSpaq2Count,
+                spaq1Count: spaq1Count,
+                spaq2Count: spaq2Count,
                 blueVasCount: 0,
                 redVasCount: 0,
               ),
             );
-        // _tabController.animateTo(_tabController.index + 1);
-
-        context.read<RecordStockBloc>().add(
-              const RecordStockCreateStockEntryEvent(),
-            );
       }
-
+      await Future.delayed(const Duration(milliseconds: 500));
       context.router.push(
         CustomAcknowledgementRoute(
             mrnNumber: widget.mrnNumber,
             stockRecords: updatedStocks,
             entryType: StockRecordEntryType.receipt),
       );
-    } else {
-      _form.markAllAsTouched();
     }
+  }
+
+  Widget _buildProductTab(StockModel stock) {
+    final index = widget.stockRecords.indexOf(stock);
+    final productName = stock.additionalFields?.fields
+            .firstWhere(
+              (field) => field.key == 'productName',
+              orElse: () => const AdditionalField('productName', ''),
+            )
+            .value
+            ?.toString() ??
+        '';
+
+    return ReactiveForm(
+      formGroup: _forms[index],
+      child: Column(
+        children: [
+          DigitCard(
+            padding: const EdgeInsets.all(16),
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    productName,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: productName == 'SPAQ 1' || productName == 'SPAQ 2'
+                          ? Colors.orange
+                          : productName == 'Red VAS'
+                              ? Colors.red
+                              : productName == 'Blue VAS'
+                                  ? Colors.blue
+                                  : Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  InputField(
+                    type: InputType.text,
+                    label: localizations.translate(
+                        i18_local.inventoryReportDetails.waybillNumberText),
+                    initialValue: stock.wayBillNumber ?? '',
+                    isDisabled: true,
+                    readOnly: true,
+                  ),
+                  const SizedBox(height: 12),
+                  InputField(
+                    type: InputType.text,
+                    label: localizations.translate(
+                        i18_local.inventoryReportDetails.batchNumberText),
+                    initialValue: stock.additionalFields?.fields
+                            .firstWhere(
+                              (field) => field.key == 'batchNumber',
+                              orElse: () => AdditionalField('batchNumber', ''),
+                            )
+                            .value
+                            ?.toString() ??
+                        '',
+                    isDisabled: true,
+                    readOnly: true,
+                  ),
+                  const SizedBox(height: 12),
+                  InputField(
+                    type: InputType.text,
+                    label: localizations.translate(i18_local
+                        .inventoryReportDetails.quantityReceivedByWarehouse),
+                    initialValue: stock.quantity ?? '',
+                    isDisabled: true,
+                    readOnly: true,
+                  ),
+                  const SizedBox(height: 12),
+                  ReactiveWrapperField(
+                    formControlName: 'quantityReceived',
+                    builder: (field) => InputField(
+                      type: InputType.text,
+                      label: localizations.translate(i18_local
+                          .inventoryReportDetails.actualQuantityReceived),
+                      errorMessage: field.errorText,
+                      keyboardType: TextInputType.number,
+                      onChange: (value) {
+                        if (value != null && value.isNotEmpty) {
+                          field.control.value = int.tryParse(value);
+                        } else {
+                          field.control.value = null;
+                        }
+                      },
+                    ),
+                    validationMessages: {
+                      'required': (_) => 'Quantity is required',
+                      'min': (_) => 'Must be at least 1',
+                      'number': (_) => 'Must be a valid number',
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  ReactiveWrapperField(
+                    formControlName: 'comments',
+                    builder: (field) => InputField(
+                      type: InputType.textArea,
+                      label: localizations.translate(
+                          i18_local.inventoryReportDetails.commentsText),
+                      errorMessage: field.errorText,
+                      onChange: (value) => field.control.value = value,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // Assumption sender receiver Id not changed ,
-    //using the same as downloaded stock data
-    // and this flow is for stock receipt for LGA
     final senderIdToShowOnTab = widget.stockRecords.first.senderId;
 
     return Scaffold(
-      body: ScrollableContent(
-        header: const Column(
-          children: [
-            CustomBackNavigationHelpHeaderWidget(),
-          ],
+      appBar: AppBar(
+        title: Text('Stock Records - ${widget.mrnNumber}'),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: widget.stockRecords.map((stock) {
+            final productName = stock.additionalFields?.fields
+                    .firstWhere(
+                      (field) => field.key == 'productName',
+                      orElse: () => AdditionalField('productName', ''),
+                    )
+                    .value
+                    ?.toString() ??
+                '';
+            return Tab(text: productName);
+          }).toList(),
         ),
+      ),
+      body: Column(
         children: [
-          ReactiveForm(
-            formGroup: _form,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
+          DigitCard(
+            padding: const EdgeInsets.all(16),
+            margin: const EdgeInsets.all(16),
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  DigitCard(
-                    padding: const EdgeInsets.all(16),
+                  Text(
+                    localizations.translate(i18_local
+                        .inventoryReportDetails.stockReceiptDetailsText),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Stock Receipt Details',
-                            style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              const Expanded(child: Text('MIN Number')),
-                              Expanded(child: Text(widget.mrnNumber)),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              const Expanded(child: Text('Received from')),
-                              // TODO : verify this , showing senderId here
-                              Expanded(
-                                child: Text(localizations
-                                    .translate('FAC_$senderIdToShowOnTab')),
-                              ),
-                            ],
-                          ),
-                        ],
+                      Expanded(
+                          child: Text(localizations.translate(i18_local
+                              .acknowledgementSuccess.mrnNumberLabel))),
+                      Expanded(child: Text(widget.mrnNumber)),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                          child: Text(localizations.translate(i18_local
+                              .inventoryReportDetails.receivedFromText))),
+                      Expanded(
+                        child: Text(localizations
+                            .translate('FAC_$senderIdToShowOnTab')),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
-                  ...widget.stockRecords.map((stock) {
-                    final productName = stock.additionalFields?.fields
-                            .firstWhere(
-                              (field) => field.key == 'productName',
-                              orElse: () =>
-                                  const AdditionalField('productName', ''),
-                            )
-                            .value
-                            ?.toString() ??
-                        '';
-
-                    return Column(
-                      children: [
-                        DigitCard(
-                          padding: const EdgeInsets.all(16),
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  productName,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: productName == 'SPAQ 1' ||
-                                            productName == 'SPAQ 2'
-                                        ? Colors.orange
-                                        : productName == 'Red VAS'
-                                            ? Colors.red
-                                            : productName == 'Blue VAS'
-                                                ? Colors.blue
-                                                : Theme.of(context)
-                                                    .primaryColor,
-                                  ),
-                                ),
-                                const SizedBox(height: 12),
-                                InputField(
-                                  type: InputType.text,
-                                  label: 'Waybill Number *',
-                                  initialValue: stock.wayBillNumber ?? '',
-                                  isDisabled: true,
-                                  readOnly: true,
-                                ),
-                                const SizedBox(height: 12),
-                                InputField(
-                                  type: InputType.text,
-                                  label: 'Batch Number',
-                                  initialValue: stock.additionalFields?.fields
-                                          .firstWhere(
-                                            (field) =>
-                                                field.key == 'batchNumber',
-                                            orElse: () => const AdditionalField(
-                                                'batchNumber', ''),
-                                          )
-                                          .value
-                                          ?.toString() ??
-                                      '',
-                                  isDisabled: true,
-                                  readOnly: true,
-                                ),
-                                const SizedBox(height: 12),
-                                InputField(
-                                  type: InputType.text,
-                                  label: 'Quantity Sent by Warehouse *',
-                                  initialValue: stock.quantity ?? '',
-                                  isDisabled: true,
-                                  readOnly: true,
-                                ),
-                                const SizedBox(height: 12),
-                                ReactiveWrapperField(
-                                  formControlName: 'quantityReceived',
-                                  builder: (field) => InputField(
-                                    type: InputType.text,
-                                    label: 'Actual Quantity Received *',
-                                    errorMessage: field.errorText,
-                                    keyboardType: TextInputType.number,
-                                    onChange: (value) {
-                                      if (value != null && value.isNotEmpty) {
-                                        field.control.value =
-                                            int.tryParse(value);
-                                      } else {
-                                        field.control.value = null;
-                                      }
-                                    },
-                                  ),
-                                  validationMessages: {
-                                    'required': (_) => 'Quantity is required',
-                                    'min': (_) => 'Must be at least 1',
-                                    'number': (_) => 'Must be a valid number',
-                                  },
-                                ),
-                                const SizedBox(height: 12),
-                                ReactiveWrapperField(
-                                  formControlName: 'comments',
-                                  builder: (field) => InputField(
-                                    type: InputType.textArea,
-                                    label: 'Comments',
-                                    errorMessage: field.errorText,
-                                    onChange: (value) =>
-                                        field.control.value = value,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                      ],
-                    );
-                  }).toList(),
-                  const SizedBox(height: 24),
-                  DigitButton(
-                    label: localizations.translate(i18.common.coreCommonSubmit),
-                    onPressed: _handleSubmission,
-                    type: DigitButtonType.primary,
-                    size: DigitButtonSize.large,
-                  ),
                 ],
               ),
+            ],
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: widget.stockRecords.map((stock) {
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: _buildProductTab(stock),
+                );
+              }).toList(),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: DigitButton(
+              label: _tabController.index < widget.stockRecords.length - 1
+                  ? localizations.translate(i18.common.coreCommonNext)
+                  : localizations.translate(i18.common.coreCommonSubmit),
+              onPressed: () => _handleSubmission(widget.stockRecords),
+              type: DigitButtonType.primary,
+              size: DigitButtonSize.large,
             ),
           ),
         ],
@@ -335,3 +451,344 @@ class _ViewStockRecordsLGAPageState
     );
   }
 }
+
+
+
+
+// import 'package:auto_route/auto_route.dart';
+// import 'package:digit_data_model/data_model.dart';
+// import 'package:digit_ui_components/digit_components.dart';
+// import 'package:digit_ui_components/widgets/atoms/input_wrapper.dart';
+// import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:inventory_management/blocs/record_stock.dart';
+// import 'package:inventory_management/models/entities/stock.dart';
+// import 'package:inventory_management/models/entities/transaction_reason.dart';
+// import 'package:inventory_management/models/entities/transaction_type.dart';
+// import 'package:inventory_management/utils/i18_key_constants.dart' as i18;
+// import 'package:inventory_management/utils/utils.dart';
+// import 'package:registration_delivery/widgets/localized.dart';
+// import 'package:reactive_forms/reactive_forms.dart';
+
+// import '../../blocs/auth/auth.dart';
+// import '../../router/app_router.dart';
+// import '../../utils/constants.dart';
+// import '../../utils/extensions/extensions.dart';
+// import 'package:collection/collection.dart';
+
+// import '../../widgets/custom_back_navigation.dart';
+
+// @RoutePage()
+// class ViewStockRecordsLGAPage extends LocalizedStatefulWidget {
+//   final String mrnNumber;
+//   final List<StockModel> stockRecords;
+
+//   const ViewStockRecordsLGAPage({
+//     super.key,
+//     super.appLocalizations,
+//     required this.mrnNumber,
+//     required this.stockRecords,
+//   });
+
+//   @override
+//   State<ViewStockRecordsLGAPage> createState() =>
+//       _ViewStockRecordsLGAPageState();
+// }
+
+// class _ViewStockRecordsLGAPageState
+//     extends LocalizedState<ViewStockRecordsLGAPage> {
+//   late final FormGroup _form;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _form = FormGroup({
+//       'quantityReceived': FormControl<int>(
+//         validators: [
+//           Validators.required,
+//           Validators.min(1),
+//         ],
+//       ),
+//       'comments': FormControl<String>(),
+//     });
+//     final recordStockBloc = BlocProvider.of<RecordStockBloc>(context);
+//   }
+
+//   @override
+//   void dispose() {
+//     _form.dispose();
+//     super.dispose();
+//   }
+
+//   Future<void> _handleSubmission() async {
+//     if (_form.valid) {
+//       final updatedStocks = widget.stockRecords.map((stock) {
+//         final additionalFields = stock.additionalFields?.fields ?? [];
+
+//         final newFields = [
+//           ...additionalFields.where((field) =>
+//               field.key != 'quantityReceived' && field.key != 'comments'),
+//           AdditionalField('quantityReceived',
+//               _form.control('quantityReceived').value.toString()),
+//           if (_form.control('comments').value != null)
+//             AdditionalField('comments', _form.control('comments').value),
+//         ];
+
+//         return stock.copyWith(
+//           id: null,
+//           rowVersion: 1,
+//           clientReferenceId: IdGen.i.identifier,
+//           transactionType: TransactionType.received.toValue(),
+//           transactionReason: TransactionReason.received.toValue(),
+//           quantity: _form.control('quantityReceived').value.toString(),
+//           additionalFields: stock.additionalFields?.copyWith(
+//             fields: newFields,
+//           ),
+//           auditDetails: AuditDetails(
+//             createdBy: InventorySingleton().loggedInUserUuid,
+//             createdTime: context.millisecondsSinceEpoch(),
+//             lastModifiedBy: InventorySingleton().loggedInUserUuid,
+//             lastModifiedTime: context.millisecondsSinceEpoch(),
+//           ),
+//           clientAuditDetails: ClientAuditDetails(
+//             createdBy: InventorySingleton().loggedInUserUuid,
+//             createdTime: context.millisecondsSinceEpoch(),
+//             lastModifiedBy: InventorySingleton().loggedInUserUuid,
+//             lastModifiedTime: context.millisecondsSinceEpoch(),
+//           ),
+//         );
+//       }).toList();
+
+//       for (final stock in updatedStocks) {
+//         context.read<RecordStockBloc>().add(
+//               RecordStockSaveStockDetailsEvent(
+//                 stockModel: stock,
+//               ),
+//             );
+//         context.read<RecordStockBloc>().add(
+//               const RecordStockCreateStockEntryEvent(),
+//             );
+
+//         final totalQty =
+//             int.parse(_form.control('quantityReceived').value.toString());
+
+//         int currentSpaq1Count = 0;
+//         int currentSpaq2Count = 0;
+
+//         String productName = stock.additionalFields?.fields
+//             .firstWhereOrNull((element) => element.key == "productName")
+//             ?.value;
+//         // Accumulate quantities based on product
+//         if (productName == Constants.spaq1) {
+//           currentSpaq1Count += totalQty;
+//         } else if (productName == Constants.spaq2) {
+//           currentSpaq2Count += totalQty;
+//         }
+//         context.read<AuthBloc>().add(
+//               AuthAddSpaqCountsEvent(
+//                 spaq1Count: currentSpaq1Count,
+//                 spaq2Count: currentSpaq2Count,
+//                 blueVasCount: 0,
+//                 redVasCount: 0,
+//               ),
+//             );
+//         // _tabController.animateTo(_tabController.index + 1);
+
+//         context.read<RecordStockBloc>().add(
+//               const RecordStockCreateStockEntryEvent(),
+//             );
+//       }
+
+//       context.router.push(
+//         CustomAcknowledgementRoute(
+//             mrnNumber: widget.mrnNumber,
+//             stockRecords: updatedStocks,
+//             entryType: StockRecordEntryType.receipt),
+//       );
+//     } else {
+//       _form.markAllAsTouched();
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     // Assumption sender receiver Id not changed ,
+//     //using the same as downloaded stock data
+//     // and this flow is for stock receipt for LGA
+//     final senderIdToShowOnTab = widget.stockRecords.first.senderId;
+
+//     return Scaffold(
+//       body: ScrollableContent(
+//         header: const Column(
+//           children: [
+//             CustomBackNavigationHelpHeaderWidget(),
+//           ],
+//         ),
+//         children: [
+//           ReactiveForm(
+//             formGroup: _form,
+//             child: SingleChildScrollView(
+//               padding: const EdgeInsets.all(16),
+//               child: Column(
+//                 children: [
+//                   DigitCard(
+//                     padding: const EdgeInsets.all(16),
+//                     children: [
+//                       Column(
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: [
+//                           const Text(
+//                             'Stock Receipt Details',
+//                             style: TextStyle(
+//                                 fontSize: 24, fontWeight: FontWeight.bold),
+//                           ),
+//                           const SizedBox(height: 12),
+//                           Row(
+//                             children: [
+//                               const Expanded(child: Text('MIN Number')),
+//                               Expanded(child: Text(widget.mrnNumber)),
+//                             ],
+//                           ),
+//                           const SizedBox(height: 8),
+//                           Row(
+//                             children: [
+//                               const Expanded(child: Text('Received from')),
+//                               // TODO : verify this , showing senderId here
+//                               Expanded(
+//                                 child: Text(localizations
+//                                     .translate('FAC_$senderIdToShowOnTab')),
+//                               ),
+//                             ],
+//                           ),
+//                         ],
+//                       ),
+//                     ],
+//                   ),
+//                   const SizedBox(height: 20),
+//                   ...widget.stockRecords.map((stock) {
+//                     final productName = stock.additionalFields?.fields
+//                             .firstWhere(
+//                               (field) => field.key == 'productName',
+//                               orElse: () =>
+//                                   const AdditionalField('productName', ''),
+//                             )
+//                             .value
+//                             ?.toString() ??
+//                         '';
+
+//                     return Column(
+//                       children: [
+//                         DigitCard(
+//                           padding: const EdgeInsets.all(16),
+//                           children: [
+//                             Column(
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               children: [
+//                                 Text(
+//                                   productName,
+//                                   style: TextStyle(
+//                                     fontSize: 16,
+//                                     fontWeight: FontWeight.bold,
+//                                     color: productName == 'SPAQ 1' ||
+//                                             productName == 'SPAQ 2'
+//                                         ? Colors.orange
+//                                         : productName == 'Red VAS'
+//                                             ? Colors.red
+//                                             : productName == 'Blue VAS'
+//                                                 ? Colors.blue
+//                                                 : Theme.of(context)
+//                                                     .primaryColor,
+//                                   ),
+//                                 ),
+//                                 const SizedBox(height: 12),
+//                                 InputField(
+//                                   type: InputType.text,
+//                                   label: 'Waybill Number *',
+//                                   initialValue: stock.wayBillNumber ?? '',
+//                                   isDisabled: true,
+//                                   readOnly: true,
+//                                 ),
+//                                 const SizedBox(height: 12),
+//                                 InputField(
+//                                   type: InputType.text,
+//                                   label: 'Batch Number',
+//                                   initialValue: stock.additionalFields?.fields
+//                                           .firstWhere(
+//                                             (field) =>
+//                                                 field.key == 'batchNumber',
+//                                             orElse: () => const AdditionalField(
+//                                                 'batchNumber', ''),
+//                                           )
+//                                           .value
+//                                           ?.toString() ??
+//                                       '',
+//                                   isDisabled: true,
+//                                   readOnly: true,
+//                                 ),
+//                                 const SizedBox(height: 12),
+//                                 InputField(
+//                                   type: InputType.text,
+//                                   label: 'Quantity Sent by Warehouse *',
+//                                   initialValue: stock.quantity ?? '',
+//                                   isDisabled: true,
+//                                   readOnly: true,
+//                                 ),
+//                                 const SizedBox(height: 12),
+//                                 ReactiveWrapperField(
+//                                   formControlName: 'quantityReceived',
+//                                   builder: (field) => InputField(
+//                                     type: InputType.text,
+//                                     label: 'Actual Quantity Received *',
+//                                     errorMessage: field.errorText,
+//                                     keyboardType: TextInputType.number,
+//                                     onChange: (value) {
+//                                       if (value != null && value.isNotEmpty) {
+//                                         field.control.value =
+//                                             int.tryParse(value);
+//                                       } else {
+//                                         field.control.value = null;
+//                                       }
+//                                     },
+//                                   ),
+//                                   validationMessages: {
+//                                     'required': (_) => 'Quantity is required',
+//                                     'min': (_) => 'Must be at least 1',
+//                                     'number': (_) => 'Must be a valid number',
+//                                   },
+//                                 ),
+//                                 const SizedBox(height: 12),
+//                                 ReactiveWrapperField(
+//                                   formControlName: 'comments',
+//                                   builder: (field) => InputField(
+//                                     type: InputType.textArea,
+//                                     label: 'Comments',
+//                                     errorMessage: field.errorText,
+//                                     onChange: (value) =>
+//                                         field.control.value = value,
+//                                   ),
+//                                 ),
+//                               ],
+//                             ),
+//                           ],
+//                         ),
+//                         const SizedBox(height: 12),
+//                       ],
+//                     );
+//                   }).toList(),
+//                   const SizedBox(height: 24),
+//                   DigitButton(
+//                     label: localizations.translate(i18.common.coreCommonSubmit),
+//                     onPressed: _handleSubmission,
+//                     type: DigitButtonType.primary,
+//                     size: DigitButtonSize.large,
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
