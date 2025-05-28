@@ -119,6 +119,11 @@ bool redosePending(List<TaskModel>? tasks, ProjectCycle? selectedCycle) {
         (element) => element.status == Status.visited.toValue(),
       )
       .lastOrNull;
+  final redoseTaskCreatedTime = redoseTask?.clientAuditDetails?.createdTime;
+
+  final isRedoseDoneInCurrentCycle = redoseTaskCreatedTime != null &&
+      redoseTaskCreatedTime >= selectedCycle.startDate &&
+      redoseTaskCreatedTime <= selectedCycle.endDate;
   TaskModel? successfullTask = tasks
       .where(
         (element) => element.status == Status.administeredSuccess.toValue(),
@@ -127,7 +132,7 @@ bool redosePending(List<TaskModel>? tasks, ProjectCycle? selectedCycle) {
   int diff = DateTime.now().millisecondsSinceEpoch -
       (successfullTask?.clientAuditDetails?.createdTime ??
           DateTime.now().millisecondsSinceEpoch);
-  redosePending = redoseTask == null
+  redosePending = (redoseTask == null || !isRedoseDoneInCurrentCycle)
       ? true
       : (redoseTask.additionalFields?.fields
                   .where(
@@ -136,15 +141,17 @@ bool redosePending(List<TaskModel>? tasks, ProjectCycle? selectedCycle) {
                   .toList() ??
               [])
           .isEmpty;
-  return redosePending &&
-      (selectedCycle.mandatoryWaitSinceLastCycleInDays == null
-          ? diff <= 30 * 60 * 1000 // 30 minutes for now
-          : diff <=
-              (selectedCycle.mandatoryWaitSinceLastCycleInDays! *
-                  24 *
-                  60 *
-                  60 *
-                  1000)); // for any other modifications
+  // return redosePending &&
+  //     (selectedCycle.mandatoryWaitSinceLastCycleInDays == null
+  //         ? diff <= 30 * 60 * 1000 // 30 minutes for now
+  //         : diff <=
+  //             (selectedCycle.mandatoryWaitSinceLastCycleInDays! *
+  //                 24 *
+  //                 60 *
+  //                 60 *
+  //                 1000)); // for any other modifications
+
+  return redosePending && (diff <= 30 * 60 * 1000);
 }
 
 bool checkBeneficiaryReferredSMC(
@@ -177,8 +184,6 @@ bool checkBeneficiaryReferredSMC(
   if (successfulTaskCreatedTime == null) {
     return false;
   }
-
-  final date = DateTime.fromMillisecondsSinceEpoch(successfulTaskCreatedTime);
 
   final isLastCycleRunning =
       successfulTaskCreatedTime >= currentCycle.startDate &&
