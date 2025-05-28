@@ -104,34 +104,17 @@ class CustomMinNumberPageState extends LocalizedState<CustomMinNumberPage> {
       groupedStock[mrn]!.add(stock);
     }
 
-    final groupedEntries = groupedStock.entries.toList();
+    final groupedEntries = groupedStock.entries.toList().reversed.toList();
     List<StockModel> finalStocks = [];
 
     return Scaffold(
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: ScrollableContent(
-          enableFixedDigitButton: true,
           header: const Column(
             children: [
               CustomBackNavigationHelpHeaderWidget(showHelp: false),
             ],
-          ),
-          footer: SizedBox(
-            child: DigitCard(
-              margin: const EdgeInsets.fromLTRB(0, spacer2, 0, 0),
-              children: [
-                DigitButton(
-                  type: DigitButtonType.primary,
-                  mainAxisSize: MainAxisSize.max,
-                  size: DigitButtonSize.large,
-                  label: localizations.translate(
-                    i18.householdDetails.actionLabel,
-                  ),
-                  onPressed: () {},
-                ),
-              ],
-            ),
           ),
           children: [
             Container(
@@ -152,9 +135,8 @@ class CustomMinNumberPageState extends LocalizedState<CustomMinNumberPage> {
                               style: textTheme.headingL),
                           const SizedBox(height: 16.0),
                           SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.7,
+                            height: MediaQuery.of(context).size.height * 0.78,
                             child: ListView.builder(
-                              reverse: false,
                               itemCount: groupedEntries.length,
                               itemBuilder: (context, index) {
                                 final mrn = groupedEntries[index].key;
