@@ -1293,6 +1293,7 @@ class IndividualDetails {
   String get yearsAndMonthsErrorText => 'ERR_YEARS_AND_MONTHS';
 
   String get linkVoucherToIndividual => 'LINK_VOUCHER_TO_INDIVIDUAL';
+  String get beneficiarySearchTextLabel => 'SEARCH_BY_BENEFICIARY_ID';
 }
 
 class BeneficiaryDetails {
