@@ -130,7 +130,8 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
           'materialNoteNumber': FormControl<String>(value: _sharedMRN),
           _transactionReasonKey: FormControl<String>(),
           _waybillNumberKey: FormControl<String>(
-            validators: InventorySingleton().isWareHouseMgr
+            validators: (InventorySingleton().isWareHouseMgr ||
+                    context.isHealthFacilitySupervisor)
                 ? [
                     Validators.minLength(2),
                     Validators.maxLength(200),
@@ -139,7 +140,8 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                 : [],
           ),
           _transactionQuantityKey: FormControl<int>(
-              validators: InventorySingleton().isWareHouseMgr
+              validators: (InventorySingleton().isWareHouseMgr ||
+                      context.isHealthFacilitySupervisor)
                   ? [
                       Validators.number(),
                       Validators.required,
@@ -369,6 +371,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
       String receivedFrom, List<String> selectedProducts) {
     final stockState = context.read<RecordStockBloc>().state;
     bool isWareHouseMgr = InventorySingleton().isWareHouseMgr;
+    bool isHealthFacilitySupervisor = context.isHealthFacilitySupervisor;
     final form = _forms[productName]!;
     StockRecordEntryType entryType = stockState.entryType;
     bool isLastTab = _tabController.index == _tabController.length - 1;
@@ -381,27 +384,25 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
       case StockRecordEntryType.receipt:
         pageTitle = i18.stockDetails.receivedPageTitle;
         if (productName == Constants.spaq1 || productName == Constants.spaq2) {
-          quantityCountLabel =
-              i18_local.stockDetails.quantityCapsuleReceivedLabel;
+          quantityCountLabel = i18.stockDetails.quantityReceivedLabel;
         } else {
           quantityCountLabel = i18.stockDetails.quantityReceivedLabel;
         }
         break;
       case StockRecordEntryType.dispatch:
-        pageTitle = InventorySingleton().isWareHouseMgr
+        pageTitle = (isWareHouseMgr || isHealthFacilitySupervisor)
             ? i18.stockDetails.issuedPageTitle
             : i18.stockDetails.returnedPageTitle;
         if (productName == Constants.spaq1 || productName == Constants.spaq2) {
-          quantityCountLabel = InventorySingleton().isWareHouseMgr
-              ? i18_local.stockDetails.quantityCapsuleSentLabel
-              : i18_local.stockDetails.quantityCapsuleReturnedLabel;
+          quantityCountLabel = (isWareHouseMgr || isHealthFacilitySupervisor)
+              ? i18.stockDetails.quantitySentLabel
+              : i18.stockDetails.quantityReturnedLabel;
           quantityPartialCountLabel =
-              i18_local.stockDetails.quantityCapsulePartialReturnedLabel;
-
+              i18_local.stockDetails.quantityPartialReturnedLabel;
           quantityWastedCountLabel =
-              i18_local.stockDetails.quantityCapsulePartialWastedLabel;
+              i18_local.stockDetails.quantityWastedReturnedLabel;
         } else {
-          quantityCountLabel = InventorySingleton().isWareHouseMgr
+          quantityCountLabel = (isWareHouseMgr || isHealthFacilitySupervisor)
               ? i18.stockDetails.quantitySentLabel
               : i18.stockDetails.quantityReturnedLabel;
         }
@@ -410,9 +411,9 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
         pageTitle = i18.stockDetails.returnedPageTitle;
         if (productName == Constants.spaq1 || productName == Constants.spaq2) {
           quantityCountLabel =
-              i18_local.stockDetails.quantityCapsuleReturnedLabel;
+              i18_local.stockDetails.quantityUnusedReturnedLabel;
           quantityPartialCountLabel =
-              i18_local.stockDetails.quantityCapsulePartialReturnedLabel;
+              i18_local.stockDetails.quantityPartialReturnedLabel;
         } else {
           quantityCountLabel = i18.stockDetails.quantityReturnedLabel;
         }
@@ -430,38 +431,22 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
     if ((entryType == StockRecordEntryType.dispatch &&
             context.isCommunityDistributor) ||
         entryType == StockRecordEntryType.returned) {
-      form.control(_transactionQuantityPartialKey).setValidators(
-          InventorySingleton().isWareHouseMgr
-              ? [
-                  Validators.number(),
-                  Validators.required,
-                  Validators.min(0),
-                ]
-              : [
-                  Validators.number(),
-                  Validators.required,
-                  Validators.min(0),
-                  Validators.max(10000),
-                ],
-          autoValidate: true);
+      form.control(_transactionQuantityPartialKey).setValidators([
+        Validators.number(),
+        Validators.required,
+        Validators.min(0),
+        Validators.max(1000000),
+      ], autoValidate: true);
     }
 
     if (entryType == StockRecordEntryType.dispatch &&
         context.isCommunityDistributor) {
-      form.control(_transactionQuantityWastedKey).setValidators(
-          InventorySingleton().isWareHouseMgr
-              ? [
-                  Validators.number(),
-                  Validators.required,
-                  Validators.min(0),
-                ]
-              : [
-                  Validators.number(),
-                  Validators.required,
-                  Validators.min(0),
-                  Validators.max(10000),
-                ],
-          autoValidate: true);
+      form.control(_transactionQuantityWastedKey).setValidators([
+        Validators.number(),
+        Validators.required,
+        Validators.min(0),
+        Validators.max(1000000),
+      ], autoValidate: true);
     }
 
     return _KeepAliveTabContent(
@@ -524,7 +509,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 12),
-                    if (isWareHouseMgr)
+                    if ((isWareHouseMgr || isHealthFacilitySupervisor))
                       ReactiveWrapperField(
                           formControlName: _waybillNumberKey,
                           builder: (field) {
@@ -540,7 +525,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                               isRequired: true,
                             );
                           }),
-                    if (isWareHouseMgr &&
+                    if ((isWareHouseMgr || isHealthFacilitySupervisor) &&
                         entryType != StockRecordEntryType.returned)
                       ReactiveWrapperField(
                           formControlName: _batchNumberKey,
@@ -885,10 +870,10 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
 
     if (submit && context.mounted) {
       // Loop through all stocks and dispatch individual events
-      int spaq1Count = context.spaq1;
-      int spaq2Count = context.spaq2;
-      int currentSpaq1Count = 0;
-      int currentSpaq2Count = 0;
+      int currentSpaq1Count = context.spaq1;
+      int currentSpaq2Count = context.spaq2;
+      int spaq1Count = 0;
+      int spaq2Count = 0;
       for (var productName in selectedProducts) {
         await _saveCurrentTabData(productName, entryType);
       }
@@ -912,7 +897,8 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
 
         // Custom logic based on productName
         if (entryType == StockRecordEntryType.dispatch) {
-          if (productName == Constants.spaq1 && (spaq1Count + totalQty < 0)) {
+          if (productName == Constants.spaq1 &&
+              (currentSpaq1Count + totalQty < 0)) {
             await DigitToast.show(
               context,
               options: DigitToastOptions(
@@ -926,7 +912,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
             );
             return;
           } else if (productName == Constants.spaq2 &&
-              (spaq2Count + totalQty < 0)) {
+              (currentSpaq2Count + totalQty < 0)) {
             await DigitToast.show(
               context,
               options: DigitToastOptions(
@@ -961,8 +947,8 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
 
       context.read<AuthBloc>().add(
             AuthAddSpaqCountsEvent(
-              spaq1Count: currentSpaq1Count,
-              spaq2Count: currentSpaq2Count,
+              spaq1Count: spaq1Count,
+              spaq2Count: spaq2Count,
               blueVasCount: 0,
               redVasCount: 0,
             ),

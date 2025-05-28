@@ -409,6 +409,24 @@ extension ContextUtilityExtensions on BuildContext {
     }
   }
 
+  bool get isLGA {
+    try {
+      String? boundaryLevel = selectedProject.address?.boundaryType;
+
+      if (boundaryLevel == Constants.districtBoundaryLevel) {
+        bool isDownSyncEnabled = loggedInUserRoles
+            .where((role) => role.code == RolesType.warehouseManager.toValue())
+            .toList()
+            .isNotEmpty;
+
+        return isDownSyncEnabled;
+      }
+      return false;
+    } catch (_) {
+      return false;
+    }
+  }
+
   bool get isHealthFacilitySupervisor {
     try {
       // todo : verify this make this healthFacilitySupervsior as per kebbi

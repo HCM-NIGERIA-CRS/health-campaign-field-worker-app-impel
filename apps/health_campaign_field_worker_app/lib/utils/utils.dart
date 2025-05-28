@@ -116,6 +116,23 @@ class CustomValidator {
 
     return regExp.hasMatch(value) ? null : {'onlyAlphabetsAndDigits': true};
   }
+
+  static Map<String, dynamic>? validStockCount(
+    AbstractControl<dynamic> control,
+  ) {
+    if (control.value == null || control.value.toString().isEmpty) {
+      return {'required': true};
+    }
+
+    var parsed = int.tryParse(control.value) ?? 0;
+    if (parsed < 0) {
+      return {'min': true};
+    } else if (parsed > 10000000) {
+      return {'max': true};
+    }
+
+    return null;
+  }
 }
 
 Future<void> requestDisableBatteryOptimization() async {
@@ -751,35 +768,6 @@ getSelectedLanguage(AppInitialized state, int index) {
       state.appConfiguration.languages![index].value == selectedLanguage;
 
   return isSelected;
-}
-
-bool isLGAUser() {
-  String? boundaryLevel =
-      RegistrationDeliverySingleton().selectedProject?.address?.boundaryType;
-  if (InventorySingleton().isWareHouseMgr) {
-    if (boundaryLevel == Constants.lgaBoundaryLevel) {
-      return true;
-    }
-  }
-  return false;
-}
-
-bool isHFUser(BuildContext context) {
-  try {
-    // todo : verify this make this healthFacilitySupervsior as per kebbi
-    bool isDownSyncEnabled = context.loggedInUserRoles
-        .where(
-          (role) =>
-              role.code == RolesType.healthFacilityWorker.toValue() ||
-              role.code == RolesType.healthFacilitySupervisor.toValue(),
-        )
-        .toList()
-        .isNotEmpty;
-
-    return isDownSyncEnabled;
-  } catch (_) {
-    return false;
-  }
 }
 
 initializeAllMappers() async {

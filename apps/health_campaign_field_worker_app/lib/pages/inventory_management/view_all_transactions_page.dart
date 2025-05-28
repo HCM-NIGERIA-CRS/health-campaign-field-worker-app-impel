@@ -50,14 +50,14 @@ class _ViewAllTransactionsScreenState extends State<ViewAllTransactionsScreen> {
     List<StockModel> result;
     List<StockModel> receivedResult;
     // check for valid user
-    if (isLGAUser() ||
-        isHFUser(context) ||
+    if (context.isLGA ||
+        context.isHealthFacilitySupervisor ||
         InventorySingleton().isDistributor) {
       result = await repository.search(StockSearchModel(
           transactionType: [TransactionType.dispatched.toValue()],
           transactionReason: [],
           receiverId: warehouseId == null ? [] : [warehouseId]));
-      if (isHFUser(context)) {
+      if (context.isHealthFacilitySupervisor) {
         result = result.where((stock) {
           return stock.senderType == 'WAREHOUSE';
         }).toList();

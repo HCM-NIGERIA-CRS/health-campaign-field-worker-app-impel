@@ -332,7 +332,7 @@ class CustomDoseAdministeredPageState
                                 ),
                                 ListTile(
                                   title: Text(
-                                    "Have you written this ID $beneficiaryId in the child for $name (To be used in the next cycle)",
+                                    "Written the Beneficiary ID $beneficiaryId on the child record card( To be used in the next cycle)",
                                   ),
                                   leading: const Text("2"),
                                 ),

@@ -112,54 +112,35 @@ class _ViewStockRecordsLGAPageState
         context.read<RecordStockBloc>().add(
               const RecordStockCreateStockEntryEvent(),
             );
-        if (InventorySingleton().isDistributor) {
-          final totalQty =
-              int.parse(_form.control('quantityReceived').value.toString());
 
-          int spaq1Count = context.spaq1;
-          int spaq2Count = context.spaq2;
+        final totalQty =
+            int.parse(_form.control('quantityReceived').value.toString());
 
-          int blueVasCount = context.blueVas;
-          int redVasCount = context.redVas;
-          String productName = stock.additionalFields?.fields
-              .firstWhereOrNull((element) => element.key == "productName")
-              ?.value;
-          // Custom logic based on productName
-          if (productName == Constants.spaq1) {
-            spaq1Count = totalQty;
-            spaq2Count = 0;
-            redVasCount = 0;
-            blueVasCount = 0;
-          } else if (productName == Constants.spaq2) {
-            spaq2Count = totalQty;
-            spaq1Count = 0;
-            redVasCount = 0;
-            blueVasCount = 0;
-          } else if (productName == Constants.blueVAS) {
-            blueVasCount = totalQty;
-            spaq1Count = 0;
-            spaq2Count = 0;
-            redVasCount = 0;
-          } else {
-            blueVasCount = 0;
-            spaq1Count = 0;
-            spaq2Count = 0;
-            redVasCount = totalQty;
-          }
-          context.read<AuthBloc>().add(
-                AuthAddSpaqCountsEvent(
-                  spaq1Count: spaq1Count,
-                  spaq2Count: spaq2Count,
-                  blueVasCount: blueVasCount,
-                  redVasCount: redVasCount,
-                ),
-              );
-          // _tabController.animateTo(_tabController.index + 1);
+        int currentSpaq1Count = 0;
+        int currentSpaq2Count = 0;
 
-          context.read<RecordStockBloc>().add(
-                const RecordStockCreateStockEntryEvent(),
-              );
+        String productName = stock.additionalFields?.fields
+            .firstWhereOrNull((element) => element.key == "productName")
+            ?.value;
+        // Accumulate quantities based on product
+        if (productName == Constants.spaq1) {
+          currentSpaq1Count += totalQty;
+        } else if (productName == Constants.spaq2) {
+          currentSpaq2Count += totalQty;
         }
+        context.read<AuthBloc>().add(
+              AuthAddSpaqCountsEvent(
+                spaq1Count: currentSpaq1Count,
+                spaq2Count: currentSpaq2Count,
+                blueVasCount: 0,
+                redVasCount: 0,
+              ),
+            );
+        // _tabController.animateTo(_tabController.index + 1);
+
+        context.read<RecordStockBloc>().add(
+              const RecordStockCreateStockEntryEvent(),
+            );
       }
 
       context.router.push(
@@ -179,13 +160,14 @@ class _ViewStockRecordsLGAPageState
     //using the same as downloaded stock data
     // and this flow is for stock receipt for LGA
     final senderIdToShowOnTab = widget.stockRecords.first.senderId;
-    
 
     return Scaffold(
       body: ScrollableContent(
-        header: const Column(children: [
-          CustomBackNavigationHelpHeaderWidget(),
-        ],),
+        header: const Column(
+          children: [
+            CustomBackNavigationHelpHeaderWidget(),
+          ],
+        ),
         children: [
           ReactiveForm(
             formGroup: _form,
@@ -231,7 +213,8 @@ class _ViewStockRecordsLGAPageState
                     final productName = stock.additionalFields?.fields
                             .firstWhere(
                               (field) => field.key == 'productName',
-                              orElse: () => AdditionalField('productName', ''),
+                              orElse: () =>
+                                  const AdditionalField('productName', ''),
                             )
                             .value
                             ?.toString() ??
@@ -277,7 +260,7 @@ class _ViewStockRecordsLGAPageState
                                           .firstWhere(
                                             (field) =>
                                                 field.key == 'batchNumber',
-                                            orElse: () => AdditionalField(
+                                            orElse: () => const AdditionalField(
                                                 'batchNumber', ''),
                                           )
                                           .value

@@ -729,7 +729,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
 
       await createStockDownloadedEntries(stockEntriesDownloaded);
     } else if (userRoles.contains(RolesType.warehouseManager.toValue()) &&
-        boundaryType == Constants.lgaBoundaryLevel) {
+        boundaryType == Constants.districtBoundaryLevel) {
       List<String> receiverIds =
           projectFacilities.map((e) => e.facilityId).toList();
       receiverIds = receiverIds
