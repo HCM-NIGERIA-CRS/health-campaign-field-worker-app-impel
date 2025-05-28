@@ -770,35 +770,6 @@ getSelectedLanguage(AppInitialized state, int index) {
   return isSelected;
 }
 
-bool isLGAUser() {
-  String? boundaryLevel =
-      RegistrationDeliverySingleton().selectedProject?.address?.boundaryType;
-  if (InventorySingleton().isWareHouseMgr) {
-    if (boundaryLevel == Constants.lgaBoundaryLevel) {
-      return true;
-    }
-  }
-  return false;
-}
-
-bool isHFUser(BuildContext context) {
-  try {
-    // todo : verify this make this healthFacilitySupervsior as per kebbi
-    bool isDownSyncEnabled = context.loggedInUserRoles
-        .where(
-          (role) =>
-              role.code == RolesType.healthFacilityWorker.toValue() ||
-              role.code == RolesType.healthFacilitySupervisor.toValue(),
-        )
-        .toList()
-        .isNotEmpty;
-
-    return isDownSyncEnabled;
-  } catch (_) {
-    return false;
-  }
-}
-
 initializeAllMappers() async {
   List<Future> initializations = [
     Future(() => data_model_mappers.initializeMappers()),
