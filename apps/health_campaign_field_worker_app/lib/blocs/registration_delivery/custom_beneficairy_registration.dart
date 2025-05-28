@@ -716,6 +716,7 @@ class CustomBeneficiaryRegistrationBloc
             event.individualModel.copyWith(
               address: [
                 value.addressModel.copyWith(
+                  id: null,
                   relatedClientReferenceId:
                       event.individualModel.clientReferenceId,
                   auditDetails: AuditDetails(
