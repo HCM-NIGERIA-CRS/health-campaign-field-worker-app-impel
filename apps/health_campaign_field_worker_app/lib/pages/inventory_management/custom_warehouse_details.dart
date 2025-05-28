@@ -268,9 +268,9 @@ class CustomWarehouseDetailsPageState
                                                     );
                                                     if ((InventorySingleton()
                                                                 .isWareHouseMgr &&
-                                                            !isLGAUser() &&
-                                                            !isHFUser(
-                                                                context) &&
+                                                            !context.isLGA &&
+                                                            !context
+                                                                .isHealthFacilitySupervisor &&
                                                             !context.isCDD) ||
                                                         (recordStockBloc.state
                                                                 .entryType ==

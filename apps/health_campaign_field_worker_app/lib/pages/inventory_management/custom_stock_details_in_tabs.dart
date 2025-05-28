@@ -130,7 +130,8 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
           'materialNoteNumber': FormControl<String>(value: _sharedMRN),
           _transactionReasonKey: FormControl<String>(),
           _waybillNumberKey: FormControl<String>(
-            validators: InventorySingleton().isWareHouseMgr
+            validators: (InventorySingleton().isWareHouseMgr ||
+                    context.isHealthFacilitySupervisor)
                 ? [
                     Validators.minLength(2),
                     Validators.maxLength(200),
@@ -139,7 +140,8 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                 : [],
           ),
           _transactionQuantityKey: FormControl<int>(
-              validators: InventorySingleton().isWareHouseMgr
+              validators: (InventorySingleton().isWareHouseMgr ||
+                      context.isHealthFacilitySupervisor)
                   ? [
                       Validators.number(),
                       Validators.required,
@@ -369,6 +371,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
       String receivedFrom, List<String> selectedProducts) {
     final stockState = context.read<RecordStockBloc>().state;
     bool isWareHouseMgr = InventorySingleton().isWareHouseMgr;
+    bool isHealthFacilitySupervisor = context.isHealthFacilitySupervisor;
     final form = _forms[productName]!;
     StockRecordEntryType entryType = stockState.entryType;
     bool isLastTab = _tabController.index == _tabController.length - 1;
@@ -387,11 +390,11 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
         }
         break;
       case StockRecordEntryType.dispatch:
-        pageTitle = InventorySingleton().isWareHouseMgr
+        pageTitle = (isWareHouseMgr || isHealthFacilitySupervisor)
             ? i18.stockDetails.issuedPageTitle
             : i18.stockDetails.returnedPageTitle;
         if (productName == Constants.spaq1 || productName == Constants.spaq2) {
-          quantityCountLabel = InventorySingleton().isWareHouseMgr
+          quantityCountLabel = (isWareHouseMgr || isHealthFacilitySupervisor)
               ? i18.stockDetails.quantitySentLabel
               : i18.stockDetails.quantityReturnedLabel;
           quantityPartialCountLabel =
@@ -399,7 +402,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
           quantityWastedCountLabel =
               i18_local.stockDetails.quantityWastedReturnedLabel;
         } else {
-          quantityCountLabel = InventorySingleton().isWareHouseMgr
+          quantityCountLabel = (isWareHouseMgr || isHealthFacilitySupervisor)
               ? i18.stockDetails.quantitySentLabel
               : i18.stockDetails.quantityReturnedLabel;
         }
@@ -506,7 +509,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 12),
-                    if (isWareHouseMgr)
+                    if ((isWareHouseMgr || isHealthFacilitySupervisor))
                       ReactiveWrapperField(
                           formControlName: _waybillNumberKey,
                           builder: (field) {
@@ -522,7 +525,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                               isRequired: true,
                             );
                           }),
-                    if (isWareHouseMgr &&
+                    if ((isWareHouseMgr || isHealthFacilitySupervisor) &&
                         entryType != StockRecordEntryType.returned)
                       ReactiveWrapperField(
                           formControlName: _batchNumberKey,
