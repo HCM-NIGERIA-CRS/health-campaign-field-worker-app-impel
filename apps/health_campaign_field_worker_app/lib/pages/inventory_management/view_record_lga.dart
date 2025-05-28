@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:digit_components/widgets/atoms/digit_toaster.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/widgets/atoms/input_wrapper.dart';
@@ -21,6 +22,7 @@ import '../../utils/extensions/extensions.dart';
 import 'package:collection/collection.dart';
 
 import '../../widgets/custom_back_navigation.dart';
+import '../../utils/i18_key_constants.dart' as i18_local;
 
 @RoutePage()
 class ViewStockRecordsLGAPage extends LocalizedStatefulWidget {
@@ -42,6 +44,9 @@ class ViewStockRecordsLGAPage extends LocalizedStatefulWidget {
 class _ViewStockRecordsLGAPageState
     extends LocalizedState<ViewStockRecordsLGAPage> {
   late final FormGroup _form;
+
+  int receiveQuantity = 0;
+  int sentQuantity = 0;
 
   @override
   void initState() {
@@ -66,6 +71,20 @@ class _ViewStockRecordsLGAPageState
 
   Future<void> _handleSubmission() async {
     if (_form.valid) {
+      if (receiveQuantity > sentQuantity) {
+        await DigitToast.show(
+          context,
+          options: DigitToastOptions(
+              localizations.translate(context.isCDD
+                  ? i18_local.beneficiaryDetails.validationForExcessStockReturn
+                  : i18_local
+                      .beneficiaryDetails.validationForExcessStockDispatch),
+              true,
+              Theme.of(context)),
+        );
+        return;
+      }
+
       final updatedStocks = widget.stockRecords.map((stock) {
         final additionalFields = stock.additionalFields?.fields ?? [];
 
@@ -285,10 +304,14 @@ class _ViewStockRecordsLGAPageState
                                     label: 'Actual Quantity Received *',
                                     errorMessage: field.errorText,
                                     keyboardType: TextInputType.number,
-                                    onChange: (value) {
+                                    onChange: (value) async {
                                       if (value != null && value.isNotEmpty) {
-                                        field.control.value =
-                                            int.tryParse(value);
+                                        receiveQuantity =
+                                            int.tryParse(value) ?? 0;
+                                        sentQuantity = int.tryParse(
+                                                stock.quantity ?? '0') ??
+                                            0;
+                                        field.control.value = receiveQuantity;
                                       } else {
                                         field.control.value = null;
                                       }
