@@ -150,9 +150,6 @@ class _ViewStockRecordsCDDPageState
         );
       }).toList();
 
-      int spaq1Count = context.spaq1;
-      int spaq2Count = context.spaq2;
-
       int currentSpaq1Count = 0;
       int currentSpaq2Count = 0;
 
