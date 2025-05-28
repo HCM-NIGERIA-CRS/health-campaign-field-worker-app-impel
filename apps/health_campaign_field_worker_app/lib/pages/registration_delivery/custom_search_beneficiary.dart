@@ -738,7 +738,10 @@ class _CustomSearchBeneficiaryPageState
                                       popupContext,
                                       rootNavigator: true,
                                     ).pop();
-//
+                                    final parent =
+                                        context.router.parent() as StackRouter;
+                                    // Pop twice to navigate back to the previous screen
+                                    parent.popUntilRoot();
                                   },
                                   type: DigitButtonType.primary,
                                   size: DigitButtonSize.large,

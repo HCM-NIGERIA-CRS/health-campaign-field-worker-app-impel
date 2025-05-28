@@ -484,6 +484,9 @@ class StockReconciliationDetails {
 
 class InventoryReportDetails {
   const InventoryReportDetails();
+
+  String get backToHomeButtonLabel =>
+      "INVENTORY_REPORT_DETAILS_BACK_TO_HOME_BUTTON_LABEL";
   String get partialReturnedQuantityLabel =>
       "INVENTORY_REPORT_DETAILS_PARTIAL_RETURNED_QUANTITY_LABEL";
 

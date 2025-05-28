@@ -136,7 +136,7 @@ class CustomInventoryReportDetailsPageState
               mainAxisSize: MainAxisSize.max,
               onPressed: () => context.router.popUntilRoot(),
               label: localizations.translate(
-                i18.inventoryReportDetails.backToHomeButtonLabel,
+                i18_local.inventoryReportDetails.backToHomeButtonLabel,
               ),
             ),
           ],
