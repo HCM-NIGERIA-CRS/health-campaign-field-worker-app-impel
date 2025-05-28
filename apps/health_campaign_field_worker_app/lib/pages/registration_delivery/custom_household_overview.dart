@@ -295,6 +295,34 @@ class _CustomHouseholdOverviewPageState
                             child: DigitCard(
                                 margin: const EdgeInsets.all(spacer2),
                                 children: [
+                                  Row(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.all(spacer2),
+                                          child: Text(
+                                            RegistrationDeliverySingleton()
+                                                            .householdType !=
+                                                        null &&
+                                                    RegistrationDeliverySingleton()
+                                                            .householdType ==
+                                                        HouseholdType.community
+                                                ? localizations.translate(i18
+                                                    .householdOverView
+                                                    .clfOverviewLabel)
+                                                : localizations.translate(i18
+                                                    .householdOverView
+                                                    .householdOverViewLabel),
+                                            style: textTheme.headingXl.copyWith(
+                                                color: theme
+                                                    .colorTheme.text.primary),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                   Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
