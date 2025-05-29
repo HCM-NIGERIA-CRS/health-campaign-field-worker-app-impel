@@ -712,6 +712,15 @@ class _CustomReferralReasonChecklistPageState
                                 ),
                               );
                           setState(() {
+                            // Clear child controllers and update visibility
+                            for (final matchingChildItem in childItems) {
+                              final childIndex =
+                                  initialAttributes?.indexOf(matchingChildItem);
+                              if (childIndex != null) {
+                                visibleChecklistIndexes
+                                    .removeWhere((v) => v == childIndex);
+                              }
+                            }
                             controller[index].value =
                                 TextEditingController.fromValue(
                               TextEditingValue(
