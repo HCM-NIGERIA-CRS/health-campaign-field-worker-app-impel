@@ -79,7 +79,11 @@ class CustomMinNumberPageState extends LocalizedState<CustomMinNumberPage> {
         "First filtered stock: ${filteredResult.isNotEmpty ? filteredResult.first.toJson() : 'None'}");
 
     setState(() {
-      stockList = filteredResult;
+      stockList = filteredResult.sorted((a, b) {
+        return a.auditDetails?.lastModifiedTime
+                .compareTo(b.auditDetails?.lastModifiedTime ?? 0) ??
+            0;
+      });
     });
   }
 
