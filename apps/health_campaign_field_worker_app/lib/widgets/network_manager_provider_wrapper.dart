@@ -307,12 +307,6 @@ class NetworkManagerProviderWrapper extends StatelessWidget {
           ),
         ),
       ),
-      RepositoryProvider<LocalRepository<ServiceModel, ServiceSearchModel>>(
-        create: (_) => ServiceLocalRepository(
-          sql,
-          ServiceOpLogManager(isar),
-        ),
-      )
     ];
   }
 

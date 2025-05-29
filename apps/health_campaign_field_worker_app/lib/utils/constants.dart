@@ -149,7 +149,6 @@ class Constants {
       ),
       LocationTrackerLocalBaseRepository(
           sql, LocationTrackerOpLogManager(isar)),
-      // StockLocalRepository(sql, StockOpLogManager(isar)),
       CustomStockLocalRepository(sql, StockOpLogManager(isar)),
       StockReconciliationLocalRepository(
         sql,
@@ -166,9 +165,7 @@ class Constants {
       TaskLocalRepository(sql, TaskOpLogManager(isar)),
       SideEffectLocalRepository(sql, SideEffectOpLogManager(isar)),
       ReferralLocalRepository(sql, ReferralOpLogManager(isar)),
-
       HFReferralLocalRepository(sql, HFReferralOpLogManager(isar)),
-
       AttendanceLocalRepository(
         sql,
         AttendanceOpLogManager(isar),
@@ -177,11 +174,6 @@ class Constants {
         sql,
         AttendanceLogOpLogManager(isar),
       ),
-
-      HFReferralLocalRepository(sql, HFReferralOpLogManager(isar)),
-
-      HFReferralLocalRepository(sql, HFReferralOpLogManager(isar)),
-
       ServiceDefinitionLocalRepository(
         sql,
         ServiceDefinitionOpLogManager(isar),
@@ -273,10 +265,6 @@ class Constants {
           AttendanceLogRemoteRepository(dio, actionMap: actions),
         if (value == DataModelType.complaints)
           PgrServiceRemoteRepository(dio, actionMap: actions),
-        if (value == DataModelType.hFReferral)
-          HFReferralRemoteRepository(dio, actionMap: actions),
-        if (value == DataModelType.hFReferral)
-          HFReferralRemoteRepository(dio, actionMap: actions),
         if (value == DataModelType.serviceDefinition)
           ServiceDefinitionRemoteRepository(dio, actionMap: actions),
         if (value == DataModelType.service)
