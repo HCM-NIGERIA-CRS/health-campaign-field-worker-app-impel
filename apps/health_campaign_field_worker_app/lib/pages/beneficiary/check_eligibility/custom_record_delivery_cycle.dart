@@ -220,7 +220,7 @@ class RecordDeliveryCycleState
                       ? (widget.eligibilityAssessmentType ==
                               EligibilityAssessmentType.smc)
                           ? localizations.translate(
-                              i18_local.beneficiaryDetails.currentSmcCycleLabel)
+                              i18_local.beneficiaryDetails.currentCycleLabel)
                           : localizations.translate(
                               i18.beneficiaryDetails.currentCycleLabel)
                       : '${localizations.translate(i18.beneficiaryDetails.beneficiaryCycle)} ${e.id}',
