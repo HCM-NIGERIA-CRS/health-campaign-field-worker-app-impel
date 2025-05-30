@@ -367,7 +367,7 @@ class IndividualGlobalSearchSMCRepository extends LocalRepository {
   joinIdentifier(LocalSqlDataStore sql) {
     return leftOuterJoin(
       sql.identifier,
-      sql.identifier.clientReferenceId.equalsExp(
+      sql.identifier.individualClientReferenceId.equalsExp(
         sql.individual.clientReferenceId,
       ),
     );

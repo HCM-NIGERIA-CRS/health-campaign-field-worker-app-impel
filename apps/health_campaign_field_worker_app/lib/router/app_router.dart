@@ -136,6 +136,7 @@ class AppRouter extends _$AppRouter {
       path: '/',
       children: [
         AutoRoute(page: HomeRoute.page, path: 'home'),
+        AutoRoute(page: BeneficiaryIdDownSyncRoute.page),
         AutoRoute(page: ProfileRoute.page, path: 'profile'),
         AutoRoute(page: UserQRDetailsRoute.page, path: 'user-qr-code'),
         AutoRoute(
@@ -663,6 +664,6 @@ class AppRouter extends _$AppRouter {
           path: 'complaints-acknowledgement',
         ),
       ],
-    )
+    ),
   ];
 }
