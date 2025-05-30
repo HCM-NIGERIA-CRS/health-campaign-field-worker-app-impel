@@ -30,7 +30,6 @@ import 'package:registration_delivery/widgets/localized.dart';
 import 'package:registration_delivery/widgets/table_card/table_card.dart';
 import '../../../models/entities/additional_fields_type.dart'
     as additional_fields_local;
-import '../../../models/entities/identifier_types.dart';
 import '../../../router/app_router.dart';
 import '../../../utils/app_enums.dart';
 

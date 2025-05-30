@@ -109,6 +109,7 @@ class Constants {
 
   static const int mlPerBottle = 30;
   static const int apiCallLimit = 1000;
+  static const int beneficiaryIdLength = 9;
 
   // for stock validation
 
@@ -207,6 +208,8 @@ class Constants {
 
   static const String closedHouseholdSvg =
       'assets/icons/svg/closed_household.svg';
+  static const String beneficiaryIdDownload =
+      'assets/icons/svg/beneficiary_ids.svg';
 
   static List<RemoteRepository> getRemoteRepositories(
     Dio dio,

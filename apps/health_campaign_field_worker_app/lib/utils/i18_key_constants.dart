@@ -890,6 +890,7 @@ class Home {
   String get closedHouseHoldLabel => 'HOME_CLOSE_HOUSEHOLD_LABEL';
 
   String get clfLabel => "HOME_COMMUNAL_LIVING_FACILITIES_LABEL";
+  String get beneficiaryIdLabel => 'HOME_BENEFICIARY_ID_LABEL';
 }
 
 class AcknowledgementSuccess {
@@ -1306,6 +1307,7 @@ class IndividualDetails {
   String get yearsAndMonthsErrorText => 'ERR_YEARS_AND_MONTHS';
 
   String get linkVoucherToIndividual => 'LINK_VOUCHER_TO_INDIVIDUAL';
+  String get beneficiarySearchTextLabel => 'SEARCH_BY_BENEFICIARY_ID';
 }
 
 class BeneficiaryDetails {

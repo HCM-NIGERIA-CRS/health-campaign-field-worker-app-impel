@@ -200,16 +200,10 @@ class CustomDeliverInterventionPageState
           ),
         );
 
-    ProjectTypeModel? projectTypeModel =
-        widget.eligibilityAssessmentType == EligibilityAssessmentType.smc
-            ? RegistrationDeliverySingleton()
-                .selectedProject
-                ?.additionalDetails
-                ?.projectType
-            : RegistrationDeliverySingleton()
-                .selectedProject
-                ?.additionalDetails
-                ?.additionalProjectType;
+    ProjectTypeModel? projectTypeModel = RegistrationDeliverySingleton()
+        .selectedProject
+        ?.additionalDetails
+        ?.projectType;
 
     if (deliverState.futureDeliveries != null &&
         deliverState.futureDeliveries!.isNotEmpty &&
@@ -278,16 +272,11 @@ class CustomDeliverInterventionPageState
                     DeliverInterventionState>(
                     builder: (context, deliveryInterventionState) {
                       ProjectTypeModel? projectTypeModel =
-                          widget.eligibilityAssessmentType ==
-                                  EligibilityAssessmentType.smc
-                              ? RegistrationDeliverySingleton()
-                                  .selectedProject
-                                  ?.additionalDetails
-                                  ?.projectType
-                              : RegistrationDeliverySingleton()
-                                  .selectedProject
-                                  ?.additionalDetails
-                                  ?.additionalProjectType;
+                          RegistrationDeliverySingleton()
+                              .selectedProject
+                              ?.additionalDetails
+                              ?.projectType;
+
                       List<DeliveryProductVariant>? productVariants =
                           projectTypeModel?.cycles?.isNotEmpty == true
                               ? (fetchProductVariant(
@@ -911,16 +900,11 @@ class CustomDeliverInterventionPageState
     _controllers.forEachIndexed((index, element) {
       _controllers.removeAt(index);
     });
-    ProjectTypeModel? projectTypeModel =
-        widget.eligibilityAssessmentType == EligibilityAssessmentType.smc
-            ? RegistrationDeliverySingleton()
-                .selectedProject
-                ?.additionalDetails
-                ?.projectType
-            : RegistrationDeliverySingleton()
-                .selectedProject
-                ?.additionalDetails
-                ?.additionalProjectType;
+    ProjectTypeModel? projectTypeModel = RegistrationDeliverySingleton()
+        .selectedProject
+        ?.additionalDetails
+        ?.projectType;
+
     // Add controllers for each product variant to the _controllers list.
     if (_controllers.isEmpty) {
       final int r = projectTypeModel?.cycles == null
