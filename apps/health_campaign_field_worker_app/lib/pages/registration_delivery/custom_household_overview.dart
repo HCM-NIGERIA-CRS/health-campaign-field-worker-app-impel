@@ -894,18 +894,18 @@ class _CustomHouseholdOverviewPageState
                                                       //     : false,
                                                       name: e.name?.givenName ??
                                                           ' - - ',
-                                                      years:
-                                                          (e.dateOfBirth == null
-                                                              ? null
-                                                              : DigitDateUtils
-                                                                  .calculateAge(
-                                                                  DigitDateUtils
-                                                                          .getFormattedDateToDateTime(
-                                                                        e.dateOfBirth!,
-                                                                      ) ??
-                                                                      DateTime
-                                                                          .now(),
-                                                                ).years),
+                                                      years: (e.dateOfBirth ==
+                                                              null
+                                                          ? null
+                                                          : digits.DigitDateUtils
+                                                              .calculateAge(
+                                                              digits.DigitDateUtils
+                                                                      .getFormattedDateToDateTime(
+                                                                    e.dateOfBirth!,
+                                                                  ) ??
+                                                                  DateTime
+                                                                      .now(),
+                                                            ).years),
                                                       months: (e.dateOfBirth ==
                                                               null
                                                           ? null

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,10 +31,14 @@ class _ViewTransactionsScreenState extends State<ViewTransactionsScreen> {
         context.read<LocalRepository<StockModel, StockSearchModel>>()
             as CustomStockLocalRepository;
 
-    final result = await repository.search(StockSearchModel());
+    List<StockModel> result = await repository.search(StockSearchModel());
 
     setState(() {
-      stockList = result;
+      stockList = result.sorted((a, b) {
+        return b.auditDetails?.lastModifiedTime
+                .compareTo(a.auditDetails?.lastModifiedTime ?? 0) ??
+            0;
+      });
     });
   }
 
