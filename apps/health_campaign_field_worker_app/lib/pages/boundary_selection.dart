@@ -46,6 +46,8 @@ class _BoundarySelectionPageState
   Map<String, TextEditingController> dropdownControllers = {};
   late StreamSubscription syncSubscription;
   var leastLevelBoundaries;
+  // pass this param to enable filter of LabelList
+  bool doFilter = false;
 
   final String setLocale = "en_NG";
 
@@ -90,6 +92,9 @@ class _BoundarySelectionPageState
         .toList()
         .isNotEmpty;
 
+// set the param to enable or disable filter of labelList and other boundary conditions
+    doFilter = enableFilter();
+
     return PopScope(
       canPop: shouldPop,
       child: BlocBuilder<AppInitializationBloc, AppInitializationState>(
@@ -107,7 +112,8 @@ class _BoundarySelectionPageState
                     );
                   }
 
-                  final labelList = state.selectedBoundaryMap.keys.toList();
+                  final labelList =
+                      filterBoundaryLabelListBasedOnRole(doFilter, state);
 
                   return initState.maybeWhen(
                     orElse: () => const Offstage(),
@@ -793,6 +799,25 @@ class _BoundarySelectionPageState
       return false;
     }
     return false;
+  }
+
+  dynamic filterBoundaryLabelListBasedOnRole(
+      bool doFilter, BoundaryState state) {
+    final labelList = state.selectedBoundaryMap.keys.toList();
+    if (doFilter) {
+      if (context.isWarehouseManager) {
+        final filteredLabelList =
+            labelList.isNotEmpty ? [labelList.first] : labelList;
+
+        return filteredLabelList;
+      }
+    }
+
+    return labelList;
+  }
+
+  bool enableFilter() {
+    return context.isWarehouseManager;
   }
 
   void listenToSyncCount() async {
