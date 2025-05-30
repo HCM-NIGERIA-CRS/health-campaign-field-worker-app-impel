@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:digit_components/digit_components.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_ui_components/theme/digit_extended_theme.dart';
+import 'package:digit_ui_components/theme/spacers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:registration_delivery/blocs/app_localization.dart';
@@ -14,9 +15,7 @@ import 'package:registration_delivery/models/entities/task.dart';
 import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
 import '../../blocs/localization/app_localization.dart';
-import '../../models/entities/identifier_types.dart';
-// import '../../utils/registration_delivery/utils_smc.dart';
-// import 'package:registration_delivery/utils/utils.dart';
+
 import '../../router/app_router.dart';
 import '../../utils/app_enums.dart';
 import '../../utils/registration_delivery/utils_smc.dart';
@@ -27,7 +26,6 @@ import '../../utils/i18_key_constants.dart' as i18_local;
 
 import '../../models/entities/additional_fields_type.dart'
     as additional_fields_local;
-import '../../utils/extensions/extensions.dart';
 
 class CustomMemberCard extends StatelessWidget {
   final List<ProductVariantModel> variant;
@@ -466,6 +464,7 @@ class CustomMemberCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     final beneficiaryType = context.beneficiaryType;
+    final textTheme = theme.digitTextTheme(context);
 
     return Container(
       decoration: BoxDecoration(
@@ -489,40 +488,48 @@ class CustomMemberCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  individual.identifiers != null
-                      ? Padding(
-                          padding: const EdgeInsets.all(kPadding),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: DigitTheme.instance.colorScheme.primary,
+                  if (individual.identifiers != null)
+                    if (individual.identifiers!
+                            .lastWhereOrNull(
+                              (e) =>
+                                  e.identifierType ==
+                                  IdentifierTypes.uniqueBeneficiaryID.toValue(),
+                            )
+                            ?.identifierId !=
+                        null)
+                      Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.all(spacer1),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: theme.colorTheme.text.disabled,
+                                ),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(spacer2),
+                                ),
                               ),
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(kPadding),
+                              child: Padding(
+                                padding: const EdgeInsets.all(spacer1),
+                                child: Text(
+                                  individual.identifiers
+                                          ?.lastWhereOrNull(
+                                            (e) =>
+                                                e.identifierType ==
+                                                IdentifierTypes
+                                                    .uniqueBeneficiaryID
+                                                    .toValue(),
+                                          )
+                                          ?.identifierId ??
+                                      localizations
+                                          .translate(i18.common.noResultsFound),
+                                  style: textTheme.headingXS.copyWith(
+                                      color: theme.colorTheme.primary.primary2),
+                                ),
                               ),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(
-                                kPadding,
-                              ),
-                              child: Text(
-                                individual.identifiers!
-                                        .lastWhere(
-                                          (e) =>
-                                              e.identifierType ==
-                                              IdentifierTypes
-                                                  .uniqueBeneficiaryID
-                                                  .toValue(),
-                                        )
-                                        .identifierId ??
-                                    localizations
-                                        .translate(i18.common.noResultsFound),
-                                style: theme.textTheme.headlineSmall,
-                              ),
-                            ),
-                          ),
-                        )
-                      : const Offstage(),
+                          )),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,

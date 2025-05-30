@@ -8,6 +8,7 @@ import 'package:digit_ui_components/widgets/atoms/input_wrapper.dart';
 import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:inventory_management/blocs/record_stock.dart';
 import 'package:inventory_management/router/inventory_router.gm.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
@@ -289,9 +290,15 @@ class CustomInventoryReportDetailsPageState
                                                         name: 'Delivery Team',
                                                       ),
                                                     ];
-                                                    teamFacilities.addAll(
-                                                      facilities,
-                                                    );
+                                                    // info: fix for showing facilities for cdd in return flow only
+                                                    //else delivery team
+                                                    if (widget.reportType ==
+                                                        InventoryReportType
+                                                            .dispatch) {
+                                                      teamFacilities.addAll(
+                                                        facilities,
+                                                      );
+                                                    }
 
                                                     return context
                                                                 .isDistributor &&

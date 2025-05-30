@@ -523,6 +523,22 @@ class _HomePageState extends LocalizedState<HomePage> {
           },
         ),
       ),
+      i18.home.beneficiaryIdLabel: homeShowcaseData.beneficiaryId.buildWith(
+        child: HomeItemCard(
+          label: i18.home.beneficiaryIdLabel,
+          onPressed: () {
+            if (isTriggerLocalisation) {
+              triggerLocalization();
+              isTriggerLocalisation = false;
+            }
+            context.router.push(BeneficiaryIdDownSyncRoute());
+          },
+          icon: Icons.account_box,
+          enableCustomIcon: true,
+          customIconSize: spacer9,
+          customIcon: Constants.beneficiaryIdDownload,
+        ),
+      ),
     };
 
     final Map<String, GlobalKey> homeItemsShowcaseMap = {
@@ -552,6 +568,7 @@ class _HomePageState extends LocalizedState<HomePage> {
       i18.home.clfLabel: homeShowcaseData.clf.showcaseKey,
       i18.home.mySurveyForm:
           homeShowcaseData.supervisorMySurveyForm.showcaseKey,
+      i18.home.beneficiaryIdLabel: homeShowcaseData.beneficiaryId.showcaseKey,
     };
 
     final homeItemsLabel = <String>[
@@ -569,6 +586,7 @@ class _HomePageState extends LocalizedState<HomePage> {
       i18.home.fileComplaint,
       i18.home.db,
       i18.home.dashboard,
+      i18.home.beneficiaryIdLabel,
     ];
 
     final List<String> filteredLabels = homeItemsLabel
@@ -615,6 +633,7 @@ class _HomePageState extends LocalizedState<HomePage> {
 
                 context.read<
                     LocalRepository<PgrServiceModel, PgrServiceSearchModel>>(),
+
                 context.read<
                     LocalRepository<HouseholdModel, HouseholdSearchModel>>(),
                 context.read<
@@ -674,6 +693,7 @@ class _HomePageState extends LocalizedState<HomePage> {
                     RemoteRepository<IndividualModel, IndividualSearchModel>>(),
                 context.read<
                     RemoteRepository<PgrServiceModel, PgrServiceSearchModel>>(),
+
                 // context.read<
                 //     RemoteRepository<UserActionModel, UserActionSearchModel>>(),
               ],
@@ -768,6 +788,10 @@ void setPackagesSingleton(BuildContext context) {
         );
 
         RegistrationDeliverySingleton().setInitialData(
+          beneficiaryIdMinCount:
+              appConfiguration.beneficiaryIdConfig?.first.minCount.toInt(),
+          beneficiaryIdBatchSize:
+              appConfiguration.beneficiaryIdConfig?.first.batchSize.toInt(),
           loggedInUserUuid: context.loggedInUserUuid,
           maxRadius: appConfiguration.maxRadius!,
           projectId: context.projectId,

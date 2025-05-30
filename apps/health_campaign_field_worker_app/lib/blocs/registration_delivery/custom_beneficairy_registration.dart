@@ -1,16 +1,19 @@
 // GENERATED using mason_cli
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/utils/typedefs.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:registration_delivery/models/entities/household_member.dart';
+import 'package:registration_delivery/models/entities/id_status.dart';
 import 'package:registration_delivery/models/entities/task.dart';
 
 import 'package:registration_delivery/models/entities/household.dart';
 import 'package:registration_delivery/models/entities/project_beneficiary.dart';
 import 'package:registration_delivery/models/entities/status.dart';
+import 'package:registration_delivery/models/entities/unique_id_pool.dart';
 import 'package:registration_delivery/utils/typedefs.dart';
 import 'package:registration_delivery/utils/utils.dart';
 
@@ -33,6 +36,9 @@ class CustomBeneficiaryRegistrationBloc
 
   final BeneficiaryType beneficiaryType;
 
+  final LocalRepository<UniqueIdPoolModel, UniqueIdPoolSearchModel>
+      uniqueIdPoolLocalRepository;
+
   CustomBeneficiaryRegistrationBloc(
     super.initialState, {
     required this.individualRepository,
@@ -41,6 +47,7 @@ class CustomBeneficiaryRegistrationBloc
     required this.projectBeneficiaryRepository,
     required this.taskDataRepository,
     required this.beneficiaryType,
+    required this.uniqueIdPoolLocalRepository,
   }) {
     on(_handleSaveAddress);
     on(_handleSaveHouseDetails);
@@ -262,6 +269,19 @@ class CustomBeneficiaryRegistrationBloc
                 ],
               ),
             );
+
+            final uniqueId = individual.identifiers!.firstWhereOrNull((id) =>
+                id.identifierType ==
+                IdentifierTypes.uniqueBeneficiaryID.toValue());
+
+            if (uniqueId != null) {
+              var id = await uniqueIdPoolLocalRepository
+                  .search(UniqueIdPoolSearchModel(id: uniqueId.identifierId!));
+
+              uniqueIdPoolLocalRepository.update(id.firstOrNull!.copyWith(
+                status: IdStatus.assigned.toValue(),
+              ));
+            }
 
             await projectBeneficiaryRepository.create(
               value.projectBeneficiaryModel!,
@@ -634,6 +654,20 @@ class CustomBeneficiaryRegistrationBloc
             nonRecoverableError:
                 existingIndividual?.nonRecoverableError ?? false,
           ));
+
+          final uniqueId = event.model.identifiers!.firstWhereOrNull((id) =>
+              id.identifierType ==
+              IdentifierTypes.uniqueBeneficiaryID.toValue());
+
+          if (uniqueId != null) {
+            var id = await uniqueIdPoolLocalRepository
+                .search(UniqueIdPoolSearchModel(id: uniqueId.identifierId!));
+
+            uniqueIdPoolLocalRepository.update(id.firstOrNull!.copyWith(
+              status: IdStatus.assigned.toValue(),
+            ));
+          }
+
           if (projectBeneficiary.isNotEmpty) {
             if (projectBeneficiary.first.tag != event.tag) {
               await projectBeneficiaryRepository
@@ -701,6 +735,19 @@ class CustomBeneficiaryRegistrationBloc
               ],
             ),
           );
+          final uniqueId = event.individualModel.identifiers!.firstWhereOrNull(
+              (id) =>
+                  id.identifierType ==
+                  IdentifierTypes.uniqueBeneficiaryID.toValue());
+
+          if (uniqueId != null) {
+            var id = await uniqueIdPoolLocalRepository
+                .search(UniqueIdPoolSearchModel(id: uniqueId.identifierId!));
+
+            uniqueIdPoolLocalRepository.update(id.firstOrNull!.copyWith(
+              status: IdStatus.assigned.toValue(),
+            ));
+          }
           if (event.beneficiaryType == BeneficiaryType.individual) {
             await projectBeneficiaryRepository.create(
               ProjectBeneficiaryModel(

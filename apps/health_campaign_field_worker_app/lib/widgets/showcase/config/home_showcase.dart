@@ -107,4 +107,8 @@ class _HomePageShowcaseData {
   );
 
   final clf = ShowcaseItemBuilder(messageLocalizationKey: i18.homeShowcase.clf);
+
+  final beneficiaryId = ShowcaseItemBuilder(
+    messageLocalizationKey: i18.home.beneficiaryIdLabel,
+  );
 }

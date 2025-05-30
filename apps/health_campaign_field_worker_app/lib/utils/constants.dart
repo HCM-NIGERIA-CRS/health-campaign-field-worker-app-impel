@@ -109,6 +109,7 @@ class Constants {
 
   static const int mlPerBottle = 30;
   static const int apiCallLimit = 1000;
+  static const int beneficiaryIdLength = 9;
 
   // for stock validation
 
@@ -149,7 +150,6 @@ class Constants {
       ),
       LocationTrackerLocalBaseRepository(
           sql, LocationTrackerOpLogManager(isar)),
-      // StockLocalRepository(sql, StockOpLogManager(isar)),
       CustomStockLocalRepository(sql, StockOpLogManager(isar)),
       StockReconciliationLocalRepository(
         sql,
@@ -166,9 +166,7 @@ class Constants {
       TaskLocalRepository(sql, TaskOpLogManager(isar)),
       SideEffectLocalRepository(sql, SideEffectOpLogManager(isar)),
       ReferralLocalRepository(sql, ReferralOpLogManager(isar)),
-
       HFReferralLocalRepository(sql, HFReferralOpLogManager(isar)),
-
       AttendanceLocalRepository(
         sql,
         AttendanceOpLogManager(isar),
@@ -177,11 +175,6 @@ class Constants {
         sql,
         AttendanceLogOpLogManager(isar),
       ),
-
-      HFReferralLocalRepository(sql, HFReferralOpLogManager(isar)),
-
-      HFReferralLocalRepository(sql, HFReferralOpLogManager(isar)),
-
       ServiceDefinitionLocalRepository(
         sql,
         ServiceDefinitionOpLogManager(isar),
@@ -215,6 +208,8 @@ class Constants {
 
   static const String closedHouseholdSvg =
       'assets/icons/svg/closed_household.svg';
+  static const String beneficiaryIdDownload =
+      'assets/icons/svg/beneficiary_ids.svg';
 
   static List<RemoteRepository> getRemoteRepositories(
     Dio dio,
@@ -273,10 +268,6 @@ class Constants {
           AttendanceLogRemoteRepository(dio, actionMap: actions),
         if (value == DataModelType.complaints)
           PgrServiceRemoteRepository(dio, actionMap: actions),
-        if (value == DataModelType.hFReferral)
-          HFReferralRemoteRepository(dio, actionMap: actions),
-        if (value == DataModelType.hFReferral)
-          HFReferralRemoteRepository(dio, actionMap: actions),
         if (value == DataModelType.serviceDefinition)
           ServiceDefinitionRemoteRepository(dio, actionMap: actions),
         if (value == DataModelType.service)
