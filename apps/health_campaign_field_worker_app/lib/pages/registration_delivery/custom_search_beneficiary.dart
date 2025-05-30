@@ -927,7 +927,7 @@ class _CustomSearchBeneficiaryPageState
                             "\n ${localizations.translate(i18_local.beneficiaryDetails.spaq2DoseUnit)}";
                       }
 
-                      if ((spaq1 > 0 || spaq2 > 0 || true)) {
+                      if ((spaq1 > 0 || spaq2 > 0)) {
                         FocusManager.instance.primaryFocus?.unfocus();
                         // context.read<DigitScannerBloc>().add(
                         //       const DigitScannerEvent.handleScanner(),
