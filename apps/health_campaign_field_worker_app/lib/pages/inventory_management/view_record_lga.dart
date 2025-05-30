@@ -181,6 +181,7 @@ class _ViewStockRecordsLGAPageState
         return stock.copyWith(
           id: null,
           rowVersion: 1,
+          referenceId: context.projectId,
           clientReferenceId: IdGen.i.identifier,
           transactionType: TransactionType.received.toValue(),
           transactionReason: TransactionReason.received.toValue(),
