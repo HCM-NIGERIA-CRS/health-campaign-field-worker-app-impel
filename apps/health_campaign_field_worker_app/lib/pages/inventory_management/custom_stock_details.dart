@@ -828,7 +828,8 @@ class CustomStockDetailsPageState
                                       );
                                     }),
                               ),
-                              if (isWareHouseMgr)
+                              if (isWareHouseMgr ||
+                                  context.isHealthFacilitySupervisor)
                                 transportTypes.isNotEmpty
                                     ? ReactiveWrapperField(
                                         formControlName: _typeOfTransportKey,
@@ -885,7 +886,8 @@ class CustomStockDetailsPageState
                                         },
                                       )
                                     : const Offstage(),
-                              if (isWareHouseMgr)
+                              if (isWareHouseMgr ||
+                                  context.isHealthFacilitySupervisor)
                                 ReactiveWrapperField(
                                     formControlName: _vehicleNumberKey,
                                     builder: (field) {
