@@ -427,6 +427,19 @@ extension ContextUtilityExtensions on BuildContext {
     }
   }
 
+  bool get isWarehouseManager {
+    try {
+      bool isWarehouseManager = loggedInUserRoles
+          .where((role) => role.code == RolesType.warehouseManager.toValue())
+          .toList()
+          .isNotEmpty;
+
+      return isWarehouseManager;
+    } catch (_) {
+      return false;
+    }
+  }
+
   bool get isHealthFacilitySupervisor {
     try {
       // todo : verify this make this healthFacilitySupervsior as per kebbi
@@ -440,6 +453,25 @@ extension ContextUtilityExtensions on BuildContext {
           .isNotEmpty;
 
       return isDownSyncEnabled;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  bool get isSupervisor {
+    try {
+      // todo : verify this make this healthFacilitySupervsior as per kebbi
+      bool isSupervisor = loggedInUserRoles
+          .where(
+            (role) =>
+                role.code == RolesType.districtSupervisor.toValue() ||
+                role.code == RolesType.teamSupervisor.toValue() ||
+                role.code == RolesType.communitySupervisor.toValue(),
+          )
+          .toList()
+          .isNotEmpty;
+
+      return isSupervisor;
     } catch (_) {
       return false;
     }

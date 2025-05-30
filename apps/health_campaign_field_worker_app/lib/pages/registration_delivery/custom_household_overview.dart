@@ -36,6 +36,7 @@ import 'package:registration_delivery/utils/utils.dart';
 import '../../blocs/registration_delivery/custom_search_household.dart'
     as customSearchHouseholdBloc;
 import '../../utils/utils.dart';
+import '../../utils/date_utils.dart' as digits;
 import '../../widgets/custom_back_navigation.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 import 'package:registration_delivery/widgets/member_card/member_card.dart';
@@ -905,18 +906,18 @@ class _CustomHouseholdOverviewPageState
                                                                       DateTime
                                                                           .now(),
                                                                 ).years),
-                                                      months:
-                                                          (e.dateOfBirth == null
-                                                              ? null
-                                                              : DigitDateUtils
-                                                                  .calculateAge(
-                                                                  DigitDateUtils
-                                                                          .getFormattedDateToDateTime(
-                                                                        e.dateOfBirth!,
-                                                                      ) ??
-                                                                      DateTime
-                                                                          .now(),
-                                                                ).months),
+                                                      months: (e.dateOfBirth ==
+                                                              null
+                                                          ? null
+                                                          : digits.DigitDateUtils
+                                                              .calculateAge(
+                                                              digits.DigitDateUtils
+                                                                      .getFormattedDateToDateTime(
+                                                                    e.dateOfBirth!,
+                                                                  ) ??
+                                                                  DateTime
+                                                                      .now(),
+                                                            ).months),
                                                       gender: e.gender?.name,
                                                       isBeneficiaryRefused:
                                                           false,
