@@ -5,6 +5,7 @@ import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/widgets/atoms/input_wrapper.dart';
 import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_management/blocs/record_stock.dart';
 import 'package:inventory_management/models/entities/stock.dart';
@@ -327,6 +328,12 @@ class _ViewStockRecordsLGAPageState
                           .inventoryReportDetails.actualQuantityReceived),
                       errorMessage: field.errorText,
                       keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'[0-9]'),
+                        ),
+                        LengthLimitingTextInputFormatter(9),
+                      ],
                       onChange: (value) {
                         if (value != null && value.isNotEmpty) {
                           field.control.value = int.tryParse(value);

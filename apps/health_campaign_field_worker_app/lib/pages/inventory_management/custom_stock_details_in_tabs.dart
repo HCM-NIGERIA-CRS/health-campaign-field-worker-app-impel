@@ -124,6 +124,9 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
     final selectedProducts =
         products.map((variant) => variant.sku).whereType<String>().toList();
 
+    final state = context.read<RecordStockBloc>().state;
+    StockRecordEntryType entryType = state.entryType;
+
     _forms.addAll({
       for (final product in selectedProducts)
         product: FormGroup({
@@ -131,7 +134,8 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
           _transactionReasonKey: FormControl<String>(),
           _waybillNumberKey: FormControl<String>(
             validators: (InventorySingleton().isWareHouseMgr ||
-                    context.isHealthFacilitySupervisor)
+                    (context.isHealthFacilitySupervisor &&
+                        entryType != StockRecordEntryType.dispatch))
                 ? [
                     Validators.minLength(2),
                     Validators.maxLength(200),
@@ -522,7 +526,8 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                               onChange: (val) {
                                 field.control.value = val;
                               },
-                              isRequired: true,
+                              isRequired:
+                                  entryType != StockRecordEntryType.dispatch,
                             );
                           }),
                     if ((isWareHouseMgr || isHealthFacilitySupervisor) &&
@@ -585,14 +590,10 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                                   field.control.value = null;
                                   return;
                                 }
-                                if (int.parse(val) > 10000000000) {
-                                  field.control.value = 10000;
+                                if (val != '') {
+                                  field.control.value = int.parse(val);
                                 } else {
-                                  if (val != '') {
-                                    field.control.value = int.parse(val);
-                                  } else {
-                                    field.control.value = null;
-                                  }
+                                  field.control.value = null;
                                 }
                               },
                             ),
