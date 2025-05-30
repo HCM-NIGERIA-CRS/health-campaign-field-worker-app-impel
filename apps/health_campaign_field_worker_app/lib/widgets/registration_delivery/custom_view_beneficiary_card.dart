@@ -414,14 +414,11 @@ class CustomViewBeneficiaryCardState
     CustomStatusKeys statusKeys,
     List<TaskModel>? taskData,
   ) {
-    if (statusKeys.isNotEligible) {
+    if (statusKeys.isNotEligible || statusKeys.isBeneficiaryIneligible) {
       return localizations.translate(
           i18.householdOverView.householdOverViewNotEligibleIconLabel);
     } else if (statusKeys.isBeneficiaryReferred) {
       return localizations.translate(Status.beneficiaryReferred.toValue());
-    } else if (statusKeys.isBeneficiaryIneligible) {
-      return localizations.translate(
-          i18.householdOverView.householdOverViewNotEligibleIconLabel);
     } else if (taskData != null) {
       if (taskData.isEmpty) {
         return localizations.translate(Status.notVisited.toValue());
@@ -451,6 +448,7 @@ class CustomViewBeneficiaryCardState
             taskdata.isNotEmpty &&
             !isBeneficiaryRefused &&
             !isNotEligible &&
+            !isBeneficiaryIneligible &&
             !isStatusReset
         ? theme.colorScheme.onSurfaceVariant
         : theme.colorScheme.error;

@@ -208,6 +208,15 @@ class _CustomSearchBeneficiaryPageState
                                                   IndividualGlobalSearchSMCBloc>()
                                               .add(const searchHouseholdSMCBloc
                                                   .SearchHouseholdsSMCEvent.clear());
+                                        } else if (isSearchByBeneficaryIdEnabled &&
+                                            !isBeneficiaryIdValidPattern(
+                                                searchController.text.trim())) {
+                                          blocWrapper.clearEvent();
+                                          context
+                                              .read<
+                                                  IndividualGlobalSearchSMCBloc>()
+                                              .add(const searchHouseholdSMCBloc
+                                                  .SearchHouseholdsSMCEvent.clear());
                                         } else if (!isSearchByBeneficaryIdEnabled &&
                                             (value.isEmpty ||
                                                 value.trim().length > 2)) {
@@ -402,19 +411,6 @@ class _CustomSearchBeneficiaryPageState
                                 title: localizations.translate(
                                   i18.searchBeneficiary.beneficiaryInfoTitle,
                                 ),
-                              ),
-                            ),
-                          if (isSearchByBeneficaryIdEnabled &&
-                              searchController.text.trim().isNotEmpty &&
-                              !isBeneficiaryIdValidPattern(
-                                  searchController.text.trim()))
-                            DigitInfoCard(
-                              description: localizations.translate(
-                                i18_local.searchBeneficiary
-                                    .beneficiaryIdValidInfoDescription,
-                              ),
-                              title: localizations.translate(
-                                i18.searchBeneficiary.beneficiaryInfoTitle,
                               ),
                             ),
                         ],
@@ -635,13 +631,14 @@ class _CustomSearchBeneficiaryPageState
                     ),
                   if (isSearchByBeneficaryIdEnabled &&
                       searchController.text.trim().isNotEmpty &&
-                      !isBeneficiaryIdValid(searchController.text.trim()))
+                      !isBeneficiaryIdValidPattern(
+                          searchController.text.trim()))
                     SliverList(
                         delegate: SliverChildBuilderDelegate((ctx, index) {
                       return DigitInfoCard(
                         description: localizations.translate(
-                          i18_local.searchBeneficiary
-                              .beneficiaryIdValidInfoDescription,
+                          i18_local
+                              .searchBeneficiary.beneficiaryInfoDescription,
                         ),
                         title: localizations.translate(
                           i18.searchBeneficiary.beneficiaryInfoTitle,
@@ -924,7 +921,7 @@ class _CustomSearchBeneficiaryPageState
                             "\n ${localizations.translate(i18_local.beneficiaryDetails.spaq2DoseUnit)}";
                       }
 
-                      if ((spaq1 > 0 || spaq2 > 0)) {
+                      if ((spaq1 > 0 || spaq2 > 0 || true)) {
                         FocusManager.instance.primaryFocus?.unfocus();
                         // context.read<DigitScannerBloc>().add(
                         //       const DigitScannerEvent.handleScanner(),
