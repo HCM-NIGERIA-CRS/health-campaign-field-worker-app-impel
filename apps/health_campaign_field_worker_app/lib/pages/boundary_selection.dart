@@ -619,7 +619,7 @@ class _BoundarySelectionPageState
                                             builder: (field) => LabeledField(
                                               label: localizations
                                                   .translate(label),
-                                              isRequired: context.isDistributor,
+                                              isRequired: true,
                                               child:
                                                   DigitDropdown<BoundaryModel>(
                                                 onTap: () {
