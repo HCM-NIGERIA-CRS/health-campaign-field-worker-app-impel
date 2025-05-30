@@ -322,28 +322,11 @@ class CustomDoseAdministeredPageState
                               ),
                               style: textTheme.headingXl,
                             ),
-                            Column(
-                              children: [
-                                const ListTile(
-                                  title: Text(
-                                    "Given 2 AQ tablets to caregiver",
-                                  ),
-                                  leading: Text("1"),
-                                ),
-                                ListTile(
-                                  title: Text(
-                                    "Written the Beneficiary ID $beneficiaryId on the child record card( To be used in the next cycle)",
-                                  ),
-                                  leading: const Text("2"),
-                                ),
-                                const ListTile(
-                                  title: Text(
-                                    "Given health talk on the use of SPAQ on day 2 and day 3",
-                                  ),
-                                  leading: Text("3"),
-                                ),
-                              ],
-                            ),
+                            OrderedList(items: [
+                              "Given 2 AQ tablets to caregiver",
+                              "Written the Beneficiary ID $beneficiaryId on the child record card( To be used in the next cycle)",
+                              "Given health talk on the use of SPAQ on day 2 and day 3"
+                            ]),
                             // ReactiveWrapperField(
                             //   formControlName: _doseAdministeredKey,
                             //   builder: (field) => RadioList(
@@ -504,4 +487,58 @@ class CustomDoseAdministeredPageState
   //     ),
   //   });
   // }
+}
+
+class OrderedList extends StatelessWidget {
+  final List<String> items;
+  const OrderedList({
+    super.key,
+    required this.items,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (var i = 0; i < items.length; i++)
+          OrderedListItem(
+            index: i + 1,
+            text: items[i],
+          ),
+      ],
+    );
+  }
+}
+
+class OrderedListItem extends StatelessWidget {
+  final int index;
+  final String text;
+  const OrderedListItem({
+    required this.index,
+    required this.text,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("    $index.  "),
+            Expanded(
+              child: Text(
+                text,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: 16.0,
+                    ),
+              ),
+            ),
+          ]),
+    );
+  }
 }
