@@ -313,29 +313,35 @@ class _CustomSearchBeneficiaryPageState
                                             ]),
                                             Row(
                                               children: [
-                                                Switch(
-                                                  value:
-                                                      isSearchByBeneficaryIdEnabled,
-                                                  onChanged: (value) {
-                                                    customSearchHouseholdsBloc
-                                                        .add(
-                                                      const SearchHouseholdsClearEvent(),
-                                                    );
-                                                    searchController.clear();
-                                                    context
-                                                        .read<
-                                                            IndividualGlobalSearchSMCBloc>()
-                                                        .add(const searchHouseholdSMCBloc
-                                                            .SearchHouseholdsSMCEvent.clear());
-                                                    setState(() {
-                                                      isSearchByBeneficaryIdEnabled =
-                                                          value;
-                                                      isProximityEnabled =
-                                                          false;
+                                                Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      spacer2),
+                                                  child: DigitSwitch(
+                                                    value:
+                                                        isSearchByBeneficaryIdEnabled,
+                                                    onChanged: (value) {
+                                                      customSearchHouseholdsBloc
+                                                          .add(
+                                                        const SearchHouseholdsClearEvent(),
+                                                      );
                                                       searchController.clear();
-                                                      blocWrapper.clearEvent();
-                                                    });
-                                                  },
+                                                      context
+                                                          .read<
+                                                              IndividualGlobalSearchSMCBloc>()
+                                                          .add(const searchHouseholdSMCBloc
+                                                              .SearchHouseholdsSMCEvent.clear());
+                                                      setState(() {
+                                                        isSearchByBeneficaryIdEnabled =
+                                                            value;
+                                                        isProximityEnabled =
+                                                            false;
+                                                        searchController
+                                                            .clear();
+                                                        blocWrapper
+                                                            .clearEvent();
+                                                      });
+                                                    },
+                                                  ),
                                                 ),
                                                 Text(
                                                   localizations.translate(i18_local
