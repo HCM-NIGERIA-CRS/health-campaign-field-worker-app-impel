@@ -526,8 +526,9 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                               onChange: (val) {
                                 field.control.value = val;
                               },
-                              isRequired:
-                                  entryType != StockRecordEntryType.dispatch,
+                              isRequired: !(context
+                                      .isHealthFacilitySupervisor &&
+                                  entryType == StockRecordEntryType.dispatch),
                             );
                           }),
                     if ((isWareHouseMgr || isHealthFacilitySupervisor) &&
