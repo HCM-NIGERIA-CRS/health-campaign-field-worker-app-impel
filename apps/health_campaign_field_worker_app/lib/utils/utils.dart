@@ -192,6 +192,18 @@ performBackgroundService({
   }
 }
 
+String? formatBeneficiaryId(String? id) {
+  if (id == null) return null;
+  final buffer = StringBuffer();
+  for (int i = 0; i < id.length; i++) {
+    buffer.write(id[i]);
+    if ((i + 1) % 3 == 0 && i != id.length - 1) {
+      buffer.write('-');
+    }
+  }
+  return buffer.toString();
+}
+
 String formatDateFromMillis(int millis) {
   final date = DateTime.fromMillisecondsSinceEpoch(millis);
   final day = date.day.toString().padLeft(2, '0');
