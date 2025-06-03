@@ -513,7 +513,7 @@ class CustomMemberCard extends StatelessWidget {
                               child: Padding(
                                 padding: const EdgeInsets.all(spacer1),
                                 child: Text(
-                                  individual.identifiers
+                                  formatBeneficiaryId(individual.identifiers
                                           ?.lastWhereOrNull(
                                             (e) =>
                                                 e.identifierType ==
@@ -521,7 +521,7 @@ class CustomMemberCard extends StatelessWidget {
                                                     .uniqueBeneficiaryID
                                                     .toValue(),
                                           )
-                                          ?.identifierId ??
+                                          ?.identifierId) ??
                                       localizations
                                           .translate(i18.common.noResultsFound),
                                   style: textTheme.headingXS.copyWith(
