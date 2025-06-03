@@ -1250,7 +1250,7 @@ class CustomStockDetailsPageState
                                                   const DigitScannerPage(
                                                 quantity: 5,
                                                 isGS1code: false,
-                                                singleValue: false,
+                                                singleValue: true,
                                               ),
                                               settings: const RouteSettings(
                                                   name: '/qr-scanner'),
