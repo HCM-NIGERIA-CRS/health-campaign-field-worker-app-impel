@@ -205,6 +205,9 @@ class _ViewStockRecordsCDDPageState
         );
       }).toList();
 
+      int spaq1Count = 0;
+      int spaq2Count = 0;
+
       for (final stock in updatedStocks) {
         context.read<RecordStockBloc>().add(
               RecordStockSaveStockDetailsEvent(
@@ -220,9 +223,6 @@ class _ViewStockRecordsCDDPageState
             .value
             .toString());
 
-        int spaq1Count = 0;
-        int spaq2Count = 0;
-
         String productName = stock.additionalFields?.fields
             .firstWhereOrNull((element) => element.key == "productName")
             ?.value;
@@ -232,15 +232,15 @@ class _ViewStockRecordsCDDPageState
         } else if (productName == Constants.spaq2) {
           spaq2Count = totalQty;
         }
-        context.read<AuthBloc>().add(
-              AuthAddSpaqCountsEvent(
-                spaq1Count: spaq1Count,
-                spaq2Count: spaq2Count,
-                blueVasCount: 0,
-                redVasCount: 0,
-              ),
-            );
       }
+      context.read<AuthBloc>().add(
+            AuthAddSpaqCountsEvent(
+              spaq1Count: spaq1Count,
+              spaq2Count: spaq2Count,
+              blueVasCount: 0,
+              redVasCount: 0,
+            ),
+          );
       await Future.delayed(const Duration(milliseconds: 500));
       context.router.push(
         CustomAcknowledgementRoute(
