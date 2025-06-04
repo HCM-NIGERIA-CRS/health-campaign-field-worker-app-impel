@@ -526,8 +526,9 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                               onChange: (val) {
                                 field.control.value = val;
                               },
-                              isRequired:
-                                  entryType != StockRecordEntryType.dispatch,
+                              isRequired: !(context
+                                      .isHealthFacilitySupervisor &&
+                                  entryType == StockRecordEntryType.dispatch),
                             );
                           }),
                     if ((isWareHouseMgr || isHealthFacilitySupervisor) &&
@@ -896,6 +897,13 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
             .firstWhereOrNull((element) => element.key == 'productName')
             ?.value;
 
+        // Accumulate quantities based on product
+        if (productName == Constants.spaq1) {
+          spaq1Count += totalQty;
+        } else if (productName == Constants.spaq2) {
+          spaq2Count += totalQty;
+        }
+
         // Custom logic based on productName
         if (entryType == StockRecordEntryType.dispatch) {
           if (productName == Constants.spaq1 &&
@@ -928,14 +936,9 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
             return;
           }
         }
+      }
 
-        // Accumulate quantities based on product
-        if (productName == Constants.spaq1) {
-          spaq1Count += totalQty;
-        } else if (productName == Constants.spaq2) {
-          spaq2Count += totalQty;
-        }
-
+      for (final stockModel in _tabStocks.values) {
         context.read<RecordStockBloc>().add(
               RecordStockSaveStockDetailsEvent(
                 stockModel: stockModel,

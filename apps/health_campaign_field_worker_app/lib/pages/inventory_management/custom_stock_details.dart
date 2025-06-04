@@ -453,13 +453,27 @@ class CustomStockDetailsPageState
                                             .control(_productVariantKey)
                                             .value as List<ProductVariantModel>;
 
+                                        ProductVariantModel? spaq1Product =
+                                            selectedProducts.firstWhereOrNull(
+                                                (element) =>
+                                                    element.sku ==
+                                                    Constants.spaq1);
+                                        ProductVariantModel? spaq2Product =
+                                            selectedProducts.firstWhereOrNull(
+                                                (element) =>
+                                                    element.sku ==
+                                                    Constants.spaq2);
                                         final receivedFrom = form
                                             .control(_secondaryPartyKey)
                                             .value as String;
                                         context.read<StockBloc>().add(
                                               StockSelectedEvent(
-                                                selectedProducts:
-                                                    selectedProducts,
+                                                selectedProducts: [
+                                                  if (spaq1Product != null)
+                                                    spaq1Product,
+                                                  if (spaq2Product != null)
+                                                    spaq2Product,
+                                                ],
                                                 secondaryPartyType:
                                                     deliveryTeamSelected
                                                         ? "STAFF"
@@ -587,25 +601,6 @@ class CustomStockDetailsPageState
                                                   .where((element) =>
                                                       element.usage ==
                                                       Constants.centralFacility)
-                                                  .toList()
-                                              : allFacilities //TODO: changed from facilities
-                                                  .where((element) =>
-                                                      element.usage ==
-                                                      Constants.lgaFacility)
-                                                  .toList();
-                                        } else if (context.selectedProject
-                                                    .address?.boundaryType ==
-                                                Constants.lgaBoundaryLevel ||
-                                            context.selectedProject.address
-                                                    ?.boundaryType ==
-                                                Constants
-                                                    .districtBoundaryLevel) {
-                                          filteredFacilities = entryType ==
-                                                  StockRecordEntryType.receipt
-                                              ? allFacilities
-                                                  .where((element) =>
-                                                      element.usage ==
-                                                      Constants.stateFacility)
                                                   .toList()
                                               : allFacilities //TODO: changed from facilities
                                                   .where((element) =>
@@ -772,7 +767,7 @@ class CustomStockDetailsPageState
                                                   const DigitScannerPage(
                                                 quantity: 5,
                                                 isGS1code: false,
-                                                singleValue: false,
+                                                singleValue: true,
                                               ),
                                               settings: const RouteSettings(
                                                   name: '/qr-scanner'),

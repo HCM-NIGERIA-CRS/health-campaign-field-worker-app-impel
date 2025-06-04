@@ -59,7 +59,7 @@ class _CustomSearchBeneficiaryPageState
     extends LocalizedState<CustomSearchBeneficiaryPage> {
   final TextEditingController searchController = TextEditingController();
   bool isProximityEnabled = false;
-  bool isSearchByBeneficaryIdEnabled = false;
+  bool isSearchByBeneficiaryIdEnabled = false;
 
   int offset = 0;
   int limit = 10;
@@ -172,7 +172,7 @@ class _CustomSearchBeneficiaryPageState
                                       controller: searchController,
                                       icon: const SizedBox.shrink(),
                                       keyboardType:
-                                          !isSearchByBeneficaryIdEnabled
+                                          !isSearchByBeneficiaryIdEnabled
                                               ? TextInputType.text
                                               : TextInputType.number,
                                       hintText: (RegistrationDeliverySingleton()
@@ -188,7 +188,7 @@ class _CustomSearchBeneficiaryPageState
                                       textCapitalization:
                                           TextCapitalization.words,
                                       onChanged: (value) {
-                                        if (isSearchByBeneficaryIdEnabled &&
+                                        if (isSearchByBeneficiaryIdEnabled &&
                                             isBeneficiaryIdValid(
                                                 value.trim()) &&
                                             searchController.text
@@ -197,7 +197,7 @@ class _CustomSearchBeneficiaryPageState
                                                 Constants.beneficiaryIdLength) {
                                           searchByBeneficiaryId(
                                               beneficiaryId: value.trim());
-                                        } else if (isSearchByBeneficaryIdEnabled &&
+                                        } else if (isSearchByBeneficiaryIdEnabled &&
                                             searchController.text
                                                     .trim()
                                                     .length <
@@ -208,7 +208,7 @@ class _CustomSearchBeneficiaryPageState
                                                   IndividualGlobalSearchSMCBloc>()
                                               .add(const searchHouseholdSMCBloc
                                                   .SearchHouseholdsSMCEvent.clear());
-                                        } else if (isSearchByBeneficaryIdEnabled &&
+                                        } else if (isSearchByBeneficiaryIdEnabled &&
                                             !isBeneficiaryIdValidPattern(
                                                 searchController.text.trim())) {
                                           blocWrapper.clearEvent();
@@ -217,7 +217,7 @@ class _CustomSearchBeneficiaryPageState
                                                   IndividualGlobalSearchSMCBloc>()
                                               .add(const searchHouseholdSMCBloc
                                                   .SearchHouseholdsSMCEvent.clear());
-                                        } else if (!isSearchByBeneficaryIdEnabled &&
+                                        } else if (!isSearchByBeneficiaryIdEnabled &&
                                             (value.isEmpty ||
                                                 value.trim().length > 2)) {
                                           triggerGlobalSearchEvent();
@@ -225,7 +225,7 @@ class _CustomSearchBeneficiaryPageState
                                       },
                                     ),
                                   ),
-                                  if (!isSearchByBeneficaryIdEnabled)
+                                  if (!isSearchByBeneficiaryIdEnabled)
                                     RegistrationDeliverySingleton()
                                                     .searchHouseHoldFilter !=
                                                 null &&
@@ -282,7 +282,7 @@ class _CustomSearchBeneficiaryPageState
                                                     setState(() {
                                                       isProximityEnabled =
                                                           value;
-                                                      isSearchByBeneficaryIdEnabled =
+                                                      isSearchByBeneficiaryIdEnabled =
                                                           false;
                                                       lat = locationState
                                                           .latitude!;
@@ -318,7 +318,7 @@ class _CustomSearchBeneficiaryPageState
                                                       spacer2),
                                                   child: DigitSwitch(
                                                     value:
-                                                        isSearchByBeneficaryIdEnabled,
+                                                        isSearchByBeneficiaryIdEnabled,
                                                     onChanged: (value) {
                                                       customSearchHouseholdsBloc
                                                           .add(
@@ -331,7 +331,7 @@ class _CustomSearchBeneficiaryPageState
                                                           .add(const searchHouseholdSMCBloc
                                                               .SearchHouseholdsSMCEvent.clear());
                                                       setState(() {
-                                                        isSearchByBeneficaryIdEnabled =
+                                                        isSearchByBeneficiaryIdEnabled =
                                                             value;
                                                         isProximityEnabled =
                                                             false;
@@ -397,7 +397,7 @@ class _CustomSearchBeneficiaryPageState
                               );
                             },
                           ),
-                          if (!isSearchByBeneficaryIdEnabled &&
+                          if (!isSearchByBeneficiaryIdEnabled &&
                               searchHouseholdsState.resultsNotFound &&
                               !searchHouseholdsState.loading)
                             Padding(
@@ -423,7 +423,7 @@ class _CustomSearchBeneficiaryPageState
                       ),
                     ),
                   ),
-                  if (!isSearchByBeneficaryIdEnabled &&
+                  if (!isSearchByBeneficiaryIdEnabled &&
                       searchHouseholdsState.loading)
                     const SliverFillRemaining(
                       child: Center(
@@ -546,7 +546,7 @@ class _CustomSearchBeneficiaryPageState
                       );
                     },
                   ),
-                  if (isSearchByBeneficaryIdEnabled)
+                  if (isSearchByBeneficiaryIdEnabled)
                     BlocConsumer<IndividualGlobalSearchSMCBloc,
                         searchHouseholdSMCBloc.SearchHouseholdsSMCState>(
                       listener: (context, searchSMCstate) {},
@@ -555,6 +555,23 @@ class _CustomSearchBeneficiaryPageState
                           return const Center(
                               child: CircularProgressIndicator());
                         } else {
+                          if (searchController.text.trim().length ==
+                                  Constants.beneficiaryIdLength &&
+                              searchSMCstate.householdMembers.isEmpty) {
+                            return SliverList(
+                                delegate:
+                                    SliverChildBuilderDelegate((ctx, index) {
+                              return DigitInfoCard(
+                                description: localizations.translate(
+                                  i18_local.searchBeneficiary
+                                      .beneficiaryInfoDescription,
+                                ),
+                                title: localizations.translate(
+                                  i18.searchBeneficiary.beneficiaryInfoTitle,
+                                ),
+                              );
+                            }, childCount: 1));
+                          }
                           return SliverList(
                             delegate: SliverChildBuilderDelegate(
                               (ctx, index) {
@@ -619,7 +636,7 @@ class _CustomSearchBeneficiaryPageState
                                       }
                                       setState(() {
                                         isProximityEnabled = false;
-                                        isSearchByBeneficaryIdEnabled = false;
+                                        isSearchByBeneficiaryIdEnabled = false;
                                       });
                                       searchController.clear();
                                       selectedFilters.clear();
@@ -635,22 +652,6 @@ class _CustomSearchBeneficiaryPageState
                         }
                       },
                     ),
-                  if (isSearchByBeneficaryIdEnabled &&
-                      searchController.text.trim().isNotEmpty &&
-                      !isBeneficiaryIdValidPattern(
-                          searchController.text.trim()))
-                    SliverList(
-                        delegate: SliverChildBuilderDelegate((ctx, index) {
-                      return DigitInfoCard(
-                        description: localizations.translate(
-                          i18_local
-                              .searchBeneficiary.beneficiaryInfoDescription,
-                        ),
-                        title: localizations.translate(
-                          i18.searchBeneficiary.beneficiaryInfoTitle,
-                        ),
-                      );
-                    }, childCount: 1))
                 ],
               );
             },
