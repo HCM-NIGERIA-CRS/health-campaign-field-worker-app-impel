@@ -526,8 +526,9 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                               onChange: (val) {
                                 field.control.value = val;
                               },
-                              isRequired:
-                                  entryType != StockRecordEntryType.dispatch,
+                              isRequired: !(context
+                                      .isHealthFacilitySupervisor &&
+                                  entryType == StockRecordEntryType.dispatch),
                             );
                           }),
                     if ((isWareHouseMgr || isHealthFacilitySupervisor) &&
@@ -928,6 +929,24 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
             return;
           }
         }
+      }
+
+      for (final stockModel in _tabStocks.values) {
+        int quantity = int.parse(stockModel.quantity.toString());
+        int quantityWasted = int.parse(stockModel.additionalFields?.fields
+                .firstWhereOrNull(
+                    (element) => element.key == 'wastedBlistersReturned')
+                ?.value
+                ?.toString() ??
+            '0');
+        final totalQty = ((entryType == StockRecordEntryType.dispatch)
+                ? quantity * -1
+                : quantity) -
+            quantityWasted;
+
+        String? productName = stockModel.additionalFields?.fields
+            .firstWhereOrNull((element) => element.key == 'productName')
+            ?.value;
 
         // Accumulate quantities based on product
         if (productName == Constants.spaq1) {

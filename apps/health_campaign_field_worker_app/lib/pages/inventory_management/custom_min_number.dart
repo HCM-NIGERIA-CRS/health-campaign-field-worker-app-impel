@@ -80,8 +80,8 @@ class CustomMinNumberPageState extends LocalizedState<CustomMinNumberPage> {
 
     setState(() {
       stockList = filteredResult.sorted((a, b) {
-        return a.auditDetails?.lastModifiedTime
-                .compareTo(b.auditDetails?.lastModifiedTime ?? 0) ??
+        return b.auditDetails?.lastModifiedTime
+                .compareTo(a.auditDetails?.lastModifiedTime ?? 0) ??
             0;
       });
     });
@@ -108,7 +108,7 @@ class CustomMinNumberPageState extends LocalizedState<CustomMinNumberPage> {
       groupedStock[mrn]!.add(stock);
     }
 
-    final groupedEntries = groupedStock.entries.toList().reversed.toList();
+    final groupedEntries = groupedStock.entries.toList();
     List<StockModel> finalStocks = [];
 
     return Scaffold(
