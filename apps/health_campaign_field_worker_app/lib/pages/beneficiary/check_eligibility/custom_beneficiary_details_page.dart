@@ -34,6 +34,7 @@ import 'package:registration_delivery/widgets/component_wrapper/product_variant_
 import 'package:registration_delivery/widgets/localized.dart';
 import 'package:registration_delivery/widgets/table_card/table_card.dart';
 
+import '../../../utils/utils.dart';
 import '../../../widgets/registration_delivery/past_delivery_vas.dart';
 import 'custom_record_delivery_cycle.dart';
 
@@ -452,7 +453,9 @@ class CustomBeneficiaryDetailsPageState
                                                           .uniqueBeneficiaryID
                                                           .toValue())
                                                   ?.identifierId;
-                                          return beneficiaryId ?? '--';
+                                          return formatBeneficiaryId(
+                                                  beneficiaryId) ??
+                                              '--';
                                         }(),
                                         localizations.translate(
                                           i18.common.coreCommonAge,

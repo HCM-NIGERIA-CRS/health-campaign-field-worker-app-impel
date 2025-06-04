@@ -17,6 +17,7 @@ import 'package:registration_delivery/blocs/search_households/search_households.
 import 'package:collection/collection.dart';
 
 import '../../../utils/app_enums.dart';
+import '../../../utils/utils.dart';
 import '../../../widgets/digit_ui_component/custom_panel_card.dart';
 
 @RoutePage()
@@ -60,7 +61,7 @@ class CustomHouseholdAcknowledgementPageState
 
     return {
       'id': name,
-      'value': beneficiaryId,
+      'value': formatBeneficiaryId(beneficiaryId) ?? "",
     };
   }
 
@@ -71,15 +72,6 @@ class CustomHouseholdAcknowledgementPageState
       child: Scaffold(
         body: BlocBuilder<HouseholdOverviewBloc, HouseholdOverviewState>(
           builder: (context, householdState) {
-            String beneficiaryId = householdState
-                    .selectedIndividual?.identifiers
-                    ?.lastWhereOrNull((e) =>
-                        e.identifierType ==
-                        IdentifierTypes.uniqueBeneficiaryID.toValue())
-                    ?.identifierId ??
-                "";
-            String name =
-                householdState.selectedIndividual?.name?.givenName ?? "";
             return Padding(
               padding: const EdgeInsets.all(spacer2),
               child: CustomPanelCard(
