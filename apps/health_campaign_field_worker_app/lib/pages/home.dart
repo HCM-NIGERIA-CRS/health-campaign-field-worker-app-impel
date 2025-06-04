@@ -415,6 +415,18 @@ class _HomePageState extends LocalizedState<HomePage> {
           },
         ),
       ),
+      i18.home.viewSummaryReportsLabel:
+          homeShowcaseData.summaryReport.buildWith(
+        child: HomeItemCard(
+          icon: Icons.book,
+          label: i18.home.viewSummaryReportsLabel,
+          onPressed: () {
+            context.router.push(
+              CustomDistributionSummaryReportDetailsRoute(),
+            );
+          },
+        ),
+      ),
       i18.home.beneficiaryReferralLabel: HomeItemCard(
         icon: Icons.supervised_user_circle_rounded,
         label: i18.home.beneficiaryReferralLabel,
@@ -568,6 +580,8 @@ class _HomePageState extends LocalizedState<HomePage> {
       i18.home.clfLabel: homeShowcaseData.clf.showcaseKey,
       i18.home.mySurveyForm:
           homeShowcaseData.supervisorMySurveyForm.showcaseKey,
+      i18.home.viewSummaryReportsLabel:
+          homeShowcaseData.summaryReport.showcaseKey,
       i18.home.beneficiaryIdLabel: homeShowcaseData.beneficiaryId.showcaseKey,
     };
 
@@ -582,6 +596,7 @@ class _HomePageState extends LocalizedState<HomePage> {
       i18.home.manageStockLabel,
       i18.home.stockReconciliationLabel,
       i18.home.viewReportsLabel,
+      i18.home.viewSummaryReportsLabel,
       i18.home.syncDataLabel,
       i18.home.fileComplaint,
       i18.home.db,
@@ -590,12 +605,15 @@ class _HomePageState extends LocalizedState<HomePage> {
     ];
 
     final List<String> filteredLabels = homeItemsLabel
-        .where((element) =>
-            state.actionsWrapper.actions
-                .map((e) => e.displayName)
-                .toList()
-                .contains(element) ||
-            element == i18.home.db)
+        .where(
+          (element) =>
+              state.actionsWrapper.actions
+                  .map((e) => e.displayName)
+                  .toList()
+                  .contains(element) ||
+              element == i18.home.db ||
+              element == i18.home.viewSummaryReportsLabel,
+        )
         .toList();
 
     final showcaseKeys = filteredLabels

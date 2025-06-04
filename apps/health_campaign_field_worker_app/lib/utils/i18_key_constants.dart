@@ -484,6 +484,9 @@ class StockReconciliationDetails {
 
 class InventoryReportDetails {
   const InventoryReportDetails();
+  String get dateLabel {
+    return 'INVENTORY_REPORT_DETAILS_DATE_LABEL';
+  }
 
   String get backToHomeButtonLabel =>
       "INVENTORY_REPORT_DETAILS_BACK_TO_HOME_BUTTON_LABEL";
@@ -506,8 +509,16 @@ class InventoryReportDetails {
   String get commentsText => 'COMMENTS_TEXT';
 
   String get waybillNumberText => 'WAYBILL_NUMBER_TEXT';
+  String get summaryReport => 'INVENTORY_REPORT_DETAILS_SUMMARY_REPORT_LABEL';
 
   String get batchNumberText => 'BATCH_NUMBER_TEXT';
+  String get houseHoldRegistered =>
+      'SUMMARY_REPORT_COLUMN_HOUSEHOLD_REGISTERED';
+  String get childrenTreated => 'SUMMARY_REPORT_COLUMN_CHILDREN_TREATED';
+  String get childrenTreatedPercentage =>
+      'SUMMARY_REPORT_COLUMN_CHILDREN_TREATED_PERCENTAGE';
+  String get aztReceived => 'SUMMARY_REPORT_COLUMN_AZT_RECEIVED';
+  String get aztConsumed => 'SUMMARY_REPORT_COLUMN_AZT_CONSUMED';
 }
 
 class SelectStockShowcase {
@@ -891,6 +902,7 @@ class Home {
 
   String get clfLabel => "HOME_COMMUNAL_LIVING_FACILITIES_LABEL";
   String get beneficiaryIdLabel => 'HOME_BENEFICIARY_ID_LABEL';
+  String get viewSummaryReportsLabel => 'VIEW_SUMMARY_REPORTS_LABEL';
 }
 
 class AcknowledgementSuccess {

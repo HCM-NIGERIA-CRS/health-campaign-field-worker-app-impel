@@ -26,6 +26,7 @@ import 'blocs/localization/localization.dart';
 import 'blocs/project/project.dart';
 import 'blocs/search/individual_global_search_smc.dart';
 import 'blocs/search/search_households_smc.dart';
+import 'blocs/summary_report/custom_distribution_summary_report.dart';
 import 'data/local_store/app_shared_preferences.dart';
 import 'data/network_manager.dart';
 import 'data/remote_client.dart';
@@ -145,6 +146,22 @@ class MainApplicationState extends State<MainApplication>
                     ),
                   );
                 },
+              ),
+              BlocProvider(
+                create: (context) => CustomDistributionSummaryReportBloc(
+                    householdRepository: context
+                        .repository<HouseholdModel, HouseholdSearchModel>(),
+                    taskRepository:
+                        context.repository<TaskModel, TaskSearchModel>(),
+                    individualRepository: context
+                        .repository<IndividualModel, IndividualSearchModel>(),
+                    productVariantRepository: context.repository<
+                        ProductVariantModel, ProductVariantSearchModel>(),
+                    stockDataRepository:
+                        context.repository<StockModel, StockSearchModel>(),
+                    projectBeneficiaryRepository: context.repository<
+                        ProjectBeneficiaryModel,
+                        ProjectBeneficiarySearchModel>()),
               ),
               BlocProvider(
                 create: (context) {

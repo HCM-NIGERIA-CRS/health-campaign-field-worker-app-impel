@@ -162,6 +162,19 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    CustomDistributionSummaryReportDetailsRoute.name: (routeData) {
+      final args =
+          routeData.argsAs<CustomDistributionSummaryReportDetailsRouteArgs>(
+              orElse: () =>
+                  const CustomDistributionSummaryReportDetailsRouteArgs());
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CustomDistributionSummaryReportDetailsPage(
+          key: args.key,
+          appLocalizations: args.appLocalizations,
+        ),
+      );
+    },
     CustomDoseAdministeredRoute.name: (routeData) {
       final args = routeData.argsAs<CustomDoseAdministeredRouteArgs>();
       return AutoRoutePage<dynamic>(
@@ -1301,6 +1314,45 @@ class CustomDeliverySummaryRouteArgs {
   @override
   String toString() {
     return 'CustomDeliverySummaryRouteArgs{key: $key, appLocalizations: $appLocalizations}';
+  }
+}
+
+/// generated route for
+/// [CustomDistributionSummaryReportDetailsPage]
+class CustomDistributionSummaryReportDetailsRoute
+    extends PageRouteInfo<CustomDistributionSummaryReportDetailsRouteArgs> {
+  CustomDistributionSummaryReportDetailsRoute({
+    Key? key,
+    AppLocalizations? appLocalizations,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CustomDistributionSummaryReportDetailsRoute.name,
+          args: CustomDistributionSummaryReportDetailsRouteArgs(
+            key: key,
+            appLocalizations: appLocalizations,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CustomDistributionSummaryReportDetailsRoute';
+
+  static const PageInfo<CustomDistributionSummaryReportDetailsRouteArgs> page =
+      PageInfo<CustomDistributionSummaryReportDetailsRouteArgs>(name);
+}
+
+class CustomDistributionSummaryReportDetailsRouteArgs {
+  const CustomDistributionSummaryReportDetailsRouteArgs({
+    this.key,
+    this.appLocalizations,
+  });
+
+  final Key? key;
+
+  final AppLocalizations? appLocalizations;
+
+  @override
+  String toString() {
+    return 'CustomDistributionSummaryReportDetailsRouteArgs{key: $key, appLocalizations: $appLocalizations}';
   }
 }
 

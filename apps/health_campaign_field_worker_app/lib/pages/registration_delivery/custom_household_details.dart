@@ -34,6 +34,7 @@ import '../../blocs/registration_delivery/custom_beneficairy_registration.dart';
 import '../../router/app_router.dart';
 import '../../utils/registration_delivery/registration_delivery_utils.dart';
 import 'custom_beneficiary_acknowledgement.dart';
+import '../../utils/constants.dart' as local_constants;
 
 @RoutePage()
 class CustomHouseHoldDetailsPage extends LocalizedStatefulWidget {
@@ -380,12 +381,20 @@ class CustomHouseHoldDetailsPageState
                                             ?.additionalFields?.fields
                                             .where((e) =>
                                                 e.key !=
-                                                AdditionalFieldsType.children
-                                                    .toValue()),
+                                                    AdditionalFieldsType
+                                                        .children
+                                                        .toValue() &&
+                                                e.key !=
+                                                    local_constants
+                                                        .Constants.headConsent),
                                         AdditionalField(
                                           AdditionalFieldsType.children
                                               .toValue(),
                                           children,
+                                        ),
+                                        const AdditionalField(
+                                          local_constants.Constants.headConsent,
+                                          "true",
                                         ),
                                       ]));
 
