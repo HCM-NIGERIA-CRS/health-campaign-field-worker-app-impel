@@ -20,7 +20,9 @@ import 'package:registration_delivery/blocs/delivery_intervention/deliver_interv
 import 'package:registration_delivery/blocs/household_overview/household_overview.dart';
 import 'package:registration_delivery/models/entities/additional_fields_type.dart';
 import 'package:registration_delivery/models/entities/task.dart';
+import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
+import '../../../blocs/registration_delivery/custom_beneficairy_registration.dart';
 import '../../../blocs/registration_delivery/custom_search_household.dart';
 import '../../../router/app_router.dart';
 import '../../../utils/constants.dart';
@@ -348,15 +350,19 @@ class CustomBeneficiaryDetailsPageState
                                                                           primaryAction:
                                                                               DigitDialogActions(
                                                                             label:
-                                                                                localizations.translate(i18_local.beneficiaryDetails.backToHouseholdDetails),
+                                                                                localizations.translate(i18_local.beneficiaryDetails.backToSearchHousehold),
                                                                             action:
-                                                                                (ctx) {
+                                                                                (ctx) async {
                                                                               Navigator.of(
                                                                                 context,
                                                                                 rootNavigator: true,
                                                                               ).pop();
-                                                                              context.router.popUntilRouteWithName(
-                                                                                CustomHouseholdOverviewRoute.name,
+                                                                              await context.router.popAndPush(
+                                                                                CustomRegistrationDeliveryWrapperRoute(
+                                                                                  children: [
+                                                                                    CustomSearchBeneficiaryRoute(),
+                                                                                  ],
+                                                                                ),
                                                                               );
                                                                             },
                                                                           ),
