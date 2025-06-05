@@ -765,9 +765,10 @@ class CustomStockDetailsPageState
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   const DigitScannerPage(
-                                                quantity: 5,
+                                                quantity: 1,
                                                 isGS1code: false,
                                                 singleValue: true,
+                                                scanType: ScanType.teamCode,
                                               ),
                                               settings: const RouteSettings(
                                                   name: '/qr-scanner'),
@@ -790,9 +791,10 @@ class CustomStockDetailsPageState
                                                 MaterialPageRoute(
                                                   builder: (context) =>
                                                       const DigitScannerPage(
-                                                    quantity: 5,
+                                                    quantity: 1,
                                                     isGS1code: false,
-                                                    singleValue: false,
+                                                    singleValue: true,
+                                                    scanType: ScanType.teamCode,
                                                   ),
                                                   settings: const RouteSettings(
                                                       name: '/qr-scanner'),

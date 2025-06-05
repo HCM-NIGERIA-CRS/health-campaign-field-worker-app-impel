@@ -191,6 +191,8 @@ class HouseholdOverView {
 class DeliverIntervention {
   const DeliverIntervention();
 
+  String get patternValidationFailed => 'PATTERN_VALIDATION_FAILED';
+
   String get otherReasonLabel =>
       'DELIVER_INTERVENTION_OTHER_REASON_FOR_REDOSE_LABEL';
   String get deliverInterventionSMCLabel => 'DELIVER_INTERVENTION_SMC_LABEL';
