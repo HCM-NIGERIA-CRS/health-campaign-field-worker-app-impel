@@ -281,6 +281,18 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    CustomInventoryFacilitySelectionRoute.name: (routeData) {
+      final args =
+          routeData.argsAs<CustomInventoryFacilitySelectionRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CustomInventoryFacilitySelectionPage(
+          key: args.key,
+          appLocalizations: args.appLocalizations,
+          facilities: args.facilities,
+        ),
+      );
+    },
     CustomInventoryFacilitySelectionSMCRoute.name: (routeData) {
       final args =
           routeData.argsAs<CustomInventoryFacilitySelectionSMCRouteArgs>();
@@ -597,6 +609,21 @@ abstract class _$AppRouter extends RootStackRouter {
         child: CustomWarehouseDetailsPage(
           key: args.key,
           appLocalizations: args.appLocalizations,
+        ),
+      );
+    },
+    DigitScannerRoute.name: (routeData) {
+      final args = routeData.argsAs<DigitScannerRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: DigitScannerPage(
+          key: args.key,
+          appLocalizations: args.appLocalizations,
+          quantity: args.quantity,
+          isGS1code: args.isGS1code,
+          singleValue: args.singleValue,
+          isEditEnabled: args.isEditEnabled,
+          scanType: args.scanType,
         ),
       );
     },
@@ -1759,6 +1786,50 @@ class CustomIndividualDetailsRouteArgs {
   @override
   String toString() {
     return 'CustomIndividualDetailsRouteArgs{key: $key, appLocalizations: $appLocalizations, isHeadOfHousehold: $isHeadOfHousehold}';
+  }
+}
+
+/// generated route for
+/// [CustomInventoryFacilitySelectionPage]
+class CustomInventoryFacilitySelectionRoute
+    extends PageRouteInfo<CustomInventoryFacilitySelectionRouteArgs> {
+  CustomInventoryFacilitySelectionRoute({
+    Key? key,
+    InventoryLocalization? appLocalizations,
+    required List<FacilityModel> facilities,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CustomInventoryFacilitySelectionRoute.name,
+          args: CustomInventoryFacilitySelectionRouteArgs(
+            key: key,
+            appLocalizations: appLocalizations,
+            facilities: facilities,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CustomInventoryFacilitySelectionRoute';
+
+  static const PageInfo<CustomInventoryFacilitySelectionRouteArgs> page =
+      PageInfo<CustomInventoryFacilitySelectionRouteArgs>(name);
+}
+
+class CustomInventoryFacilitySelectionRouteArgs {
+  const CustomInventoryFacilitySelectionRouteArgs({
+    this.key,
+    this.appLocalizations,
+    required this.facilities,
+  });
+
+  final Key? key;
+
+  final InventoryLocalization? appLocalizations;
+
+  final List<FacilityModel> facilities;
+
+  @override
+  String toString() {
+    return 'CustomInventoryFacilitySelectionRouteArgs{key: $key, appLocalizations: $appLocalizations, facilities: $facilities}';
   }
 }
 
@@ -2930,6 +3001,69 @@ class CustomWarehouseDetailsRouteArgs {
   @override
   String toString() {
     return 'CustomWarehouseDetailsRouteArgs{key: $key, appLocalizations: $appLocalizations}';
+  }
+}
+
+/// generated route for
+/// [DigitScannerPage]
+class DigitScannerRoute extends PageRouteInfo<DigitScannerRouteArgs> {
+  DigitScannerRoute({
+    Key? key,
+    ScannerLocalization? appLocalizations,
+    required int quantity,
+    required bool isGS1code,
+    bool singleValue = false,
+    bool isEditEnabled = false,
+    ScanType scanType = ScanType.others,
+    List<PageRouteInfo>? children,
+  }) : super(
+          DigitScannerRoute.name,
+          args: DigitScannerRouteArgs(
+            key: key,
+            appLocalizations: appLocalizations,
+            quantity: quantity,
+            isGS1code: isGS1code,
+            singleValue: singleValue,
+            isEditEnabled: isEditEnabled,
+            scanType: scanType,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'DigitScannerRoute';
+
+  static const PageInfo<DigitScannerRouteArgs> page =
+      PageInfo<DigitScannerRouteArgs>(name);
+}
+
+class DigitScannerRouteArgs {
+  const DigitScannerRouteArgs({
+    this.key,
+    this.appLocalizations,
+    required this.quantity,
+    required this.isGS1code,
+    this.singleValue = false,
+    this.isEditEnabled = false,
+    this.scanType = ScanType.others,
+  });
+
+  final Key? key;
+
+  final ScannerLocalization? appLocalizations;
+
+  final int quantity;
+
+  final bool isGS1code;
+
+  final bool singleValue;
+
+  final bool isEditEnabled;
+
+  final ScanType scanType;
+
+  @override
+  String toString() {
+    return 'DigitScannerRouteArgs{key: $key, appLocalizations: $appLocalizations, quantity: $quantity, isGS1code: $isGS1code, singleValue: $singleValue, isEditEnabled: $isEditEnabled, scanType: $scanType}';
   }
 }
 

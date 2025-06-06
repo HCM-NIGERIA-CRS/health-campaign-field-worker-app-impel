@@ -87,22 +87,11 @@ class CustomWarehouseDetailsPageState
               final facilities = facilityState.whenOrNull(
                     fetched: (facilities, allfacilities) {
                       if (ctx.selectedProject.address?.boundaryType ==
-                          Constants.stateBoundaryLevel) {
+                          Constants.provinceBoundaryLevel) {
                         List<FacilityModel> filteredFacilities = facilities
                             .where(
                               (element) =>
                                   element.usage == Constants.stateFacility,
-                            )
-                            .toList();
-                        facilities = filteredFacilities.isEmpty
-                            ? facilities
-                            : filteredFacilities;
-                      } else if (ctx.selectedProject.address?.boundaryType ==
-                          Constants.lgaBoundaryLevel) {
-                        List<FacilityModel> filteredFacilities = facilities
-                            .where(
-                              (element) =>
-                                  element.usage == Constants.lgaFacility,
                             )
                             .toList();
                         facilities = filteredFacilities.isEmpty
@@ -364,7 +353,7 @@ class CustomWarehouseDetailsPageState
                                             isRequired: true,
                                             type: InputType.text,
                                             label:
-                                                '${localizations.translate(i18.warehouseDetails.administrativeUnit)} *',
+                                                '${localizations.translate(i18.warehouseDetails.administrativeUnit)} ',
                                             initialValue: field.control.value,
                                             readOnly: true,
                                           );

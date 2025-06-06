@@ -382,7 +382,7 @@ class _PanelState extends State<Panel> with SingleTickerProviderStateMixin {
             textAlign: TextAlign.center,
             style: themeData.titleTextStyle.copyWith(
               fontSize: 20, // Bigger font for name
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
             ),
           ),
           if (widget.description != null)

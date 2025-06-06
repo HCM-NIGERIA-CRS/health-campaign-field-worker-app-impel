@@ -355,7 +355,8 @@ class CustomStockReconciliationPageState
                                           fetched: (facilities, allFacilities) {
                                             if (context.selectedProject.address
                                                     ?.boundaryType ==
-                                                Constants.stateBoundaryLevel) {
+                                                Constants
+                                                    .provinceBoundaryLevel) {
                                               List<FacilityModel>
                                                   filteredFacilities =
                                                   facilities
@@ -364,23 +365,6 @@ class CustomStockReconciliationPageState
                                                             element.usage ==
                                                             Constants
                                                                 .stateFacility,
-                                                      )
-                                                      .toList();
-                                              facilities =
-                                                  filteredFacilities.isEmpty
-                                                      ? facilities
-                                                      : filteredFacilities;
-                                            } else if (context.selectedProject
-                                                    .address?.boundaryType ==
-                                                Constants.lgaBoundaryLevel) {
-                                              List<FacilityModel>
-                                                  filteredFacilities =
-                                                  facilities
-                                                      .where(
-                                                        (element) =>
-                                                            element.usage ==
-                                                            Constants
-                                                                .lgaFacility,
                                                       )
                                                       .toList();
                                               facilities =

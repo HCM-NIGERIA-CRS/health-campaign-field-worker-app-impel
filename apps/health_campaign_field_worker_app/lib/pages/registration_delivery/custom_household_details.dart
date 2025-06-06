@@ -615,8 +615,8 @@ class CustomHouseHoldDetailsPageState
                                 int memberCount =
                                     form.control(_memberCountKey).value;
                                 form.control(_childrenCountKey).value =
-                                    memberCount < children
-                                        ? memberCount
+                                    memberCount - 1 < children
+                                        ? memberCount - 1
                                         : children;
                               },
                               label: localizations.translate(

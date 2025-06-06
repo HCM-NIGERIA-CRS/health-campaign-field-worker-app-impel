@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 // import 'package:digit_ui_components/widgets/atoms/digit_reactive_dropdown.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_scanner/blocs/scanner.dart';
+import '../../router/app_router.dart';
 import './qr_scanner.dart';
 import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/services/location_bloc.dart';
@@ -453,13 +454,27 @@ class CustomStockDetailsPageState
                                             .control(_productVariantKey)
                                             .value as List<ProductVariantModel>;
 
+                                        ProductVariantModel? spaq1Product =
+                                            selectedProducts.firstWhereOrNull(
+                                                (element) =>
+                                                    element.sku ==
+                                                    Constants.spaq1);
+                                        ProductVariantModel? spaq2Product =
+                                            selectedProducts.firstWhereOrNull(
+                                                (element) =>
+                                                    element.sku ==
+                                                    Constants.spaq2);
                                         final receivedFrom = form
                                             .control(_secondaryPartyKey)
                                             .value as String;
                                         context.read<StockBloc>().add(
                                               StockSelectedEvent(
-                                                selectedProducts:
-                                                    selectedProducts,
+                                                selectedProducts: [
+                                                  if (spaq1Product != null)
+                                                    spaq1Product,
+                                                  if (spaq2Product != null)
+                                                    spaq2Product,
+                                                ],
                                                 secondaryPartyType:
                                                     deliveryTeamSelected
                                                         ? "STAFF"
@@ -591,25 +606,6 @@ class CustomStockDetailsPageState
                                               : allFacilities //TODO: changed from facilities
                                                   .where((element) =>
                                                       element.usage ==
-                                                      Constants.lgaFacility)
-                                                  .toList();
-                                        } else if (context.selectedProject
-                                                    .address?.boundaryType ==
-                                                Constants.lgaBoundaryLevel ||
-                                            context.selectedProject.address
-                                                    ?.boundaryType ==
-                                                Constants
-                                                    .districtBoundaryLevel) {
-                                          filteredFacilities = entryType ==
-                                                  StockRecordEntryType.receipt
-                                              ? allFacilities
-                                                  .where((element) =>
-                                                      element.usage ==
-                                                      Constants.stateFacility)
-                                                  .toList()
-                                              : allFacilities //TODO: changed from facilities
-                                                  .where((element) =>
-                                                      element.usage ==
                                                       Constants.healthFacility)
                                                   .toList();
                                         } else {
@@ -664,7 +660,7 @@ class CustomStockDetailsPageState
 
                                                 final facility =
                                                     await context.router.push(
-                                                        InventoryFacilitySelectionRoute(
+                                                        CustomInventoryFacilitySelectionRoute(
                                                   facilities:
                                                       (isHealthFacilitySupervisor &&
                                                               entryType !=
@@ -683,7 +679,7 @@ class CustomStockDetailsPageState
                                                 );
                                                 controller1.text =
                                                     localizations.translate(
-                                                        'FAC_${facility.id}');
+                                                        '${facility.id}');
                                                 setState(() {
                                                   selectedFacilityId =
                                                       facility.id;
@@ -770,9 +766,10 @@ class CustomStockDetailsPageState
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   const DigitScannerPage(
-                                                quantity: 5,
+                                                quantity: 1,
                                                 isGS1code: false,
-                                                singleValue: false,
+                                                singleValue: true,
+                                                scanType: ScanType.teamCode,
                                               ),
                                               settings: const RouteSettings(
                                                   name: '/qr-scanner'),
@@ -795,9 +792,10 @@ class CustomStockDetailsPageState
                                                 MaterialPageRoute(
                                                   builder: (context) =>
                                                       const DigitScannerPage(
-                                                    quantity: 5,
+                                                    quantity: 1,
                                                     isGS1code: false,
-                                                    singleValue: false,
+                                                    singleValue: true,
+                                                    scanType: ScanType.teamCode,
                                                   ),
                                                   settings: const RouteSettings(
                                                       name: '/qr-scanner'),
