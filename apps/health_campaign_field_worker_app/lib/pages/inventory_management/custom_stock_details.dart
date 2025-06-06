@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 // import 'package:digit_ui_components/widgets/atoms/digit_reactive_dropdown.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_scanner/blocs/scanner.dart';
+import '../../router/app_router.dart';
 import './qr_scanner.dart';
 import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/services/location_bloc.dart';
@@ -659,7 +660,7 @@ class CustomStockDetailsPageState
 
                                                 final facility =
                                                     await context.router.push(
-                                                        InventoryFacilitySelectionRoute(
+                                                        CustomInventoryFacilitySelectionRoute(
                                                   facilities:
                                                       (isHealthFacilitySupervisor &&
                                                               entryType !=
@@ -678,7 +679,7 @@ class CustomStockDetailsPageState
                                                 );
                                                 controller1.text =
                                                     localizations.translate(
-                                                        'FAC_${facility.id}');
+                                                        '${facility.id}');
                                                 setState(() {
                                                   selectedFacilityId =
                                                       facility.id;
@@ -765,9 +766,10 @@ class CustomStockDetailsPageState
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   const DigitScannerPage(
-                                                quantity: 5,
+                                                quantity: 1,
                                                 isGS1code: false,
                                                 singleValue: true,
+                                                scanType: ScanType.teamCode,
                                               ),
                                               settings: const RouteSettings(
                                                   name: '/qr-scanner'),
@@ -790,9 +792,10 @@ class CustomStockDetailsPageState
                                                 MaterialPageRoute(
                                                   builder: (context) =>
                                                       const DigitScannerPage(
-                                                    quantity: 5,
+                                                    quantity: 1,
                                                     isGS1code: false,
-                                                    singleValue: false,
+                                                    singleValue: true,
+                                                    scanType: ScanType.teamCode,
                                                   ),
                                                   settings: const RouteSettings(
                                                       name: '/qr-scanner'),

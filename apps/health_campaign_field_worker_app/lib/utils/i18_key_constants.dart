@@ -191,6 +191,8 @@ class HouseholdOverView {
 class DeliverIntervention {
   const DeliverIntervention();
 
+  String get patternValidationFailed => 'PATTERN_VALIDATION_FAILED';
+
   String get otherReasonLabel =>
       'DELIVER_INTERVENTION_OTHER_REASON_FOR_REDOSE_LABEL';
   String get deliverInterventionSMCLabel => 'DELIVER_INTERVENTION_SMC_LABEL';
@@ -1337,6 +1339,7 @@ class BeneficiaryDetails {
   String get householdId => 'HOUSEHOLD_ID_TEXT';
   String get beneficiaryId => 'BENEFICIARY_ID_TEXT';
   String get backToHouseholdDetails => 'BACK_TO_HOUSEHOLD_DETAILS';
+  String get backToSearchHousehold => 'BACK_TO_SEARCH_HOUSEHOLD';
   String get beneficiaryDoseUnit => 'BENEFICIARY_DETAILS_DOSE_UNIT';
   String get spaq1DoseUnit => 'SPAQ1_STOCK_ZERO';
   String get spaq2DoseUnit => 'SPAQ2_STOCK_ZERO';

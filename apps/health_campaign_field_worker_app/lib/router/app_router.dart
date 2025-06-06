@@ -1,3 +1,4 @@
+import 'package:digit_scanner/blocs/app_localization.dart';
 import 'package:survey_form/router/survey_form_router.gm.dart';
 import 'package:survey_form/router/survey_form_router.dart';
 import 'package:attendance_management/router/attendance_router.dart';
@@ -34,6 +35,8 @@ import '../pages/beneficiary/check_eligibility/household_acknowledgement_smc.dar
 import '../pages/beneficiary/check_eligibility/inventory_facility_selection_smc.dart';
 import '../pages/beneficiary/check_eligibility/refer_beneficiary_smc.dart';
 import '../pages/beneficiary/check_eligibility/refer_beneficiary_vas.dart';
+import '../pages/inventory_management/custom_inventory_facility_selection.dart';
+import '../pages/inventory_management/qr_scanner.dart';
 import '../pages/inventory_management/view_record_lga.dart';
 import '../pages/registration_delivery/custom_complaints_details.dart';
 import '../pages/boundary_selection.dart';
@@ -542,9 +545,14 @@ class AppRouter extends _$AppRouter {
           ],
         ),
 
+        // AutoRoute(
+        //   page: InventoryFacilitySelectionRoute.page,
+        //   path: 'inventory-select-facilities',
+        // ),
+
         AutoRoute(
-          page: InventoryFacilitySelectionRoute.page,
-          path: 'inventory-select-facilities',
+          page: CustomInventoryFacilitySelectionRoute.page,
+          path: 'custom-inventory-select-facilities',
         ),
 
         AutoRoute(

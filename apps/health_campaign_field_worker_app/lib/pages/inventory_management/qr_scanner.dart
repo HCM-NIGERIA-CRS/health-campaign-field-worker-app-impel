@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:camera/camera.dart';
+import 'package:digit_components/widgets/atoms/digit_toaster.dart';
 import 'package:digit_scanner/utils/scanner_utils.dart';
 import 'package:digit_scanner/widgets/localized.dart';
 import 'package:digit_ui_components/digit_components.dart';
@@ -16,8 +17,13 @@ import 'package:gs1_barcode_parser/gs1_barcode_parser.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 import 'package:digit_scanner/utils/i18_key_constants.dart' as i18;
+import '../../utils/i18_key_constants.dart' as i18_local;
 import 'package:digit_scanner/blocs/scanner.dart';
 import 'package:digit_scanner/widgets/vision_detector_views/detector_view.dart';
+
+import '../../utils/constants.dart';
+
+enum ScanType { teamCode, others }
 
 @RoutePage()
 class DigitScannerPage extends LocalizedStatefulWidget {
@@ -25,6 +31,7 @@ class DigitScannerPage extends LocalizedStatefulWidget {
   final int quantity;
   final bool isGS1code;
   final bool isEditEnabled;
+  final ScanType scanType;
 
   const DigitScannerPage({
     super.key,
@@ -33,6 +40,7 @@ class DigitScannerPage extends LocalizedStatefulWidget {
     required this.isGS1code,
     this.singleValue = false,
     this.isEditEnabled = false,
+    this.scanType = ScanType.others,
   });
 
   @override
@@ -575,18 +583,36 @@ class _DigitScannerPageState extends LocalizedState<DigitScannerPage> {
   }
 
   Future<void> storeCodeWrapper(String code) async {
-    await DigitScannerUtils().storeCode(
-      context: context,
-      code: code,
-      player: player,
-      singleValue: widget.singleValue,
-      updateCodes: (newCodes) {
-        setState(() {
-          codes = newCodes;
-        });
-      },
-      initialCodes: codes,
-    );
+    if (codes.length < widget.quantity) {
+      if (widget.scanType == ScanType.teamCode &&
+              code.contains(Constants.pipeSeparator) ||
+          widget.scanType != ScanType.teamCode) {
+        await DigitScannerUtils().storeCode(
+          context: context,
+          code: code,
+          player: player,
+          singleValue: widget.singleValue,
+          updateCodes: (newCodes) {
+            setState(() {
+              codes = newCodes;
+            });
+          },
+          initialCodes: codes,
+        );
+      } else {
+        await DigitToast.show(
+          context,
+          options: DigitToastOptions(
+            localizations.translate(
+                i18_local.deliverIntervention.patternValidationFailed),
+            true,
+            Theme.of(context),
+          ),
+        );
+        await Future.delayed(const Duration(seconds: 2));
+        return;
+      }
+    }
   }
 
   Future<void> storeValueWrapper(GS1Barcode scanData) async {

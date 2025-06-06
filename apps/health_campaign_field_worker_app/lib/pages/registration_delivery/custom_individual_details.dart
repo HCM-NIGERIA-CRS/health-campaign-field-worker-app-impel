@@ -408,8 +408,9 @@ class CustomIndividualDetailsPageState
                                                   .setErrors({'': true});
                                             });
                                           }
-                                          if (form.control(_genderKey).value ==
-                                              null) {
+                                          if (!widget.isHeadOfHousehold &&
+                                              form.control(_genderKey).value ==
+                                                  null) {
                                             setState(() {
                                               form
                                                   .control(_genderKey)
@@ -848,41 +849,45 @@ class CustomIndividualDetailsPageState
                                             ),
                                           ),
                                         ),
-                                        dropdown.DigitDropdown<String>(
-                                          label: localizations.translate(
-                                            i18.individualDetails
-                                                .genderLabelText,
+                                        Offstage(
+                                          offstage: widget.isHeadOfHousehold,
+                                          child: dropdown.DigitDropdown<String>(
+                                            label: localizations.translate(
+                                              i18.individualDetails
+                                                  .genderLabelText,
+                                            ),
+                                            valueMapper: (value) =>
+                                                localizations.translate(value),
+                                            initialValue:
+                                                form.control(_genderKey).value,
+                                            menuItems:
+                                                RegistrationDeliverySingleton()
+                                                    .genderOptions!
+                                                    .map((e) => e)
+                                                    .toList(),
+                                            formControlName: _genderKey,
+                                            isRequired: true,
+                                            validationMessages: {
+                                              'required': (_) =>
+                                                  localizations.translate(
+                                                    i18.common
+                                                        .corecommonRequired,
+                                                  ),
+                                            },
+                                            onChanged: (value) {
+                                              if (value != null &&
+                                                  value.isNotEmpty) {
+                                                form.control(_genderKey).value =
+                                                    value;
+                                              } else {
+                                                form.control(_genderKey).value =
+                                                    null;
+                                                form
+                                                    .control(_genderKey)
+                                                    .setErrors({'': true});
+                                              }
+                                            },
                                           ),
-                                          valueMapper: (value) =>
-                                              localizations.translate(value),
-                                          initialValue:
-                                              form.control(_genderKey).value,
-                                          menuItems:
-                                              RegistrationDeliverySingleton()
-                                                  .genderOptions!
-                                                  .map((e) => e)
-                                                  .toList(),
-                                          formControlName: _genderKey,
-                                          isRequired: true,
-                                          validationMessages: {
-                                            'required': (_) =>
-                                                localizations.translate(
-                                                  i18.common.corecommonRequired,
-                                                ),
-                                          },
-                                          onChanged: (value) {
-                                            if (value != null &&
-                                                value.isNotEmpty) {
-                                              form.control(_genderKey).value =
-                                                  value;
-                                            } else {
-                                              form.control(_genderKey).value =
-                                                  null;
-                                              form
-                                                  .control(_genderKey)
-                                                  .setErrors({'': true});
-                                            }
-                                          },
                                         ),
                                         individualDetailsShowcaseData.mobile
                                             .buildWith(
@@ -1140,7 +1145,7 @@ class CustomIndividualDetailsPageState
     });
   }
 
-  getGenderOptions(IndividualModel? individual) {
+  String? getGenderOptions(IndividualModel? individual) {
     final options = RegistrationDeliverySingleton().genderOptions;
 
     return options?.map((e) => e).firstWhereOrNull(
