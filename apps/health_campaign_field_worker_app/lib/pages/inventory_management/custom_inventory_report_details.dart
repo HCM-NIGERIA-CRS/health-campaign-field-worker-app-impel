@@ -227,7 +227,7 @@ class CustomInventoryReportDetailsPageState
                                                             .address
                                                             ?.boundaryType ==
                                                         Constants
-                                                            .stateBoundaryLevel) {
+                                                            .provinceBoundaryLevel) {
                                                       List<FacilityModel>
                                                           filteredFacilities =
                                                           facilities
@@ -237,28 +237,6 @@ class CustomInventoryReportDetailsPageState
                                                                         .usage ==
                                                                     Constants
                                                                         .stateFacility,
-                                                              )
-                                                              .toList();
-                                                      facilities =
-                                                          filteredFacilities
-                                                                  .isEmpty
-                                                              ? facilities
-                                                              : filteredFacilities;
-                                                    } else if (ctx
-                                                            .selectedProject
-                                                            .address
-                                                            ?.boundaryType ==
-                                                        Constants
-                                                            .lgaBoundaryLevel) {
-                                                      List<FacilityModel>
-                                                          filteredFacilities =
-                                                          facilities
-                                                              .where(
-                                                                (element) =>
-                                                                    element
-                                                                        .usage ==
-                                                                    Constants
-                                                                        .lgaFacility,
                                                               )
                                                               .toList();
                                                       facilities =
