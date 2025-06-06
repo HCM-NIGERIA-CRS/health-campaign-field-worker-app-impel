@@ -48,9 +48,12 @@ class _CustomDistributionSummaryReportDetailsState
     });
   }
 
-  static const _householdKey = 'householdKey';
-  static const _projectBeneficiaryKey = 'projectBeneficiaryKey';
-  static const _bednetDistributedKey = 'bednetDistributedKey';
+  static const _householdRegisteredKey = 'householdRegisteredKey';
+  static const _drugsUsedKey = 'drugsUsedKey';
+  static const _drugsReceivedKey = 'drugsReceivedKey';
+  static const _drugsBalanceKey = 'drugsBalanceKey';
+  static const _childrenTreatedCountKey = 'childrenTreatedCountKey';
+  static const __childrenTreatedPercentageKey = 'childrenTreatedPercentageKey';
   static const _dateKey = 'dateKey';
 
   FormGroup _form() {
@@ -121,7 +124,7 @@ class _CustomDistributionSummaryReportDetailsState
                                 i18Local
                                     .inventoryReportDetails.houseHoldRegistered,
                               ),
-                              key: _householdKey,
+                              key: _householdRegisteredKey,
                               width: localizations
                                       .translate(
                                         i18Local.inventoryReportDetails
@@ -133,7 +136,7 @@ class _CustomDistributionSummaryReportDetailsState
                             DigitGridColumn(
                               label: localizations.translate(i18Local
                                   .inventoryReportDetails.childrenTreated),
-                              key: _projectBeneficiaryKey,
+                              key: _childrenTreatedCountKey,
                               width: localizations
                                       .translate(
                                         i18Local.inventoryReportDetails
@@ -146,11 +149,47 @@ class _CustomDistributionSummaryReportDetailsState
                               label: localizations.translate(i18Local
                                   .inventoryReportDetails
                                   .childrenTreatedPercentage),
-                              key: _bednetDistributedKey,
+                              key: __childrenTreatedPercentageKey,
                               width: localizations
                                       .translate(
                                         i18Local.inventoryReportDetails
                                             .childrenTreatedPercentage,
+                                      )
+                                      .length *
+                                  8,
+                            ),
+                            DigitGridColumn(
+                              label: localizations.translate(i18Local
+                                  .inventoryReportDetails.drugsReceived),
+                              key: _drugsReceivedKey,
+                              width: localizations
+                                      .translate(
+                                        i18Local.inventoryReportDetails
+                                            .drugsReceived,
+                                      )
+                                      .length *
+                                  8,
+                            ),
+                            DigitGridColumn(
+                              label: localizations.translate(
+                                  i18Local.inventoryReportDetails.drugsUsed),
+                              key: _drugsUsedKey,
+                              width: localizations
+                                      .translate(
+                                        i18Local
+                                            .inventoryReportDetails.drugsUsed,
+                                      )
+                                      .length *
+                                  8,
+                            ),
+                            DigitGridColumn(
+                              label: localizations.translate(
+                                  i18Local.inventoryReportDetails.drugsBalance),
+                              key: _drugsBalanceKey,
+                              width: localizations
+                                      .translate(
+                                        i18Local.inventoryReportDetails
+                                            .drugsBalance,
                                       )
                                       .length *
                                   8,
@@ -167,18 +206,38 @@ class _CustomDistributionSummaryReportDetailsState
                                     value: entry.key,
                                   ),
                                   DigitGridCell(
-                                    key: _householdKey,
-                                    value: (entry.value.householdCount ?? 0)
+                                    key: _householdRegisteredKey,
+                                    value:
+                                        (entry.value.householdRegisteredCount ??
+                                                0)
+                                            .toString(),
+                                  ),
+                                  DigitGridCell(
+                                    key: _childrenTreatedCountKey,
+                                    value:
+                                        (entry.value.childrenTreatedCount ?? 0)
+                                            .toString(),
+                                  ),
+                                  DigitGridCell(
+                                    key: __childrenTreatedPercentageKey,
+                                    value: (entry.value
+                                                .childrenTreatedPercentageCount ??
+                                            0)
                                         .toString(),
                                   ),
                                   DigitGridCell(
-                                    key: _projectBeneficiaryKey,
-                                    value:
-                                        (entry.value.taskCount ?? 0).toString(),
+                                    key: _drugsReceivedKey,
+                                    value: (entry.value.drugsReceived ?? 0)
+                                        .toString(),
                                   ),
                                   DigitGridCell(
-                                    key: _bednetDistributedKey,
-                                    value: (entry.value.treatedPercentage ?? 0)
+                                    key: _drugsUsedKey,
+                                    value:
+                                        (entry.value.drugsUsed ?? 0).toString(),
+                                  ),
+                                  DigitGridCell(
+                                    key: _drugsBalanceKey,
+                                    value: (entry.value.drugsBalance ?? 0)
                                         .toString(),
                                   ),
                                 ],

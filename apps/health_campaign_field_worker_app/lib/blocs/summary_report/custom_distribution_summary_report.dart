@@ -23,6 +23,7 @@ import 'package:registration_delivery/models/entities/task_resource.dart';
 import 'package:registration_delivery/registration_delivery.dart';
 import 'package:registration_delivery/utils/typedefs.dart';
 
+import '../../data/repositories/custom_task.dart';
 import '../../models/distribution_summary_data_model.dart';
 import '../../utils/constants.dart';
 import '../../utils/environment_config.dart';
@@ -67,44 +68,72 @@ class CustomDistributionSummaryReportBloc extends Bloc<
 
     Map<String, List<HouseholdModel>> dayVsHouseholdListMap = {};
     Map<String, List<TaskModel>> dayVsTaskListMap = {};
-    Map<String?, String> variantIdVsProduct = {};
-    Set<String> availableDates = {};
+    Map<String, List<ProjectBeneficiaryModel>> dayVsProjectBeneficiaryListMap =
+        {};
+
+    Map<String, int> dateVsHouseholdCount = {};
+    Map<String, int> dateVsChildrenTreatedCount = {};
+    // Assuming each element has 'date' (String or DateTime) and 'quantity' (int or double)
+
+    Map<String, double> dateVsDrugsReceivedCount = {};
+    // Assuming each element has 'date' (String or DateTime) and 'quantity' (int or double)
+
+    Map<String, double> dateVsDrugsUsedCount = {};
+    // Assuming each element has 'date' (String or DateTime) and 'quantity' (int or double)
+
+    Map<String, double> dateVsDrugsBalanceCount = {};
+
+    Set<String> uniqueDates = {};
+
+    Map<String, DistributionSummaryData> dateVsDistributionSummaryData = {};
+
+    // get all the households consent yes or no both
     final householdList =
         await (householdRepository as HouseholdLocalRepository).search(
       HouseholdSearchModel(tenantId: envConfig.variables.tenantId),
       userId,
     );
-    final productVariantList =
-        await (productVariantRepository as ProductVariantLocalRepository)
-            .search(
-      ProductVariantSearchModel(tenantId: envConfig.variables.tenantId),
-    );
 
-    // download all the task irrespective of status
-    final taskList = await (taskRepository as TaskLocalRepository).search(
+    // filter yes consent households
+    final consentYesHouseholds = getConsentYesHouseholds(householdList);
+
+    // download all the successful task
+    final successfulTaskList =
+        await (taskRepository as CustomTaskLocalRepository).progressBarSearch(
       TaskSearchModel(
-        tenantId: envConfig.variables.tenantId,
-      ),
+          tenantId: envConfig.variables.tenantId,
+          status: Status.administeredSuccess.toValue()),
       userId,
     );
-    Set<String> projectBeneficiaryClientReferenceIds = taskList
+
+    // download all the redose task
+    final redoseTaskList =
+        await (taskRepository as CustomTaskLocalRepository).progressBarSearch(
+      TaskSearchModel(
+          tenantId: envConfig.variables.tenantId,
+          status: Status.visited.toValue()),
+      userId,
+    );
+
+    Set<String> projectBeneficiaryClientReferenceIds = successfulTaskList
         .map((e) => e.projectBeneficiaryClientReferenceId ?? "")
         .toSet()
         .where((element) => element.isNotEmpty)
         .toSet();
 
-    // get all the pb based on the task created till now
-    final projectBeneficiaryList = await (projectBeneficiaryRepository
-            as ProjectBeneficiaryLocalBaseRepository)
+    // get all the successful pb based on the task created till now
+    final successfulProjectBeneficiaryList = await (projectBeneficiaryRepository
+            as ProjectBeneficiaryLocalRepository)
         .search(
       ProjectBeneficiarySearchModel(
           tenantId: envConfig.variables.tenantId,
           clientReferenceId: projectBeneficiaryClientReferenceIds.toList()),
     );
 
-// Fetching the stock reconciliation details
+// Fetching the stock received transactions details
     final receivedStocks = (await stockDataRepository.search(
       StockSearchModel(
+        receiverId: [userId],
         transactionType: [TransactionType.received.toValue()],
       ),
     ))
@@ -115,9 +144,6 @@ class CustomDistributionSummaryReportBloc extends Bloc<
         )
         .toList();
 
-    // Assuming each element has 'date' (String or DateTime) and 'quantity' (int or double)
-    final Map<String, double> stockReceivedVsDate = {};
-
     for (var stock in receivedStocks) {
       var dateKey = DigitDateUtils.getDateFromTimestamp(
         stock.dateOfEntry ?? DateTime.now().millisecondsSinceEpoch,
@@ -126,102 +152,202 @@ class CustomDistributionSummaryReportBloc extends Bloc<
           '0'); // Replace 'quantity' with the actual field name.
 
       // Accumulate the quantity for the same date
-      stockReceivedVsDate[dateKey] =
-          (stockReceivedVsDate[dateKey] ?? 0) + quantity;
+      dateVsDrugsReceivedCount[dateKey] =
+          (dateVsDrugsReceivedCount[dateKey] ?? 0) + quantity;
     }
 
-    var spaq1 = productVariantList.first.id;
-
-    for (var element in householdList) {
-      final isConsentGiven = element.additionalFields?.fields
-              .firstWhereOrNull((h) => h.key == Constants.headConsent)
-              ?.value ??
-          "true";
-      if (isConsentGiven.toString() == "true") {
-        var dateKey = DigitDateUtils.getDateFromTimestamp(
-          element.clientAuditDetails!.createdTime,
-        );
-
-        dayVsHouseholdListMap.putIfAbsent(dateKey, () => []).add(element);
-      }
-    }
-
-    for (var element in taskList) {
+    for (var element in consentYesHouseholds) {
       var dateKey = DigitDateUtils.getDateFromTimestamp(
         element.clientAuditDetails!.createdTime,
       );
+      dayVsHouseholdListMap.putIfAbsent(dateKey, () => []).add(element);
+    }
 
+    for (var element in successfulTaskList) {
+      var dateKey = DigitDateUtils.getDateFromTimestamp(
+        element.clientAuditDetails!.createdTime,
+      );
       dayVsTaskListMap.putIfAbsent(dateKey, () => []).add(element);
     }
-    availableDates.addAll(dayVsHouseholdListMap.keys.toSet());
 
-    availableDates.addAll(dayVsTaskListMap.keys.toSet());
-
-    Map<String, DistributionSummaryData> dayVsDataCount = {};
-    Map<String, Map<String?, dynamic>> dayVsDrugsQuantityMap = {};
-
-    for (var entry in dayVsTaskListMap.entries) {
-      var date = entry.key;
-      var taskListForADate = entry.value;
-      getDrugsVsQuantityMap(
-        taskListForADate,
-        date,
-        dayVsDrugsQuantityMap,
+    for (var element in successfulProjectBeneficiaryList) {
+      var dateKey = DigitDateUtils.getDateFromTimestamp(
+        element.clientAuditDetails!.createdTime,
       );
+      dayVsProjectBeneficiaryListMap
+          .putIfAbsent(dateKey, () => [])
+          .add(element);
     }
 
-    for (var date in availableDates) {
-      int totatlHouseholdForADay = 0;
-      int totalTaskForADay = 0;
+    uniqueDates.addAll(dayVsProjectBeneficiaryListMap.keys.toSet());
+    uniqueDates.addAll(dayVsHouseholdListMap.keys.toSet());
+    uniqueDates.addAll(dayVsTaskListMap.keys.toSet());
+    uniqueDates.addAll(dateVsDrugsReceivedCount.keys.toSet());
 
-      if (dayVsHouseholdListMap.containsKey(date) &&
-          dayVsHouseholdListMap[date] != null) {
-        for (var entry in dayVsHouseholdListMap[date]!.toList()) {
-          totatlHouseholdForADay++;
-        }
-      }
-      if (dayVsTaskListMap.containsKey(date) &&
-          dayVsTaskListMap[date] != null) {
-        totalTaskForADay += dayVsTaskListMap[date]!.length;
-      }
+    // populate the day vs count for that day map
+    populateDateVsCountMap(dayVsHouseholdListMap, dateVsHouseholdCount);
+    // populate the day vs count for that day map
+    populateDateVsCountMap(
+        dayVsProjectBeneficiaryListMap, dateVsChildrenTreatedCount);
 
-      // denominator is fixed here
-      // assumption here is aztUsed  AZT used
-      double aztReceived = 0;
-      double aztUsed = 0;
-      if (dayVsDrugsQuantityMap.containsKey(date) &&
-          dayVsDrugsQuantityMap[date] != null &&
-          dayVsDrugsQuantityMap[date]!.containsKey(
-            spaq1,
-          )) {
-        aztUsed = dayVsDrugsQuantityMap[date]![spaq1] ?? 0;
-      }
+    // calculate stock used by date
+    calculateStockUsedByDate(
+        dateVsDrugsUsedCount, successfulTaskList, redoseTaskList);
 
-      if (stockReceivedVsDate.containsKey(date) &&
-          stockReceivedVsDate[date] != null) {
-        aztReceived = stockReceivedVsDate[date] ?? 0;
-      }
+    // calculate stock used by date
+    calculateStockUsedByDate(
+        dateVsDrugsUsedCount, successfulTaskList, redoseTaskList);
 
-      final treatedPercentage =
-          (totalTaskForADay / Constants.dailyTarget) * 100;
+    // calculate stock balance by date
+    //Assumption received dates are before or same as used and balance dates
+    calculateStockBalanceByDate(dateVsDrugsUsedCount, dateVsDrugsReceivedCount,
+        dateVsDrugsBalanceCount, uniqueDates);
 
-      //Rounded treatedPercentage to 2 degree
-      DistributionSummaryData summary = DistributionSummaryData(
-        treatedPercentage: double.parse(treatedPercentage.toStringAsFixed(2)),
-        householdCount: totatlHouseholdForADay,
-        taskCount: totalTaskForADay,
-        aztReceived: aztReceived * 30,
-        aztUsed: aztUsed,
-      );
-      dayVsDataCount[date] = summary;
-    }
+    // populate the final distribution summary data
+    popoulateDateVsEntityCountMap(
+      dateVsHouseholdCount,
+      dateVsChildrenTreatedCount,
+      dateVsDrugsReceivedCount,
+      dateVsDrugsUsedCount,
+      dateVsDrugsBalanceCount,
+      uniqueDates,
+      dateVsDistributionSummaryData,
+    );
 
     emit(CustomDistributionSummaryReportSummaryDataState(
       summaryData: SplayTreeMap<String, DistributionSummaryData>.from(
-        dayVsDataCount,
-        (a, b) => b.compareTo(a),
+        dateVsDistributionSummaryData,
+        (a, b) => a.compareTo(b),
       ),
     ));
+  }
+
+  void calculateStockUsedByDate(Map<String, double> dateVsDrugsUsedCount,
+      List<TaskModel> successfulTaskList, List<TaskModel> redoseTaskList) {
+    successfulTaskList.addAll(redoseTaskList);
+    List<TaskModel> totalTasks = [];
+    if (successfulTaskList.isEmpty) {
+      totalTasks.addAll(redoseTaskList);
+    } else if (redoseTaskList.isEmpty) {
+      totalTasks.addAll(successfulTaskList);
+    } else {
+      totalTasks.addAll(successfulTaskList);
+      totalTasks.addAll(redoseTaskList);
+    }
+    for (var task in totalTasks) {
+      double stockUsed = getQuantityFromTask(task);
+
+      var dateKey = DigitDateUtils.getDateFromTimestamp(
+        task.clientAuditDetails!.createdTime,
+      );
+      dateVsDrugsUsedCount[dateKey] = stockUsed;
+    }
+  }
+
+  void calculateStockBalanceByDate(
+    Map<String, double> dateVsDrugsUsedCount,
+    Map<String, double> dateVsDrugsReceivedCount,
+    Map<String, double> dateVsDrugsBalanceCount,
+    Set<String> uniqueDates,
+  ) {
+    // Sort dates in ascending order
+    final sortedDates = uniqueDates.toList()..sort();
+
+    double previousBalance = 0.0;
+
+    for (var date in sortedDates) {
+      double received = dateVsDrugsReceivedCount[date] ?? 0.0;
+      double used = dateVsDrugsUsedCount[date] ?? 0.0;
+
+      double currentBalance = previousBalance + received - used;
+
+      dateVsDrugsBalanceCount[date] = currentBalance;
+      previousBalance = currentBalance;
+    }
+  }
+
+  double getQuantityFromTask(TaskModel task) {
+    final quantity = resourceDistributed(task.resources);
+    return quantity;
+  }
+
+  double resourceDistributed(List<TaskResourceModel>? taskResources) {
+    double resourceDistributed = 0;
+    RegExp intPattern = RegExp(r'^\d+$');
+    RegExp doublePattern = RegExp(r'^\d+\.\d+$');
+    if (taskResources != null) {
+      for (var resource in taskResources) {
+        // Info quantity is string type as per model
+        String quantity = resource.quantity ?? "0";
+        try {
+          if (intPattern.hasMatch(quantity)) {
+            resourceDistributed = resourceDistributed + int.parse(quantity);
+          } else if (doublePattern.hasMatch(quantity)) {
+            //info will round the decimal and convert to int
+            double parsedQuantity = double.parse(quantity);
+            if (parsedQuantity.isNaN ||
+                parsedQuantity.isInfinite ||
+                parsedQuantity.isNegative) {
+              continue;
+            } else {
+              int correctedQuantity = parsedQuantity.ceil();
+              resourceDistributed = resourceDistributed + correctedQuantity;
+            }
+          } else {
+            continue;
+          }
+        } catch (e) {
+          continue;
+        }
+      }
+    }
+    return resourceDistributed;
+  }
+
+  dynamic getTheCorrespondingTask(
+      HouseholdModel household,
+      List<TaskModel> taskList,
+      List<ProjectBeneficiaryModel> projectBeneficiaries) {
+    final projectBeneficiary = projectBeneficiaries
+        .where((element) =>
+            element.beneficiaryClientReferenceId == household.clientReferenceId)
+        .firstOrNull;
+    if (projectBeneficiary == null) {
+      return null;
+    }
+    final task = taskList
+        .where((element) =>
+            element.projectBeneficiaryClientReferenceId ==
+            projectBeneficiary.clientReferenceId)
+        .firstOrNull;
+    if (task == null) {
+      return null;
+    }
+    return task;
+  }
+
+  void populateDateVsCountMap(
+      Map<String, List> map, Map<String, int> dateVsCount) {
+    map.forEach((key, value) {
+      dateVsCount[key] = value.length;
+    });
+  }
+
+  List<HouseholdModel> getConsentYesHouseholds(
+      List<HouseholdModel> households) {
+    final consentYesHouseholds = households.where((household) {
+      final isConsentGiven = household.additionalFields?.fields
+          .firstWhereOrNull((h) => h.key == Constants.headConsent)
+          ?.value;
+
+      return isConsentGiven == null
+          ? false
+          : isConsentGiven == "true"
+              ? true
+              : false;
+    }).toList();
+
+    return consentYesHouseholds;
   }
 
   void getDrugsVsQuantityMap(
@@ -270,6 +396,60 @@ class CustomDistributionSummaryReportBloc extends Bloc<
       );
     }
     dayVsDrugsQuantityMap[date] = resourceVsQuantity;
+  }
+
+  void popoulateDateVsEntityCountMap(
+    Map<String, int> dateVsHouseholdCount,
+    Map<String, int> dateVsChildrenTreatedCount,
+    Map<String, double> dateVsDrugsReceivedCount,
+    Map<String, double> dateVsDrugsUsedCount,
+    Map<String, double> dateVsDrugsBalanceCount,
+    Set<String> uniqueDates,
+    Map<String, DistributionSummaryData> dateVsDistributionSummaryData,
+  ) {
+    for (var date in uniqueDates) {
+      var householdCount = 0;
+      var childrenTreatedCount = 0;
+      var drugsReceivedCount = 0.0;
+      var drugsUsedCount = 0.0;
+      var drugsBalanceCount = 0.0;
+
+      if (dateVsHouseholdCount.containsKey(date) &&
+          dateVsHouseholdCount[date] != null) {
+        householdCount = dateVsHouseholdCount[date]!;
+      }
+      if (dateVsChildrenTreatedCount.containsKey(date) &&
+          dateVsChildrenTreatedCount[date] != null) {
+        childrenTreatedCount = dateVsChildrenTreatedCount[date]!;
+      }
+      if (dateVsDrugsUsedCount.containsKey(date) &&
+          dateVsDrugsUsedCount[date] != null) {
+        drugsUsedCount = dateVsDrugsUsedCount[date]!;
+      }
+      if (dateVsDrugsReceivedCount.containsKey(date) &&
+          dateVsDrugsReceivedCount[date] != null) {
+        drugsReceivedCount = dateVsDrugsReceivedCount[date]!;
+      }
+      if (dateVsDrugsBalanceCount.containsKey(date) &&
+          dateVsDrugsBalanceCount[date] != null) {
+        drugsBalanceCount = dateVsDrugsBalanceCount[date]!;
+      }
+
+      final childrenTreatedPercentage =
+          (childrenTreatedCount / Constants.dailyTarget) * 100;
+
+      DistributionSummaryData distributionSummaryData = DistributionSummaryData(
+        householdRegisteredCount: householdCount,
+        childrenTreatedCount: childrenTreatedCount,
+        childrenTreatedPercentageCount:
+            double.tryParse(childrenTreatedPercentage.toStringAsFixed(2)) ?? 0,
+        drugsUsed: drugsUsedCount,
+        drugsReceived: drugsReceivedCount,
+        drugsBalance: drugsBalanceCount,
+      );
+
+      dateVsDistributionSummaryData[date] = distributionSummaryData;
+    }
   }
 
   Future<void> _handleLoadingEvent(

@@ -517,6 +517,10 @@ class InventoryReportDetails {
   String get childrenTreated => 'SUMMARY_REPORT_COLUMN_CHILDREN_TREATED';
   String get childrenTreatedPercentage =>
       'SUMMARY_REPORT_COLUMN_CHILDREN_TREATED_PERCENTAGE';
+  String get drugsReceived => 'SUMMARY_REPORT_COLUMN_DRUGS_RECEIVED';
+  String get drugsUsed => 'SUMMARY_REPORT_COLUMN_DRUGS_USED';
+  String get drugsBalance => 'SUMMARY_REPORT_COLUMN_DRUGS_BALANCE';
+
   String get aztReceived => 'SUMMARY_REPORT_COLUMN_AZT_RECEIVED';
   String get aztConsumed => 'SUMMARY_REPORT_COLUMN_AZT_CONSUMED';
 }
