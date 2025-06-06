@@ -587,7 +587,6 @@ class _DigitScannerPageState extends LocalizedState<DigitScannerPage> {
       if (widget.scanType == ScanType.teamCode &&
               code.contains(Constants.pipeSeparator) ||
           widget.scanType != ScanType.teamCode) {
-        code = code.split(Constants.pipeSeparator).last.trim();
         await DigitScannerUtils().storeCode(
           context: context,
           code: code,
