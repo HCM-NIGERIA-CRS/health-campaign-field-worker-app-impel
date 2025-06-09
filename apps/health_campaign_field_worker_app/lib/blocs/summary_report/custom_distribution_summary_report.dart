@@ -194,10 +194,6 @@ class CustomDistributionSummaryReportBloc extends Bloc<
     calculateStockUsedByDate(
         dateVsDrugsUsedCount, successfulTaskList, redoseTaskList);
 
-    // calculate stock used by date
-    calculateStockUsedByDate(
-        dateVsDrugsUsedCount, successfulTaskList, redoseTaskList);
-
     // calculate stock balance by date
     //Assumption received dates are before or same as used and balance dates
     calculateStockBalanceByDate(dateVsDrugsUsedCount, dateVsDrugsReceivedCount,
@@ -217,7 +213,7 @@ class CustomDistributionSummaryReportBloc extends Bloc<
     emit(CustomDistributionSummaryReportSummaryDataState(
       summaryData: SplayTreeMap<String, DistributionSummaryData>.from(
         dateVsDistributionSummaryData,
-        (a, b) => a.compareTo(b),
+        (a, b) => b.compareTo(a),
       ),
     ));
   }
@@ -240,7 +236,14 @@ class CustomDistributionSummaryReportBloc extends Bloc<
       var dateKey = DigitDateUtils.getDateFromTimestamp(
         task.clientAuditDetails!.createdTime,
       );
-      dateVsDrugsUsedCount[dateKey] = stockUsed;
+      if (dateVsDrugsUsedCount.containsKey(dateKey) &&
+          dateVsDrugsUsedCount[dateKey] != null) {
+        double stockUsedTillNow = dateVsDrugsUsedCount[dateKey]!;
+        stockUsedTillNow = stockUsedTillNow + stockUsed;
+        dateVsDrugsUsedCount[dateKey] = stockUsedTillNow;
+      } else {
+        dateVsDrugsUsedCount[dateKey] = stockUsed;
+      }
     }
   }
 
