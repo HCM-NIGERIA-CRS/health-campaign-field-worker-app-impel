@@ -278,8 +278,19 @@ class CustomIndividualDetailsPageState
 
                           // assumption add individual here is used for creating child,
                           //if invalid age send to overview no checklist
+                          List<IndividualModel> householdMembers =
+                              householdMemberWrapper.members ?? [];
                           if (verifyIfChildAgeValid(
                               context, individualCaptured!)) {
+                            List<AddressModel>? addressModel = householdMembers
+                                .firstWhereOrNull((element) =>
+                                    element.clientReferenceId ==
+                                    individualCaptured!.clientReferenceId)
+                                ?.address;
+                            IndividualModel? individualCapturedCopy =
+                                individualCaptured?.copyWith(
+                              address: addressModel,
+                            );
                             router.push(
                               BeneficiaryWrapperRoute(
                                 wrapper: householdMemberWrapper,
@@ -291,7 +302,7 @@ class CustomIndividualDetailsPageState
                                         projectBeneficiaryAddMember
                                                 ?.first.clientReferenceId ??
                                             "",
-                                    individual: individualCaptured,
+                                    individual: individualCapturedCopy,
                                     showBackButton: false,
                                   ),
                                 ],
