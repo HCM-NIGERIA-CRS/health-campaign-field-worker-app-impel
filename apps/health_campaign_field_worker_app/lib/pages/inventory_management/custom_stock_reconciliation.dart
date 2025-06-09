@@ -18,6 +18,7 @@ import 'package:inventory_management/router/inventory_router.gm.dart';
 
 import 'package:reactive_forms/reactive_forms.dart';
 
+import '../../router/app_router.dart';
 import '../../utils/constants.dart';
 import '../../utils/i18_key_constants.dart' as i18_local;
 import '../../utils/extensions/extensions.dart';
@@ -405,7 +406,7 @@ class CustomStockReconciliationPageState
                                                             StockReconciliationBloc>();
                                                     final facility = await context
                                                             .router
-                                                            .push(InventoryFacilitySelectionRoute(
+                                                            .push(CustomInventoryFacilitySelectionRoute(
                                                                 facilities:
                                                                     facilities))
                                                         as FacilityModel?;
@@ -418,9 +419,14 @@ class CustomStockReconciliationPageState
                                                         localizations.translate(
                                                       'FAC_${facility.id}',
                                                     );
+                                                    String facilityPrefix =
+                                                        facility.id ==
+                                                                'Delivery Team'
+                                                            ? ''
+                                                            : 'FAC_';
                                                     controller1.text =
                                                         localizations.translate(
-                                                      'FAC_${facility.id}',
+                                                      '$facilityPrefix${facility.id}',
                                                     );
                                                     setState(() {
                                                       selectedFacilityId =
