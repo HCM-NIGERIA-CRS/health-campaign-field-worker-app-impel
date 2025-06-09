@@ -550,10 +550,10 @@ class AppRouter extends _$AppRouter {
           ],
         ),
 
-        // AutoRoute(
-        //   page: InventoryFacilitySelectionRoute.page,
-        //   path: 'inventory-select-facilities',
-        // ),
+        AutoRoute(
+          page: InventoryFacilitySelectionRoute.page,
+          path: 'inventory-select-facilities',
+        ),
 
         AutoRoute(
           page: CustomInventoryFacilitySelectionRoute.page,
