@@ -220,7 +220,7 @@ class CustomDistributionSummaryReportBloc extends Bloc<
 
   void calculateStockUsedByDate(Map<String, double> dateVsDrugsUsedCount,
       List<TaskModel> successfulTaskList, List<TaskModel> redoseTaskList) {
-    successfulTaskList.addAll(redoseTaskList);
+    // successfulTaskList.addAll(redoseTaskList);
     List<TaskModel> totalTasks = [];
     if (successfulTaskList.isEmpty) {
       totalTasks.addAll(redoseTaskList);
