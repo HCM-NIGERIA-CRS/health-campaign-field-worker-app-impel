@@ -18,6 +18,7 @@ import 'package:digit_ui_components/theme/digit_extended_theme.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/repositories/custom_task.dart';
+import '../../utils/constants.dart';
 
 class CustomBeneficiaryProgressBar extends StatefulWidget {
   final String label;
@@ -114,7 +115,7 @@ class _CustomBeneficiaryProgressBarState
 
   @override
   Widget build(BuildContext context) {
-    const target = 70;
+    const target = Constants.dailyTarget;
 
     return DigitCard(
       child: CustomProgressIndicatorContainer(
