@@ -29,6 +29,7 @@ import '../data/repositories/remote/downsync.dart';
 import '../data/sync_registry.dart';
 import '../data/sync_service_mapper.dart';
 import '../firebase_options.dart';
+import '../firebase_options_prod.dart';
 import 'environment_config.dart';
 import 'utils.dart';
 
@@ -197,12 +198,21 @@ class Constants {
 
     final enableCrashlytics = config?.firebaseConfig?.enableCrashlytics ?? true;
     if (enableCrashlytics) {
-      firebase_services.initialize(
-        options: DefaultFirebaseOptions.currentPlatform,
-        onErrorMessage: (value) {
-          AppLogger.instance.error(title: 'CRASHLYTICS', message: value);
-        },
-      );
+      if (envConfig.variables.envType == EnvType.prod) {
+        firebase_services.initialize(
+          options: ProdFirebaseOptions.currentPlatform,
+          onErrorMessage: (value) {
+            AppLogger.instance.error(title: 'CRASHLYTICS', message: value);
+          },
+        );
+      } else {
+        firebase_services.initialize(
+          options: DefaultFirebaseOptions.currentPlatform,
+          onErrorMessage: (value) {
+            AppLogger.instance.error(title: 'CRASHLYTICS', message: value);
+          },
+        );
+      }
     }
 
     _version = version;

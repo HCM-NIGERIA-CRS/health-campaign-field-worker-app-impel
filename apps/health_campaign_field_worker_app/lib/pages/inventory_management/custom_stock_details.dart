@@ -606,8 +606,7 @@ class CustomStockDetailsPageState
                                                 Constants.stateBoundaryLevel ||
                                             context.selectedProject.address
                                                     ?.boundaryType ==
-                                                Constants
-                                                    .provinceBoundaryLevel) {
+                                                Constants.stateBoundaryLevel) {
                                           filteredFacilities = entryType ==
                                                   StockRecordEntryType.receipt
                                               ? allFacilities //TODO: changed from facilities
