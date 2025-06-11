@@ -228,7 +228,7 @@ class CustomInventoryReportDetailsPageState
                                                             .address
                                                             ?.boundaryType ==
                                                         Constants
-                                                            .provinceBoundaryLevel) {
+                                                            .stateBoundaryLevel) {
                                                       List<FacilityModel>
                                                           filteredFacilities =
                                                           facilities

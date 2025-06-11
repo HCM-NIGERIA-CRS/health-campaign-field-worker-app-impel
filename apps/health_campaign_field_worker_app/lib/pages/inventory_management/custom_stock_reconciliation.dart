@@ -356,8 +356,7 @@ class CustomStockReconciliationPageState
                                           fetched: (facilities, allFacilities) {
                                             if (context.selectedProject.address
                                                     ?.boundaryType ==
-                                                Constants
-                                                    .provinceBoundaryLevel) {
+                                                Constants.stateBoundaryLevel) {
                                               List<FacilityModel>
                                                   filteredFacilities =
                                                   facilities

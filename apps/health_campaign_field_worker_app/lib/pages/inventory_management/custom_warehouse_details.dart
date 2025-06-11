@@ -87,7 +87,7 @@ class CustomWarehouseDetailsPageState
               final facilities = facilityState.whenOrNull(
                     fetched: (facilities, allfacilities) {
                       if (ctx.selectedProject.address?.boundaryType ==
-                          Constants.provinceBoundaryLevel) {
+                          Constants.stateBoundaryLevel) {
                         List<FacilityModel> filteredFacilities = facilities
                             .where(
                               (element) =>
