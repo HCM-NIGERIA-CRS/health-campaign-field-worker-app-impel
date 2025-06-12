@@ -475,7 +475,7 @@ class _BoundarySelectionPageState
                                             onPressed: () async {
                                               if (!form.valid ||
                                                   validateAllBoundarySelection(
-                                                    context.isDistributor,
+                                                    !context.isWarehouseManager,
                                                   )) {
                                                 clickedStatus.value = false;
                                                 Toast.showToast(
