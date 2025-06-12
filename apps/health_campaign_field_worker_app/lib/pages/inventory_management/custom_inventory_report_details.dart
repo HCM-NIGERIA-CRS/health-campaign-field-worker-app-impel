@@ -272,8 +272,10 @@ class CustomInventoryReportDetailsPageState
                                                     // info: fix for showing facilities for cdd in return flow only
                                                     //else delivery team
                                                     if (widget.reportType ==
-                                                        InventoryReportType
-                                                            .dispatch) {
+                                                            InventoryReportType
+                                                                .dispatch &&
+                                                        !context
+                                                            .isDistributor) {
                                                       teamFacilities.addAll(
                                                         facilities,
                                                       );
@@ -613,12 +615,10 @@ class CustomInventoryReportDetailsPageState
                                                           DigitGridCell(
                                                               key:
                                                                   transactingPartyKey,
-                                                              value: widget.reportType ==
-                                                                          InventoryReportType
-                                                                              .receipt ||
-                                                                      widget.reportType ==
-                                                                          InventoryReportType
-                                                                              .dispatch
+                                                              value: widget
+                                                                          .reportType ==
+                                                                      InventoryReportType
+                                                                          .dispatch
                                                                   ? model.receiverId ==
                                                                           null
                                                                       ? localizations.translate(i18
@@ -637,8 +637,10 @@ class CustomInventoryReportDetailsPageState
                                                                           .noMatchFound)
                                                                       : model.senderType ==
                                                                               'STAFF'
-                                                                          ? (model.additionalFields?.fields.firstWhereOrNull((e) => e.key == 'distributorName')?.value ?? 'Delivery Team')
-                                                                          : localizations.translate('FAC_${model.senderId}')),
+                                                                          ? (model.additionalFields?.fields.firstWhereOrNull((e) => e.key == 'distributorName')?.value ??
+                                                                              'Delivery Team')
+                                                                          : localizations
+                                                                              .translate('FAC_${model.senderId}')),
                                                         ],
                                                       ),
                                                   ],
@@ -865,8 +867,8 @@ class CustomInventoryReportDetailsPageState
         value = i18.inventoryReportDetails.receiptTransactingPartyLabel;
         break;
       case InventoryReportType.dispatch:
-        value = context.isCDD
-            ? i18.inventoryReportDetails.returnedTransactingPartyLabel
+        value = context.isCommunityDistributor
+            ? i18_local.inventoryReportDetails.returnedTOTransactingPartyLabel
             : i18.inventoryReportDetails.dispatchTransactingPartyLabel;
         break;
       case InventoryReportType.returned:

@@ -490,6 +490,10 @@ class InventoryReportDetails {
     return 'INVENTORY_REPORT_DETAILS_DATE_LABEL';
   }
 
+  String get returnedTOTransactingPartyLabel {
+    return 'INVENTORY_REPORT_DETAILS_RETURNED_TO_TRANSACTING_PARTY_LABEL';
+  }
+
   String get backToHomeButtonLabel =>
       "INVENTORY_REPORT_DETAILS_BACK_TO_HOME_BUTTON_LABEL";
   String get partialReturnedQuantityLabel =>

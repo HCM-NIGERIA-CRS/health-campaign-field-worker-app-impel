@@ -103,8 +103,9 @@ class CustomInventoryReportSelectionPageState
                     ),
                   ),
                 ),
-                if (!context.isCDD) const SizedBox(height: spacer4),
-                if (!context.isCDD)
+                if (!context.isCommunityDistributor)
+                  const SizedBox(height: spacer4),
+                if (!context.isCommunityDistributor)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: spacer2),
                     child: MenuCard(
@@ -123,8 +124,9 @@ class CustomInventoryReportSelectionPageState
                       ),
                     ),
                   ),
-                if (!context.isCDD) const SizedBox(height: spacer4),
-                if (!context.isCDD)
+                if (!context.isCommunityDistributor)
+                  const SizedBox(height: spacer4),
+                if (!context.isCommunityDistributor)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: spacer2),
                     child: MenuCard(
