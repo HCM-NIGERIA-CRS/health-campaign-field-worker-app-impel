@@ -122,16 +122,17 @@ class CustomManageStocksPageState
                         child: SizedBox(
                           width: 0.94 * MediaQuery.of(context).size.width,
                           child: MenuCard(
-                              heading: localizations.translate(context.isCDD
-                                  ? i18.manageStock.recordStockReturnedLabel
-                                  : i18.manageStock.recordStockIssuedLabel),
-                              description: insertNewlines(
-                                  localizations.translate(context.isCDD
+                              heading: localizations.translate(
+                                  context.isCommunityDistributor
+                                      ? i18.manageStock.recordStockReturnedLabel
+                                      : i18.manageStock.recordStockIssuedLabel),
+                              description: insertNewlines(localizations
+                                  .translate(context.isCommunityDistributor
                                       ? i18_local.stockDetails
                                           .recordStockReturnedDescription
                                       : i18.manageStock
                                           .recordStockIssuedDescription)),
-                              icon: context.isCDD
+                              icon: context.isCommunityDistributor
                                   ? Icons.settings_backup_restore
                                   : Icons.file_upload_outlined,
                               onTap: () {
@@ -158,11 +159,11 @@ class CustomManageStocksPageState
                     ],
                   ),
                 ),
-                if (!context.isCDD)
+                if (!context.isCommunityDistributor)
                   const SizedBox(
                     height: spacer4,
                   ),
-                if (!context.isCDD)
+                if (!context.isCommunityDistributor)
                   Padding(
                     padding:
                         const EdgeInsets.only(left: spacer2, right: spacer2),

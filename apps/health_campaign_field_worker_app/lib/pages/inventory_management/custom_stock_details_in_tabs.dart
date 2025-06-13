@@ -481,7 +481,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                     Row(
                       children: [
                         Expanded(
-                          child: Text((context.isCDD &&
+                          child: Text((context.isCommunityDistributor &&
                                   entryType == StockRecordEntryType.dispatch)
                               ? localizations
                                   .translate(i18_local.stockDetails.returnedTo)
@@ -911,7 +911,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
             await DigitToast.show(
               context,
               options: DigitToastOptions(
-                  localizations.translate(context.isCDD
+                  localizations.translate(context.isCommunityDistributor
                       ? i18_local
                           .beneficiaryDetails.validationForExcessStockReturn
                       : i18_local
@@ -925,7 +925,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
             await DigitToast.show(
               context,
               options: DigitToastOptions(
-                  localizations.translate(context.isCDD
+                  localizations.translate(context.isCommunityDistributor
                       ? i18_local
                           .beneficiaryDetails.validationForExcessStockReturn
                       : i18_local

@@ -84,17 +84,18 @@ class CustomInventoryReportSelectionPageState
                   padding: const EdgeInsets.symmetric(horizontal: spacer2),
                   child: MenuCard(
                     heading: localizations.translate(
-                      context.isCDD
+                      context.isCommunityDistributor
                           ? i18.inventoryReportSelection
                               .inventoryReportReturnedLabel
                           : i18.inventoryReportSelection
                               .inventoryReportIssuedLabel,
                     ),
-                    description: localizations.translate(context.isCDD
-                        ? i18.inventoryReportSelection
-                            .inventoryReportReturnedDescription
-                        : i18.inventoryReportSelection
-                            .inventoryReportIssuedDescription),
+                    description: localizations.translate(
+                        context.isCommunityDistributor
+                            ? i18.inventoryReportSelection
+                                .inventoryReportReturnedDescription
+                            : i18.inventoryReportSelection
+                                .inventoryReportIssuedDescription),
                     icon: Icons.logout,
                     onTap: () => context.router.push(
                       CustomInventoryReportDetailsRoute(

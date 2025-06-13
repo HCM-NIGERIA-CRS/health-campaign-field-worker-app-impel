@@ -249,10 +249,10 @@ class CustomWarehouseDetailsPageState
                                                                     .pipeSeparator)
                                                                 .last
                                                             : facility.id,
-                                                        primaryType:
-                                                            context.isCDD
-                                                                ? "STAFF"
-                                                                : "WAREHOUSE",
+                                                        primaryType: context
+                                                                .isCommunityDistributor
+                                                            ? "STAFF"
+                                                            : "WAREHOUSE",
                                                       ),
                                                     );
                                                     if ((InventorySingleton()
@@ -260,7 +260,8 @@ class CustomWarehouseDetailsPageState
                                                             !context.isLGA &&
                                                             !context
                                                                 .isHealthFacilitySupervisor &&
-                                                            !context.isCDD) ||
+                                                            !context
+                                                                .isCommunityDistributor) ||
                                                         (recordStockBloc.state
                                                                 .entryType ==
                                                             StockRecordEntryType

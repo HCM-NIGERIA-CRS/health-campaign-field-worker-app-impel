@@ -88,7 +88,7 @@ class CustomInventoryReportDetailsPageState
           )
         : InventoryReportLoadStockDataEvent(
             reportType: widget.reportType,
-            facilityId: context.isCDD
+            facilityId: context.isCommunityDistributor
                 ? context.loggedInUserUuid
                 : form.control(_facilityKey).value != null
                     ? selectedFacilityId!
@@ -113,7 +113,7 @@ class CustomInventoryReportDetailsPageState
     return fb.group({
       _facilityKey: FormControl<String>(
         validators: [Validators.required],
-        value: context.isCDD ? context.loggedInUserUuid : null,
+        value: context.isCommunityDistributor ? context.loggedInUserUuid : null,
       ),
       _productVariantKey: FormControl<ProductVariantModel>(),
     });
@@ -813,7 +813,7 @@ class CustomInventoryReportDetailsPageState
         value = i18.inventoryReportDetails.receiptReportTitle;
         break;
       case InventoryReportType.dispatch:
-        value = context.isCDD
+        value = context.isCommunityDistributor
             ? i18.inventoryReportDetails.returnedReportTitle
             : i18.inventoryReportDetails.dispatchReportTitle;
         break;
@@ -841,7 +841,7 @@ class CustomInventoryReportDetailsPageState
         value = i18.inventoryReportDetails.receiptQuantityLabel;
         break;
       case InventoryReportType.dispatch:
-        value = context.isCDD
+        value = context.isCommunityDistributor
             ? i18_local.stockDetails.returnedTo
             : i18.inventoryReportDetails.dispatchQuantityLabel;
         break;

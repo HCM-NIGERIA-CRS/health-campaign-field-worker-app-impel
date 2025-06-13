@@ -167,17 +167,6 @@ extension ContextUtilityExtensions on BuildContext {
     }
   }
 
-  bool get isCDD {
-    return loggedInUserRoles
-        .where(
-          (role) =>
-              role.code == RolesType.distributor.toValue() ||
-              role.code == RolesType.communityDistributor.toValue(),
-        )
-        .toList()
-        .isNotEmpty;
-  }
-
   List<UserRoleModel> get loggedInUserRoles {
     final authBloc = _get<AuthBloc>();
     final userRequestObject = authBloc.state.whenOrNull(
