@@ -143,6 +143,13 @@ class _CustomReferralReasonChecklistPageState
                               }
                             }
 
+                            if (itemsAttributes?[controller.length - 1]
+                                        .required ==
+                                    true &&
+                                controller[controller.length - 1].text == "") {
+                              return;
+                            }
+
                             final shouldSubmit = await showDialog(
                                 context: context,
                                 builder: (BuildContext ctx) {
