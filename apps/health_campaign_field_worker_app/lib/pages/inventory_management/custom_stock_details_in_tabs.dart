@@ -803,6 +803,20 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
     final form = _forms[productName]!;
     final currentStock = _tabStocks[productName]!;
 
+    List<AdditionalField> additionalFields =
+        currentStock.additionalFields?.fields ?? [];
+
+    final Set<String> additionalFieldKeys = {
+      "batchNumber",
+      "comments",
+      "partialBlistersReturned",
+      "wastedBlistersReturned"
+    };
+
+    List<AdditionalField> filteredAdditionalFields = additionalFields
+        .where((e) => !additionalFieldKeys.contains(e.key))
+        .toList();
+
     _tabStocks[productName] = currentStock.copyWith(
       quantity: form.control(_transactionQuantityKey).value?.toString(),
       wayBillNumber: form.control(_waybillNumberKey).value?.toString(),
@@ -811,7 +825,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
               transactionReason,
       additionalFields: currentStock.additionalFields?.copyWith(
         fields: [
-          ...(currentStock.additionalFields?.fields ?? []),
+          ...(filteredAdditionalFields),
           if (form.control(_batchNumberKey).value != null)
             AdditionalField('batchNumber', form.control(_batchNumberKey).value),
           if (form.control(_commentsKey).value != null)
