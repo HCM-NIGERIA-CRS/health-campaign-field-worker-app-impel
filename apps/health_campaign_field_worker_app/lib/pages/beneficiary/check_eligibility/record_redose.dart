@@ -136,6 +136,7 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    bool isSubmitted = false;
 
     return ProductVariantBlocWrapper(
       child: BlocBuilder<HouseholdOverviewBloc, HouseholdOverviewState>(
@@ -188,6 +189,10 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                                             children: [
                                               DigitElevatedButton(
                                                 onPressed: () async {
+                                                  if (isSubmitted == true) {
+                                                    return;
+                                                  }
+                                                  isSubmitted = true;
                                                   form.markAllAsTouched();
 
                                                   if (form
