@@ -146,6 +146,9 @@ class _CustomReferralReasonChecklistPageState
                             if (itemsAttributes?[controller.length - 1]
                                         .required ==
                                     true &&
+                                itemsAttributes?[controller.length - 1]
+                                        .dataType ==
+                                    'MultiValueList' &&
                                 controller[controller.length - 1].text == "") {
                               return;
                             }
