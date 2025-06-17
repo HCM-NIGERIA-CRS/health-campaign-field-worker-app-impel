@@ -141,16 +141,12 @@ class _CustomReferralReasonChecklistPageState
                                                   null))))) {
                                 return;
                               }
-                            }
-
-                            if (itemsAttributes?[controller.length - 1]
-                                        .required ==
-                                    true &&
-                                itemsAttributes?[controller.length - 1]
-                                        .dataType ==
-                                    'MultiValueList' &&
-                                controller[controller.length - 1].text == "") {
-                              return;
+                              if (itemsAttributes?[i].required == true &&
+                                  itemsAttributes?[i].dataType ==
+                                      'MultiValueList' &&
+                                  controller[i].text == "") {
+                                return;
+                              }
                             }
 
                             final shouldSubmit = await showDialog(
