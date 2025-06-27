@@ -760,7 +760,7 @@ class _BoundarySelectionPageState
 
   FormGroup buildForm(BoundaryState state, AppConfiguration appConfiguration) {
     formControls = {};
-    final labelList = state.selectedBoundaryMap.keys.toList();
+    final labelList = filterBoundaryLabelListBasedOnRole(doFilter, state);
     if (state.boundaryList.isNotEmpty) {
       final finalCodes = state.boundaryList.map((e) => e.code!).toList();
       LocalizationParams().setCode(finalCodes);
@@ -805,19 +805,17 @@ class _BoundarySelectionPageState
       bool doFilter, BoundaryState state) {
     final labelList = state.selectedBoundaryMap.keys.toList();
     if (doFilter) {
-      if (context.isWarehouseManager) {
-        final filteredLabelList =
-            labelList.isNotEmpty ? [labelList.first] : labelList;
+      final filteredLabelList =
+          labelList.isNotEmpty ? [labelList.first] : labelList;
 
-        return filteredLabelList;
-      }
+      return filteredLabelList;
     }
 
     return labelList;
   }
 
   bool enableFilter() {
-    return context.isWarehouseManager;
+    return context.isWarehouseManager || context.isHealthFacilitySupervisor;
   }
 
   void listenToSyncCount() async {
