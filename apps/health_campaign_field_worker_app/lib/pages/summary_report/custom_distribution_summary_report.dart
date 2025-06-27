@@ -52,7 +52,8 @@ class _CustomDistributionSummaryReportDetailsState
   static const _drugsUsedKey = 'drugsUsedKey';
   static const _drugsReceivedKey = 'drugsReceivedKey';
   static const _drugsBalanceKey = 'drugsBalanceKey';
-  static const _childrenTreatedCountKey = 'childrenTreatedCountKey';
+  static const _childrenTreatedCountKey1 = 'childrenTreatedCountKey1';
+  static const _childrenTreatedCountKey2 = 'childrenTreatedCountKey2';
   static const __childrenTreatedPercentageKey = 'childrenTreatedPercentageKey';
   static const _dateKey = 'dateKey';
 
@@ -134,16 +135,22 @@ class _CustomDistributionSummaryReportDetailsState
                                   8,
                             ),
                             DigitGridColumn(
-                              label: localizations.translate(i18Local
-                                  .inventoryReportDetails.childrenTreated),
-                              key: _childrenTreatedCountKey,
-                              width: localizations
-                                      .translate(
-                                        i18Local.inventoryReportDetails
-                                            .childrenTreated,
-                                      )
-                                      .length *
-                                  8,
+                              label:
+                                  "${localizations.translate(i18Local.inventoryReportDetails.childrenTreated)} (3-11 months)",
+                              key: _childrenTreatedCountKey1,
+                              width:
+                                  "${localizations.translate(i18Local.inventoryReportDetails.childrenTreated)} (3-11 months)"
+                                          .length *
+                                      7.5,
+                            ),
+                            DigitGridColumn(
+                              label:
+                                  "${localizations.translate(i18Local.inventoryReportDetails.childrenTreated)} (12-59 months)",
+                              key: _childrenTreatedCountKey2,
+                              width:
+                                  "${localizations.translate(i18Local.inventoryReportDetails.childrenTreated)} (12-59 months)"
+                                          .length *
+                                      7.5,
                             ),
                             DigitGridColumn(
                               label: localizations.translate(i18Local
@@ -168,7 +175,7 @@ class _CustomDistributionSummaryReportDetailsState
                                             .drugsReceived,
                                       )
                                       .length *
-                                  8,
+                                  10,
                             ),
                             DigitGridColumn(
                               label: localizations.translate(
@@ -180,7 +187,7 @@ class _CustomDistributionSummaryReportDetailsState
                                             .inventoryReportDetails.drugsUsed,
                                       )
                                       .length *
-                                  8,
+                                  10,
                             ),
                             DigitGridColumn(
                               label: localizations.translate(
@@ -192,7 +199,7 @@ class _CustomDistributionSummaryReportDetailsState
                                             .drugsBalance,
                                       )
                                       .length *
-                                  8,
+                                  10,
                             ),
                           ],
                           rows: [
@@ -213,9 +220,15 @@ class _CustomDistributionSummaryReportDetailsState
                                             .toString(),
                                   ),
                                   DigitGridCell(
-                                    key: _childrenTreatedCountKey,
+                                    key: _childrenTreatedCountKey1,
                                     value:
-                                        (entry.value.childrenTreatedCount ?? 0)
+                                        (entry.value.childrenTreatedCount1 ?? 0)
+                                            .toString(),
+                                  ),
+                                  DigitGridCell(
+                                    key: _childrenTreatedCountKey2,
+                                    value:
+                                        (entry.value.childrenTreatedCount2 ?? 0)
                                             .toString(),
                                   ),
                                   DigitGridCell(

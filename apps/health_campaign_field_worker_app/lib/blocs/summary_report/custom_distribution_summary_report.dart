@@ -3,8 +3,6 @@ import 'dart:collection';
 
 import 'package:collection/collection.dart';
 import 'package:digit_components/utils/date_utils.dart';
-import 'package:digit_data_model/data/repositories/local/product_variant.dart';
-import 'package:digit_data_model/models/entities/product_variant.dart';
 import 'package:digit_data_model/utils/typedefs.dart'
     hide ProductVariantDataRepository;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,15 +11,8 @@ import 'package:inventory_management/models/entities/stock.dart';
 import 'package:inventory_management/models/entities/transaction_type.dart';
 import 'package:inventory_management/utils/typedefs.dart'
     hide ProductVariantDataRepository;
-import 'package:registration_delivery/data/repositories/local/base/project_beneficiary_base.dart';
-import 'package:registration_delivery/data/repositories/local/household.dart';
-import 'package:registration_delivery/data/repositories/local/task.dart';
-import 'package:registration_delivery/models/entities/household.dart';
 import 'package:registration_delivery/models/entities/status.dart';
-import 'package:registration_delivery/models/entities/task.dart';
-import 'package:registration_delivery/models/entities/task_resource.dart';
 import 'package:registration_delivery/registration_delivery.dart';
-import 'package:registration_delivery/utils/typedefs.dart';
 
 import '../../data/repositories/custom_task.dart';
 import '../../models/distribution_summary_data_model.dart';
@@ -68,11 +59,14 @@ class CustomDistributionSummaryReportBloc extends Bloc<
 
     Map<String, List<HouseholdModel>> dayVsHouseholdListMap = {};
     Map<String, List<TaskModel>> dayVsTaskListMap = {};
-    Map<String, List<ProjectBeneficiaryModel>> dayVsProjectBeneficiaryListMap =
+    Map<String, List<ProjectBeneficiaryModel>> dayVsProjectBeneficiaryListMap1 =
+        {};
+    Map<String, List<ProjectBeneficiaryModel>> dayVsProjectBeneficiaryListMap2 =
         {};
 
     Map<String, int> dateVsHouseholdCount = {};
-    Map<String, int> dateVsChildrenTreatedCount = {};
+    Map<String, int> dateVsChildrenTreatedCount1 = {};
+    Map<String, int> dateVsChildrenTreatedCount2 = {};
     // Assuming each element has 'date' (String or DateTime) and 'quantity' (int or double)
 
     Map<String, double> dateVsDrugsReceivedCount = {};
@@ -174,12 +168,21 @@ class CustomDistributionSummaryReportBloc extends Bloc<
       var dateKey = DigitDateUtils.getDateFromTimestamp(
         element.clientAuditDetails!.createdTime,
       );
-      dayVsProjectBeneficiaryListMap
-          .putIfAbsent(dateKey, () => [])
-          .add(element);
+      var productVariantId =
+          productVariantKeyFromBeneficiaryModel(element, successfulTaskList);
+      if (productVariantId == Constants.productVariantId1) {
+        dayVsProjectBeneficiaryListMap1
+            .putIfAbsent(dateKey, () => [])
+            .add(element);
+      } else {
+        dayVsProjectBeneficiaryListMap2
+            .putIfAbsent(dateKey, () => [])
+            .add(element);
+      }
     }
 
-    uniqueDates.addAll(dayVsProjectBeneficiaryListMap.keys.toSet());
+    uniqueDates.addAll(dayVsProjectBeneficiaryListMap1.keys.toSet());
+    uniqueDates.addAll(dayVsProjectBeneficiaryListMap2.keys.toSet());
     uniqueDates.addAll(dayVsHouseholdListMap.keys.toSet());
     uniqueDates.addAll(dayVsTaskListMap.keys.toSet());
     uniqueDates.addAll(dateVsDrugsReceivedCount.keys.toSet());
@@ -188,7 +191,10 @@ class CustomDistributionSummaryReportBloc extends Bloc<
     populateDateVsCountMap(dayVsHouseholdListMap, dateVsHouseholdCount);
     // populate the day vs count for that day map
     populateDateVsCountMap(
-        dayVsProjectBeneficiaryListMap, dateVsChildrenTreatedCount);
+        dayVsProjectBeneficiaryListMap1, dateVsChildrenTreatedCount1);
+
+    populateDateVsCountMap(
+        dayVsProjectBeneficiaryListMap2, dateVsChildrenTreatedCount2);
 
     // calculate stock used by date
     calculateStockUsedByDate(
@@ -202,7 +208,8 @@ class CustomDistributionSummaryReportBloc extends Bloc<
     // populate the final distribution summary data
     popoulateDateVsEntityCountMap(
       dateVsHouseholdCount,
-      dateVsChildrenTreatedCount,
+      dateVsChildrenTreatedCount1,
+      dateVsChildrenTreatedCount2,
       dateVsDrugsReceivedCount,
       dateVsDrugsUsedCount,
       dateVsDrugsBalanceCount,
@@ -216,6 +223,20 @@ class CustomDistributionSummaryReportBloc extends Bloc<
         (a, b) => b.compareTo(a),
       ),
     ));
+  }
+
+  String? productVariantKeyFromBeneficiaryModel(
+      ProjectBeneficiaryModel element, List<TaskModel> successfulTaskList) {
+    var clientReferenceId = element.clientReferenceId;
+    TaskModel? tasks = successfulTaskList
+        .where(
+            (e) => e.projectBeneficiaryClientReferenceId == clientReferenceId)
+        .firstOrNull;
+    if (tasks == null) return null;
+    var productVariantId = tasks.resources
+        ?.firstWhereOrNull((e) => e.productVariantId != null)
+        ?.productVariantId;
+    return productVariantId;
   }
 
   void calculateStockUsedByDate(Map<String, double> dateVsDrugsUsedCount,
@@ -403,7 +424,8 @@ class CustomDistributionSummaryReportBloc extends Bloc<
 
   void popoulateDateVsEntityCountMap(
     Map<String, int> dateVsHouseholdCount,
-    Map<String, int> dateVsChildrenTreatedCount,
+    Map<String, int> dateVsChildrenTreatedCount1,
+    Map<String, int> dateVsChildrenTreatedCount2,
     Map<String, double> dateVsDrugsReceivedCount,
     Map<String, double> dateVsDrugsUsedCount,
     Map<String, double> dateVsDrugsBalanceCount,
@@ -412,7 +434,8 @@ class CustomDistributionSummaryReportBloc extends Bloc<
   ) {
     for (var date in uniqueDates) {
       var householdCount = 0;
-      var childrenTreatedCount = 0;
+      var childrenTreatedCount1 = 0;
+      var childrenTreatedCount2 = 0;
       var drugsReceivedCount = 0.0;
       var drugsUsedCount = 0.0;
       var drugsBalanceCount = 0.0;
@@ -421,9 +444,13 @@ class CustomDistributionSummaryReportBloc extends Bloc<
           dateVsHouseholdCount[date] != null) {
         householdCount = dateVsHouseholdCount[date]!;
       }
-      if (dateVsChildrenTreatedCount.containsKey(date) &&
-          dateVsChildrenTreatedCount[date] != null) {
-        childrenTreatedCount = dateVsChildrenTreatedCount[date]!;
+      if (dateVsChildrenTreatedCount1.containsKey(date) &&
+          dateVsChildrenTreatedCount1[date] != null) {
+        childrenTreatedCount1 = dateVsChildrenTreatedCount1[date]!;
+      }
+      if (dateVsChildrenTreatedCount2.containsKey(date) &&
+          dateVsChildrenTreatedCount2[date] != null) {
+        childrenTreatedCount2 = dateVsChildrenTreatedCount2[date]!;
       }
       if (dateVsDrugsUsedCount.containsKey(date) &&
           dateVsDrugsUsedCount[date] != null) {
@@ -439,11 +466,14 @@ class CustomDistributionSummaryReportBloc extends Bloc<
       }
 
       final childrenTreatedPercentage =
-          (childrenTreatedCount / Constants.dailyTarget) * 100;
+          ((childrenTreatedCount1 + childrenTreatedCount2) /
+                  Constants.dailyTarget) *
+              100;
 
       DistributionSummaryData distributionSummaryData = DistributionSummaryData(
         householdRegisteredCount: householdCount,
-        childrenTreatedCount: childrenTreatedCount,
+        childrenTreatedCount1: childrenTreatedCount1,
+        childrenTreatedCount2: childrenTreatedCount2,
         childrenTreatedPercentageCount:
             double.tryParse(childrenTreatedPercentage.toStringAsFixed(2)) ?? 0,
         drugsUsed: drugsUsedCount,
