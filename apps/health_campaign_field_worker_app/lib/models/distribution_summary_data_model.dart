@@ -5,7 +5,8 @@ import 'data_model.dart';
 
 class DistributionSummaryData extends EntityModel {
   int householdRegisteredCount;
-  int childrenTreatedCount;
+  int childrenTreatedCount1;
+  int childrenTreatedCount2;
   double childrenTreatedPercentageCount;
 
   dynamic drugsUsed;
@@ -14,7 +15,8 @@ class DistributionSummaryData extends EntityModel {
 
   DistributionSummaryData({
     required this.householdRegisteredCount,
-    required this.childrenTreatedCount,
+    required this.childrenTreatedCount1,
+    required this.childrenTreatedCount2,
     required this.childrenTreatedPercentageCount,
     required this.drugsUsed,
     required this.drugsReceived,
