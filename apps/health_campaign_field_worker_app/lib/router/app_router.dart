@@ -1,3 +1,4 @@
+import 'package:complaints/blocs/localization/app_localization.dart';
 import 'package:digit_scanner/blocs/app_localization.dart';
 import 'package:survey_form/router/survey_form_router.gm.dart';
 import 'package:survey_form/router/survey_form_router.dart';
@@ -35,6 +36,7 @@ import '../pages/beneficiary/check_eligibility/household_acknowledgement_smc.dar
 import '../pages/beneficiary/check_eligibility/inventory_facility_selection_smc.dart';
 import '../pages/beneficiary/check_eligibility/refer_beneficiary_smc.dart';
 import '../pages/beneficiary/check_eligibility/refer_beneficiary_vas.dart';
+import '../pages/complaints/custom_complaints_inbox.dart';
 import '../pages/inventory_management/custom_inventory_facility_selection.dart';
 import '../pages/inventory_management/qr_scanner.dart';
 import '../pages/inventory_management/view_record_lga.dart';
@@ -610,7 +612,7 @@ class AppRouter extends _$AppRouter {
           path: 'complaints-inbox',
           children: [
             AutoRoute(
-              page: ComplaintsInboxRoute.page,
+              page: CustomComplaintsInboxRoute.page,
               path: 'complaints-inbox-items',
               initial: true,
             ),
