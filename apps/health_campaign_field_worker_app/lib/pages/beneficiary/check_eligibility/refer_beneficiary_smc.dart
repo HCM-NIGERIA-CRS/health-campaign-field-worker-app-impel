@@ -8,6 +8,7 @@ import 'package:digit_ui_components/widgets/atoms/digit_button.dart';
 import 'package:digit_ui_components/widgets/atoms/pop_up_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 // import 'package:health_campaign_field_worker_app/pages/pages-SMC/beneficiary/custom_facility_selection_smc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:registration_delivery/models/entities/referral.dart';
@@ -18,6 +19,7 @@ import 'package:registration_delivery/router/registration_delivery_router.gm.dar
 import 'package:registration_delivery/widgets/inventory/no_facilities_assigned_dialog.dart';
 
 import '../../../utils/app_enums.dart';
+import '../../../utils/date_utils.dart';
 import '../../../widgets/custom_back_navigation.dart';
 import '../../../widgets/localized.dart';
 import 'package:registration_delivery/blocs/delivery_intervention/deliver_intervention.dart';
@@ -103,6 +105,51 @@ class CustomReferBeneficiarySMCPageState
             final reasons = widget.isReadministrationUnSuccessful
                 ? [sideEffectFromCurrentCycle]
                 : (widget.referralReasons ?? []);
+
+            int getIndividualAge(IndividualModel individualModel) {
+              DateTime dateOfBirth = DateFormat("dd/MM/yyyy")
+                  .parse(individualModel.dateOfBirth ?? '');
+              DigitDOBAge age = DigitDateUtils.calculateAge(dateOfBirth);
+              return age.months;
+            }
+
+            String? getBeneficiaryId(IndividualModel individualModel) {
+              IdentifierTypes.uniqueBeneficiaryID.toValue();
+              return individualModel.identifiers
+                      ?.firstWhereOrNull((e) =>
+                          e.identifierType ==
+                          IdentifierTypes.uniqueBeneficiaryID.toValue())
+                      ?.identifierId ??
+                  '';
+            }
+
+            List<AdditionalField> getIndividualAdditionalFields(
+                IndividualModel? individualModel) {
+              return [
+                if (individualModel != null)
+                  AdditionalField(
+                    additional_fields_local.AdditionalFieldsType.age.toValue(),
+                    getIndividualAge(individualModel),
+                  ),
+                if (individualModel?.gender != null)
+                  AdditionalField(
+                    additional_fields_local.AdditionalFieldsType.gender
+                        .toValue(),
+                    individualModel?.gender,
+                  ),
+                if (individualModel?.clientReferenceId != null)
+                  AdditionalField(
+                    'individualClientReferenceId',
+                    individualModel?.clientReferenceId,
+                  ),
+                if (individualModel != null &&
+                    getBeneficiaryId(individualModel) != null)
+                  AdditionalField(
+                    'uniqueBeneficiaryId',
+                    getBeneficiaryId(individualModel),
+                  ),
+              ];
+            }
 
             return WillPopScope(
               onWillPop: () => _onBackPressed(
@@ -353,6 +400,8 @@ class CustomReferBeneficiarySMCPageState
                                                         EligibilityAssessmentStatus
                                                             .smcDone.name,
                                                       ),
+                                                      ...getIndividualAdditionalFields(
+                                                          widget.individual),
                                                     ],
                                                   ),
                                                   address: widget

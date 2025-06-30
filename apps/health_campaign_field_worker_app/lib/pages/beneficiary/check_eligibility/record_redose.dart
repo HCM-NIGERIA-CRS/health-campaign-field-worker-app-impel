@@ -5,6 +5,7 @@ import 'package:digit_components/widgets/atoms/digit_toaster.dart';
 import 'package:digit_components/widgets/digit_dialog.dart' as digit_dialog;
 import 'package:digit_components/widgets/digit_elevated_button.dart';
 import 'package:digit_components/widgets/digit_text_field.dart';
+import 'package:digit_data_model/data/local_store/sql_store/tables/individual.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_ui_components/enum/app_enums.dart';
 import 'package:digit_ui_components/utils/component_utils.dart';
@@ -16,6 +17,7 @@ import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
 import 'package:digit_ui_components/widgets/scrollable_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:registration_delivery/blocs/delivery_intervention/deliver_intervention.dart';
 import 'package:registration_delivery/blocs/household_overview/household_overview.dart';
@@ -34,8 +36,10 @@ import '../../../blocs/app_initialization/app_initialization.dart';
 import '../../../blocs/auth/auth.dart';
 import '../../../blocs/project/project.dart';
 import '../../../data/local_store/no_sql/schema/app_configuration.dart';
+import '../../../models/entities/additional_fields_type.dart';
 import '../../../router/app_router.dart';
 import '../../../utils/app_enums.dart';
+import '../../../utils/date_utils.dart';
 import '../../../utils/environment_config.dart';
 import '../../../utils/i18_key_constants.dart' as i18_local;
 import '../../../utils/utils.dart';
@@ -294,6 +298,8 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                                                       var updatedTask =
                                                           updateTask(
                                                         successfulTask,
+                                                        householdOverviewState
+                                                            .selectedIndividual,
                                                         productvariantList,
                                                         quantityDistributedFormArray,
                                                         form,
@@ -834,12 +840,57 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
 
   TaskModel updateTask(
     TaskModel oldTask,
+    IndividualModel? selectedIndividual,
     List<ProductVariantModel?> productvariantList,
     FormArray quantityDistributedFormArray,
     FormGroup form,
   ) {
     final taskResources = oldTask.resources ?? [];
     List<TaskResourceModel> updatedTaskResources = [];
+    int getIndividualAge(IndividualModel individualModel) {
+      DateTime dateOfBirth =
+          DateFormat("dd/MM/yyyy").parse(individualModel.dateOfBirth ?? '');
+      DigitDOBAge age = DigitDateUtils.calculateAge(dateOfBirth);
+      return age.months;
+    }
+
+    String? getBeneficiaryId(IndividualModel individualModel) {
+      IdentifierTypes.uniqueBeneficiaryID.toValue();
+      return individualModel.identifiers
+              ?.firstWhereOrNull((e) =>
+                  e.identifierType ==
+                  IdentifierTypes.uniqueBeneficiaryID.toValue())
+              ?.identifierId ??
+          '';
+    }
+
+    List<AdditionalField> getIndividualAdditionalFields(
+        IndividualModel? individualModel) {
+      return [
+        if (individualModel != null)
+          AdditionalField(
+            AdditionalFieldsType.age.toValue(),
+            getIndividualAge(individualModel),
+          ),
+        if (individualModel?.gender != null)
+          AdditionalField(
+            AdditionalFieldsType.gender.toValue(),
+            individualModel?.gender,
+          ),
+        if (individualModel?.clientReferenceId != null)
+          AdditionalField(
+            'individualClientReferenceId',
+            individualModel?.clientReferenceId,
+          ),
+        if (individualModel != null &&
+            getBeneficiaryId(individualModel) != null)
+          AdditionalField(
+            'uniqueBeneficiaryId',
+            getBeneficiaryId(individualModel),
+          ),
+      ];
+    }
+
     if (taskResources.isNotEmpty) {
       for (var resource in taskResources) {
         var productVariantId = resource.productVariantId;
@@ -913,12 +964,14 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
               fields: [
                 ...oldTask.additionalFields!.fields,
                 const AdditionalField(Constants.reAdministeredKey, true),
+                ...getIndividualAdditionalFields(selectedIndividual),
               ],
             )
           : TaskAdditionalFields(
               version: 1,
               fields: [
                 const AdditionalField(Constants.reAdministeredKey, true),
+                ...getIndividualAdditionalFields(selectedIndividual),
               ],
             ),
     );
