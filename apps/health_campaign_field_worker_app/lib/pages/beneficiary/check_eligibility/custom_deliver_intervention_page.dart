@@ -34,6 +34,7 @@ import 'package:registration_delivery/widgets/localized.dart';
 
 import '../../../router/app_router.dart';
 import '../../../utils/app_enums.dart';
+import '../../../utils/date_utils.dart';
 import '../../../utils/i18_key_constants.dart' as i18_local;
 import '../../../models/entities/additional_fields_type.dart'
     as additional_fields_local;
@@ -89,6 +90,7 @@ class CustomDeliverInterventionPageState
       DeliverInterventionState deliverInterventionState,
       FormGroup form,
       HouseholdMemberWrapper householdMember,
+      IndividualModel? selectedIndividual,
       ProjectBeneficiaryModel projectBeneficiary) async {
     final lat = locationState.latitude;
     final long = locationState.longitude;
@@ -106,6 +108,7 @@ class CustomDeliverInterventionPageState
       address: householdMember.members?.first.address?.first,
       latitude: lat,
       longitude: long,
+      selectedIndividual: selectedIndividual,
     );
     context.read<DeliverInterventionBloc>().add(
           DeliverInterventionSubmitEvent(
@@ -161,6 +164,7 @@ class CustomDeliverInterventionPageState
       DeliverInterventionState deliverInterventionState,
       FormGroup form,
       HouseholdMemberWrapper householdMember,
+      IndividualModel? selectedIndividual,
       ProjectBeneficiaryModel projectBeneficiary) {
     if (context.mounted) {
       DigitComponentsUtils.showDialog(
@@ -178,6 +182,7 @@ class CustomDeliverInterventionPageState
             deliverInterventionState,
             form,
             householdMember,
+            selectedIndividual,
             projectBeneficiary);
       });
     }
@@ -251,6 +256,7 @@ class CustomDeliverInterventionPageState
       child: BlocBuilder<HouseholdOverviewBloc, HouseholdOverviewState>(
         builder: (context, state) {
           final householdMemberWrapper = state.householdMemberWrapper;
+          final individualModel = state.selectedIndividual;
 
           final projectBeneficiary =
               RegistrationDeliverySingleton().beneficiaryType !=
@@ -505,6 +511,7 @@ class CustomDeliverInterventionPageState
                                                                 deliveryInterventionState,
                                                                 form,
                                                                 householdMemberWrapper,
+                                                                individualModel,
                                                                 projectBeneficiary!
                                                                     .first,
                                                               );
@@ -778,6 +785,7 @@ class CustomDeliverInterventionPageState
     AddressModel? address,
     double? latitude,
     double? longitude,
+    IndividualModel? selectedIndividual,
   }) {
     // Initialize task with oldTask if available, or create a new one
     var task = oldTask;
@@ -799,6 +807,50 @@ class CustomDeliverInterventionPageState
         createdTime: context.millisecondsSinceEpoch(),
       ),
     );
+
+    int getIndividualAge(IndividualModel individualModel) {
+      DateTime dateOfBirth =
+          DateFormat("dd/MM/yyyy").parse(individualModel.dateOfBirth ?? '');
+      DigitDOBAge age = DigitDateUtils.calculateAge(dateOfBirth);
+      return age.months;
+    }
+
+    String? getBeneficiaryId(IndividualModel individualModel) {
+      IdentifierTypes.uniqueBeneficiaryID.toValue();
+      return individualModel.identifiers
+              ?.firstWhereOrNull((e) =>
+                  e.identifierType ==
+                  IdentifierTypes.uniqueBeneficiaryID.toValue())
+              ?.identifierId ??
+          '';
+    }
+
+    List<AdditionalField> getIndividualAdditionalFields(
+        IndividualModel? individualModel) {
+      return [
+        if (individualModel != null)
+          AdditionalField(
+            additional_fields_local.AdditionalFieldsType.age.toValue(),
+            getIndividualAge(individualModel),
+          ),
+        if (individualModel?.gender != null)
+          AdditionalField(
+            additional_fields_local.AdditionalFieldsType.gender.toValue(),
+            individualModel?.gender,
+          ),
+        if (individualModel?.clientReferenceId != null)
+          AdditionalField(
+            'individualClientReferenceId',
+            individualModel?.clientReferenceId,
+          ),
+        if (individualModel != null &&
+            getBeneficiaryId(individualModel) != null)
+          AdditionalField(
+            'uniqueBeneficiaryId',
+            getBeneficiaryId(individualModel),
+          ),
+      ];
+    }
 
     // Extract productvariantList from the form
     final productvariantList =
@@ -881,6 +933,7 @@ class CustomDeliverInterventionPageState
                 ? EligibilityAssessmentStatus.smcDone.name
                 : EligibilityAssessmentStatus.vasDone.name,
           ),
+          ...getIndividualAdditionalFields(selectedIndividual)
         ],
       ),
     );

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:digit_components/digit_components.dart';
 import 'package:digit_components/utils/date_utils.dart';
 import 'package:digit_components/widgets/digit_sync_dialog.dart';
@@ -99,6 +100,50 @@ class _EligibilityChecklistViewPage
 
     var projectBeneficiaryClientReferenceId =
         widget.projectBeneficiaryClientReferenceId;
+
+    int getIndividualAge(IndividualModel individualModel) {
+      DateTime dateOfBirth =
+          DateFormat("dd/MM/yyyy").parse(individualModel.dateOfBirth ?? '');
+      DigitDOBAge age = DigitDateUtils.calculateAge(dateOfBirth);
+      return age.months;
+    }
+
+    String? getBeneficiaryId(IndividualModel individualModel) {
+      IdentifierTypes.uniqueBeneficiaryID.toValue();
+      return individualModel.identifiers
+              ?.firstWhereOrNull((e) =>
+                  e.identifierType ==
+                  IdentifierTypes.uniqueBeneficiaryID.toValue())
+              ?.identifierId ??
+          '';
+    }
+
+    List<AdditionalField> getIndividualAdditionalFields(
+        IndividualModel? individualModel) {
+      return [
+        if (individualModel != null)
+          AdditionalField(
+            additional_fields_local.AdditionalFieldsType.age.toValue(),
+            getIndividualAge(individualModel),
+          ),
+        if (individualModel?.gender != null)
+          AdditionalField(
+            additional_fields_local.AdditionalFieldsType.gender.toValue(),
+            individualModel?.gender,
+          ),
+        if (individualModel?.clientReferenceId != null)
+          AdditionalField(
+            'individualClientReferenceId',
+            individualModel?.clientReferenceId,
+          ),
+        if (individualModel != null &&
+            getBeneficiaryId(individualModel) != null)
+          AdditionalField(
+            'uniqueBeneficiaryId',
+            getBeneficiaryId(individualModel),
+          ),
+      ];
+    }
 
     return WillPopScope(
         onWillPop:
@@ -498,6 +543,9 @@ class _EligibilityChecklistViewPage
                                                               .smcDone.name
                                                           : EligibilityAssessmentStatus
                                                               .vasDone.name,
+                                                    ),
+                                                    ...getIndividualAdditionalFields(
+                                                      widget.individual,
                                                     ),
                                                   ],
                                                 ),
