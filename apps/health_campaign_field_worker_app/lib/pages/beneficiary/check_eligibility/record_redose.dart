@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:digit_components/utils/date_utils.dart';
 import 'package:digit_components/widgets/atoms/digit_reactive_dropdown.dart';
 // import 'package:digit_components/digit_components.dart';
 import 'package:digit_components/widgets/atoms/digit_toaster.dart';
@@ -39,7 +40,6 @@ import '../../../data/local_store/no_sql/schema/app_configuration.dart';
 import '../../../models/entities/additional_fields_type.dart';
 import '../../../router/app_router.dart';
 import '../../../utils/app_enums.dart';
-import '../../../utils/date_utils.dart';
 import '../../../utils/environment_config.dart';
 import '../../../utils/i18_key_constants.dart' as i18_local;
 import '../../../utils/utils.dart';
@@ -851,7 +851,7 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
       DateTime dateOfBirth =
           DateFormat("dd/MM/yyyy").parse(individualModel.dateOfBirth ?? '');
       DigitDOBAge age = DigitDateUtils.calculateAge(dateOfBirth);
-      return age.months;
+      return getAgeMonths(age);
     }
 
     String? getBeneficiaryId(IndividualModel individualModel) {

@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:digit_components/digit_components.dart';
+import 'package:digit_components/utils/date_utils.dart';
 import 'package:digit_components/widgets/atoms/digit_radio_button_list.dart';
 import 'package:digit_components/widgets/atoms/digit_toaster.dart';
 import 'package:digit_ui_components/enum/app_enums.dart';
@@ -19,7 +20,6 @@ import 'package:registration_delivery/router/registration_delivery_router.gm.dar
 import 'package:registration_delivery/widgets/inventory/no_facilities_assigned_dialog.dart';
 
 import '../../../utils/app_enums.dart';
-import '../../../utils/date_utils.dart';
 import '../../../widgets/custom_back_navigation.dart';
 import '../../../widgets/localized.dart';
 import 'package:registration_delivery/blocs/delivery_intervention/deliver_intervention.dart';
@@ -110,7 +110,7 @@ class CustomReferBeneficiarySMCPageState
               DateTime dateOfBirth = DateFormat("dd/MM/yyyy")
                   .parse(individualModel.dateOfBirth ?? '');
               DigitDOBAge age = DigitDateUtils.calculateAge(dateOfBirth);
-              return age.months;
+              return getAgeMonths(age);
             }
 
             String? getBeneficiaryId(IndividualModel individualModel) {

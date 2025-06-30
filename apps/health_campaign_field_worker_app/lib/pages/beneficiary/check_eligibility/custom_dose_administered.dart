@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
+import 'package:digit_components/utils/date_utils.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/models/RadioButtonModel.dart';
@@ -33,7 +34,7 @@ import '../../../models/entities/additional_fields_type.dart'
     as additional_fields_local;
 import '../../../router/app_router.dart';
 import '../../../utils/app_enums.dart';
-import '../../../utils/date_utils.dart';
+import '../../../utils/utils.dart' show getAgeMonths;
 
 @RoutePage()
 class CustomDoseAdministeredPage extends LocalizedStatefulWidget {
@@ -87,7 +88,7 @@ class CustomDoseAdministeredPageState
       DateTime dateOfBirth =
           DateFormat("dd/MM/yyyy").parse(individualModel.dateOfBirth ?? '');
       DigitDOBAge age = DigitDateUtils.calculateAge(dateOfBirth);
-      return age.months;
+      return getAgeMonths(age);
     }
 
     String? getBeneficiaryId(IndividualModel individualModel) {

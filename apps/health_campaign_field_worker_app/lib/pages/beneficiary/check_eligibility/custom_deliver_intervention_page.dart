@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
+import 'package:digit_components/utils/date_utils.dart';
 import 'package:digit_components/widgets/digit_dialog.dart' as dialog;
 // import 'package:digit_components/digit_components.dart';
 import 'package:digit_data_model/data_model.dart';
@@ -34,10 +35,10 @@ import 'package:registration_delivery/widgets/localized.dart';
 
 import '../../../router/app_router.dart';
 import '../../../utils/app_enums.dart';
-import '../../../utils/date_utils.dart';
 import '../../../utils/i18_key_constants.dart' as i18_local;
 import '../../../models/entities/additional_fields_type.dart'
     as additional_fields_local;
+import '../../../utils/utils.dart' show getAgeMonths;
 import '../../../widgets/custom_back_navigation.dart';
 
 @RoutePage()
@@ -812,7 +813,7 @@ class CustomDeliverInterventionPageState
       DateTime dateOfBirth =
           DateFormat("dd/MM/yyyy").parse(individualModel.dateOfBirth ?? '');
       DigitDOBAge age = DigitDateUtils.calculateAge(dateOfBirth);
-      return age.months;
+      return getAgeMonths(age);
     }
 
     String? getBeneficiaryId(IndividualModel individualModel) {
