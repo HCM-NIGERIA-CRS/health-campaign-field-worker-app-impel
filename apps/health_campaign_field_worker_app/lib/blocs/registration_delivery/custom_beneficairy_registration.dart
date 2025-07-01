@@ -17,6 +17,8 @@ import 'package:registration_delivery/models/entities/unique_id_pool.dart';
 import 'package:registration_delivery/utils/typedefs.dart';
 import 'package:registration_delivery/utils/utils.dart';
 
+import '../../utils/utils.dart';
+
 part 'custom_beneficairy_registration.freezed.dart';
 
 typedef BeneficiaryRegistrationEmitter = Emitter<BeneficiaryRegistrationState>;
@@ -305,6 +307,10 @@ class CustomBeneficiaryRegistrationBloc
                   createdBy: event.userUuid,
                   createdTime: createdAt,
                 ),
+                additionalFields: HouseholdMemberAdditionalFields(
+                  fields: [...getIndividualAdditionalFields(individual)],
+                  version: 1,
+                ),
               ),
             );
           } catch (error) {
@@ -401,6 +407,10 @@ class CustomBeneficiaryRegistrationBloc
               auditDetails: AuditDetails(
                 createdBy: event.userUuid,
                 createdTime: createdAt,
+              ),
+              additionalFields: HouseholdMemberAdditionalFields(
+                fields: [...getIndividualAdditionalFields(individual)],
+                version: 1,
               ),
             ),
           );
@@ -792,6 +802,12 @@ class CustomBeneficiaryRegistrationBloc
                 lastModifiedTime: initialModifiedAt,
                 lastModifiedBy: event.userUuid,
                 createdBy: event.userUuid,
+              ),
+              additionalFields: HouseholdMemberAdditionalFields(
+                fields: [
+                  ...getIndividualAdditionalFields(event.individualModel)
+                ],
+                version: 1,
               ),
             ),
           );
