@@ -394,7 +394,7 @@ int getIndividualAge(IndividualModel individualModel) {
   DateTime dateOfBirth =
       DateFormat("dd/MM/yyyy").parse(individualModel.dateOfBirth ?? '');
   DigitDOBAge age = DigitDateUtils.calculateAge(dateOfBirth);
-  return age.months;
+  return getAgeMonths(age);
 }
 
 String? getBeneficiaryId(IndividualModel individualModel) {
