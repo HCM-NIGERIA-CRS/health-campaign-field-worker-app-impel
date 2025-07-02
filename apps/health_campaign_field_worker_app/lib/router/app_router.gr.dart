@@ -504,6 +504,7 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: CustomStockDetailsPage(
+          warehouseId: args.warehouseId,
           key: args.key,
           appLocalizations: args.appLocalizations,
         ),
@@ -2612,12 +2613,14 @@ class CustomSplashAcknowledgementRouteArgs {
 class CustomStockDetailsRoute
     extends PageRouteInfo<CustomStockDetailsRouteArgs> {
   CustomStockDetailsRoute({
+    String? warehouseId,
     Key? key,
     InventoryLocalization? appLocalizations,
     List<PageRouteInfo>? children,
   }) : super(
           CustomStockDetailsRoute.name,
           args: CustomStockDetailsRouteArgs(
+            warehouseId: warehouseId,
             key: key,
             appLocalizations: appLocalizations,
           ),
@@ -2632,9 +2635,12 @@ class CustomStockDetailsRoute
 
 class CustomStockDetailsRouteArgs {
   const CustomStockDetailsRouteArgs({
+    this.warehouseId,
     this.key,
     this.appLocalizations,
   });
+
+  final String? warehouseId;
 
   final Key? key;
 
@@ -2642,7 +2648,7 @@ class CustomStockDetailsRouteArgs {
 
   @override
   String toString() {
-    return 'CustomStockDetailsRouteArgs{key: $key, appLocalizations: $appLocalizations}';
+    return 'CustomStockDetailsRouteArgs{warehouseId: $warehouseId, key: $key, appLocalizations: $appLocalizations}';
   }
 }
 

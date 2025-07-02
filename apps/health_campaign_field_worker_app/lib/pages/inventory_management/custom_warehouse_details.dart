@@ -271,7 +271,15 @@ class CustomWarehouseDetailsPageState
                                                             StockRecordEntryType
                                                                 .returned)) {
                                                       context.router.push(
-                                                        CustomStockDetailsRoute(),
+                                                        CustomStockDetailsRoute(
+                                                            warehouseId: InventorySingleton()
+                                                                    .isDistributor
+                                                                ? (teamCode ??
+                                                                        '')
+                                                                    .split(Constants
+                                                                        .pipeSeparator)
+                                                                    .last
+                                                                : selectedFacilityId),
                                                       );
                                                     } else {
                                                       context.router.push(ViewAllTransactionsRoute(
