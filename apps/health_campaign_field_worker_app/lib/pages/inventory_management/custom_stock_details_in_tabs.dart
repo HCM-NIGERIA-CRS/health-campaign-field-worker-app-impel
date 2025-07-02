@@ -144,13 +144,12 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                 : [],
           ),
           _transactionQuantityKey: FormControl<int>(
-              validators: (InventorySingleton().isWareHouseMgr ||
-                      context.isHealthFacilitySupervisor)
+              validators: (InventorySingleton().isWareHouseMgr)
                   ? [
                       Validators.number(),
                       Validators.required,
                       Validators.min(1),
-                      Validators.max(1000000),
+                      Validators.max(15000000),
                     ]
                   : [
                       Validators.number(),
