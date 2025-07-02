@@ -143,20 +143,12 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                   ]
                 : [],
           ),
-          _transactionQuantityKey: FormControl<int>(
-              validators: (InventorySingleton().isWareHouseMgr)
-                  ? [
-                      Validators.number(),
-                      Validators.required,
-                      Validators.min(1),
-                      Validators.max(15000000),
-                    ]
-                  : [
-                      Validators.number(),
-                      Validators.required,
-                      Validators.min(1),
-                      Validators.max(1000000),
-                    ]),
+          _transactionQuantityKey: FormControl<int>(validators: [
+            Validators.number(),
+            Validators.required,
+            Validators.min(1),
+            Validators.max(100000000),
+          ]),
           // _waybillQuantityKey:
           //     FormControl<String>(validators: [Validators.required]),
           _transactionQuantityPartialKey: FormControl<int>(validators: []),
