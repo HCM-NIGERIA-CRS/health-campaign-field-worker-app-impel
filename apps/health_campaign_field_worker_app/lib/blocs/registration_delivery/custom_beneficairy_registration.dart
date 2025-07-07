@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/utils/typedefs.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:registration_delivery/models/entities/household_member.dart';
@@ -693,6 +694,32 @@ class CustomBeneficiaryRegistrationBloc
                 await taskDataRepository.update(task.last
                     .copyWith(status: Status.notAdministered.toValue()));
               }
+            }
+          }
+          final HouseholdMemberModel? existingHouseholdMember =
+              (await householdMemberRepository
+                      .search(HouseholdMemberSearchModel(
+            individualClientReferenceId: [individual.clientReferenceId],
+          )))
+                  .firstOrNull;
+          if (existingHouseholdMember != null) {
+            try {
+              await householdMemberRepository
+                  .update(existingHouseholdMember.copyWith(
+                auditDetails: existingHouseholdMember.auditDetails?.copyWith(
+                  lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
+                ),
+                clientAuditDetails:
+                    existingHouseholdMember.clientAuditDetails?.copyWith(
+                  lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
+                ),
+                additionalFields: HouseholdMemberAdditionalFields(
+                  fields: [...getIndividualAdditionalFields(individual)],
+                  version: 1,
+                ),
+              ));
+            } catch (e) {
+              print(e);
             }
           }
         } catch (error) {
