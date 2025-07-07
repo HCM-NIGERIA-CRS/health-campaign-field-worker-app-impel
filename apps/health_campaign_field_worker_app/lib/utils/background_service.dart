@@ -190,19 +190,20 @@ void onStart(ServiceInstance service) async {
                   'userId': userRequestModel?.uuid,
                   'batchSize': configuredBatchSize,
                 });
-                flutterLocalNotificationsPlugin.show(
-                  888,
-                  'Auto Sync',
-                  'Speed : ${speedArray.isNotEmpty && speedArray.firstOrNull != null ? double.tryParse(speedArray.first.toString())?.toStringAsFixed(2) ?? '0' : '0'}Mb/ps - BatchSize : $configuredBatchSize',
-                  const NotificationDetails(
-                    android: AndroidNotificationDetails(
-                      "my_foreground",
-                      'AUTO SYNC',
-                      icon: 'ic_bg_service_small',
-                      ongoing: true,
-                    ),
-                  ),
-                );
+                //Remove the comment below to enable foreground notification
+                // flutterLocalNotificationsPlugin.show(
+                //   888,
+                //   'Auto Sync',
+                //   'Speed : ${speedArray.isNotEmpty && speedArray.firstOrNull != null ? double.tryParse(speedArray.first.toString())?.toStringAsFixed(2) ?? '0' : '0'}Mb/ps - BatchSize : $configuredBatchSize',
+                //   const NotificationDetails(
+                //     android: AndroidNotificationDetails(
+                //       "my_foreground",
+                //       'AUTO SYNC',
+                //       icon: 'ic_bg_service_small',
+                //       ongoing: true,
+                //     ),
+                //   ),
+                // );
                 // Insert sync logic here
                 final isSyncCompleted = await SyncService().performSync(
                   localRepositories: Constants.getLocalRepositories(
