@@ -46,6 +46,7 @@ import 'package:sync_service/blocs/sync/sync.dart';
 
 import '../blocs/app_initialization/app_initialization.dart';
 import '../blocs/auth/auth.dart';
+import '../blocs/localization/app_localization.dart';
 import '../blocs/localization/localization.dart';
 import '../data/local_store/app_shared_preferences.dart';
 import '../data/local_store/no_sql/schema/app_configuration.dart';
@@ -551,6 +552,18 @@ class _HomePageState extends LocalizedState<HomePage> {
           customIcon: Constants.beneficiaryIdDownload,
         ),
       ),
+      i18.home.dailyImplementationPlanLabel:
+          homeShowcaseData.dailyImplementationPlan.buildWith(
+        child: HomeItemCard(
+          label: i18.home.dailyImplementationPlanLabel,
+          onPressed: () {
+            showDIPFLowDialog(context, localizations);
+          },
+          icon: Icons.people,
+          enableCustomIcon: true,
+          customIconSize: spacer9,
+        ),
+      ),
     };
 
     final Map<String, GlobalKey> homeItemsShowcaseMap = {
@@ -575,6 +588,8 @@ class _HomePageState extends LocalizedState<HomePage> {
       i18.home.syncDataLabel: homeShowcaseData.distributorSyncData.showcaseKey,
       i18.home.fileComplaint:
           homeShowcaseData.distributorFileComplaint.showcaseKey,
+      i18.home.dailyImplementationPlanLabel:
+          homeShowcaseData.dailyImplementationPlan.showcaseKey,
       i18.home.db: homeShowcaseData.db.showcaseKey,
       i18.home.dashboard: homeShowcaseData.dashBoard.showcaseKey,
       i18.home.clfLabel: homeShowcaseData.clf.showcaseKey,
@@ -599,6 +614,7 @@ class _HomePageState extends LocalizedState<HomePage> {
       i18.home.viewSummaryReportsLabel,
       i18.home.syncDataLabel,
       i18.home.fileComplaint,
+      i18.home.dailyImplementationPlanLabel,
       i18.home.db,
       i18.home.dashboard,
       i18.home.beneficiaryIdLabel,
@@ -927,6 +943,108 @@ void setPackagesSingleton(BuildContext context) {
                     .map((e) => e.code.snakeCase.toUpperCase())
                     .toList();
               }),
+        );
+      });
+}
+
+void showDIPFLowDialog(
+  BuildContext context,
+  AppLocalizations localizations,
+) {
+  showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  // context.router.push(
+
+                  // );
+
+                  Navigator.of(context).pop();
+                },
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.orange[800]!,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.white,
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  child: Center(
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.edit_note_outlined,
+                          size: 24,
+                          color: Colors.orange[800],
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          localizations.translate(
+                              i18.dailyImplementationFlow.createDIPLabel),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.orange[800],
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16), // Add spacing between buttons
+              GestureDetector(
+                onTap: () {
+                  // context.router.push(
+
+                  // );
+                  Navigator.of(context).pop();
+                },
+                child: Container(
+                  width: 400,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.orange[800]!,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.white,
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  child: Center(
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.remove_red_eye,
+                          size: 24,
+                          color: Colors.orange[800],
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          localizations.translate(
+                            i18.dailyImplementationFlow.viewDIPLabel,
+                          ),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.orange[800],
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         );
       });
 }

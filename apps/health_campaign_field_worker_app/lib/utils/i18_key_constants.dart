@@ -14,6 +14,7 @@ const privacyPolicy = PrivacyPolicy();
 const dashBoard = Dashboard();
 
 const caregiverConsent = CaregiverConsent();
+const dailyImplementationFlow = DailyImplementationFlow();
 
 const householdLocationShowcase = HouseholdLocationShowcase();
 const householdLocation = HouseholdLocation();
@@ -732,6 +733,18 @@ class CaregiverConsent {
       'CARE_GIVER_CONSENT_ACTION_LABEL_TEXT';
 }
 
+class DailyImplementationFlow {
+  const DailyImplementationFlow();
+
+  String get selectBoundaryLabel => 'SELECT_BOUNDARY_HEADING_LABEL';
+  String get dateOfEntry => 'SELECT_DATE_OF_ENTRY';
+  String get administrativeUnitLabel => 'SELECT_ADMINISTRATIVE_UNIT_LABEL';
+  String get wfpSupervisorLabel => 'SELECT_WFP_SUPERVISOR_LABEL';
+  String get boundaryLabel => 'SELECT_BOUNDARY_LABEL';
+  String get createDIPLabel => 'CREATE_DIP_LABEL';
+  String get viewDIPLabel => 'VIEW_DIP_LABEL';
+}
+
 class ComplaintsDetailsShowcase {
   const ComplaintsDetailsShowcase();
 
@@ -912,6 +925,7 @@ class Home {
 
   String get clfLabel => "HOME_COMMUNAL_LIVING_FACILITIES_LABEL";
   String get beneficiaryIdLabel => 'HOME_BENEFICIARY_ID_LABEL';
+  String get dailyImplementationPlanLabel => 'HOME_DIP_LABEL';
   String get viewSummaryReportsLabel => 'VIEW_SUMMARY_REPORTS_LABEL';
 }
 

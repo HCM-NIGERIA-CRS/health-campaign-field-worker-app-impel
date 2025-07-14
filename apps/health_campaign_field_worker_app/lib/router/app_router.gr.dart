@@ -737,6 +737,17 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    SelectBoundaryRoute.name: (routeData) {
+      final args = routeData.argsAs<SelectBoundaryRouteArgs>(
+          orElse: () => const SelectBoundaryRouteArgs());
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: SelectBoundaryPage(
+          key: args.key,
+          appLocalizations: args.appLocalizations,
+        ),
+      );
+    },
     UnauthenticatedRouteWrapper.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -3468,6 +3479,44 @@ class RecordRedoseRouteArgs {
   @override
   String toString() {
     return 'RecordRedoseRouteArgs{key: $key, appLocalizations: $appLocalizations, isEditing: $isEditing, tasks: $tasks}';
+  }
+}
+
+/// generated route for
+/// [SelectBoundaryPage]
+class SelectBoundaryRoute extends PageRouteInfo<SelectBoundaryRouteArgs> {
+  SelectBoundaryRoute({
+    Key? key,
+    InventoryLocalization? appLocalizations,
+    List<PageRouteInfo>? children,
+  }) : super(
+          SelectBoundaryRoute.name,
+          args: SelectBoundaryRouteArgs(
+            key: key,
+            appLocalizations: appLocalizations,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'SelectBoundaryRoute';
+
+  static const PageInfo<SelectBoundaryRouteArgs> page =
+      PageInfo<SelectBoundaryRouteArgs>(name);
+}
+
+class SelectBoundaryRouteArgs {
+  const SelectBoundaryRouteArgs({
+    this.key,
+    this.appLocalizations,
+  });
+
+  final Key? key;
+
+  final InventoryLocalization? appLocalizations;
+
+  @override
+  String toString() {
+    return 'SelectBoundaryRouteArgs{key: $key, appLocalizations: $appLocalizations}';
   }
 }
 

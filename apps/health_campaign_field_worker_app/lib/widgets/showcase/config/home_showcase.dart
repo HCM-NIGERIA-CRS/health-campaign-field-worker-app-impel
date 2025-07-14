@@ -115,4 +115,8 @@ class _HomePageShowcaseData {
   final beneficiaryId = ShowcaseItemBuilder(
     messageLocalizationKey: i18.home.beneficiaryIdLabel,
   );
+
+  final dailyImplementationPlan = ShowcaseItemBuilder(
+    messageLocalizationKey: i18.home.dailyImplementationPlanLabel,
+  );
 }
