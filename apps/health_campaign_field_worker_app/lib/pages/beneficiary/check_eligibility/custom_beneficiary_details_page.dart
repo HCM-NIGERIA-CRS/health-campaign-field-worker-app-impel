@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
+import 'package:digit_components/widgets/digit_dialog.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/theme/digit_extended_theme.dart';
@@ -21,20 +22,21 @@ import 'package:registration_delivery/models/entities/additional_fields_type.dar
 import 'package:registration_delivery/models/entities/task.dart';
 import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
+import '../../../blocs/registration_delivery/custom_beneficairy_registration.dart';
 import '../../../blocs/registration_delivery/custom_search_household.dart';
-import '../../../models/entities/identifier_types.dart';
 import '../../../router/app_router.dart';
+import '../../../utils/constants.dart';
+import '../../../utils/utils.dart' as local_utils;
 import '../../../utils/app_enums.dart';
 import '../../../utils/i18_key_constants.dart' as i18_local;
 import '../../../models/entities/additional_fields_type.dart'
     as additional_fields_local;
 import 'package:registration_delivery/utils/utils.dart';
-import 'package:registration_delivery/widgets/back_navigation_help_header.dart';
 import 'package:registration_delivery/widgets/component_wrapper/product_variant_bloc_wrapper.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 import 'package:registration_delivery/widgets/table_card/table_card.dart';
-import 'package:registration_delivery/pages/beneficiary/widgets/record_delivery_cycle.dart';
 
+import '../../../utils/utils.dart';
 import '../../../widgets/registration_delivery/past_delivery_vas.dart';
 import 'custom_record_delivery_cycle.dart';
 
@@ -90,17 +92,10 @@ class CustomBeneficiaryDetailsPageState
         builder: (context, searchHouseholdsState) {
           return BlocBuilder<HouseholdOverviewBloc, HouseholdOverviewState>(
             builder: (context, state) {
-              ProjectTypeModel? projectType =
-                  widget.eligibilityAssessmentType ==
-                          EligibilityAssessmentType.smc
-                      ? RegistrationDeliverySingleton()
-                          .selectedProject
-                          ?.additionalDetails
-                          ?.projectType
-                      : RegistrationDeliverySingleton()
-                          .selectedProject
-                          ?.additionalDetails
-                          ?.additionalProjectType;
+              ProjectTypeModel? projectType = RegistrationDeliverySingleton()
+                  .selectedProject
+                  ?.additionalDetails
+                  ?.projectType;
 
               final householdMemberWrapper = state.householdMemberWrapper;
               // Filtering project beneficiaries based on the selected individual
@@ -281,11 +276,99 @@ class CustomBeneficiaryDetailsPageState
                                                                       rootNavigator:
                                                                           true,
                                                                     ).pop();
-                                                                    router.push(
-                                                                      CustomDeliverInterventionRoute(
-                                                                          eligibilityAssessmentType:
-                                                                              widget.eligibilityAssessmentType),
-                                                                    );
+                                                                    final spaq1 =
+                                                                        context
+                                                                            .spaq1;
+                                                                    final spaq2 =
+                                                                        context
+                                                                            .spaq2;
+
+                                                                    final currentCycle =
+                                                                        deliverState.cycle >=
+                                                                                0
+                                                                            ? deliverState.cycle
+                                                                            : 0;
+
+                                                                    // Calculate the current dose. If deliverInterventionState.dose is negative, set it to 0.
+                                                                    final currentDose =
+                                                                        deliverState.dose >=
+                                                                                0
+                                                                            ? deliverState.dose
+                                                                            : 0;
+                                                                    final productVariants = fetchProductVariant(
+                                                                            projectType.cycles![currentCycle - 1].deliveries![currentDose -
+                                                                                1],
+                                                                            state.selectedIndividual,
+                                                                            null)
+                                                                        ?.productVariants;
+
+                                                                    final value =
+                                                                        variant!
+                                                                            .firstWhere(
+                                                                              (element) => element.id == productVariants!.first.productVariantId,
+                                                                            )
+                                                                            .sku;
+
+                                                                    if (value ==
+                                                                            null ||
+                                                                        (value.contains(Constants.spaq1) &&
+                                                                            spaq1 >
+                                                                                0) ||
+                                                                        (value.contains(Constants.spaq2) &&
+                                                                            spaq2 >
+                                                                                0)) {
+                                                                      router
+                                                                          .push(
+                                                                        CustomDeliverInterventionRoute(
+                                                                            eligibilityAssessmentType:
+                                                                                widget.eligibilityAssessmentType),
+                                                                      );
+                                                                    } else {
+                                                                      DigitDialog
+                                                                          .show(
+                                                                        context,
+                                                                        options:
+                                                                            DigitDialogOptions(
+                                                                          titleText:
+                                                                              localizations.translate(
+                                                                            i18_local.beneficiaryDetails.insufficientStockHeading,
+                                                                          ),
+                                                                          titleIcon:
+                                                                              Icon(
+                                                                            Icons.warning,
+                                                                            color:
+                                                                                DigitTheme.instance.colorScheme.error,
+                                                                          ),
+                                                                          contentText:
+                                                                              "${localizations.translate(
+                                                                            i18_local.beneficiaryDetails.insufficientAZTStockMessageDelivery,
+                                                                          )} \n ${localizations.translate(
+                                                                            (value.contains(Constants.spaq1)
+                                                                                ? i18_local.beneficiaryDetails.spaq1DoseUnit
+                                                                                : i18_local.beneficiaryDetails.spaq2DoseUnit),
+                                                                          )}",
+                                                                          primaryAction:
+                                                                              DigitDialogActions(
+                                                                            label:
+                                                                                localizations.translate(i18_local.beneficiaryDetails.backToSearchHousehold),
+                                                                            action:
+                                                                                (ctx) async {
+                                                                              Navigator.of(
+                                                                                context,
+                                                                                rootNavigator: true,
+                                                                              ).pop();
+                                                                              await context.router.popAndPush(
+                                                                                CustomRegistrationDeliveryWrapperRoute(
+                                                                                  children: [
+                                                                                    CustomSearchBeneficiaryRoute(),
+                                                                                  ],
+                                                                                ),
+                                                                              );
+                                                                            },
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    }
                                                                   },
                                                                   type: DigitButtonType
                                                                       .primary,
@@ -376,7 +459,9 @@ class CustomBeneficiaryDetailsPageState
                                                           .uniqueBeneficiaryID
                                                           .toValue())
                                                   ?.identifierId;
-                                          return beneficiaryId ?? '--';
+                                          return formatBeneficiaryId(
+                                                  beneficiaryId) ??
+                                              '--';
                                         }(),
                                         localizations.translate(
                                           i18.common.coreCommonAge,
@@ -464,6 +549,9 @@ class CustomBeneficiaryDetailsPageState
                                                     (projectType?.cycles ?? [])
                                                             .isNotEmpty
                                                         ? CustomRecordDeliveryCycle(
+                                                            eligibilityAssessmentType:
+                                                                EligibilityAssessmentType
+                                                                    .smc,
                                                             projectCycles:
                                                                 projectType
                                                                         ?.cycles ??

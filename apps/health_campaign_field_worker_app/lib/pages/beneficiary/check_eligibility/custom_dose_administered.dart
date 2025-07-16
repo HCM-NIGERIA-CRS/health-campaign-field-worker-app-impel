@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
+import 'package:digit_components/utils/date_utils.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/models/RadioButtonModel.dart';
@@ -10,6 +11,7 @@ import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
 import 'package:digit_ui_components/widgets/molecules/digit_table.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:registration_delivery/blocs/app_localization.dart';
 import 'package:registration_delivery/utils/extensions/extensions.dart';
@@ -30,9 +32,10 @@ import 'package:registration_delivery/widgets/localized.dart';
 import 'package:registration_delivery/widgets/table_card/table_card.dart';
 import '../../../models/entities/additional_fields_type.dart'
     as additional_fields_local;
-import '../../../models/entities/identifier_types.dart';
 import '../../../router/app_router.dart';
 import '../../../utils/app_enums.dart';
+import '../../../utils/utils.dart'
+    show getAgeMonths, getIndividualAdditionalFields;
 
 @RoutePage()
 class CustomDoseAdministeredPage extends LocalizedStatefulWidget {
@@ -262,6 +265,9 @@ class CustomDoseAdministeredPageState
                                                 : EligibilityAssessmentStatus
                                                     .vasDone.name,
                                           ),
+                                          ...getIndividualAdditionalFields(
+                                            overViewBloc.selectedIndividual!,
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -323,28 +329,11 @@ class CustomDoseAdministeredPageState
                               ),
                               style: textTheme.headingXl,
                             ),
-                            Column(
-                              children: [
-                                const ListTile(
-                                  title: Text(
-                                    "Given 2 AQ tablets to caregiver",
-                                  ),
-                                  leading: Text("1"),
-                                ),
-                                ListTile(
-                                  title: Text(
-                                    "Have you written this ID $beneficiaryId in the child for $name (To be used in the next cycle)",
-                                  ),
-                                  leading: const Text("2"),
-                                ),
-                                const ListTile(
-                                  title: Text(
-                                    "Given health talk on the use of SPAQ on day 2 and day 3",
-                                  ),
-                                  leading: Text("3"),
-                                ),
-                              ],
-                            ),
+                            OrderedList(items: [
+                              "Given 2 AQ tablets to caregiver",
+                              "Written the Beneficiary ID $beneficiaryId on the child record card( To be used in the next cycle)",
+                              "Given health talk on the use of SPAQ on day 2 and day 3"
+                            ]),
                             // ReactiveWrapperField(
                             //   formControlName: _doseAdministeredKey,
                             //   builder: (field) => RadioList(
@@ -505,4 +494,58 @@ class CustomDoseAdministeredPageState
   //     ),
   //   });
   // }
+}
+
+class OrderedList extends StatelessWidget {
+  final List<String> items;
+  const OrderedList({
+    super.key,
+    required this.items,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (var i = 0; i < items.length; i++)
+          OrderedListItem(
+            index: i + 1,
+            text: items[i],
+          ),
+      ],
+    );
+  }
+}
+
+class OrderedListItem extends StatelessWidget {
+  final int index;
+  final String text;
+  const OrderedListItem({
+    required this.index,
+    required this.text,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("    $index.  "),
+            Expanded(
+              child: Text(
+                text,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: 16.0,
+                    ),
+              ),
+            ),
+          ]),
+    );
+  }
 }

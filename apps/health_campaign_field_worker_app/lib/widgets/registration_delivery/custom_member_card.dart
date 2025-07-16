@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:digit_components/digit_components.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_ui_components/theme/digit_extended_theme.dart';
+import 'package:digit_ui_components/theme/spacers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:registration_delivery/blocs/app_localization.dart';
@@ -14,9 +15,7 @@ import 'package:registration_delivery/models/entities/task.dart';
 import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
 import '../../blocs/localization/app_localization.dart';
-import '../../models/entities/identifier_types.dart';
-// import '../../utils/registration_delivery/utils_smc.dart';
-import 'package:registration_delivery/utils/utils.dart';
+
 import '../../router/app_router.dart';
 import '../../utils/app_enums.dart';
 import '../../utils/registration_delivery/utils_smc.dart';
@@ -29,6 +28,7 @@ import '../../models/entities/additional_fields_type.dart'
     as additional_fields_local;
 
 class CustomMemberCard extends StatelessWidget {
+  final List<ProductVariantModel> variant;
   final String name;
   final String? gender;
   final int? years;
@@ -75,6 +75,7 @@ class CustomMemberCard extends StatelessWidget {
     this.isBeneficiaryIneligible = false,
     this.isBeneficiaryReferred = false,
     this.sideEffects,
+    required this.variant,
   });
 
   List<TaskModel>? _getSMCStatusData() {
@@ -105,13 +106,15 @@ class CustomMemberCard extends StatelessWidget {
         .toList();
   }
 
-  Widget statusWidget(context) {
+  Widget statusWidget(BuildContext context) {
     List<TaskModel>? smcTasks = _getSMCStatusData();
     List<TaskModel>? vasTasks = _getVACStatusData();
-    bool isBeneficiaryReferredSMC = checkBeneficiaryReferredSMC(smcTasks);
+    bool isBeneficiaryReferredSMC =
+        checkBeneficiaryReferredSMC(smcTasks, context.selectedCycle);
     bool isBeneficiaryReferredVAS = checkBeneficiaryReferredVAS(vasTasks);
 
-    bool isBeneficiaryInEligibleSMC = checkBeneficiaryInEligibleSMC(smcTasks);
+    bool isBeneficiaryInEligibleSMC =
+        checkBeneficiaryInEligibleSMC(smcTasks, context.selectedCycle);
     bool isBeneficiaryInEligibleVAS = checkBeneficiaryInEligibleVAS(vasTasks);
 
     final theme = Theme.of(context);
@@ -123,8 +126,8 @@ class CustomMemberCard extends StatelessWidget {
           iconSize: 20,
           iconText: localizations.translate(i18_local
               .householdOverView.householdOverViewHouseholderHeadLabel),
-          iconTextColor: theme.colorScheme.error,
-          iconColor: theme.colorScheme.error,
+          iconTextColor: theme.colorScheme.surfaceTint,
+          iconColor: theme.colorScheme.surfaceTint,
         ),
       );
     }
@@ -145,13 +148,13 @@ class CustomMemberCard extends StatelessWidget {
                 icon: Icons.check_circle,
                 iconText: localizations.translate(
                   isBeneficiaryInEligibleSMC
-                      ? i18_local.householdOverView
-                          .householdOverViewBeneficiaryInEligibleSMCLabel
+                      ? i18.householdOverView
+                          .householdOverViewNotEligibleIconLabel
                       : isBeneficiaryReferredSMC
-                          ? i18_local.householdOverView
-                              .householdOverViewBeneficiaryReferredSMCLabel
-                          : i18_local.householdOverView
-                              .householdOverViewSMCDeliveredIconLabel,
+                          ? i18.householdOverView
+                              .householdOverViewBeneficiaryReferredLabel
+                          : i18.householdOverView
+                              .householdOverViewDeliveredIconLabel,
                 ),
                 iconSize: 20,
                 iconTextColor:
@@ -256,13 +259,16 @@ class CustomMemberCard extends StatelessWidget {
     final textTheme = theme.digitTextTheme(context);
     List<TaskModel>? smcTasks = _getSMCStatusData();
     List<TaskModel>? vasTasks = _getVACStatusData();
-    final doseStatus = checkStatus(smcTasks, context.selectedCycle);
-    bool smcAssessmentPendingStatus = assessmentSMCPending(smcTasks);
+    final doseStatus = checkStatusSMC(smcTasks, context.selectedCycle);
+    bool smcAssessmentPendingStatus =
+        assessmentSMCPending(smcTasks, context.selectedCycle);
     bool vasAssessmentPendingStatus = assessmentVASPending(vasTasks);
-    bool isBeneficiaryReferredSMC = checkBeneficiaryReferredSMC(smcTasks);
+    bool isBeneficiaryReferredSMC =
+        checkBeneficiaryReferredSMC(smcTasks, context.selectedCycle);
     bool isBeneficiaryReferredVAS = checkBeneficiaryReferredVAS(vasTasks);
 
-    bool isBeneficiaryInEligibleSMC = checkBeneficiaryInEligibleSMC(smcTasks);
+    bool isBeneficiaryInEligibleSMC =
+        checkBeneficiaryInEligibleSMC(smcTasks, context.selectedCycle);
     bool isBeneficiaryInEligibleVAS = checkBeneficiaryInEligibleVAS(vasTasks);
 
     final redosePendingStatus = smcAssessmentPendingStatus
@@ -297,16 +303,14 @@ class CustomMemberCard extends StatelessWidget {
                 ),
               );
 
-              if ((smcTasks ?? []).isEmpty) {
-                context.router.push(
-                  EligibilityChecklistViewRoute(
-                    projectBeneficiaryClientReferenceId:
-                        projectBeneficiaryClientReferenceId,
-                    individual: individual,
-                    eligibilityAssessmentType: EligibilityAssessmentType.smc,
-                  ),
-                );
-              }
+              context.router.push(
+                EligibilityChecklistViewRoute(
+                  projectBeneficiaryClientReferenceId:
+                      projectBeneficiaryClientReferenceId,
+                  individual: individual,
+                  eligibilityAssessmentType: EligibilityAssessmentType.smc,
+                ),
+              );
             },
           ),
         if ((!smcAssessmentPendingStatus) && redosePendingStatus)
@@ -337,12 +341,30 @@ class CustomMemberCard extends StatelessWidget {
                     .lastOrNull;
                 if (redosePendingStatus) {
                   final spaq1 = context.spaq1;
+                  final spaq2 = context.spaq2;
 
                   int doseCount = double.parse(
                     successfulTask?.resources?.first.quantity ?? "0",
                   ).round();
 
-                  if (successfulTask != null && spaq1 >= doseCount) {
+                  final value = variant
+                      .firstWhere(
+                        (element) =>
+                            element.id ==
+                            successfulTask!.resources!.first.productVariantId,
+                      )
+                      .sku;
+
+                  if (successfulTask != null &&
+                      value != null &&
+                      ((value.contains(
+                                Constants.spaq1,
+                              ) &&
+                              spaq1 > 0) ||
+                          (value.contains(
+                                Constants.spaq2,
+                              ) &&
+                              spaq2 > 0))) {
                     context.router.push(
                       RecordRedoseRoute(
                         tasks: [successfulTask],
@@ -359,12 +381,19 @@ class CustomMemberCard extends StatelessWidget {
                           Icons.warning,
                           color: DigitTheme.instance.colorScheme.error,
                         ),
-                        contentText: "${localizations.translate(
-                          i18_local.beneficiaryDetails
-                              .insufficientAZTStockMessageDelivery,
-                        )}=$spaq1${localizations.translate(
-                          i18_local.beneficiaryDetails.beneficiaryDoseUnit,
-                        )}",
+                        contentText: (value == Constants.spaq1)
+                            ? "${localizations.translate(
+                                i18_local.beneficiaryDetails
+                                    .insufficientAZTStockMessageDelivery,
+                              )} \n ${localizations.translate(
+                                i18_local.beneficiaryDetails.spaq1DoseUnit,
+                              )}"
+                            : "${localizations.translate(
+                                i18_local.beneficiaryDetails
+                                    .insufficientAZTStockMessageDelivery,
+                              )} \n ${localizations.translate(
+                                i18_local.beneficiaryDetails.spaq2DoseUnit,
+                              )}",
                         primaryAction: DigitDialogActions(
                           label: localizations.translate(i18_local
                               .beneficiaryDetails.backToHouseholdDetails),
@@ -416,6 +445,7 @@ class CustomMemberCard extends StatelessWidget {
                 // );
                 context.router.push(
                   EligibilityChecklistViewRoute(
+                    showBackButton: false,
                     projectBeneficiaryClientReferenceId:
                         projectBeneficiaryClientReferenceId,
                     individual: individual,
@@ -434,6 +464,7 @@ class CustomMemberCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     final beneficiaryType = context.beneficiaryType;
+    final textTheme = theme.digitTextTheme(context);
 
     return Container(
       decoration: BoxDecoration(
@@ -457,40 +488,48 @@ class CustomMemberCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  individual.identifiers != null
-                      ? Padding(
-                          padding: const EdgeInsets.all(kPadding),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: DigitTheme.instance.colorScheme.primary,
+                  if (individual.identifiers != null)
+                    if (individual.identifiers!
+                            .lastWhereOrNull(
+                              (e) =>
+                                  e.identifierType ==
+                                  IdentifierTypes.uniqueBeneficiaryID.toValue(),
+                            )
+                            ?.identifierId !=
+                        null)
+                      Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.all(spacer1),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: theme.colorTheme.text.disabled,
+                                ),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(spacer2),
+                                ),
                               ),
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(kPadding),
+                              child: Padding(
+                                padding: const EdgeInsets.all(spacer1),
+                                child: Text(
+                                  formatBeneficiaryId(individual.identifiers
+                                          ?.lastWhereOrNull(
+                                            (e) =>
+                                                e.identifierType ==
+                                                IdentifierTypes
+                                                    .uniqueBeneficiaryID
+                                                    .toValue(),
+                                          )
+                                          ?.identifierId) ??
+                                      localizations
+                                          .translate(i18.common.noResultsFound),
+                                  style: textTheme.headingXS.copyWith(
+                                      color: theme.colorTheme.primary.primary2),
+                                ),
                               ),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(
-                                kPadding,
-                              ),
-                              child: Text(
-                                individual.identifiers!
-                                        .lastWhere(
-                                          (e) =>
-                                              e.identifierType ==
-                                              IdentifierTypes
-                                                  .uniqueBeneficiaryID
-                                                  .toValue(),
-                                        )
-                                        .identifierId ??
-                                    localizations
-                                        .translate(i18.common.noResultsFound),
-                                style: theme.textTheme.headlineSmall,
-                              ),
-                            ),
-                          ),
-                        )
-                      : const Offstage(),
+                          )),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -512,14 +551,17 @@ class CustomMemberCard extends StatelessWidget {
                   ),
                 ],
               ),
-              (tasks ?? [])
-                          .where(
-                            (element) =>
-                                element.status ==
-                                Status.administeredSuccess.toValue(),
-                          )
-                          .lastOrNull ==
-                      null
+              ((tasks ?? [])
+                              .where(
+                                (element) =>
+                                    element.status ==
+                                    Status.administeredSuccess.toValue(),
+                              )
+                              .lastOrNull ==
+                          null &&
+                      !isSMCDelivered &&
+                      !isBeneficiaryIneligible &&
+                      !isBeneficiaryReferred)
                   ? Positioned(
                       child: Align(
                         alignment: Alignment.topRight,
@@ -564,10 +606,12 @@ class CustomMemberCard extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: Text(
-                    " | $years ${localizations.translate(i18.memberCard.deliverDetailsYearText)} $months ${localizations.translate(i18.memberCard.deliverDetailsMonthsText)}",
-                    style: theme.textTheme.bodyMedium,
-                  ),
+                  child: isHead
+                      ? const Text("")
+                      : Text(
+                          " | $years ${localizations.translate(i18.memberCard.deliverDetailsYearText)} $months ${localizations.translate(i18.memberCard.deliverDetailsMonthsText)}",
+                          style: theme.textTheme.bodyMedium,
+                        ),
                 ),
               ],
             ),

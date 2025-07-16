@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:digit_data_model/data/data_repository.dart';
 import 'package:digit_data_model/models/entities/individual.dart';
 import 'package:digit_ui_components/services/location_bloc.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location/location.dart';
 import 'package:registration_delivery/blocs/search_households/household_global_seach.dart';
 import 'package:registration_delivery/blocs/search_households/individual_global_search.dart';
+import 'package:registration_delivery/blocs/unique_id/unique_id.dart';
 import 'package:registration_delivery/data/repositories/local/individual_global_search.dart';
+import 'package:registration_delivery/data/repositories/remote/unique_id_pool.dart';
+import 'package:registration_delivery/models/entities/unique_id_pool.dart';
 import 'package:registration_delivery/utils/extensions/extensions.dart';
 
 import 'package:registration_delivery/blocs/household_details/household_details.dart';
@@ -196,6 +200,14 @@ class CustomRegistrationDeliveryWrapperPage extends StatelessWidget {
           ),
           BlocProvider(
             create: (_) => LocationBloc(location: Location()),
+          ),
+          BlocProvider(
+            create: (context) => UniqueIdBloc(
+                uniqueIdPoolLocalRepository: context.read<
+                    LocalRepository<UniqueIdPoolModel,
+                        UniqueIdPoolSearchModel>>(),
+                uniqueIdPoolRemoteRepository:
+                    context.read<UniqueIdPoolRemoteRepository>()),
           ),
         ],
         child: const AutoRouter(),

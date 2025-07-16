@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
+import 'package:digit_data_model/data/local_store/sql_store/tables/product_variant.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/theme/digit_extended_theme.dart';
@@ -7,11 +8,13 @@ import 'package:digit_ui_components/widgets/atoms/input_wrapper.dart';
 import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:inventory_management/blocs/record_stock.dart';
 import 'package:inventory_management/router/inventory_router.gm.dart';
-import 'package:inventory_management/utils/extensions/extensions.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 import 'package:inventory_management/utils/i18_key_constants.dart' as i18;
+import '../../router/app_router.dart';
+import '../../utils/i18_key_constants.dart' as i18_local;
 import 'package:inventory_management/widgets/component_wrapper/facility_bloc_wrapper.dart';
 import 'package:inventory_management/widgets/component_wrapper/product_variant_bloc_wrapper.dart';
 import 'package:inventory_management/widgets/inventory/no_facilities_assigned_dialog.dart';
@@ -26,6 +29,8 @@ import 'package:inventory_management/utils/utils.dart';
 import 'package:inventory_management/widgets/back_navigation_help_header.dart';
 
 import '../../blocs/inventory_management/custom_inventory_report.dart';
+import '../../utils/constants.dart';
+import '../../utils/extensions/extensions.dart';
 
 @RoutePage()
 class CustomInventoryReportDetailsPage extends LocalizedStatefulWidget {
@@ -83,9 +88,11 @@ class CustomInventoryReportDetailsPageState
           )
         : InventoryReportLoadStockDataEvent(
             reportType: widget.reportType,
-            facilityId: form.control(_facilityKey).value != null
-                ? selectedFacilityId!
-                : '',
+            facilityId: context.isCommunityDistributor
+                ? context.loggedInUserUuid
+                : form.control(_facilityKey).value != null
+                    ? selectedFacilityId!
+                    : '',
             productVariantId: form.control(_productVariantKey).value != null
                 ? (form.control(_productVariantKey).value
                         as ProductVariantModel)
@@ -106,6 +113,7 @@ class CustomInventoryReportDetailsPageState
     return fb.group({
       _facilityKey: FormControl<String>(
         validators: [Validators.required],
+        value: context.isCommunityDistributor ? context.loggedInUserUuid : null,
       ),
       _productVariantKey: FormControl<ProductVariantModel>(),
     });
@@ -118,9 +126,8 @@ class CustomInventoryReportDetailsPageState
     return BlocProvider<CustomInventoryReportBloc>(
       create: (context) => CustomInventoryReportBloc(
         stockReconciliationRepository: context.repository<
-            StockReconciliationModel, StockReconciliationSearchModel>(context),
-        stockRepository:
-            context.repository<StockModel, StockSearchModel>(context),
+            StockReconciliationModel, StockReconciliationSearchModel>(),
+        stockRepository: context.repository<StockModel, StockSearchModel>(),
       ),
       child: Scaffold(
         bottomNavigationBar: DigitCard(
@@ -131,7 +138,7 @@ class CustomInventoryReportDetailsPageState
               mainAxisSize: MainAxisSize.max,
               onPressed: () => context.router.popUntilRoot(),
               label: localizations.translate(
-                i18.inventoryReportDetails.backToHomeButtonLabel,
+                i18_local.inventoryReportDetails.backToHomeButtonLabel,
               ),
             ),
           ],
@@ -151,7 +158,9 @@ class CustomInventoryReportDetailsPageState
             return ScrollableContent(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const BackNavigationHelpHeaderWidget(showHelp: true,),
+                const BackNavigationHelpHeaderWidget(
+                  showHelp: false,
+                ),
                 Container(
                   padding: const EdgeInsets.all(spacer2),
                   child: Align(
@@ -179,11 +188,11 @@ class CustomInventoryReportDetailsPageState
                                 projectId: InventorySingleton().projectId,
                                 dateOfReconciliation: DateTime.now(),
                               ),
-                              stockRepository: context.repository<StockModel,
-                                  StockSearchModel>(context),
+                              stockRepository: context
+                                  .repository<StockModel, StockSearchModel>(),
                               stockReconciliationRepository: context.repository<
                                   StockReconciliationModel,
-                                  StockReconciliationSearchModel>(context),
+                                  StockReconciliationSearchModel>(),
                             ),
                             child: BlocConsumer<StockReconciliationBloc,
                                 StockReconciliationState>(
@@ -199,94 +208,159 @@ class CustomInventoryReportDetailsPageState
                                     DigitCard(
                                       margin: const EdgeInsets.all(spacer2),
                                       children: [
-                                        if (isWareHouseManager)
-                                          BlocConsumer<FacilityBloc,
-                                              FacilityState>(
-                                            listener: (context, state) =>
-                                                state.whenOrNull(
-                                              empty: () =>
-                                                  NoFacilitiesAssignedDialog
-                                                      .show(
-                                                context,
-                                                localizations,
-                                              ),
+                                        // if (isWareHouseManager ||
+                                        //     context.isHealthFacilitySupervisor)
+                                        BlocConsumer<FacilityBloc,
+                                            FacilityState>(
+                                          listener: (context, state) =>
+                                              state.whenOrNull(
+                                            empty: () =>
+                                                NoFacilitiesAssignedDialog.show(
+                                              context,
+                                              localizations,
                                             ),
-                                            builder: (context, state) {
-                                              final facilities =
-                                                  state.whenOrNull(
-                                                        fetched: (facilities,
-                                                                allFacilities) =>
-                                                            facilities,
-                                                      ) ??
-                                                      [];
-
-                                              return InkWell(
-                                                onTap: () async {
-                                                  if (mounted) {
-                                                    final stockReconciliationBloc =
-                                                        context.read<
-                                                            StockReconciliationBloc>();
-
-                                                    final facility = await context
-                                                            .router
-                                                            .push(InventoryFacilitySelectionRoute(
-                                                                facilities:
-                                                                    facilities))
-                                                        as FacilityModel?;
-
-                                                    if (facility == null) {
-                                                      return;
+                                          ),
+                                          builder: (context, state) {
+                                            final facilities = state.whenOrNull(
+                                                  fetched: (facilities, _) {
+                                                    if (ctx
+                                                            .selectedProject
+                                                            .address
+                                                            ?.boundaryType ==
+                                                        Constants
+                                                            .stateBoundaryLevel) {
+                                                      List<FacilityModel>
+                                                          filteredFacilities =
+                                                          facilities
+                                                              .where(
+                                                                (element) =>
+                                                                    element
+                                                                        .usage ==
+                                                                    Constants
+                                                                        .stateFacility,
+                                                              )
+                                                              .toList();
+                                                      facilities =
+                                                          filteredFacilities
+                                                                  .isEmpty
+                                                              ? facilities
+                                                              : filteredFacilities;
+                                                    } else {
+                                                      List<FacilityModel>
+                                                          filteredFacilities =
+                                                          facilities
+                                                              .where(
+                                                                (element) =>
+                                                                    element
+                                                                        .usage ==
+                                                                    Constants
+                                                                        .healthFacility,
+                                                              )
+                                                              .toList();
+                                                      facilities =
+                                                          filteredFacilities
+                                                                  .isEmpty
+                                                              ? facilities
+                                                              : filteredFacilities;
                                                     }
-                                                    form
-                                                            .control(_facilityKey)
-                                                            .value =
-                                                        localizations.translate(
-                                                      'FAC_${facility.id}',
-                                                    );
+                                                    final teamFacilities = [
+                                                      FacilityModel(
+                                                        id: 'Delivery Team',
+                                                        name: 'Delivery Team',
+                                                      ),
+                                                    ];
+                                                    // info: fix for showing facilities for cdd in return flow only
+                                                    //else delivery team
+                                                    if (widget.reportType ==
+                                                            InventoryReportType
+                                                                .dispatch &&
+                                                        !context
+                                                            .isDistributor) {
+                                                      teamFacilities.addAll(
+                                                        facilities,
+                                                      );
+                                                    }
 
-                                                    setState(() {
-                                                      selectedFacilityId =
-                                                          facility.id;
-                                                    });
+                                                    return context
+                                                                .isDistributor &&
+                                                            !InventorySingleton()
+                                                                .isWareHouseMgr
+                                                        ? teamFacilities
+                                                        : facilities;
+                                                  },
+                                                ) ??
+                                                [];
 
-                                                    controller1.text =
-                                                        localizations.translate(
-                                                            'FAC_${facility.id}');
-                                                    stockReconciliationBloc.add(
-                                                      StockReconciliationSelectFacilityEvent(
-                                                        facility,
+                                            return InkWell(
+                                              onTap: () async {
+                                                if (mounted) {
+                                                  final stockReconciliationBloc =
+                                                      context.read<
+                                                          StockReconciliationBloc>();
+
+                                                  final facility = await context
+                                                          .router
+                                                          .push(CustomInventoryFacilitySelectionRoute(
+                                                              facilities:
+                                                                  facilities))
+                                                      as FacilityModel?;
+
+                                                  if (facility == null) {
+                                                    return;
+                                                  }
+                                                  form
+                                                          .control(_facilityKey)
+                                                          .value =
+                                                      localizations.translate(
+                                                    'FAC_${facility.id}',
+                                                  );
+
+                                                  setState(() {
+                                                    selectedFacilityId =
+                                                        facility.id;
+                                                  });
+                                                  String facilityPrefix =
+                                                      facility.id ==
+                                                              'Delivery Team'
+                                                          ? ''
+                                                          : 'FAC_';
+                                                  controller1.text =
+                                                      localizations.translate(
+                                                          '$facilityPrefix${facility.id}');
+                                                  stockReconciliationBloc.add(
+                                                    StockReconciliationSelectFacilityEvent(
+                                                      facility,
+                                                    ),
+                                                  );
+
+                                                  if (mounted) {
+                                                    handleSelection(
+                                                        form,
+                                                        context.read<
+                                                            CustomInventoryReportBloc>());
+                                                  }
+                                                }
+                                              },
+                                              child: IgnorePointer(
+                                                child: ReactiveWrapperField(
+                                                  formControlName: _facilityKey,
+                                                  builder: (field) {
+                                                    return InputField(
+                                                      type: InputType.search,
+                                                      isRequired: true,
+                                                      controller: controller1,
+                                                      label: localizations
+                                                          .translate(
+                                                        i18.stockReconciliationDetails
+                                                            .facilityLabel,
                                                       ),
                                                     );
-
-                                                    if (mounted) {
-                                                      handleSelection(
-                                                          form,
-                                                          context.read<
-                                                              CustomInventoryReportBloc>());
-                                                    }
-                                                  }
-                                                },
-                                                child: IgnorePointer(
-                                                  child: ReactiveWrapperField(
-                                                    formControlName:
-                                                        _facilityKey,
-                                                    builder: (field) {
-                                                      return InputField(
-                                                        type: InputType.search,
-                                                        isRequired: true,
-                                                        controller: controller1,
-                                                        label: localizations
-                                                            .translate(
-                                                          i18.stockReconciliationDetails
-                                                              .facilityLabel,
-                                                        ),
-                                                      );
-                                                    },
-                                                  ),
+                                                  },
                                                 ),
-                                              );
-                                            },
-                                          ),
+                                              ),
+                                            );
+                                          },
+                                        ),
                                         BlocBuilder<InventoryProductVariantBloc,
                                             InventoryProductVariantState>(
                                           builder: (context, state) {
@@ -364,6 +438,24 @@ class CustomInventoryReportDetailsPageState
                                                               context.read<
                                                                   CustomInventoryReportBloc>());
                                                         },
+                                                        selectedOption: (form
+                                                                    .control(
+                                                                        _productVariantKey)
+                                                                    .value !=
+                                                                null)
+                                                            ? DropdownItem(
+                                                                name: localizations.translate((form.control(_productVariantKey).value
+                                                                            as ProductVariantModel)
+                                                                        .sku ??
+                                                                    (form.control(_productVariantKey).value
+                                                                            as ProductVariantModel)
+                                                                        .id),
+                                                                code: (form.control(_productVariantKey).value
+                                                                        as ProductVariantModel)
+                                                                    .id)
+                                                            : const DropdownItem(
+                                                                name: '',
+                                                                code: ''),
                                                       ),
                                                     );
                                                   },
@@ -404,7 +496,9 @@ class CustomInventoryReportDetailsPageState
                                             const waybillKey = 'waybillNumber';
                                             const quantityKey = 'quantity';
                                             const partialQuantityKey =
-                                                'partialQuantity';
+                                                'partialBlistersReturned';
+                                            const wastedQuantityKey =
+                                                'wastedBlistersReturned';
                                             const transactingPartyKey =
                                                 'transactingParty';
 
@@ -427,18 +521,37 @@ class CustomInventoryReportDetailsPageState
                                                     width: 200,
                                                   ),
                                                   if (widget.reportType ==
-                                                      InventoryReportType
-                                                          .returned)
+                                                          InventoryReportType
+                                                              .returned ||
+                                                      (widget.reportType ==
+                                                              InventoryReportType
+                                                                  .dispatch &&
+                                                          context
+                                                              .isCommunityDistributor))
                                                     DigitGridColumn(
-                                                      label: i18
-                                                          .inventoryReportDetails
-                                                          .returnedQuantityLabel,
+                                                      label: localizations
+                                                          .translate(i18_local
+                                                              .stockDetails
+                                                              .quantityPartialReturnedLabel),
                                                       key: partialQuantityKey,
                                                       width: 200,
                                                     ),
+                                                  if (widget.reportType ==
+                                                          InventoryReportType
+                                                              .dispatch &&
+                                                      context
+                                                          .isCommunityDistributor)
+                                                    DigitGridColumn(
+                                                      label: localizations
+                                                          .translate(i18_local
+                                                              .stockDetails
+                                                              .quantityWastedReturnedLabel),
+                                                      key: wastedQuantityKey,
+                                                      width: 200,
+                                                    ),
                                                   DigitGridColumn(
-                                                    label:
-                                                        transactingPartyLabel,
+                                                    label: localizations.translate(
+                                                        transactingPartyLabel),
                                                     key: transactingPartyKey,
                                                     width: 200,
                                                   ),
@@ -460,42 +573,74 @@ class CustomInventoryReportDetailsPageState
                                                                     .quantity ??
                                                                 '',
                                                           ),
-                                                          if (widget
-                                                                  .reportType ==
-                                                              InventoryReportType
-                                                                  .returned)
+                                                          if (widget.reportType ==
+                                                                  InventoryReportType
+                                                                      .returned ||
+                                                              (widget.reportType ==
+                                                                      InventoryReportType
+                                                                          .dispatch &&
+                                                                  context
+                                                                      .isCommunityDistributor))
                                                             DigitGridCell(
                                                               key:
                                                                   partialQuantityKey,
                                                               value: model.additionalFields ==
                                                                       null
                                                                   ? "0"
-                                                                  : model.additionalFields!
-                                                                          .fields
-                                                                          .firstWhereOrNull((e) =>
-                                                                              e.key ==
-                                                                              "partial_quantity")
-                                                                          ?.value ??
-                                                                      '',
+                                                                  : (model.additionalFields!
+                                                                              .fields
+                                                                              .firstWhereOrNull((e) => e.key == partialQuantityKey)
+                                                                              ?.value ??
+                                                                          '')
+                                                                      .toString(),
+                                                            ),
+                                                          if (widget.reportType ==
+                                                                  InventoryReportType
+                                                                      .dispatch &&
+                                                              context
+                                                                  .isCommunityDistributor)
+                                                            DigitGridCell(
+                                                              key:
+                                                                  wastedQuantityKey,
+                                                              value: model.additionalFields ==
+                                                                      null
+                                                                  ? "0"
+                                                                  : (model.additionalFields!
+                                                                              .fields
+                                                                              .firstWhereOrNull((e) => e.key == wastedQuantityKey)
+                                                                              ?.value ??
+                                                                          '')
+                                                                      .toString(),
                                                             ),
                                                           DigitGridCell(
-                                                            key:
-                                                                transactingPartyKey,
-                                                            value: widget.reportType ==
-                                                                        InventoryReportType
-                                                                            .receipt ||
-                                                                    widget.reportType ==
-                                                                        InventoryReportType
-                                                                            .dispatch
-                                                                ? model.receiverId ??
-                                                                    model
-                                                                        .receiverType ??
-                                                                    ''
-                                                                : model.senderId ??
-                                                                    model
-                                                                        .receiverType ??
-                                                                    '',
-                                                          ),
+                                                              key:
+                                                                  transactingPartyKey,
+                                                              value: widget
+                                                                          .reportType ==
+                                                                      InventoryReportType
+                                                                          .dispatch
+                                                                  ? model.receiverId ==
+                                                                          null
+                                                                      ? localizations.translate(i18
+                                                                          .common
+                                                                          .noMatchFound)
+                                                                      : model.receiverType ==
+                                                                              'STAFF'
+                                                                          ? (model.additionalFields?.fields.firstWhereOrNull((e) => e.key == 'distributorName')?.value ??
+                                                                              'Delivery Team')
+                                                                          : localizations.translate(
+                                                                              'FAC_${model.receiverId}')
+                                                                  : model.senderId ==
+                                                                          null
+                                                                      ? localizations.translate(i18
+                                                                          .common
+                                                                          .noMatchFound)
+                                                                      : model.senderType ==
+                                                                              'STAFF'
+                                                                          ? (model.additionalFields?.fields.firstWhereOrNull((e) => e.key == 'distributorName')?.value ??
+                                                                              'Delivery Team')
+                                                                          : localizations
+                                                                              .translate('FAC_${model.senderId}')),
                                                         ],
                                                       ),
                                                   ],
@@ -668,7 +813,9 @@ class CustomInventoryReportDetailsPageState
         value = i18.inventoryReportDetails.receiptReportTitle;
         break;
       case InventoryReportType.dispatch:
-        value = i18.inventoryReportDetails.dispatchReportTitle;
+        value = context.isCommunityDistributor
+            ? i18.inventoryReportDetails.returnedReportTitle
+            : i18.inventoryReportDetails.dispatchReportTitle;
         break;
       case InventoryReportType.returned:
         value = i18.inventoryReportDetails.returnedReportTitle;
@@ -694,7 +841,9 @@ class CustomInventoryReportDetailsPageState
         value = i18.inventoryReportDetails.receiptQuantityLabel;
         break;
       case InventoryReportType.dispatch:
-        value = i18.inventoryReportDetails.dispatchQuantityLabel;
+        value = context.isCommunityDistributor
+            ? i18_local.stockDetails.returnedTo
+            : i18.inventoryReportDetails.dispatchQuantityLabel;
         break;
       case InventoryReportType.returned:
         value = i18.inventoryReportDetails.returnedQuantityLabel;
@@ -718,7 +867,9 @@ class CustomInventoryReportDetailsPageState
         value = i18.inventoryReportDetails.receiptTransactingPartyLabel;
         break;
       case InventoryReportType.dispatch:
-        value = i18.inventoryReportDetails.dispatchTransactingPartyLabel;
+        value = context.isCommunityDistributor
+            ? i18_local.inventoryReportDetails.returnedTOTransactingPartyLabel
+            : i18.inventoryReportDetails.dispatchTransactingPartyLabel;
         break;
       case InventoryReportType.returned:
         value = i18.inventoryReportDetails.returnedTransactingPartyLabel;

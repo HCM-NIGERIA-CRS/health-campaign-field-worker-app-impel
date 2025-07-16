@@ -46,6 +46,8 @@ class _BoundarySelectionPageState
   Map<String, TextEditingController> dropdownControllers = {};
   late StreamSubscription syncSubscription;
   var leastLevelBoundaries;
+  // pass this param to enable filter of LabelList
+  bool doFilter = false;
 
   final String setLocale = "en_NG";
 
@@ -83,10 +85,15 @@ class _BoundarySelectionPageState
   Widget build(BuildContext context) {
     bool isDistributor = context.loggedInUserRoles
         .where(
-          (role) => role.code == RolesType.distributor.toValue(),
+          (role) =>
+              role.code == RolesType.distributor.toValue() ||
+              role.code == RolesType.communityDistributor.toValue(),
         )
         .toList()
         .isNotEmpty;
+
+// set the param to enable or disable filter of labelList and other boundary conditions
+    doFilter = enableFilter();
 
     return PopScope(
       canPop: shouldPop,
@@ -105,7 +112,8 @@ class _BoundarySelectionPageState
                     );
                   }
 
-                  final labelList = state.selectedBoundaryMap.keys.toList();
+                  final labelList =
+                      filterBoundaryLabelListBasedOnRole(doFilter, state);
 
                   return initState.maybeWhen(
                     orElse: () => const Offstage(),
@@ -467,7 +475,7 @@ class _BoundarySelectionPageState
                                             onPressed: () async {
                                               if (!form.valid ||
                                                   validateAllBoundarySelection(
-                                                    context.isDistributor,
+                                                    !context.isWarehouseManager,
                                                   )) {
                                                 clickedStatus.value = false;
                                                 Toast.showToast(
@@ -752,7 +760,7 @@ class _BoundarySelectionPageState
 
   FormGroup buildForm(BoundaryState state, AppConfiguration appConfiguration) {
     formControls = {};
-    final labelList = state.selectedBoundaryMap.keys.toList();
+    final labelList = filterBoundaryLabelListBasedOnRole(doFilter, state);
     if (state.boundaryList.isNotEmpty) {
       final finalCodes = state.boundaryList.map((e) => e.code!).toList();
       LocalizationParams().setCode(finalCodes);
@@ -791,6 +799,23 @@ class _BoundarySelectionPageState
       return false;
     }
     return false;
+  }
+
+  dynamic filterBoundaryLabelListBasedOnRole(
+      bool doFilter, BoundaryState state) {
+    final labelList = state.selectedBoundaryMap.keys.toList();
+    if (doFilter) {
+      final filteredLabelList =
+          labelList.isNotEmpty ? [labelList.first] : labelList;
+
+      return filteredLabelList;
+    }
+
+    return labelList;
+  }
+
+  bool enableFilter() {
+    return context.isWarehouseManager || context.isHealthFacilitySupervisor;
   }
 
   void listenToSyncCount() async {

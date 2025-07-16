@@ -46,10 +46,8 @@ Widget buildTableContentVAS(
 
   // Calculate the height of the container based on the number of items in the table
 
-  final ProjectTypeModel? projectType = RegistrationDeliverySingleton()
-      .selectedProject
-      ?.additionalDetails
-      ?.additionalProjectType;
+// info : setting null as this is not used
+  final ProjectTypeModel? projectType = null;
   final item =
       projectType?.cycles?[currentCycle - 1].deliveries?[currentDose - 1];
   final productVariants =
@@ -135,14 +133,58 @@ Widget buildTableContentVAS(
                         : DigitTableData('', cellKey: ''),
                     // Display the SKU value in the second column.
                     DigitTableData(
-                      (localizations.translate(value.toString()) == 'Blue VAS')
-                          ? 'VAS - Blue Capsule'
-                          : (localizations.translate(value.toString()) ==
-                                  'Red VAS')
-                              ? 'VAS - Red Capsule'
-                              : localizations.translate(value.toString()),
+                      '', // label left empty since we're using widget instead
                       cellKey: 'resources',
-                    ),
+                      widget: RichText(
+                        text: TextSpan(
+                          children: () {
+                            final translated =
+                                localizations.translate(value.toString());
+
+                            if (translated == 'Blue VAS') {
+                              return [
+                                const TextSpan(
+                                  text: 'VAS - ',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                const TextSpan(
+                                  text: 'Blue Capsule',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue),
+                                ),
+                              ];
+                            } else if (translated == 'Red VAS') {
+                              return [
+                                const TextSpan(
+                                  text: 'VAS - ',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                const TextSpan(
+                                  text: 'Red Capsule',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red),
+                                ),
+                              ];
+                            } else {
+                              return [
+                                TextSpan(
+                                  text: translated,
+                                  style: const TextStyle(color: Colors.black),
+                                ),
+                              ];
+                            }
+                          }(),
+                        ),
+                      ),
+                    )
                   ]);
                 },
               ),

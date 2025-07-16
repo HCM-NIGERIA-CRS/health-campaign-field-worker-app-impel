@@ -1,10 +1,12 @@
 import 'package:collection/collection.dart';
+import 'package:digit_components/utils/date_utils.dart';
 import 'package:digit_components/widgets/atoms/digit_reactive_dropdown.dart';
 // import 'package:digit_components/digit_components.dart';
 import 'package:digit_components/widgets/atoms/digit_toaster.dart';
 import 'package:digit_components/widgets/digit_dialog.dart' as digit_dialog;
 import 'package:digit_components/widgets/digit_elevated_button.dart';
 import 'package:digit_components/widgets/digit_text_field.dart';
+import 'package:digit_data_model/data/local_store/sql_store/tables/individual.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_ui_components/enum/app_enums.dart';
 import 'package:digit_ui_components/utils/component_utils.dart';
@@ -16,6 +18,7 @@ import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
 import 'package:digit_ui_components/widgets/scrollable_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:registration_delivery/blocs/delivery_intervention/deliver_intervention.dart';
 import 'package:registration_delivery/blocs/household_overview/household_overview.dart';
@@ -34,6 +37,7 @@ import '../../../blocs/app_initialization/app_initialization.dart';
 import '../../../blocs/auth/auth.dart';
 import '../../../blocs/project/project.dart';
 import '../../../data/local_store/no_sql/schema/app_configuration.dart';
+import '../../../models/entities/additional_fields_type.dart';
 import '../../../router/app_router.dart';
 import '../../../utils/app_enums.dart';
 import '../../../utils/environment_config.dart';
@@ -136,6 +140,7 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    bool isSubmitted = false;
 
     return ProductVariantBlocWrapper(
       child: BlocBuilder<HouseholdOverviewBloc, HouseholdOverviewState>(
@@ -188,10 +193,12 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                                             children: [
                                               DigitElevatedButton(
                                                 onPressed: () async {
-                                                  form.markAllAsTouched();
-                                                  if (!form.valid) {
+                                                  if (isSubmitted == true) {
                                                     return;
                                                   }
+                                                  isSubmitted = true;
+                                                  form.markAllAsTouched();
+
                                                   if (form
                                                               .control(
                                                                   _deliveryCommentKey)
@@ -221,7 +228,9 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                                                     );
                                                     return;
                                                   }
-
+                                                  if (!form.valid) {
+                                                    return;
+                                                  }
                                                   if (((form.control(
                                                     _resourceDeliveredKey,
                                                   ) as FormArray)
@@ -289,6 +298,8 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                                                       var updatedTask =
                                                           updateTask(
                                                         successfulTask,
+                                                        householdOverviewState
+                                                            .selectedIndividual,
                                                         productvariantList,
                                                         quantityDistributedFormArray,
                                                         form,
@@ -355,6 +366,8 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                                                         if (context.mounted) {
                                                           int spaq1 = 0;
                                                           int spaq2 = 0;
+                                                          int blueVas = 0;
+                                                          int redVas = 0;
 
                                                           var productVariantId =
                                                               updatedTask
@@ -385,12 +398,48 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                                                                   .split(
                                                                       " ")[0];
 
-                                                          spaq1 = quantity !=
-                                                                  'null'
-                                                              ? int.parse(quantity
-                                                                      .toString()) *
-                                                                  -1
-                                                              : 0;
+                                                          if (productVariant!
+                                                                  ?.sku! ==
+                                                              'SPAQ 1') {
+                                                            spaq1 = quantity !=
+                                                                    'null'
+                                                                ? int.parse(quantity
+                                                                        .toString()) *
+                                                                    -1
+                                                                : 0;
+                                                          } else if (productVariant
+                                                                  ?.sku! ==
+                                                              'SPAQ 2') {
+                                                            spaq2 = quantity !=
+                                                                    'null'
+                                                                ? int.parse(quantity
+                                                                        .toString()) *
+                                                                    -1
+                                                                : 0;
+                                                          } else if (productVariant
+                                                                  ?.sku! ==
+                                                              'Blue VAS') {
+                                                            blueVas = quantity !=
+                                                                    'null'
+                                                                ? int.parse(quantity
+                                                                        .toString()) *
+                                                                    -1
+                                                                : 0;
+                                                          } else {
+                                                            redVas = quantity !=
+                                                                    'null'
+                                                                ? int.parse(quantity
+                                                                        .toString()) *
+                                                                    -1
+                                                                : 0;
+                                                          }
+
+                                                          // spaq1 = quantity !=
+                                                          //         'null'
+                                                          //     ? int.parse(quantity
+                                                          //             .toString()) *
+                                                          //         -1
+                                                          //     : 0;
 
                                                           context
                                                               .read<AuthBloc>()
@@ -400,6 +449,11 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                                                                       spaq1,
                                                                   spaq2Count:
                                                                       spaq2,
+                                                                  // TODO: need to work here [pitabash]
+                                                                  blueVasCount:
+                                                                      blueVas,
+                                                                  redVasCount:
+                                                                      redVas,
                                                                 ),
                                                               );
                                                           final reloadState =
@@ -482,7 +536,7 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                                     ),
                                     header: const Column(children: [
                                       BackNavigationHelpHeaderWidget(
-                                        showHelp: true,
+                                        showHelp: false,
                                       ),
                                     ]),
                                     children: [
@@ -677,79 +731,81 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                                                           formControlName:
                                                               _deliveryCommentKey,
                                                         ),
-
-                                                        /// Show input if "Other" is selected
-                                                        ReactiveValueListenableBuilder<
-                                                            String>(
-                                                          formControlName:
-                                                              _deliveryCommentKey,
-                                                          builder: (context,
-                                                              control, _) {
-                                                            final value =
-                                                                control.value;
-                                                            if (value ==
-                                                                'Others') {
-                                                              return Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .only(
-                                                                          top:
-                                                                              12.0),
-                                                                  child:
-                                                                      ReactiveWrapperField<
-                                                                          String>(
-                                                                    formControlName:
-                                                                        _otherDeliveryCommentKey,
-                                                                    showErrors: (control) =>
-                                                                        control
-                                                                            .touched ||
-                                                                        control
-                                                                            .invalid,
-                                                                    validationMessages: {
-                                                                      'required': (object) => localizations.translate(i18_local
-                                                                          .deliverIntervention
-                                                                          .enterReasonForRedoseLabel),
-                                                                      'minLength': (object) => localizations.translate(i18_local
-                                                                          .deliverIntervention
-                                                                          .enterReasonForRedoseLabelMinLength),
-                                                                      'maxLength': (object) => localizations.translate(i18_local
-                                                                          .deliverIntervention
-                                                                          .enterReasonForRedoseLabelMaxLength),
-                                                                    },
-                                                                    builder:
-                                                                        (field) {
-                                                                      return LabeledField(
+                                                        Offstage(
+                                                            offstage:
+                                                                !otherDeliveryComment,
+                                                            child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .only(
+                                                                        top:
+                                                                            12.0),
+                                                                child:
+                                                                    ReactiveWrapperField<
+                                                                        String>(
+                                                                  formControlName:
+                                                                      _otherDeliveryCommentKey,
+                                                                  showErrors: (control) =>
+                                                                      control
+                                                                          .touched ||
+                                                                      control
+                                                                          .invalid,
+                                                                  validationMessages: {
+                                                                    'required': (object) =>
+                                                                        localizations.translate(i18_local
+                                                                            .deliverIntervention
+                                                                            .enterReasonForRedoseLabel),
+                                                                    'minLength': (object) =>
+                                                                        localizations.translate(i18_local
+                                                                            .deliverIntervention
+                                                                            .enterReasonForRedoseLabelMinLength),
+                                                                    'maxLength': (object) =>
+                                                                        localizations.translate(i18_local
+                                                                            .deliverIntervention
+                                                                            .enterReasonForRedoseLabelMaxLength),
+                                                                  },
+                                                                  builder:
+                                                                      (field) {
+                                                                    return LabeledField(
+                                                                      isRequired:
+                                                                          true,
+                                                                      label: localizations
+                                                                          .translate(
+                                                                        i18_local
+                                                                            .deliverIntervention
+                                                                            .otherReasonLabel,
+                                                                      ),
+                                                                      child:
+                                                                          DigitTextFormInput(
                                                                         isRequired:
                                                                             true,
-                                                                        label: localizations
-                                                                            .translate(
-                                                                          i18_local
-                                                                              .deliverIntervention
-                                                                              .otherReasonLabel,
-                                                                        ),
-                                                                        child:
-                                                                            DigitTextFormInput(
-                                                                          isRequired:
-                                                                              true,
-                                                                          readOnly:
-                                                                              false,
-                                                                          onChange: (val) => form
+                                                                        readOnly:
+                                                                            false,
+                                                                        onChange:
+                                                                            (val) =>
+                                                                                {
+                                                                          form
+                                                                              .control(
+                                                                                _otherDeliveryCommentKey,
+                                                                              )
+                                                                              .markAllAsTouched(),
+                                                                          form
                                                                               .control(
                                                                                 _otherDeliveryCommentKey,
                                                                               )
                                                                               .value = val,
-                                                                          errorMessage:
-                                                                              field.errorText,
-                                                                        ),
-                                                                      );
-                                                                    },
-                                                                  ));
-                                                            } else {
-                                                              return const SizedBox
-                                                                  .shrink();
-                                                            }
-                                                          },
-                                                        ),
+                                                                        },
+                                                                        initialValue: form
+                                                                            .control(
+                                                                              _otherDeliveryCommentKey,
+                                                                            )
+                                                                            .value,
+                                                                        errorMessage:
+                                                                            field.errorText,
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                ))),
                                                       ],
                                                     );
                                                   },
@@ -784,12 +840,14 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
 
   TaskModel updateTask(
     TaskModel oldTask,
+    IndividualModel? selectedIndividual,
     List<ProductVariantModel?> productvariantList,
     FormArray quantityDistributedFormArray,
     FormGroup form,
   ) {
     final taskResources = oldTask.resources ?? [];
     List<TaskResourceModel> updatedTaskResources = [];
+
     if (taskResources.isNotEmpty) {
       for (var resource in taskResources) {
         var productVariantId = resource.productVariantId;
@@ -995,14 +1053,13 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
         ],
       ),
       _otherDeliveryCommentKey: FormControl<String>(
-        validators: [
-          // if (otherDeliveryComment) ...[
-          Validators.required,
-          Validators.minLength(3),
-          Validators.maxLength(100),
-          // ],
-        ],
-        disabled: otherDeliveryComment,
+        validators: otherDeliveryComment
+            ? [
+                Validators.required,
+                Validators.minLength(3),
+                Validators.maxLength(100),
+              ]
+            : [],
       ),
       _doseAdministeredByKey: FormControl<String>(
         validators: [],

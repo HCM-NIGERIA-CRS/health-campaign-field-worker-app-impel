@@ -50,10 +50,12 @@ bool checkStatusSMC(List<TaskModel>? tasks, ProjectCycle? currentCycle) {
       lastTaskCreatedTime <= currentCycle.endDate;
 
   if (isLastCycleRunning) {
-    if (lastTask.status == Status.delivered.name) {
-      return true;
+    if (lastTask.status == Status.delivered.name.toUpperCase() ||
+        lastTask.status == Status.administeredSuccess.name.toUpperCase() ||
+        lastTask.status == Status.visited.name.toUpperCase()) {
+      return false;
     }
-    return diff.inHours >= 24; // [TODO: Move gap between doses to config]
+    return false; // [TODO: Move gap between doses to config]
   }
 
   return true;
@@ -117,6 +119,11 @@ bool redosePending(List<TaskModel>? tasks, ProjectCycle? selectedCycle) {
         (element) => element.status == Status.visited.toValue(),
       )
       .lastOrNull;
+  final redoseTaskCreatedTime = redoseTask?.clientAuditDetails?.createdTime;
+
+  final isRedoseDoneInCurrentCycle = redoseTaskCreatedTime != null &&
+      redoseTaskCreatedTime >= selectedCycle.startDate &&
+      redoseTaskCreatedTime <= selectedCycle.endDate;
   TaskModel? successfullTask = tasks
       .where(
         (element) => element.status == Status.administeredSuccess.toValue(),
@@ -125,7 +132,7 @@ bool redosePending(List<TaskModel>? tasks, ProjectCycle? selectedCycle) {
   int diff = DateTime.now().millisecondsSinceEpoch -
       (successfullTask?.clientAuditDetails?.createdTime ??
           DateTime.now().millisecondsSinceEpoch);
-  redosePending = redoseTask == null
+  redosePending = (redoseTask == null || !isRedoseDoneInCurrentCycle)
       ? true
       : (redoseTask.additionalFields?.fields
                   .where(
@@ -145,7 +152,11 @@ bool redosePending(List<TaskModel>? tasks, ProjectCycle? selectedCycle) {
                   1000)); // for any other modifications
 }
 
-bool checkBeneficiaryReferredSMC(List<TaskModel>? tasks) {
+bool checkBeneficiaryReferredSMC(
+    List<TaskModel>? tasks, ProjectCycle? currentCycle) {
+  if (currentCycle == null) {
+    return false;
+  }
   if ((tasks ?? []).isEmpty) {
     return false;
   }
@@ -165,10 +176,25 @@ bool checkBeneficiaryReferredSMC(List<TaskModel>? tasks) {
       )
       .lastOrNull;
 
-  return successfulTask != null;
+  final successfulTaskCreatedTime =
+      successfulTask?.clientAuditDetails?.createdTime;
+
+  if (successfulTaskCreatedTime == null) {
+    return false;
+  }
+
+  final isLastCycleRunning =
+      successfulTaskCreatedTime >= currentCycle.startDate &&
+          successfulTaskCreatedTime <= currentCycle.endDate;
+
+  return isLastCycleRunning;
 }
 
-bool checkBeneficiaryInEligibleSMC(List<TaskModel>? tasks) {
+bool checkBeneficiaryInEligibleSMC(
+    List<TaskModel>? tasks, ProjectCycle? currentCycle) {
+  if (currentCycle == null) {
+    return false;
+  }
   if ((tasks ?? []).isEmpty) {
     return false;
   }
@@ -189,7 +215,20 @@ bool checkBeneficiaryInEligibleSMC(List<TaskModel>? tasks) {
       )
       .lastOrNull;
 
-  return successfulTask != null;
+  final successfulTaskCreatedTime =
+      successfulTask?.clientAuditDetails?.createdTime;
+
+  if (successfulTaskCreatedTime == null) {
+    return false;
+  }
+
+  final date = DateTime.fromMillisecondsSinceEpoch(successfulTaskCreatedTime);
+
+  final isLastCycleRunning =
+      successfulTaskCreatedTime >= currentCycle.startDate &&
+          successfulTaskCreatedTime <= currentCycle.endDate;
+
+  return isLastCycleRunning;
 }
 
 bool checkBeneficiaryInEligibleVAS(List<TaskModel>? tasks) {
@@ -289,8 +328,11 @@ bool checkBeneficiaryReferredVAS(List<TaskModel>? tasks) {
   return successfulTask != null;
 }
 
-bool assessmentSMCPending(List<TaskModel>? tasks) {
+bool assessmentSMCPending(List<TaskModel>? tasks, ProjectCycle? currentCycle) {
   // this task confirms eligibility and dose administrations is done
+  if (currentCycle == null) {
+    return true;
+  }
   if ((tasks ?? []).isEmpty) {
     return true;
   }
@@ -310,7 +352,22 @@ bool assessmentSMCPending(List<TaskModel>? tasks) {
       )
       .lastOrNull;
 
-  return successfulTask == null;
+  final successfulTaskCreatedTime =
+      successfulTask?.clientAuditDetails?.createdTime;
+
+  if (successfulTaskCreatedTime == null) {
+    return true;
+  }
+
+  final date = DateTime.fromMillisecondsSinceEpoch(successfulTaskCreatedTime);
+
+  final isLastCycleRunning =
+      successfulTaskCreatedTime >= currentCycle.startDate &&
+          successfulTaskCreatedTime <= currentCycle.endDate;
+
+  return !isLastCycleRunning;
+
+  //return successfulTask == null;
 }
 
 bool assessmentVASPending(List<TaskModel>? tasks) {

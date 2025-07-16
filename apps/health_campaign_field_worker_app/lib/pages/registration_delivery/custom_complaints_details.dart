@@ -3,7 +3,7 @@ import 'package:complaints/blocs/complaints_registration/complaints_registration
 import 'package:complaints/models/complaints.dart';
 import 'package:complaints/models/pgr_address.dart';
 import 'package:complaints/router/complaints_router.gm.dart';
-import 'package:complaints/utils/utils.dart';
+import 'package:complaints/utils/utils.dart' hide CustomValidator;
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/models/RadioButtonModel.dart';
@@ -19,7 +19,7 @@ import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 import '../../../utils/i18_key_constants.dart' as i18;
-// import '../../../utils/utils.dart';
+import '../../../utils/utils.dart' show CustomValidator;
 import '../../../widgets/header/back_navigation_help_header.dart';
 import '../../../widgets/localized.dart';
 
@@ -108,7 +108,9 @@ class CustomComplaintsDetailsPageState
                 enableFixedDigitButton: true,
                 header: const Column(
                   children: [
-                    BackNavigationHelpHeaderWidget(),
+                    BackNavigationHelpHeaderWidget(
+                      showHelp: false,
+                    ),
                   ],
                 ),
                 footer: DigitCard(
@@ -382,7 +384,7 @@ class CustomComplaintsDetailsPageState
                                   i18.complaints.validationRequiredError),
                               'maxLength': (object) => localizations
                                   .translate(i18.common.maxCharsRequired)
-                                  .replaceAll('{}', '64'),
+                                  .replaceAll('{}', '50'),
                             },
                             builder: (field) {
                               return LabeledField(
@@ -480,7 +482,7 @@ class CustomComplaintsDetailsPageState
                                   i18.complaints.validationMinLengthError),
                               'maxLength': (object) => localizations
                                   .translate(i18.common.maxCharsRequired)
-                                  .replaceAll('{}', '10'),
+                                  .replaceAll('{}', '11'),
                             },
                             builder: (field) {
                               return LabeledField(
@@ -569,7 +571,7 @@ class CustomComplaintsDetailsPageState
       _complainantName: FormControl<String>(
         value: complaintDetails?.complainantName,
         disabled: shouldDisableForm,
-        validators: [Validators.required, Validators.maxLength(64)],
+        validators: [Validators.required, Validators.maxLength(50)],
       ),
       _complainantContactNumber: FormControl<String>(
         value: complaintDetails?.complainantContactNumber,
@@ -593,8 +595,6 @@ class CustomComplaintsDetailsPageState
         validators: [
           Validators.delegate(
               (validator) => CustomValidator.validMobileNumber(validator)),
-          Validators.maxLength(10),
-          Validators.minLength(10),
         ],
       ),
       _complaintDescription: FormControl<String>(

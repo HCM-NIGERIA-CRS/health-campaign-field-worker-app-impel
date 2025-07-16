@@ -1,3 +1,7 @@
+import 'package:complaints/blocs/localization/app_localization.dart';
+import 'package:digit_scanner/blocs/app_localization.dart';
+import 'package:survey_form/router/survey_form_router.gm.dart';
+import 'package:survey_form/router/survey_form_router.dart';
 import 'package:attendance_management/router/attendance_router.dart';
 import 'package:attendance_management/router/attendance_router.gm.dart';
 import 'package:complaints/router/complaints_router.dart';
@@ -17,6 +21,7 @@ import 'package:inventory_management/blocs/app_localization.dart';
 // import 'package:inventory_management/blocs/inventory_report.dart';
 import 'package:inventory_management/router/inventory_router.dart';
 import 'package:inventory_management/router/inventory_router.gm.dart';
+import 'package:inventory_management/blocs/record_stock.dart' as _i15;
 
 import '../blocs/inventory_management/custom_inventory_report.dart';
 import '../blocs/localization/app_localization.dart';
@@ -31,6 +36,10 @@ import '../pages/beneficiary/check_eligibility/household_acknowledgement_smc.dar
 import '../pages/beneficiary/check_eligibility/inventory_facility_selection_smc.dart';
 import '../pages/beneficiary/check_eligibility/refer_beneficiary_smc.dart';
 import '../pages/beneficiary/check_eligibility/refer_beneficiary_vas.dart';
+import '../pages/complaints/custom_complaints_inbox.dart';
+import '../pages/inventory_management/custom_inventory_facility_selection.dart';
+import '../pages/inventory_management/qr_scanner.dart';
+import '../pages/inventory_management/view_record_lga.dart';
 import '../pages/registration_delivery/custom_complaints_details.dart';
 import '../pages/boundary_selection.dart';
 import '../pages/home.dart';
@@ -42,6 +51,15 @@ import '../pages/inventory_management/custom_stock_reconciliation.dart';
 import '../pages/inventory_management/custom_warehouse_details.dart';
 import '../pages/inventory_management/custom_inventory_report_details.dart';
 import '../pages/inventory_management/custom_min_number.dart';
+import '../pages/inventory_management/view_transactions_page.dart';
+import '../pages/inventory_management/custom_stock_details_in_tabs.dart';
+import '../pages/inventory_management/custom_acknowledgement.dart';
+import '../pages/inventory_management/view_stock_records.dart';
+import 'package:inventory_management/models/entities/stock.dart';
+import '../pages/inventory_management/custom_min_number.dart';
+import '../pages/inventory_management/view_all_transactions_page.dart';
+import '../pages/inventory_management/view_record_cdd.dart';
+import '../pages/inventory_management/qrscanner.dart';
 import '../pages/language_selection.dart';
 import '../pages/login.dart';
 import '../pages/profile.dart';
@@ -77,6 +95,17 @@ import '../pages/referral_reconcillation/custom_referral_reason_checklist_previe
 import '../pages/referral_reconcillation/custom_referral_facility_selection_page.dart';
 import 'package:referral_reconciliation/models/entities/hf_referral.dart';
 import '../utils/app_enums.dart';
+import 'package:survey_form/router/survey_form_router.dart';
+import 'package:survey_form/router/survey_form_router.gm.dart';
+import 'package:inventory_management/blocs/record_stock.dart';
+import 'package:survey_form/blocs/app_localization.dart';
+import '../pages/checklist/custom_survey_form_view.dart';
+import '../pages/checklist/custom_survey_form.dart';
+import '../pages/checklist/custom_survey_form_preview.dart';
+import '../pages/checklist/custom_survey_form_boundary_view.dart';
+import '../pages/checklist/custom_survey_form_acknowledgement.dart';
+import '../pages/checklist/custom_survey_form_wrapper.dart';
+import '../pages/summary_report/custom_distribution_summary_report.dart';
 
 part 'app_router.gr.dart';
 
@@ -88,6 +117,7 @@ part 'app_router.gr.dart';
     ReferralReconciliationRoute,
     AttendanceRoute,
     ComplaintsRoute,
+    SurveyFormRoute,
   ],
 )
 class AppRouter extends _$AppRouter {
@@ -112,14 +142,62 @@ class AppRouter extends _$AppRouter {
       path: '/',
       children: [
         AutoRoute(page: HomeRoute.page, path: 'home'),
+        AutoRoute(page: BeneficiaryIdDownSyncRoute.page),
         AutoRoute(page: ProfileRoute.page, path: 'profile'),
         AutoRoute(page: UserQRDetailsRoute.page, path: 'user-qr-code'),
+        AutoRoute(
+          page: CustomDistributionSummaryReportDetailsRoute.page,
+          path: 'custom-distribution-summary-report',
+        ),
+        AutoRoute(
+          page: CustomManageStocksRoute.page,
+          path: 'custom-manage-stocks',
+        ),
+        AutoRoute(
+          page: QRScannerRoute.page,
+          path: 'qr-scanner',
+        ),
+        AutoRoute(
+          page: ViewStockRecordsLGARoute.page,
+          path: 'custom-stock-view-lga',
+        ),
+        AutoRoute(
+          page: ViewStockRecordsCDDRoute.page,
+          path: 'custom-stock-view-lga',
+        ),
+
+        AutoRoute(
+          page: CustomMinNumberRoute.page,
+          path: 'custom-min-number',
+        ),
         AutoRoute(
           page: BeneficiariesReportRoute.page,
           path: 'beneficiary-downsync-report',
         ),
-
+        AutoRoute(
+          page: ViewTransactionsRoute.page,
+          path: 'beneficiary-downsync-report',
+        ),
         // INFO : Need to add Router of package Here
+        // SurveyForm Route
+        // AutoRoute(
+        //     page: SurveyFormWrapperRoute.page,
+        //     path: 'surveyForm',
+        //     children: [
+        //       AutoRoute(
+        //         page: SurveyformRoute.page,
+        //         path: '',
+        //       ),
+        //       AutoRoute(
+        //           page: SurveyFormBoundaryViewRoute.page,
+        //           path: 'view-boundary'),
+        //       AutoRoute(page: SurveyFormViewRoute.page, path: 'view'),
+        //       AutoRoute(page: SurveyFormPreviewRoute.page, path: 'preview'),
+        //       AutoRoute(
+        //           page: SurveyFormAcknowledgementRoute.page,
+        //           path: 'surveyForm-acknowledgement'),
+        //     ]),
+
         // Attendance Route
         AutoRoute(
           page: ManageAttendanceRoute.page,
@@ -428,10 +506,15 @@ class AppRouter extends _$AppRouter {
         //   page: ManageStocksRoute.page,
         //   path: 'manage-stocks',
         // ),
+
         AutoRoute(
-          page: CustomManageStocksRoute.page,
-          path: 'custom-manage-stocks',
+            page: CustomAcknowledgementRoute.page,
+            path: 'custom-acknowledgement-stock'),
+        AutoRoute(
+          page: ViewStockRecordsRoute.page,
+          path: 'custom-stock-record-view',
         ),
+
         AutoRoute(
           page: RecordStockWrapperRoute.page,
           path: 'record-stock',
@@ -462,12 +545,21 @@ class AppRouter extends _$AppRouter {
               page: CustomTransactionalDetailsRoute.page,
               path: 'custom-transaction-details',
             ),
+            AutoRoute(
+              page: ViewAllTransactionsRoute.page,
+              path: 'custom-all-transactions',
+            ),
           ],
         ),
 
         AutoRoute(
           page: InventoryFacilitySelectionRoute.page,
           path: 'inventory-select-facilities',
+        ),
+
+        AutoRoute(
+          page: CustomInventoryFacilitySelectionRoute.page,
+          path: 'custom-inventory-select-facilities',
         ),
 
         AutoRoute(
@@ -493,12 +585,34 @@ class AppRouter extends _$AppRouter {
           path: 'select-boundary',
         ),
 
+        // SurveyForm Route
+        AutoRoute(
+            page: CustomSurveyFormWrapperRoute.page,
+            path: 'custom-surveyForm',
+            children: [
+              AutoRoute(
+                page: CustomSurveyformRoute.page,
+                path: '',
+              ),
+              AutoRoute(
+                  page: CustomSurveyFormBoundaryViewRoute.page,
+                  path: 'custom-view-boundary'),
+              AutoRoute(
+                  page: CustomSurveyFormViewRoute.page, path: 'custom-view'),
+              AutoRoute(
+                  page: CustomSurveyFormPreviewRoute.page,
+                  path: 'custom-preview'),
+              AutoRoute(
+                  page: CustomSurveyFormAcknowledgementRoute.page,
+                  path: 'custom-surveyForm-acknowledgement'),
+            ]),
+
         AutoRoute(
           page: ComplaintsInboxWrapperRoute.page,
           path: 'complaints-inbox',
           children: [
             AutoRoute(
-              page: ComplaintsInboxRoute.page,
+              page: CustomComplaintsInboxRoute.page,
               path: 'complaints-inbox-items',
               initial: true,
             ),
@@ -565,6 +679,6 @@ class AppRouter extends _$AppRouter {
           path: 'complaints-acknowledgement',
         ),
       ],
-    )
+    ),
   ];
 }

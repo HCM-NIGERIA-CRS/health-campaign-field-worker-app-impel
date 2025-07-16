@@ -15,6 +15,9 @@ import 'package:inventory_management/data/repositories/oplog/oplog.dart';
 import 'package:inventory_management/models/entities/stock.dart';
 import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
+import 'package:registration_delivery/data/repositories/local/unique_id_pool.dart';
+import 'package:registration_delivery/data/repositories/remote/unique_id_pool.dart';
+import 'package:registration_delivery/models/entities/unique_id_pool.dart';
 import 'package:survey_form/data/repositories/local/service.dart';
 import 'package:survey_form/data/repositories/local/service_definition.dart';
 import 'package:survey_form/data/repositories/oplog/oplog.dart';
@@ -26,6 +29,7 @@ import 'package:survey_form/models/entities/service_definition.dart';
 import '../blocs/app_initialization/app_initialization.dart';
 import '../data/local_store/downsync/downsync.dart';
 import '../data/network_manager.dart';
+import '../data/repositories/custom_task.dart';
 import '../data/repositories/local/inventory_management/custom_stock.dart';
 import '../data/repositories/local/registration_delivery/custom_registration_delivery.dart';
 import '../data/repositories/oplog.dart';
@@ -36,6 +40,7 @@ import 'package:inventory_management/inventory_management.dart';
 import 'package:registration_delivery/registration_delivery.dart';
 import 'package:referral_reconciliation/referral_reconciliation.dart';
 import 'package:attendance_management/attendance_management.dart';
+import 'package:survey_form/survey_form.dart';
 
 class NetworkManagerProviderWrapper extends StatelessWidget {
   final LocalSqlDataStore sql;
@@ -118,6 +123,13 @@ class NetworkManagerProviderWrapper extends StatelessWidget {
     Isar isar,
   ) {
     return [
+      RepositoryProvider<
+          LocalRepository<UniqueIdPoolModel, UniqueIdPoolSearchModel>>(
+        create: (_) => UniqueIdPoolLocalRepository(
+          sql,
+          UniqueIdOpLogManager(isar),
+        ),
+      ),
       RepositoryProvider<
           LocalRepository<IndividualModel, IndividualSearchModel>>(
         create: (_) => IndividualLocalRepository(
@@ -221,6 +233,12 @@ class NetworkManagerProviderWrapper extends StatelessWidget {
           TaskOpLogManager(isar),
         ),
       ),
+      RepositoryProvider<LocalRepository<TaskModel, TaskSearchModel>>(
+        create: (_) => CustomTaskLocalRepository(
+          sql,
+          TaskOpLogManager(isar),
+        ),
+      ),
       RepositoryProvider<LocalRepository<ReferralModel, ReferralSearchModel>>(
         create: (_) => ReferralLocalRepository(
           sql,
@@ -287,6 +305,16 @@ class NetworkManagerProviderWrapper extends StatelessWidget {
         create: (_) => AttendanceLogsLocalRepository(
           sql,
           AttendanceLogOpLogManager(isar),
+        ),
+      ),
+      RepositoryProvider<
+          LocalRepository<ServiceDefinitionModel,
+              ServiceDefinitionSearchModel>>(
+        create: (_) => ServiceDefinitionLocalRepository(
+          sql,
+          ServiceDefinitionOpLogManager(
+            isar,
+          ),
         ),
       ),
     ];
@@ -476,6 +504,19 @@ class NetworkManagerProviderWrapper extends StatelessWidget {
               RemoteRepository<HFReferralModel, HFReferralSearchModel>>(
             create: (_) => HFReferralRemoteRepository(dio, actionMap: actions),
           ),
+        if (value == DataModelType.uniqueId)
+          RepositoryProvider<
+              RemoteRepository<UniqueIdPoolModel, UniqueIdPoolSearchModel>>(
+            create: (_) => UniqueIdPoolRemoteRepository(
+              dio,
+              actionMap: actions,
+            ),
+          ),
+        if (value == DataModelType.uniqueId)
+          RepositoryProvider<UniqueIdPoolRemoteRepository>(
+            create: (context) =>
+                UniqueIdPoolRemoteRepository(dio, actionMap: actions),
+          ),
 
         if (value == DataModelType.service)
           RepositoryProvider<
@@ -505,6 +546,23 @@ class NetworkManagerProviderWrapper extends StatelessWidget {
               RemoteRepository<AttendanceLogModel, AttendanceLogSearchModel>>(
             create: (_) =>
                 AttendanceLogRemoteRepository(dio, actionMap: actions),
+          ),
+        if (value == DataModelType.service)
+          RepositoryProvider<
+              RemoteRepository<ServiceModel, ServiceSearchModel>>(
+            create: (_) => ServiceRemoteRepository(
+              dio,
+              actionMap: actions,
+            ),
+          ),
+        if (value == DataModelType.serviceDefinition)
+          RepositoryProvider<
+              RemoteRepository<ServiceDefinitionModel,
+                  ServiceDefinitionSearchModel>>(
+            create: (_) => ServiceDefinitionRemoteRepository(
+              dio,
+              actionMap: actions,
+            ),
           ),
       ]);
     }

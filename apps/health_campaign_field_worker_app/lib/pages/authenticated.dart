@@ -1,3 +1,4 @@
+import 'package:survey_form/survey_form.dart';
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -288,7 +289,9 @@ class AuthenticatedPageWrapper extends StatelessWidget {
     bool isDistributor = authBloc.state != const AuthState.unauthenticated()
         ? context.loggedInUserRoles
             .where(
-              (role) => role.code == RolesType.distributor.toValue(),
+              (role) =>
+                  role.code == RolesType.distributor.toValue() ||
+                  role.code == RolesType.communityDistributor.toValue(),
             )
             .toList()
             .isNotEmpty
@@ -344,7 +347,9 @@ class AuthenticatedPageWrapper extends StatelessWidget {
                               ),
                             ),
                             child: QrImageView(
-                              data: context.loggedInUserUuid,
+                              data: value.userModel.userName.toString() +
+                                  Constants.pipeSeparator +
+                                  context.loggedInUserUuid,
                               version: QrVersions.auto,
                               size: 150.0,
                             ),

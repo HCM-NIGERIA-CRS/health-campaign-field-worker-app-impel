@@ -49,7 +49,7 @@ class CustomTransactionalDetailsPageState
   static const _productVariantKey = 'productVariant';
   static const _secondaryPartyKey = 'secondaryParty';
   static const _transactionQuantityKey = 'quantity';
-  static const _transactionPartialQuantityKey = 'partialQuantity';
+  static const _transactionPartialQuantityKey = 'partialBlistersReturned';
   static const _transactionReasonKey = 'transactionReason';
   // static const _waybillNumberKey = 'waybillNumber';
   // static const _waybillQuantityKey = 'waybillQuantity';
@@ -71,12 +71,19 @@ class CustomTransactionalDetailsPageState
       _secondaryPartyKey: FormControl<String>(
         validators: [Validators.required],
       ),
-      _transactionQuantityKey: FormControl<int>(validators: [
-        Validators.number(),
-        Validators.required,
-        Validators.min(0),
-        Validators.max(10000),
-      ]),
+      _transactionQuantityKey: FormControl<int>(
+          validators: InventorySingleton().isWareHouseMgr
+              ? [
+                  Validators.number(),
+                  Validators.required,
+                  Validators.min(0),
+                ]
+              : [
+                  Validators.number(),
+                  Validators.required,
+                  Validators.min(0),
+                  Validators.max(10000),
+                ]),
       _transactionPartialQuantityKey: FormControl<int>(validators: []),
       _transactionReasonKey: FormControl<String>(),
       // _waybillNumberKey: FormControl<String>(
@@ -214,12 +221,20 @@ class CustomTransactionalDetailsPageState
                       if (entryType == StockRecordEntryType.returned) {
                         form
                             .control(_transactionPartialQuantityKey)
-                            .setValidators([
-                          Validators.required,
-                          Validators.number(),
-                          Validators.min(0),
-                          Validators.max(10000),
-                        ], autoValidate: true);
+                            .setValidators(
+                                InventorySingleton().isWareHouseMgr
+                                    ? [
+                                        Validators.required,
+                                        Validators.number(),
+                                        Validators.min(0),
+                                      ]
+                                    : [
+                                        Validators.required,
+                                        Validators.number(),
+                                        Validators.min(0),
+                                        Validators.max(10000),
+                                      ],
+                                autoValidate: true);
                       }
                       // else {
                       //   form.control(_batchNumberKey).setValidators([
@@ -232,7 +247,7 @@ class CustomTransactionalDetailsPageState
                       return ScrollableContent(
                         header: Column(children: [
                           BackNavigationHelpHeaderWidget(
-                            showHelp: true,
+                            showHelp: false,
                             handleBack: () {
                               final stockState =
                                   context.read<RecordStockBloc>().state;
@@ -647,7 +662,7 @@ class CustomTransactionalDetailsPageState
                                                             quantity.toString(),
                                                           ),
                                                           AdditionalField(
-                                                            'partial_quantity',
+                                                            'partialBlistersReturned',
                                                             partialQuantity
                                                                 .toString(),
                                                           ),
@@ -735,9 +750,10 @@ class CustomTransactionalDetailsPageState
 
                                                 context.read<AuthBloc>().add(
                                                       AuthAddSpaqCountsEvent(
-                                                        spaq1Count: spaq1,
-                                                        spaq2Count: spaq2,
-                                                      ),
+                                                          spaq1Count: spaq1,
+                                                          spaq2Count: spaq2,
+                                                          blueVasCount: 0,
+                                                          redVasCount: 0),
                                                     );
                                               }
                                             }
@@ -796,9 +812,12 @@ class CustomTransactionalDetailsPageState
                                               items: productVariants
                                                   .map((variant) {
                                                 return DropdownItem(
-                                                  name: localizations.translate(
-                                                    variant.sku ?? variant.id,
-                                                  ),
+                                                  name: localizations
+                                                      .translate(
+                                                        variant.sku ??
+                                                            variant.id,
+                                                      )
+                                                      .toUpperCase(),
                                                   code: variant.id,
                                                 );
                                               }).toList(),
@@ -808,16 +827,24 @@ class CustomTransactionalDetailsPageState
                                                           .value !=
                                                       null)
                                                   ? DropdownItem(
-                                                      name: localizations.translate((form
-                                                                      .control(
-                                                                          _productVariantKey)
-                                                                      .value
-                                                                  as ProductVariantModel)
-                                                              .sku ??
-                                                          (form.control(_productVariantKey).value
-                                                                  as ProductVariantModel)
-                                                              .id),
-                                                      code: (form.control(_productVariantKey).value
+                                                      name: localizations
+                                                          .translate((form
+                                                                          .control(
+                                                                              _productVariantKey)
+                                                                          .value
+                                                                      as ProductVariantModel)
+                                                                  .sku ??
+                                                              (form
+                                                                          .control(
+                                                                              _productVariantKey)
+                                                                          .value
+                                                                      as ProductVariantModel)
+                                                                  .id)
+                                                          .toUpperCase(),
+                                                      code: (form
+                                                                  .control(
+                                                                      _productVariantKey)
+                                                                  .value
                                                               as ProductVariantModel)
                                                           .id)
                                                   : const DropdownItem(

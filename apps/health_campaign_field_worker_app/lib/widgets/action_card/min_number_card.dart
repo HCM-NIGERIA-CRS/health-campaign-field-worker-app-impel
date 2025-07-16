@@ -1,26 +1,31 @@
 import 'package:digit_ui_components/theme/digit_extended_theme.dart';
+import 'package:digit_ui_components/theme/spacers.dart';
 
 import 'package:flutter/material.dart';
+import 'package:inventory_management/blocs/record_stock.dart';
+import 'package:inventory_management/utils/utils.dart';
 
-import 'package:inventory_management/utils/i18_key_constants.dart' as i18;
 import 'package:qr_flutter/qr_flutter.dart';
+
+import '../../utils/utils.dart';
 
 class MinNumberCard extends StatelessWidget {
   final String minNumber;
-  final String qrImagePath;
   final String cddCode;
   final String date;
   final List<Map<String, String>> items;
-  final Map<String, dynamic> data;
-
-  const MinNumberCard({
+  final String data;
+  String? waybillNumber;
+  final StockRecordEntryType entryType;
+  MinNumberCard({
     super.key,
     required this.minNumber,
-    required this.qrImagePath,
     required this.cddCode,
     required this.date,
     required this.items,
     required this.data,
+    this.waybillNumber,
+    required this.entryType,
   });
 
   @override
@@ -42,11 +47,7 @@ class MinNumberCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Select the MIN number",
-              style: textTheme.headingL,
-            ),
-            const SizedBox(height: 16.0), // Replace spacer4 with 16.0
+            // Replace spacer4 with 16.0
             Container(
               width: double.infinity,
               decoration: BoxDecoration(
@@ -63,18 +64,21 @@ class MinNumberCard extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 8.0), // Replace spacer2
-            Container(
-              height: 155,
-              width: 155,
-              alignment: Alignment.center,
-              child: QrImageView(
-                data: data.toString(),
-                version: QrVersions.auto,
-                size: 150.0,
+            if (context.isHealthFacilitySupervisor &&
+                entryType == StockRecordEntryType.dispatch)
+              Container(
+                height: 200,
+                width: 200,
+                alignment: Alignment.center,
+                child: QrImageView(
+                  data: data,
+                  version: QrVersions.auto,
+                  size: 250.0,
+                ),
               ),
-            ),
-            const SizedBox(height: 8.0), // Replace spacer2
+            if (context.isHealthFacilitySupervisor &&
+                entryType == StockRecordEntryType.dispatch)
+              const SizedBox(height: 8.0), // Replace spacer2
             Text(cddCode),
             const SizedBox(height: 8.0), // Replace spacer2
             Text(
@@ -98,13 +102,27 @@ class MinNumberCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8.0), // Replace spacer2
                     Text(
-                      item['quantity']!,
+                      "${item['quantity']!} ${item['name']!.contains('SPAQ') ? 'Blisters' : 'Capsules'}",
                       style: textTheme.bodyL,
                     ),
                   ],
                 ),
               );
             }).toList(),
+            const SizedBox(height: 8.0), // Replace spacer2
+            if (waybillNumber != null && waybillNumber!.trim().isNotEmpty)
+              Row(
+                children: [
+                  Text("Waybill",
+                      style: textTheme.bodyL.copyWith(
+                        fontWeight: FontWeight.bold,
+                      )),
+                  const SizedBox(
+                    width: 16.0, // Replace spacer4 with 16.0
+                  ),
+                  Text(waybillNumber!),
+                ],
+              ),
           ],
         ),
       ),

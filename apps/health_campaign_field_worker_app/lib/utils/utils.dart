@@ -1,5 +1,8 @@
 library app_utils;
 
+import 'package:digit_data_model/data_model.dart';
+import 'package:intl/intl.dart';
+import 'package:inventory_management/inventory_management.dart';
 import 'package:referral_reconciliation/referral_reconciliation.dart'
     as referral_reconciliation_mappers;
 import 'package:collection/collection.dart';
@@ -12,6 +15,8 @@ import 'package:registration_delivery/models/entities/household.dart';
 import 'package:registration_delivery/registration_delivery.dart';
 import 'package:survey_form/survey_form.init.dart' as surveyForm_mappers;
 import 'package:complaints/complaints.init.dart' as complaints_mappers;
+import '../../utils/i18_key_constants.dart' as i18_local;
+import 'package:inventory_management/utils/i18_key_constants.dart' as i18_stock;
 
 import 'dart:convert';
 
@@ -52,6 +57,7 @@ import '../data/local_store/app_shared_preferences.dart';
 import '../data/local_store/no_sql/schema/localization.dart';
 import '../data/local_store/secure_store/secure_store.dart';
 import '../models/app_config/app_config_model.dart';
+import '../models/entities/roles_type.dart';
 import '../router/app_router.dart';
 import '../widgets/progress_indicator/progress_indicator.dart';
 import 'constants.dart';
@@ -80,11 +86,12 @@ class CustomValidator {
       return null;
     }
 
-    const pattern = r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$';
+    const pattern = r'[0-9]';
+    if (control.value.toString().length != 11) {
+      return {'mobileNumber': true};
+    }
 
     if (RegExp(pattern).hasMatch(control.value.toString())) return null;
-
-    if (control.value.toString().length < 11) return {'mobileNumber': true};
 
     return {'mobileNumber': true};
   }
@@ -110,6 +117,23 @@ class CustomValidator {
     final regExp = RegExp(pattern);
 
     return regExp.hasMatch(value) ? null : {'onlyAlphabetsAndDigits': true};
+  }
+
+  static Map<String, dynamic>? validStockCount(
+    AbstractControl<dynamic> control,
+  ) {
+    if (control.value == null || control.value.toString().isEmpty) {
+      return {'required': true};
+    }
+
+    var parsed = int.tryParse(control.value) ?? 0;
+    if (parsed < 0) {
+      return {'min': true};
+    } else if (parsed > 100000000) {
+      return {'max': true};
+    }
+
+    return null;
   }
 }
 
@@ -170,6 +194,44 @@ performBackgroundService({
   }
 }
 
+String? formatBeneficiaryId(String? id) {
+  if (id == null) return null;
+  final buffer = StringBuffer();
+  for (int i = 0; i < id.length; i++) {
+    buffer.write(id[i]);
+    if ((i + 1) % 3 == 0 && i != id.length - 1) {
+      buffer.write('-');
+    }
+  }
+  return buffer.toString();
+}
+
+String formatDateFromMillis(int millis) {
+  final date = DateTime.fromMillisecondsSinceEpoch(millis);
+  final day = date.day.toString().padLeft(2, '0');
+  final month = _monthShort(date.month);
+  final year = date.year;
+  return '$day $month $year';
+}
+
+String _monthShort(int month) {
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
+  return months[month - 1];
+}
+
 String formatAgeRange(String condition) {
   final regex =
       RegExp(r'(\d+)\s*<=\s*ageandage\s*<\s*(\d+)', caseSensitive: false);
@@ -201,12 +263,8 @@ String customFormatAgeRange(String condition) {
     int min = int.parse(match.group(1)!);
     int max = int.parse(match.group(2)!);
 
-    if (min == 11) {
-      max -= 1;
-      min += 1;
-    } else if (max == 12) {
-      min += 1;
-    }
+    max -= 1;
+    min += 1;
 
     print('min: $min, max: $max');
     return '$min - $max months';
@@ -295,16 +353,83 @@ int getPregnantWomenCount(HouseholdModel? householdCaptured) {
 }
 
 bool showAddMember(HouseholdMemberWrapper? wrapper) {
-  if (wrapper?.household?.memberCount == null) return false;
+  int childrenCount = 0;
+  // assumption only child are added
+  if (wrapper?.household?.additionalFields?.fields == null) return false;
+  final childrenCountField = wrapper?.household?.additionalFields?.fields
+      .firstWhereOrNull(
+          (field) => field.key == AdditionalFieldsType.children.toValue());
 
-  var membersAddedTillNow = wrapper?.members?.length ?? 0;
+  if (childrenCountField?.value == null) {
+    return false;
+  } else if (childrenCountField?.value is String) {
+    childrenCount = int.tryParse(childrenCountField?.value ?? "0") ?? 0;
+  } else if (childrenCountField?.value is int) {
+    childrenCount = childrenCountField?.value;
+  }
 
-  //reduce 1 , so that we get actual count excluding head
+  int membersAddedTillNow = wrapper?.members?.length ?? 0;
+  // exclude the head from it
   if (membersAddedTillNow > 0) {
     membersAddedTillNow -= 1;
   }
 
-  return membersAddedTillNow < wrapper!.household!.memberCount!;
+  return membersAddedTillNow < (childrenCount);
+}
+
+dynamic getValueForTheKey(String key, HouseholdModel? householdModel) {
+  if (householdModel == null ||
+      householdModel.additionalFields == null ||
+      householdModel.additionalFields!.fields.isEmpty) {
+    return null;
+  }
+  final object = householdModel.additionalFields!.fields
+      .where((element) => element.key == key)
+      .firstOrNull;
+
+  return object == null ? object : object.value;
+}
+
+int getIndividualAge(IndividualModel individualModel) {
+  DateTime dateOfBirth =
+      DateFormat("dd/MM/yyyy").parse(individualModel.dateOfBirth ?? '');
+  DigitDOBAge age = DigitDateUtils.calculateAge(dateOfBirth);
+  return getAgeMonths(age);
+}
+
+String? getBeneficiaryId(IndividualModel individualModel) {
+  IdentifierTypes.uniqueBeneficiaryID.toValue();
+  return individualModel.identifiers
+          ?.firstWhereOrNull((e) =>
+              e.identifierType == IdentifierTypes.uniqueBeneficiaryID.toValue())
+          ?.identifierId ??
+      '';
+}
+
+List<AdditionalField> getIndividualAdditionalFields(
+    IndividualModel? individualModel) {
+  return [
+    if (individualModel != null && individualModel.dateOfBirth != null)
+      AdditionalField(
+        AdditionalFieldsType.age.toValue(),
+        getIndividualAge(individualModel),
+      ),
+    if (individualModel?.gender != null)
+      AdditionalField(
+        AdditionalFieldsType.gender.toValue(),
+        individualModel?.gender,
+      ),
+    if (individualModel?.clientReferenceId != null)
+      AdditionalField(
+        'individualClientReferenceId',
+        individualModel?.clientReferenceId,
+      ),
+    if (individualModel != null && getBeneficiaryId(individualModel) != null)
+      AdditionalField(
+        'uniqueBeneficiaryId',
+        getBeneficiaryId(individualModel),
+      ),
+  ];
 }
 
 Map<String, dynamic>? customValidMobileNumber(
@@ -420,6 +545,47 @@ Future<bool> getIsConnected() async {
   } on SocketException catch (_) {
     return false;
   }
+}
+
+String getEntryTypeLabel(StockModel? stock) {
+  String label =
+      '${i18_stock.stockDetails.receivedPageTitle}_${i18_stock.stockReconciliationDetails.stockLabel}';
+
+  if (stock != null) {
+    if (stock.transactionType == "RECEIVED" &&
+        stock.transactionReason == "RETURNED") {
+      label = i18_local.stockDetails.selectTransactingPartyReturnedFrom;
+    } else if (stock.transactionType == "DISPATCHED" &&
+        stock.senderType == "STAFF") {
+      label = i18_local.stockDetails.returnedTo;
+    } else if (stock.transactionType == "DISPATCHED") {
+      label =
+          '${i18_stock.stockDetails.issuedPageTitle}_${i18_stock.stockReconciliationDetails.stockLabel}';
+    }
+  }
+
+  return label;
+}
+
+String getSecondaryPartyValue(StockModel? stock) {
+  String value = stock?.receiverId ?? "";
+
+  if (stock != null) {
+    if ((stock.transactionType == "RECEIVED" && stock.senderType == "STAFF") ||
+        (stock.transactionType == "DISPATCHED" &&
+            stock.receiverType == "STAFF")) {
+      value = stock.additionalFields?.fields
+              .firstWhereOrNull((e) => e.key == "distributorName")
+              ?.value ??
+          "Delivery Team";
+    } else {
+      value = stock.transactionType == "RECEIVED"
+          ? 'FAC_${stock.senderId}'
+          : 'FAC_${stock.receiverId}';
+    }
+  }
+
+  return value;
 }
 
 void showDownloadDialog(

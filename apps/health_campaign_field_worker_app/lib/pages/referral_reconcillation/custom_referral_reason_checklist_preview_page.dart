@@ -39,7 +39,9 @@ class _CustomReferralReasonChecklistPreviewPageState
     return Scaffold(
       body: ScrollableContent(
         header: const Column(children: [
-          CustomBackNavigationHelpHeaderWidget(),
+          CustomBackNavigationHelpHeaderWidget(
+            showHelp: false,
+          ),
         ]),
         footer: BlocBuilder<ServiceBloc, ServiceState>(
           builder: (context, state) {
@@ -63,7 +65,8 @@ class _CustomReferralReasonChecklistPreviewPageState
                                     );
                                 context.router.popUntil((route) =>
                                     route.settings.name ==
-                                    CustomSearchReferralReconciliationsRoute.name);
+                                    CustomSearchReferralReconciliationsRoute
+                                        .name);
                                 context.router.maybePop();
                               },
                               type: DigitButtonType.primary,
@@ -211,15 +214,23 @@ class _CustomReferralReasonChecklistPreviewPageState
                                                           alignment: Alignment
                                                               .centerLeft,
                                                           child: Text(
-                                                            e.dataType ==
-                                                                    'SingleValueList'
-                                                                ? localizations
-                                                                    .translate(
-                                                                    e.value
-                                                                        .toString()
-                                                                        .toUpperCase(),
-                                                                  )
-                                                                : e.value ?? "",
+                                                            e.value != null &&
+                                                                    e.dataType ==
+                                                                        'MultiValueList'
+                                                                ? getMultiValueString(e
+                                                                    .value
+                                                                    .toString()
+                                                                    .split('.'))
+                                                                : e.dataType ==
+                                                                        'SingleValueList'
+                                                                    ? localizations
+                                                                        .translate(
+                                                                        e.value
+                                                                            .toString()
+                                                                            .toUpperCase(),
+                                                                      )
+                                                                    : e.value ??
+                                                                        "",
                                                           ),
                                                         ),
                                                       ),
@@ -289,5 +300,16 @@ class _CustomReferralReasonChecklistPreviewPageState
         ],
       ),
     );
+  }
+
+  String getMultiValueString(List<String> list) {
+    String multiValueText = '';
+
+    for (var i = 0; i < list.length; i++) {
+      multiValueText =
+          '$multiValueText${localizations.translate(list[i].toUpperCase())},';
+    }
+
+    return multiValueText.substring(0, multiValueText.length - 1);
   }
 }

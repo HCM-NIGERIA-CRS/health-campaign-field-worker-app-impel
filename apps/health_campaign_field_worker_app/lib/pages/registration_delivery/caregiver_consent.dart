@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:digit_components/widgets/atoms/digit_toaster.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/household_type.dart';
 import 'package:digit_ui_components/digit_components.dart';
@@ -49,6 +50,7 @@ class CaregiverConsentPage extends LocalizedStatefulWidget {
 class CaregiverConsentPageState extends LocalizedState<CaregiverConsentPage> {
   CaregiverConsentEnum selectedConsent = CaregiverConsentEnum.yes;
   final clickedStatus = ValueNotifier<bool>(false);
+  // TextEditingController consentComment = TextEditingController();
 
   onSubmit(HouseholdModel? householdModel, AddressModel? addressModel) async {
     final bloc = context.read<CustomBeneficiaryRegistrationBloc>();
@@ -79,7 +81,7 @@ class CaregiverConsentPageState extends LocalizedState<CaregiverConsentPage> {
         tenantId: RegistrationDeliverySingleton().tenantId,
         clientReferenceId:
             householdModel?.clientReferenceId ?? IdGen.i.identifier,
-        memberCount: 0,
+        memberCount: 1,
         clientAuditDetails: ClientAuditDetails(
           createdBy:
               RegistrationDeliverySingleton().loggedInUserUuid.toString(),
@@ -207,6 +209,18 @@ class CaregiverConsentPageState extends LocalizedState<CaregiverConsentPage> {
                         }
                       });
                     }
+                    // else {
+                    //   DigitToast.show(
+                    //     context,
+                    //     options: DigitToastOptions(
+                    //       localizations.translate(
+                    //           i18_local.common.coreCommonConsentReasonRequired),
+                    //       true,
+                    //       theme,
+                    //     ),
+                    //   );
+                    return;
+                    // }
                   },
                 );
               },
@@ -222,9 +236,8 @@ class CaregiverConsentPageState extends LocalizedState<CaregiverConsentPage> {
                       i18_local.caregiverConsent.caregiverConsentLabelText),
                   headingStyle: textTheme.headingXl
                       .copyWith(color: theme.colorTheme.text.primary),
-                  description: localizations.translate(
-                    i18_local.caregiverConsent.caregiverConsentDescriptionText,
-                  ),
+                  description:
+                      '${localizations.translate(i18_local.caregiverConsent.caregiverConsentDescriptionText)} *',
                   descriptionStyle: textTheme.bodyL.copyWith(
                     color: theme.colorTheme.text.primary,
                     fontWeight: FontWeight.bold,

@@ -21,6 +21,7 @@ const searchBeneficiary = SearchBeneficiary();
 const individualDetails = IndividualDetails();
 const beneficiaryDetails = BeneficiaryDetails();
 const stockDetails = StockDetails();
+const stockReconciliationDetails = StockReconciliationDetails();
 const inventoryReportDetails = InventoryReportDetails();
 
 const selectStockShowcase = SelectStockShowcase();
@@ -70,6 +71,9 @@ class Common {
   String get corecommonRequired => 'CORE_COMMON_REQUIRED';
 
   String get coreCommonReasonRequired => 'CORE_COMMON_REASON_REQUIRED';
+
+  String get coreCommonConsentReasonRequired =>
+      'CORE_COMMON_CONSENT_REASON_REQUIRED';
 
   String get corecommonclose => 'CORE_COMMON_CLOSE';
 
@@ -145,6 +149,7 @@ class Common {
   String get ageInMonths => 'AGE_IN_MONTHS_LABEL';
   String get locationCapturing => 'CAPTURING_LOCATION';
   String get profileUpdateSuccess => 'PROFILE_UPDATE_SUCCESS';
+  String get coreCommonOthersRequired => 'CORE_COMMON_OTHERS_REQUIRED';
 }
 
 class HouseholdOverView {
@@ -185,6 +190,8 @@ class HouseholdOverView {
 
 class DeliverIntervention {
   const DeliverIntervention();
+
+  String get patternValidationFailed => 'PATTERN_VALIDATION_FAILED';
 
   String get otherReasonLabel =>
       'DELIVER_INTERVENTION_OTHER_REASON_FOR_REDOSE_LABEL';
@@ -428,9 +435,30 @@ class HomeShowcase {
 class StockDetails {
   const StockDetails();
 
+  String get reconciliationCommentRequired => 'RECONCILIATION_COMMENT_REQUIRED';
+
+  String get cddCodeLabel => 'CDD_CODE_LABEL';
+
+  String get quantityCapsuleReceivedLabel =>
+      'STOCK_DETAILS_CAPSULE_QUANTITY_RECEIVED';
+
+  String get quantityCapsuleSentLabel => 'STOCK_DETAILS_CAPSULE_QUANTITY_SENT';
+
+  String get quantityCapsuleReturnedLabel =>
+      'STOCK_DETAILS_CAPSULE_QUANTITY_RETURNED';
+
+  String get quantityCapsulePartialReturnedLabel =>
+      'STOCK_DETAILS_CAPSULE_PARTIAL_QUANTITY_RETURNED';
+  String get selectTransactingPartyReturnedFrom =>
+      'STOCK_DETAILS_RETURNED_FROM';
+  String get quantityCapsulePartialWastedLabel =>
+      'STOCK_DETAILS_CAPSULE_PARTIAL_QUANTITY_WASTED';
+  String get returnedTo => 'STOCK_DETAILS_RETURNED_TO';
   String get batchNumberLabel {
     return 'STOCK_DETAILS_BATCH_NUMBER';
   }
+
+  String get transportTypeLabel => 'STOCK_DETAILS_TYPE_OF_TRANSPORT_LABEL';
 
   String get quantityUnusedReturnedLabel =>
       'STOCK_DETAILS_UNUSED_QUANTITY_RETURNED';
@@ -440,12 +468,67 @@ class StockDetails {
 
   String get quantityReturnedMaxError =>
       'STOCK_DETAILS_RETURNED_MAX_QUANTITY_ERROR';
+  String get quantityWastedReturnedLabel =>
+      'STOCK_DETAILS_WASTED_QUANTITY_RETURNED';
+  String get productRequired => 'STOCK_DETAILS_PRODUCT_IS_REQUIRED';
+
+  String get manageStockLabel => 'STOCK_DETAILS_MANAGE_STOCK_LABEL';
+
+  String get recordStockReturnedDescription =>
+      'STOCK_DETAILS_RECORD_STOCK_RETURNED_DESCRIPTION';
+}
+
+class StockReconciliationDetails {
+  const StockReconciliationDetails();
+
+  String get commentRequiredError => 'RECONCILIATION_COMMENT_IS_REQUIRED';
 }
 
 class InventoryReportDetails {
   const InventoryReportDetails();
+  String get dateLabel {
+    return 'INVENTORY_REPORT_DETAILS_DATE_LABEL';
+  }
+
+  String get returnedTOTransactingPartyLabel {
+    return 'INVENTORY_REPORT_DETAILS_RETURNED_TO_TRANSACTING_PARTY_LABEL';
+  }
+
+  String get backToHomeButtonLabel =>
+      "INVENTORY_REPORT_DETAILS_BACK_TO_HOME_BUTTON_LABEL";
   String get partialReturnedQuantityLabel =>
       "INVENTORY_REPORT_DETAILS_PARTIAL_RETURNED_QUANTITY_LABEL";
+
+  String get commentIsRequiredText => "COMMENT_IS_REQUIRED_TEXT";
+
+  String get checkTheQuantityReceivedText =>
+      'CHECK_THE_QUANTITY_RECEIEVED_TEXT';
+
+  String get stockReceiptDetailsText => 'STOCK_RECEIPT_DETAILS_TEXT';
+
+  String get receivedFromText => 'RECEIVED_FROM_TEXT';
+
+  String get quantityReceivedByWarehouse => 'QUANTITY_RECEIVED_BY_WAREHOUSE';
+
+  String get actualQuantityReceived => 'ACTUAL_QUANTITY_RECEIVED';
+
+  String get commentsText => 'COMMENTS_TEXT';
+
+  String get waybillNumberText => 'WAYBILL_NUMBER_TEXT';
+  String get summaryReport => 'INVENTORY_REPORT_DETAILS_SUMMARY_REPORT_LABEL';
+
+  String get batchNumberText => 'BATCH_NUMBER_TEXT';
+  String get houseHoldRegistered =>
+      'SUMMARY_REPORT_COLUMN_HOUSEHOLD_REGISTERED';
+  String get childrenTreated => 'SUMMARY_REPORT_COLUMN_CHILDREN_TREATED';
+  String get childrenTreatedPercentage =>
+      'SUMMARY_REPORT_COLUMN_CHILDREN_TREATED_PERCENTAGE';
+  String get drugsReceived => 'SUMMARY_REPORT_COLUMN_DRUGS_RECEIVED';
+  String get drugsUsed => 'SUMMARY_REPORT_COLUMN_DRUGS_USED';
+  String get drugsBalance => 'SUMMARY_REPORT_COLUMN_DRUGS_BALANCE';
+
+  String get aztReceived => 'SUMMARY_REPORT_COLUMN_AZT_RECEIVED';
+  String get aztConsumed => 'SUMMARY_REPORT_COLUMN_AZT_CONSUMED';
 }
 
 class SelectStockShowcase {
@@ -477,6 +560,10 @@ class WarehouseDetailsShowcase {
 
   String get warehouseName {
     return 'WAREHOUSE_DETAILS_SHOWCASE_WAREHOUSE_NAME';
+  }
+
+  String get dateOfReturn {
+    return 'WAREHOUSE_DETAILS_SHOWCASE_DATE_OF_RETURN';
   }
 }
 
@@ -639,7 +726,7 @@ class CaregiverConsent {
   String get caregiverConsentLabelText => 'CARE_GIVER_CONSENT_LABEL_TEXT';
 
   String get caregiverConsentDescriptionText =>
-      'CARE_GIVER_CONSENT_DESCRIPTION_TEXT';
+      'CARE_GIVER_CONSENT_DESCRIPTION_TEXT_SMC';
 
   String get caregiverConsentActionLabelText =>
       'CARE_GIVER_CONSENT_ACTION_LABEL_TEXT';
@@ -824,10 +911,28 @@ class Home {
   String get closedHouseHoldLabel => 'HOME_CLOSE_HOUSEHOLD_LABEL';
 
   String get clfLabel => "HOME_COMMUNAL_LIVING_FACILITIES_LABEL";
+  String get beneficiaryIdLabel => 'HOME_BENEFICIARY_ID_LABEL';
+  String get viewSummaryReportsLabel => 'VIEW_SUMMARY_REPORTS_LABEL';
 }
 
 class AcknowledgementSuccess {
   const AcknowledgementSuccess();
+
+  String get mrrnNumberDescription => "MRRN_NUMBER_DESCRIPTION";
+
+  String get mrrnNumberHeading => "MRRN_NUMBER_HEADING";
+
+  String get minNumberLabel => 'MIN_NUMBER_LABEL';
+
+  String get minNumberDescription => "MIN_NUMBER_DESCRIPTION";
+
+  String get minNumberHeading => "MIN_NUMBER_HEADING";
+
+  String get mrnNumberLabel => 'MRN_NUMBER_LABEL';
+
+  String get mrnNumberDescription => "MRN_NUMBER_DESCRIPTION";
+
+  String get mrnNumberHeading => "MRN_NUMBER_HEADING";
 
   String get actionLabelText => 'ACKNOWLEDGEMENT_SUCCESS_ACTION_LABEL_TEXT';
 
@@ -841,6 +946,13 @@ class AcknowledgementSuccess {
   String get dataDownloadedSuccessLabel => 'DATA_DOWNLOADED_SUCCESS_LABEL';
   String get referAcknowledgementLabelText =>
       'REFER_ACKNOWLEDGEMENT_SUCCESS_LABEL_TEXT';
+
+  String get createNewTransactions => 'CREATE_NEW_TRANSACTION';
+
+  String get viewtransactions => 'VIEW_TRANSACTIONS';
+
+  String get transactionAcknowledgementDescriptionText =>
+      'MATERIAL_RECEIPT_CREATED_SUCCESSFULLY';
 }
 
 class ProjectSelection {
@@ -997,6 +1109,10 @@ class SyncDialog {
 class StockReconciliationShowcase {
   const StockReconciliationShowcase();
 
+  String get warehouseLabel {
+    return 'STOCK_RECONCILIATION_SHOWCASE_WAREHOUSE_LABEL';
+  }
+
   String get warehouseName {
     return 'STOCK_RECONCILIATION_SHOWCASE_WAREHOUSE_NAME';
   }
@@ -1027,6 +1143,10 @@ class StockReconciliationShowcase {
 
   String get comments {
     return 'STOCK_RECONCILIATION_SHOWCASE_COMMENTS';
+  }
+
+  String get cddCodeLabel {
+    return 'CDD_CODE_LABEL';
   }
 }
 
@@ -1063,6 +1183,10 @@ class StockDetailsReturnedShowcase {
 
   String get comments {
     return 'STOCK_DETAILS_RETURNED_SHOWCASE_COMMENT';
+  }
+
+  String get expiry {
+    return 'EXPIRY';
   }
 }
 
@@ -1114,8 +1238,13 @@ class SearchBeneficiary {
 
   String get statisticsLabelText => 'BENEFICIARY_STATISTICS_LABEL_TEXT';
 
+  String get searchBeneficiaryReferralHintText =>
+      'SEARCH_BENEFICIARY_REFERRAL_HINT_TEXT';
+
   String get searchIndividualLabelText =>
       'BENEFICIARY_STATISTICS_SEARCH_INDIVIDUAL_LABEL';
+
+  String get searchBeneficiaryLabelText => 'SEARCH_BENEFICIARY_LABEL_TEXT';
 
   String get noOfHouseholdsRegistered => 'NO_OF_HOUSEHOLDS_REGISTERED';
 
@@ -1139,6 +1268,8 @@ class SearchBeneficiary {
   String get monthsAbbr => 'MONTHS_ABBR';
 
   String get proximityLabel => 'PROXIMITY_LABEL';
+  String get beneficiaryIdValidInfoDescription =>
+      'BENEFICIARY_ID_VALID_INFO_DESCRIPTION';
 }
 
 class IndividualDetails {
@@ -1198,19 +1329,40 @@ class IndividualDetails {
   String get yearsAndMonthsErrorText => 'ERR_YEARS_AND_MONTHS';
 
   String get linkVoucherToIndividual => 'LINK_VOUCHER_TO_INDIVIDUAL';
+  String get beneficiarySearchTextLabel => 'SEARCH_BY_BENEFICIARY_ID';
 }
 
 class BeneficiaryDetails {
   const BeneficiaryDetails();
+
+  String get validationForExcessStockReturn =>
+      "ERROR_VALIDATION_FOR_EXCESS_STOCK_RETURN";
+  String get validationForExcessStockDispatch =>
+      "ERROR_VALIDATION_FOR_EXCESS_STOCK_DISPATCH";
+
+  String get validationForExcessStock =>
+      "ERROR_VALIDATIN_FOR_EXCESS_STOCK_DISPATCH";
+  String get errorHeader => "ERROR_VALIDATION_HEADER";
+  String get goToHome => "GO_BACK_HOME";
+  String get insufficientStockMessage => 'INSUFFICIENT_STOCK_MESSAGE_REGISTER';
+  String get insufficientStockMessageDelivery =>
+      'INSUFFICIENT_SMC_STOCK_MESSAGE_DELIVERY';
+
   String get insufficientStockHeading => 'INSUFFICIENT_STOCK_HEADING';
   String get insufficientAZTStockMessage => 'INSUFFICIENT_AZT_STOCK_MESSAGE';
   String get insufficientAZTStockMessageDelivery =>
       'INSUFFICIENT_STOCK_MESSAGE_ADMINISTRATION';
 
+  String get blueVasZeroQuantity => 'BLUE_VAS_ZERO_QUANTITY';
+  String get redVasZeroQuantity => 'RED_VAS_ZERO_QUANTITY';
+
   String get householdId => 'HOUSEHOLD_ID_TEXT';
   String get beneficiaryId => 'BENEFICIARY_ID_TEXT';
   String get backToHouseholdDetails => 'BACK_TO_HOUSEHOLD_DETAILS';
+  String get backToSearchHousehold => 'BACK_TO_SEARCH_HOUSEHOLD';
   String get beneficiaryDoseUnit => 'BENEFICIARY_DETAILS_DOSE_UNIT';
+  String get spaq1DoseUnit => 'SPAQ1_STOCK_ZERO';
+  String get spaq2DoseUnit => 'SPAQ2_STOCK_ZERO';
 
   String get beneficiarysDetailsLabelText => 'BENEFICIARY_DETAILS_LABEL_TEXT';
   String get beneficiarysDetailsEditIconLabelText =>
@@ -1287,6 +1439,10 @@ class BeneficiaryDetails {
   String get insufficientStorageContent =>
       'INSUFFICIENT_STORAGE_WARNING_CONTENT';
   String get recordCycle => 'BENEFICIARY_DETAILS_RECORD_CYCLE';
+
+  String get currentSmcCycleLabel => 'BENEFICIARY_DETAILS_CURRENT_SMC_CYCLE';
+  String get invalidChildCount => 'INVALID_CHILD_COUNT_MESSAGE';
+  String get noHealthFacilityError => 'NO_HEALTH_FACILITY_ERROR';
 }
 
 class PrivacyPolicy {

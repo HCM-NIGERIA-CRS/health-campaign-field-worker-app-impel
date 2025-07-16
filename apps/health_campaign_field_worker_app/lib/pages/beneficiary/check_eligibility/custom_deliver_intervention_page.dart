@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
+import 'package:digit_components/utils/date_utils.dart';
 import 'package:digit_components/widgets/digit_dialog.dart' as dialog;
 // import 'package:digit_components/digit_components.dart';
 import 'package:digit_data_model/data_model.dart';
@@ -14,6 +15,8 @@ import 'package:digit_ui_components/widgets/molecules/show_pop_up.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:health_campaign_field_worker_app/blocs/auth/auth.dart';
+import 'package:health_campaign_field_worker_app/utils/constants.dart';
 import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:registration_delivery/models/entities/deliver_strategy_type.dart';
@@ -35,6 +38,8 @@ import '../../../utils/app_enums.dart';
 import '../../../utils/i18_key_constants.dart' as i18_local;
 import '../../../models/entities/additional_fields_type.dart'
     as additional_fields_local;
+import '../../../utils/utils.dart'
+    show getAgeMonths, getIndividualAdditionalFields;
 import '../../../widgets/custom_back_navigation.dart';
 
 @RoutePage()
@@ -87,6 +92,7 @@ class CustomDeliverInterventionPageState
       DeliverInterventionState deliverInterventionState,
       FormGroup form,
       HouseholdMemberWrapper householdMember,
+      IndividualModel? selectedIndividual,
       ProjectBeneficiaryModel projectBeneficiary) async {
     final lat = locationState.latitude;
     final long = locationState.longitude;
@@ -104,6 +110,7 @@ class CustomDeliverInterventionPageState
       address: householdMember.members?.first.address?.first,
       latitude: lat,
       longitude: long,
+      selectedIndividual: selectedIndividual,
     );
     context.read<DeliverInterventionBloc>().add(
           DeliverInterventionSubmitEvent(
@@ -117,6 +124,39 @@ class CustomDeliverInterventionPageState
               navigateToSummary: true,
               householdMemberWrapper: householdMember),
         );
+
+    final productvariantList =
+        ((form.control(_resourceDeliveredKey) as FormArray).value
+            as List<ProductVariantModel?>);
+
+    final qty =
+        (((form.control(_quantityDistributedKey) as FormArray).value)?[0])
+            .toString();
+
+    int spaq1 = 0;
+    int spaq2 = 0;
+    int blueVas = 0;
+    int redVas = 0;
+
+    if (productvariantList!.first?.sku! == Constants.spaq1) {
+      spaq1 = int.parse(qty) * -1;
+    } else if (productvariantList!.first?.sku! == Constants.spaq2) {
+      spaq2 = int.parse(qty) * -1;
+    } else if (productvariantList!.first?.sku! == Constants.blueVAS) {
+      blueVas = int.parse(qty) * -1;
+    } else {
+      redVas = int.parse(qty) * -1;
+    }
+
+    context.read<AuthBloc>().add(
+          AuthAddSpaqCountsEvent(
+            spaq1Count: spaq1,
+            spaq2Count: spaq2,
+            blueVasCount: blueVas,
+            redVasCount: redVas,
+          ),
+        );
+
     await handleSubmit(context, taskModel, deliverInterventionState);
   }
 
@@ -126,6 +166,7 @@ class CustomDeliverInterventionPageState
       DeliverInterventionState deliverInterventionState,
       FormGroup form,
       HouseholdMemberWrapper householdMember,
+      IndividualModel? selectedIndividual,
       ProjectBeneficiaryModel projectBeneficiary) {
     if (context.mounted) {
       DigitComponentsUtils.showDialog(
@@ -143,6 +184,7 @@ class CustomDeliverInterventionPageState
             deliverInterventionState,
             form,
             householdMember,
+            selectedIndividual,
             projectBeneficiary);
       });
     }
@@ -165,16 +207,10 @@ class CustomDeliverInterventionPageState
           ),
         );
 
-    ProjectTypeModel? projectTypeModel =
-        widget.eligibilityAssessmentType == EligibilityAssessmentType.smc
-            ? RegistrationDeliverySingleton()
-                .selectedProject
-                ?.additionalDetails
-                ?.projectType
-            : RegistrationDeliverySingleton()
-                .selectedProject
-                ?.additionalDetails
-                ?.additionalProjectType;
+    ProjectTypeModel? projectTypeModel = RegistrationDeliverySingleton()
+        .selectedProject
+        ?.additionalDetails
+        ?.projectType;
 
     if (deliverState.futureDeliveries != null &&
         deliverState.futureDeliveries!.isNotEmpty &&
@@ -222,6 +258,7 @@ class CustomDeliverInterventionPageState
       child: BlocBuilder<HouseholdOverviewBloc, HouseholdOverviewState>(
         builder: (context, state) {
           final householdMemberWrapper = state.householdMemberWrapper;
+          final individualModel = state.selectedIndividual;
 
           final projectBeneficiary =
               RegistrationDeliverySingleton().beneficiaryType !=
@@ -243,16 +280,11 @@ class CustomDeliverInterventionPageState
                     DeliverInterventionState>(
                     builder: (context, deliveryInterventionState) {
                       ProjectTypeModel? projectTypeModel =
-                          widget.eligibilityAssessmentType ==
-                                  EligibilityAssessmentType.smc
-                              ? RegistrationDeliverySingleton()
-                                  .selectedProject
-                                  ?.additionalDetails
-                                  ?.projectType
-                              : RegistrationDeliverySingleton()
-                                  .selectedProject
-                                  ?.additionalDetails
-                                  ?.additionalProjectType;
+                          RegistrationDeliverySingleton()
+                              .selectedProject
+                              ?.additionalDetails
+                              ?.projectType;
+
                       List<DeliveryProductVariant>? productVariants =
                           projectTypeModel?.cycles?.isNotEmpty == true
                               ? (fetchProductVariant(
@@ -468,6 +500,8 @@ class CustomDeliverInterventionPageState
                                                               false) {
                                                             if (context
                                                                 .mounted) {
+                                                              // vas
+
                                                               context
                                                                   .read<
                                                                       LocationBloc>()
@@ -479,6 +513,7 @@ class CustomDeliverInterventionPageState
                                                                 deliveryInterventionState,
                                                                 form,
                                                                 householdMemberWrapper,
+                                                                individualModel,
                                                                 projectBeneficiary!
                                                                     .first,
                                                               );
@@ -628,7 +663,7 @@ class CustomDeliverInterventionPageState
                                                     i18.deliverIntervention
                                                         .deliverInterventionResourceLabel,
                                                   ),
-                                                  style: textTheme.headingXl
+                                                  style: textTheme.headingL
                                                       .copyWith(
                                                           color: theme
                                                               .colorTheme
@@ -752,6 +787,7 @@ class CustomDeliverInterventionPageState
     AddressModel? address,
     double? latitude,
     double? longitude,
+    IndividualModel? selectedIndividual,
   }) {
     // Initialize task with oldTask if available, or create a new one
     var task = oldTask;
@@ -855,6 +891,7 @@ class CustomDeliverInterventionPageState
                 ? EligibilityAssessmentStatus.smcDone.name
                 : EligibilityAssessmentStatus.vasDone.name,
           ),
+          ...getIndividualAdditionalFields(selectedIndividual)
         ],
       ),
     );
@@ -874,16 +911,11 @@ class CustomDeliverInterventionPageState
     _controllers.forEachIndexed((index, element) {
       _controllers.removeAt(index);
     });
-    ProjectTypeModel? projectTypeModel =
-        widget.eligibilityAssessmentType == EligibilityAssessmentType.smc
-            ? RegistrationDeliverySingleton()
-                .selectedProject
-                ?.additionalDetails
-                ?.projectType
-            : RegistrationDeliverySingleton()
-                .selectedProject
-                ?.additionalDetails
-                ?.additionalProjectType;
+    ProjectTypeModel? projectTypeModel = RegistrationDeliverySingleton()
+        .selectedProject
+        ?.additionalDetails
+        ?.projectType;
+
     // Add controllers for each product variant to the _controllers list.
     if (_controllers.isEmpty) {
       final int r = projectTypeModel?.cycles == null
@@ -999,9 +1031,9 @@ class CustomResourceBeneficiaryCardState
                       readOnly: true,
                       selectedOption: DropdownItem(
                         code: getFormattedSku(
-                            selectedVariant?.sku ?? selectedVariant!.id),
+                            selectedVariant?.sku ?? selectedVariant?.id ?? ''),
                         name: getFormattedSku(
-                            selectedVariant?.sku ?? selectedVariant!.id),
+                            selectedVariant?.sku ?? selectedVariant?.id ?? ''),
                       ),
                       items: productVariants
                           .map((variant) => DropdownItem(

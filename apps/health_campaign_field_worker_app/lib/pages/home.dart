@@ -1,5 +1,8 @@
+import 'package:recase/recase.dart';
+import 'package:survey_form/router/survey_form_router.gm.dart';
+import 'package:survey_form/survey_form.dart';
+
 import 'package:referral_reconciliation/referral_reconciliation.dart';
-import 'package:referral_reconciliation/router/referral_reconciliation_router.gm.dart';
 
 import 'package:referral_reconciliation/blocs/search_referral_reconciliations.dart';
 import 'package:referral_reconciliation/referral_reconciliation.dart';
@@ -37,6 +40,8 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:survey_form/models/entities/service.dart';
+import 'package:survey_form/router/survey_form_router.gm.dart';
+import 'package:survey_form/utils/utils.dart';
 import 'package:sync_service/blocs/sync/sync.dart';
 
 import '../blocs/app_initialization/app_initialization.dart';
@@ -117,6 +122,7 @@ class _HomePageState extends LocalizedState<HomePage> {
     });
 
     if (!(roles.contains(RolesType.distributor.toValue()) ||
+        roles.contains(RolesType.communityDistributor.toValue()) ||
         roles.contains(RolesType.registrar.toValue()))) {
       skipProgressBar = true;
     }
@@ -409,6 +415,18 @@ class _HomePageState extends LocalizedState<HomePage> {
           },
         ),
       ),
+      i18.home.viewSummaryReportsLabel:
+          homeShowcaseData.summaryReport.buildWith(
+        child: HomeItemCard(
+          icon: Icons.book,
+          label: i18.home.viewSummaryReportsLabel,
+          onPressed: () {
+            context.router.push(
+              CustomDistributionSummaryReportDetailsRoute(),
+            );
+          },
+        ),
+      ),
       i18.home.beneficiaryReferralLabel: HomeItemCard(
         icon: Icons.supervised_user_circle_rounded,
         label: i18.home.beneficiaryReferralLabel,
@@ -500,10 +518,46 @@ class _HomePageState extends LocalizedState<HomePage> {
           },
         ),
       ),
+      i18.home.mySurveyForm: homeShowcaseData.supervisorMySurveyForm.buildWith(
+        child: HomeItemCard(
+          enableCustomIcon: true,
+          customIcon: mySurveyFormSvg,
+          iconPadding: const EdgeInsets.all(spacer1),
+          icon: Icons.checklist,
+          customIconSize: spacer8,
+          label: i18.home.mySurveyForm,
+          onPressed: () {
+            if (isTriggerLocalisation) {
+              triggerLocalization();
+              isTriggerLocalisation = false;
+            }
+            context.router.push(CustomSurveyFormWrapperRoute());
+          },
+        ),
+      ),
+      i18.home.beneficiaryIdLabel: homeShowcaseData.beneficiaryId.buildWith(
+        child: HomeItemCard(
+          label: i18.home.beneficiaryIdLabel,
+          onPressed: () {
+            if (isTriggerLocalisation) {
+              triggerLocalization();
+              isTriggerLocalisation = false;
+            }
+            context.router.push(BeneficiaryIdDownSyncRoute());
+          },
+          icon: Icons.account_box,
+          enableCustomIcon: true,
+          customIconSize: spacer9,
+          customIcon: Constants.beneficiaryIdDownload,
+        ),
+      ),
     };
 
     final Map<String, GlobalKey> homeItemsShowcaseMap = {
       // INFO : Need to add showcase keys of package Here
+      i18.home.mySurveyForm:
+          homeShowcaseData.supervisorMySurveyForm.showcaseKey,
+
       i18.home.manageAttendanceLabel:
           homeShowcaseData.manageAttendance.showcaseKey,
 
@@ -524,43 +578,47 @@ class _HomePageState extends LocalizedState<HomePage> {
       i18.home.db: homeShowcaseData.db.showcaseKey,
       i18.home.dashboard: homeShowcaseData.dashBoard.showcaseKey,
       i18.home.clfLabel: homeShowcaseData.clf.showcaseKey,
+      i18.home.mySurveyForm:
+          homeShowcaseData.supervisorMySurveyForm.showcaseKey,
+      i18.home.viewSummaryReportsLabel:
+          homeShowcaseData.summaryReport.showcaseKey,
+      i18.home.beneficiaryIdLabel: homeShowcaseData.beneficiaryId.showcaseKey,
     };
 
     final homeItemsLabel = <String>[
       // INFO: Need to add items label of package Here
+      i18.home.mySurveyForm,
+
       i18.home.manageAttendanceLabel,
 
       i18.home.beneficiaryReferralLabel,
-
       i18.home.beneficiaryLabel,
-
       i18.home.manageStockLabel,
       i18.home.stockReconciliationLabel,
       i18.home.viewReportsLabel,
+      i18.home.viewSummaryReportsLabel,
       i18.home.syncDataLabel,
       i18.home.fileComplaint,
       i18.home.db,
       i18.home.dashboard,
+      i18.home.beneficiaryIdLabel,
     ];
 
     final List<String> filteredLabels = homeItemsLabel
-        .where((element) =>
-            state.actionsWrapper.actions
-                .map((e) => e.displayName)
-                .toList()
-                .contains(element) ||
-            element == i18.home.db)
+        .where(
+          (element) =>
+              state.actionsWrapper.actions
+                  .map((e) => e.displayName)
+                  .toList()
+                  .contains(element) ||
+              element == i18.home.db,
+        )
         .toList();
 
     final showcaseKeys = filteredLabels
         .where((f) => f != i18.home.db)
         .map((label) => homeItemsShowcaseMap[label]!)
         .toList();
-
-    if ((envConfig.variables.envType == EnvType.demo && kReleaseMode) ||
-        envConfig.variables.envType == EnvType.uat) {
-      filteredLabels.remove(i18.home.db);
-    }
 
     final List<Widget> widgetList =
         filteredLabels.map((label) => homeItemsMap[label]!).toList();
@@ -580,8 +638,8 @@ class _HomePageState extends LocalizedState<HomePage> {
               userId: context.loggedInUserUuid,
               localRepositories: [
                 // INFO : Need to add local repo of package Here
-                context.read<
-                    LocalRepository<HFReferralModel, HFReferralSearchModel>>(),
+                context
+                    .read<LocalRepository<ServiceModel, ServiceSearchModel>>(),
 
                 context.read<
                     LocalRepository<HFReferralModel, HFReferralSearchModel>>(),
@@ -592,11 +650,7 @@ class _HomePageState extends LocalizedState<HomePage> {
 
                 context.read<
                     LocalRepository<PgrServiceModel, PgrServiceSearchModel>>(),
-                context.read<
-                    LocalRepository<HFReferralModel, HFReferralSearchModel>>(),
 
-                context
-                    .read<LocalRepository<ServiceModel, ServiceSearchModel>>(),
                 context.read<
                     LocalRepository<HouseholdModel, HouseholdSearchModel>>(),
                 context.read<
@@ -620,12 +674,11 @@ class _HomePageState extends LocalizedState<HomePage> {
                     LocalRepository<IndividualModel, IndividualSearchModel>>(),
                 // context.read<
                 //     LocalRepository<UserActionModel, UserActionSearchModel>>(),
-                context.read<LocalRepository<StockModel, StockSearchModel>>(),
               ],
               remoteRepositories: [
                 // INFO : Need to add repo repo of package Here
-                context.read<
-                    RemoteRepository<HFReferralModel, HFReferralSearchModel>>(),
+                context
+                    .read<RemoteRepository<ServiceModel, ServiceSearchModel>>(),
 
                 context.read<
                     RemoteRepository<HFReferralModel, HFReferralSearchModel>>(),
@@ -633,9 +686,6 @@ class _HomePageState extends LocalizedState<HomePage> {
                 context.read<
                     RemoteRepository<AttendanceLogModel,
                         AttendanceLogSearchModel>>(),
-
-                context.read<
-                    RemoteRepository<HFReferralModel, HFReferralSearchModel>>(),
 
                 context.read<
                     RemoteRepository<HouseholdModel, HouseholdSearchModel>>(),
@@ -660,8 +710,7 @@ class _HomePageState extends LocalizedState<HomePage> {
                     RemoteRepository<IndividualModel, IndividualSearchModel>>(),
                 context.read<
                     RemoteRepository<PgrServiceModel, PgrServiceSearchModel>>(),
-                context
-                    .read<RemoteRepository<ServiceModel, ServiceSearchModel>>()
+
                 // context.read<
                 //     RemoteRepository<UserActionModel, UserActionSearchModel>>(),
               ],
@@ -711,6 +760,21 @@ void setPackagesSingleton(BuildContext context) {
             dashboardConfigSchema ?? [], context.projectTypeCode ?? "");
         loadLocalization(context, appConfiguration);
         // INFO : Need to add singleton of package Here
+        SurveyFormSingleton().setInitialData(
+          projectId: context.projectId,
+          projectName: context.selectedProject.name,
+          loggedInIndividualId: context.loggedInIndividualId ?? '',
+          loggedInUserUuid: context.loggedInUserUuid,
+          appVersion: Constants().version,
+          roles: context.read<AuthBloc>().state.maybeMap(
+              orElse: () => const Offstage(),
+              authenticated: (res) {
+                return res.userModel.roles
+                    .map((e) => e.code.snakeCase.toUpperCase())
+                    .toList();
+              }),
+        );
+
         AttendanceSingleton().setInitialData(
             projectId: context.projectId,
             loggedInIndividualId: context.loggedInIndividualId ?? '',
@@ -741,6 +805,10 @@ void setPackagesSingleton(BuildContext context) {
         );
 
         RegistrationDeliverySingleton().setInitialData(
+          beneficiaryIdMinCount:
+              appConfiguration.beneficiaryIdConfig?.first.minCount.toInt(),
+          beneficiaryIdBatchSize:
+              appConfiguration.beneficiaryIdConfig?.first.batchSize.toInt(),
           loggedInUserUuid: context.loggedInUserUuid,
           maxRadius: appConfiguration.maxRadius!,
           projectId: context.projectId,
@@ -781,7 +849,9 @@ void setPackagesSingleton(BuildContext context) {
               .isNotEmpty,
           isDistributor: context.loggedInUserRoles
               .where(
-                (role) => role.code == RolesType.distributor.toValue(),
+                (role) =>
+                    role.code == RolesType.distributor.toValue() ||
+                    role.code == RolesType.communityDistributor.toValue(),
               )
               .toList()
               .isNotEmpty,
@@ -818,7 +888,9 @@ void setPackagesSingleton(BuildContext context) {
               .isNotEmpty,
           isDistributor: context.loggedInUserRoles
               .where(
-                (role) => role.code == RolesType.distributor.toValue(),
+                (role) =>
+                    role.code == RolesType.distributor.toValue() ||
+                    role.code == RolesType.communityDistributor.toValue(),
               )
               .toList()
               .isNotEmpty,
@@ -842,6 +914,20 @@ void setPackagesSingleton(BuildContext context) {
           userName: context.loggedInUser.name ?? '',
         );
         ComplaintsSingleton().setBoundary(boundary: context.boundary);
+        SurveyFormSingleton().setInitialData(
+          projectId: context.projectId,
+          projectName: context.selectedProject.name,
+          loggedInIndividualId: context.loggedInIndividualId ?? '',
+          loggedInUserUuid: context.loggedInUserUuid,
+          appVersion: Constants().version,
+          roles: context.read<AuthBloc>().state.maybeMap(
+              orElse: () => const Offstage(),
+              authenticated: (res) {
+                return res.userModel.roles
+                    .map((e) => e.code.snakeCase.toUpperCase())
+                    .toList();
+              }),
+        );
       });
 }
 

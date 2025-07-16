@@ -13,6 +13,7 @@ import 'package:registration_delivery/router/registration_delivery_router.gm.dar
 import '../../blocs/registration_delivery/custom_beneficairy_registration.dart';
 import '../../blocs/registration_delivery/custom_search_household.dart';
 import '../../models/entities/identifier_types.dart';
+import '../../utils/utils.dart';
 import '../../widgets/digit_ui_component/custom_panel_card.dart';
 import '../../utils/i18_key_constants.dart' as i18_local;
 
@@ -60,8 +61,9 @@ class CustomBeneficiaryAcknowledgementPageState
     return beneficiaryId == null
         ? null
         : {
-            'id': i18_local.beneficiaryDetails.beneficiaryId,
-            'value': beneficiaryId,
+            'id': localizations
+                .translate(i18_local.beneficiaryDetails.beneficiaryId),
+            'value': formatBeneficiaryId(beneficiaryId) ?? "",
           };
   }
 

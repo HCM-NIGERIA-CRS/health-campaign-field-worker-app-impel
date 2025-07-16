@@ -1,8 +1,11 @@
+import 'package:collection/collection.dart';
 import 'package:digit_components/digit_components.dart';
+import 'package:digit_components/utils/date_utils.dart';
 import 'package:digit_components/widgets/atoms/digit_radio_button_list.dart';
 import 'package:digit_components/widgets/atoms/digit_toaster.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 // import 'package:health_campaign_field_worker_app/pages/pages-SMC/beneficiary/custom_facility_selection_smc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:registration_delivery/models/entities/referral.dart';
@@ -13,6 +16,7 @@ import 'package:registration_delivery/router/registration_delivery_router.gm.dar
 import 'package:registration_delivery/widgets/inventory/no_facilities_assigned_dialog.dart';
 
 import '../../../utils/app_enums.dart';
+import '../../../widgets/custom_back_navigation.dart';
 import '../../../widgets/localized.dart';
 import 'package:registration_delivery/blocs/delivery_intervention/deliver_intervention.dart';
 import 'package:registration_delivery/blocs/household_overview/household_overview.dart';
@@ -91,21 +95,12 @@ class CustomReferBeneficiaryVASPageState
                     .where((e) => e.usage == Constants.healthFacility)
                     .toList();
 
-                return projectFacilities;
+                return projectFacilities.isEmpty
+                    ? allFacilities
+                    : projectFacilities;
               },
             ) ??
             [];
-
-        facilities.add(
-          FacilityModel(
-            id: 'APS',
-            name: 'APS',
-            additionalFields: FacilityAdditionalFields(
-              version: 1,
-              fields: [const AdditionalField('type', 'APS')],
-            ),
-          ),
-        );
         facilities.addAll(healthFacilities);
 
         final reasons = widget.isReadministrationUnSuccessful
@@ -123,12 +118,12 @@ class CustomReferBeneficiaryVASPageState
                   enableFixedButton: true,
                   header: Column(children: [
                     widget.isReadministrationUnSuccessful
-                        ? const BackNavigationHelpHeaderWidget(
+                        ? const CustomBackNavigationHelpHeaderWidget(
                             showBackNavigation: false,
-                            showHelp: true,
+                            showHelp: false,
                             showcaseButton: null,
                           )
-                        : const BackNavigationHelpHeaderWidget(
+                        : const CustomBackNavigationHelpHeaderWidget(
                             showHelp: false,
                             showcaseButton: null,
                           ),
@@ -154,17 +149,7 @@ class CustomReferBeneficiaryVASPageState
                                     return;
                                   } else {
                                     clickedStatus.value = true;
-                                    final recipient = form
-                                        .control(_referredToKey)
-                                        .value as FacilityModel;
                                     final reason = reasons.first;
-
-                                    final recipientType = recipient.id == 'APS'
-                                        ? 'STAFF'
-                                        : 'FACILITY';
-                                    final recipientId = recipient.id == 'APS'
-                                        ? context.loggedInUserUuid
-                                        : recipient.id;
 
                                     final event = context.read<ReferralBloc>();
                                     event.add(ReferralSubmitEvent(
@@ -175,8 +160,6 @@ class CustomReferBeneficiaryVASPageState
                                             widget
                                                 .projectBeneficiaryClientRefId,
                                         referrerId: context.loggedInUserUuid,
-                                        recipientId: recipientId,
-                                        recipientType: recipientType,
                                         reasons: [reason],
                                         tenantId: envConfig.variables.tenantId,
                                         rowVersion: 1,
@@ -287,6 +270,9 @@ class CustomReferBeneficiaryVASPageState
                                                     EligibilityAssessmentStatus
                                                         .vasDone.name,
                                                   ),
+                                                  ...getIndividualAdditionalFields(
+                                                    widget.individual,
+                                                  ),
                                                 ],
                                               ),
                                               address: widget
@@ -395,71 +381,51 @@ class CustomReferBeneficiaryVASPageState
                               isRequired: true,
                             ),
                             // DigitTextFormField(
-                            //   formControlName: _beneficiaryIdKey,
+                            //   valueAccessor: FacilityValueAccessor(
+                            //     facilities,
+                            //   ),
                             //   label: localizations.translate(
-                            //     i18.referBeneficiary.beneficiaryIdLabel,
+                            //     i18_local.referBeneficiary.referredToLabel,
                             //   ),
                             //   isRequired: true,
+                            //   suffix: const Padding(
+                            //     padding: EdgeInsets.all(8.0),
+                            //     child: Icon(Icons.search),
+                            //   ),
+                            //   formControlName: _referredToKey,
+                            //   readOnly: false,
                             //   validationMessages: {
                             //     'required': (_) => localizations.translate(
-                            //           i18.common.corecommonRequired,
+                            //           i18_local.referBeneficiary
+                            //               .facilityValidationMessage,
                             //         ),
+                            //   },
+                            //   onTap: () async {
+                            //     final parent =
+                            //         context.router.parent() as StackRouter;
+                            //     final facility = await parent.push(
+                            //       CustomInventoryFacilitySelectionSMCRoute(
+                            //         facilities: facilities,
+                            //       ),
+                            //     );
+
+                            //     // if (facility == null) return;
+                            //     // form.control(_referredToKey).value = facility;
                             //   },
                             // ),
                             DigitTextFormField(
-                              valueAccessor: FacilityValueAccessor(
-                                facilities,
-                              ),
+                              formControlName: _referredToKey,
+                              readOnly: true,
                               label: localizations.translate(
                                 i18_local.referBeneficiary.referredToLabel,
                               ),
-                              isRequired: true,
-                              suffix: const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Icon(Icons.search),
-                              ),
-                              formControlName: _referredToKey,
-                              readOnly: false,
                               validationMessages: {
                                 'required': (_) => localizations.translate(
-                                      i18_local.referBeneficiary
-                                          .facilityValidationMessage,
+                                      i18_local.common.corecommonRequired,
                                     ),
                               },
-                              onTap: () async {
-                                final parent =
-                                    context.router.parent() as StackRouter;
-                                final facility = await parent.push(
-                                  CustomInventoryFacilitySelectionSMCRoute(
-                                    facilities: facilities,
-                                  ),
-                                );
-
-                                if (facility == null) return;
-                                form.control(_referredToKey).value = facility;
-                              },
+                              isRequired: true,
                             ),
-                            // DigitTextFormField(
-                            //     formControlName: _referralCode,
-                            //     label: localizations.translate(
-                            //       i18_local.referBeneficiary.referralCodeLabel,
-                            //     ),
-                            //     isRequired: true,
-                            //     validationMessages: {
-                            //       'required': (object) =>
-                            //           localizations.translate(
-                            //             i18_local.common.corecommonRequired,
-                            //           ),
-                            //       'min2': (object) => localizations
-                            //           .translate(
-                            //               i18_local.common.min2CharsRequired)
-                            //           .replaceAll('{}', ''),
-                            //     }),
-                            // DigitTextFormField(
-                            //     formControlName: _referralComments,
-                            //     label: localizations.translate(
-                            //       i18_local.referBeneficiary.referralComments,
-                            //     )),
                           ]),
                         ],
                       ),
@@ -483,9 +449,13 @@ class CustomReferBeneficiaryVASPageState
         value: context.loggedInUser.userName,
         validators: [Validators.required],
       ),
-      _referredToKey: FormControl<FacilityModel>(
-        value:
-            healthFacilities.length >= 1 ? null : healthFacilities.firstOrNull,
+      _referredToKey: FormControl<String>(
+        value: healthFacilities
+            .where((e) =>
+                e.boundaryCode == context.loggedInUserModel?.boundaryCode)
+            .first
+            .id
+            .toString(),
         validators: [
           Validators.required,
         ],

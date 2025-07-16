@@ -1,3 +1,4 @@
+import 'package:survey_form/survey_form.dart';
 import 'package:attendance_management/attendance_management.dart';
 import 'package:complaints/data/repositories/remote/pgr_service.dart';
 import 'package:referral_reconciliation/referral_reconciliation.dart';
@@ -28,6 +29,7 @@ import '../data/repositories/remote/downsync.dart';
 import '../data/sync_registry.dart';
 import '../data/sync_service_mapper.dart';
 import '../firebase_options.dart';
+import '../firebase_options_prod.dart';
 import 'environment_config.dart';
 import 'utils.dart';
 
@@ -94,8 +96,33 @@ class Constants {
   static const String reAdministeredKey = "reAdministered";
   static const String reDoseQuantityKey = 'reDoseQuantity';
   static const String healthFacility = 'Health Facility';
+  static const String lgaBoundaryLevel = 'LGA';
+  static const String districtBoundaryLevel = 'DISTRICT';
+  static const String provincialBoundaryLevel = 'Provincia';
+  static const String centralFacility = 'Central Facility';
+  static const String stateBoundaryLevel = 'State';
+  static const String provinceBoundaryLevel = 'PROVINCE';
+  static const String stateFacility = 'State Facility';
+  static const String lgaFacility = 'LGA Facility'; // specific to smc
+  static const int validMinAge = 3;
+  static const int validMaxAge = 59;
+  static const String pipeSeparator = '||';
 
   static const int mlPerBottle = 30;
+  static const int apiCallLimit = 1000;
+  static const int beneficiaryIdLength = 9;
+  static const String headConsent = 'caregiver_consent_registration';
+  static const int dailyTarget = 100;
+
+  // for stock validation
+
+  static const String spaq1 = "SPAQ 1";
+  static const String spaq2 = "SPAQ 2";
+  static const String blueVAS = "Blue VAS";
+  static const String redVAS = "Red VAS";
+
+  static const String productVariantId1 = 'PVAR-2025-05-08-000001';
+  static const String productVariantId2 = 'PVAR-2025-05-08-000002';
 
   // todo enable before cycle2
   static const bool isDownSyncEnabled = false;
@@ -129,7 +156,6 @@ class Constants {
       ),
       LocationTrackerLocalBaseRepository(
           sql, LocationTrackerOpLogManager(isar)),
-      // StockLocalRepository(sql, StockOpLogManager(isar)),
       CustomStockLocalRepository(sql, StockOpLogManager(isar)),
       StockReconciliationLocalRepository(
         sql,
@@ -146,9 +172,7 @@ class Constants {
       TaskLocalRepository(sql, TaskOpLogManager(isar)),
       SideEffectLocalRepository(sql, SideEffectOpLogManager(isar)),
       ReferralLocalRepository(sql, ReferralOpLogManager(isar)),
-
       HFReferralLocalRepository(sql, HFReferralOpLogManager(isar)),
-
       AttendanceLocalRepository(
         sql,
         AttendanceOpLogManager(isar),
@@ -157,10 +181,14 @@ class Constants {
         sql,
         AttendanceLogOpLogManager(isar),
       ),
-
-      HFReferralLocalRepository(sql, HFReferralOpLogManager(isar)),
-
-      HFReferralLocalRepository(sql, HFReferralOpLogManager(isar)),
+      ServiceDefinitionLocalRepository(
+        sql,
+        ServiceDefinitionOpLogManager(isar),
+      ),
+      ServiceLocalRepository(
+        sql,
+        ServiceOpLogManager(isar),
+      ),
     ];
   }
 
@@ -171,15 +199,23 @@ class Constants {
     final appConfigs = await isar.appConfigurations.where().findAll();
     final config = appConfigs.firstOrNull;
 
-    final enableCrashlytics =
-        config?.firebaseConfig?.enableCrashlytics ?? false;
+    final enableCrashlytics = config?.firebaseConfig?.enableCrashlytics ?? true;
     if (enableCrashlytics) {
-      firebase_services.initialize(
-        options: DefaultFirebaseOptions.currentPlatform,
-        onErrorMessage: (value) {
-          AppLogger.instance.error(title: 'CRASHLYTICS', message: value);
-        },
-      );
+      if (envConfig.variables.envType == EnvType.prod) {
+        firebase_services.initialize(
+          options: ProdFirebaseOptions.currentPlatform,
+          onErrorMessage: (value) {
+            AppLogger.instance.error(title: 'CRASHLYTICS', message: value);
+          },
+        );
+      } else {
+        firebase_services.initialize(
+          options: DefaultFirebaseOptions.currentPlatform,
+          onErrorMessage: (value) {
+            AppLogger.instance.error(title: 'CRASHLYTICS', message: value);
+          },
+        );
+      }
     }
 
     _version = version;
@@ -187,6 +223,8 @@ class Constants {
 
   static const String closedHouseholdSvg =
       'assets/icons/svg/closed_household.svg';
+  static const String beneficiaryIdDownload =
+      'assets/icons/svg/beneficiary_ids.svg';
 
   static List<RemoteRepository> getRemoteRepositories(
     Dio dio,
@@ -245,10 +283,10 @@ class Constants {
           AttendanceLogRemoteRepository(dio, actionMap: actions),
         if (value == DataModelType.complaints)
           PgrServiceRemoteRepository(dio, actionMap: actions),
-        if (value == DataModelType.hFReferral)
-          HFReferralRemoteRepository(dio, actionMap: actions),
-        if (value == DataModelType.hFReferral)
-          HFReferralRemoteRepository(dio, actionMap: actions),
+        if (value == DataModelType.serviceDefinition)
+          ServiceDefinitionRemoteRepository(dio, actionMap: actions),
+        if (value == DataModelType.service)
+          ServiceRemoteRepository(dio, actionMap: actions),
       ]);
     }
 
@@ -294,6 +332,7 @@ class Constants {
     SyncServiceSingleton().registries?.registerSyncRegistries({
       DataModelType.complaints: (remote) => CustomSyncRegistry(remote),
     });
+    SurveyFormSingleton().setTenantId(envConfig.variables.tenantId);
     AttendanceSingleton().setTenantId(envConfig.variables.tenantId);
     InventorySingleton().setTenantId(tenantId: envConfig.variables.tenantId);
     RegistrationDeliverySingleton().setTenantId(envConfig.variables.tenantId);
