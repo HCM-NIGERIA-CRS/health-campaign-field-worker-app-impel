@@ -38,7 +38,8 @@ import '../../../utils/app_enums.dart';
 import '../../../utils/i18_key_constants.dart' as i18_local;
 import '../../../models/entities/additional_fields_type.dart'
     as additional_fields_local;
-import '../../../utils/utils.dart' show getAgeMonths;
+import '../../../utils/utils.dart'
+    show getAgeMonths, getIndividualAdditionalFields;
 import '../../../widgets/custom_back_navigation.dart';
 
 @RoutePage()
@@ -808,50 +809,6 @@ class CustomDeliverInterventionPageState
         createdTime: context.millisecondsSinceEpoch(),
       ),
     );
-
-    int getIndividualAge(IndividualModel individualModel) {
-      DateTime dateOfBirth =
-          DateFormat("dd/MM/yyyy").parse(individualModel.dateOfBirth ?? '');
-      DigitDOBAge age = DigitDateUtils.calculateAge(dateOfBirth);
-      return getAgeMonths(age);
-    }
-
-    String? getBeneficiaryId(IndividualModel individualModel) {
-      IdentifierTypes.uniqueBeneficiaryID.toValue();
-      return individualModel.identifiers
-              ?.firstWhereOrNull((e) =>
-                  e.identifierType ==
-                  IdentifierTypes.uniqueBeneficiaryID.toValue())
-              ?.identifierId ??
-          '';
-    }
-
-    List<AdditionalField> getIndividualAdditionalFields(
-        IndividualModel? individualModel) {
-      return [
-        if (individualModel != null)
-          AdditionalField(
-            additional_fields_local.AdditionalFieldsType.age.toValue(),
-            getIndividualAge(individualModel),
-          ),
-        if (individualModel?.gender != null)
-          AdditionalField(
-            additional_fields_local.AdditionalFieldsType.gender.toValue(),
-            individualModel?.gender,
-          ),
-        if (individualModel?.clientReferenceId != null)
-          AdditionalField(
-            'individualClientReferenceId',
-            individualModel?.clientReferenceId,
-          ),
-        if (individualModel != null &&
-            getBeneficiaryId(individualModel) != null)
-          AdditionalField(
-            'uniqueBeneficiaryId',
-            getBeneficiaryId(individualModel),
-          ),
-      ];
-    }
 
     // Extract productvariantList from the form
     final productvariantList =

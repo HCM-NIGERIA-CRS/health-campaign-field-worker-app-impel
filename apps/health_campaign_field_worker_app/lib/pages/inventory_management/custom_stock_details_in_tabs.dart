@@ -143,21 +143,12 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                   ]
                 : [],
           ),
-          _transactionQuantityKey: FormControl<int>(
-              validators: (InventorySingleton().isWareHouseMgr ||
-                      context.isHealthFacilitySupervisor)
-                  ? [
-                      Validators.number(),
-                      Validators.required,
-                      Validators.min(1),
-                      Validators.max(1000000),
-                    ]
-                  : [
-                      Validators.number(),
-                      Validators.required,
-                      Validators.min(1),
-                      Validators.max(1000000),
-                    ]),
+          _transactionQuantityKey: FormControl<int>(validators: [
+            Validators.number(),
+            Validators.required,
+            Validators.min(1),
+            Validators.max(100000000),
+          ]),
           // _waybillQuantityKey:
           //     FormControl<String>(validators: [Validators.required]),
           _transactionQuantityPartialKey: FormControl<int>(validators: []),
@@ -439,7 +430,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
         Validators.number(),
         Validators.required,
         Validators.min(0),
-        Validators.max(1000000),
+        Validators.max(100000000),
       ], autoValidate: true);
     }
 
@@ -449,7 +440,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
         Validators.number(),
         Validators.required,
         Validators.min(0),
-        Validators.max(1000000),
+        Validators.max(100000000),
       ], autoValidate: true);
     }
 

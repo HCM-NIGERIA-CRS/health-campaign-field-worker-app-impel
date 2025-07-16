@@ -1,5 +1,7 @@
 library app_utils;
 
+import 'package:digit_data_model/data_model.dart';
+import 'package:intl/intl.dart';
 import 'package:inventory_management/inventory_management.dart';
 import 'package:referral_reconciliation/referral_reconciliation.dart'
     as referral_reconciliation_mappers;
@@ -127,7 +129,7 @@ class CustomValidator {
     var parsed = int.tryParse(control.value) ?? 0;
     if (parsed < 0) {
       return {'min': true};
-    } else if (parsed > 10000000) {
+    } else if (parsed > 100000000) {
       return {'max': true};
     }
 
@@ -386,6 +388,48 @@ dynamic getValueForTheKey(String key, HouseholdModel? householdModel) {
       .firstOrNull;
 
   return object == null ? object : object.value;
+}
+
+int getIndividualAge(IndividualModel individualModel) {
+  DateTime dateOfBirth =
+      DateFormat("dd/MM/yyyy").parse(individualModel.dateOfBirth ?? '');
+  DigitDOBAge age = DigitDateUtils.calculateAge(dateOfBirth);
+  return getAgeMonths(age);
+}
+
+String? getBeneficiaryId(IndividualModel individualModel) {
+  IdentifierTypes.uniqueBeneficiaryID.toValue();
+  return individualModel.identifiers
+          ?.firstWhereOrNull((e) =>
+              e.identifierType == IdentifierTypes.uniqueBeneficiaryID.toValue())
+          ?.identifierId ??
+      '';
+}
+
+List<AdditionalField> getIndividualAdditionalFields(
+    IndividualModel? individualModel) {
+  return [
+    if (individualModel != null && individualModel.dateOfBirth != null)
+      AdditionalField(
+        AdditionalFieldsType.age.toValue(),
+        getIndividualAge(individualModel),
+      ),
+    if (individualModel?.gender != null)
+      AdditionalField(
+        AdditionalFieldsType.gender.toValue(),
+        individualModel?.gender,
+      ),
+    if (individualModel?.clientReferenceId != null)
+      AdditionalField(
+        'individualClientReferenceId',
+        individualModel?.clientReferenceId,
+      ),
+    if (individualModel != null && getBeneficiaryId(individualModel) != null)
+      AdditionalField(
+        'uniqueBeneficiaryId',
+        getBeneficiaryId(individualModel),
+      ),
+  ];
 }
 
 Map<String, dynamic>? customValidMobileNumber(

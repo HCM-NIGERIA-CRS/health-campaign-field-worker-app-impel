@@ -34,7 +34,8 @@ import '../../../models/entities/additional_fields_type.dart'
     as additional_fields_local;
 import '../../../router/app_router.dart';
 import '../../../utils/app_enums.dart';
-import '../../../utils/utils.dart' show getAgeMonths;
+import '../../../utils/utils.dart'
+    show getAgeMonths, getIndividualAdditionalFields;
 
 @RoutePage()
 class CustomDoseAdministeredPage extends LocalizedStatefulWidget {
@@ -83,50 +84,6 @@ class CustomDoseAdministeredPageState
         width: MediaQuery.of(context).size.width / 2.18,
       ),
     ];
-
-    int getIndividualAge(IndividualModel individualModel) {
-      DateTime dateOfBirth =
-          DateFormat("dd/MM/yyyy").parse(individualModel.dateOfBirth ?? '');
-      DigitDOBAge age = DigitDateUtils.calculateAge(dateOfBirth);
-      return getAgeMonths(age);
-    }
-
-    String? getBeneficiaryId(IndividualModel individualModel) {
-      IdentifierTypes.uniqueBeneficiaryID.toValue();
-      return individualModel.identifiers
-              ?.firstWhereOrNull((e) =>
-                  e.identifierType ==
-                  IdentifierTypes.uniqueBeneficiaryID.toValue())
-              ?.identifierId ??
-          '';
-    }
-
-    List<AdditionalField> getIndividualAdditionalFields(
-        IndividualModel? individualModel) {
-      return [
-        if (individualModel != null)
-          AdditionalField(
-            additional_fields_local.AdditionalFieldsType.age.toValue(),
-            getIndividualAge(individualModel),
-          ),
-        if (individualModel?.gender != null)
-          AdditionalField(
-            additional_fields_local.AdditionalFieldsType.gender.toValue(),
-            individualModel?.gender,
-          ),
-        if (individualModel?.clientReferenceId != null)
-          AdditionalField(
-            'individualClientReferenceId',
-            individualModel?.clientReferenceId,
-          ),
-        if (individualModel != null &&
-            getBeneficiaryId(individualModel) != null)
-          AdditionalField(
-            'uniqueBeneficiaryId',
-            getBeneficiaryId(individualModel),
-          ),
-      ];
-    }
 
     return ProductVariantBlocWrapper(
       child: PopScope(

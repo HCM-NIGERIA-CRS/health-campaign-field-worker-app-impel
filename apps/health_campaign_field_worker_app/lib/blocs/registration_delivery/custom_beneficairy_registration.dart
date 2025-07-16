@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/utils/typedefs.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:registration_delivery/models/entities/household_member.dart';
@@ -16,6 +17,8 @@ import 'package:registration_delivery/models/entities/status.dart';
 import 'package:registration_delivery/models/entities/unique_id_pool.dart';
 import 'package:registration_delivery/utils/typedefs.dart';
 import 'package:registration_delivery/utils/utils.dart';
+
+import '../../utils/utils.dart';
 
 part 'custom_beneficairy_registration.freezed.dart';
 
@@ -305,6 +308,10 @@ class CustomBeneficiaryRegistrationBloc
                   createdBy: event.userUuid,
                   createdTime: createdAt,
                 ),
+                additionalFields: HouseholdMemberAdditionalFields(
+                  fields: [...getIndividualAdditionalFields(individual)],
+                  version: 1,
+                ),
               ),
             );
           } catch (error) {
@@ -401,6 +408,10 @@ class CustomBeneficiaryRegistrationBloc
               auditDetails: AuditDetails(
                 createdBy: event.userUuid,
                 createdTime: createdAt,
+              ),
+              additionalFields: HouseholdMemberAdditionalFields(
+                fields: [...getIndividualAdditionalFields(individual)],
+                version: 1,
               ),
             ),
           );
@@ -685,6 +696,32 @@ class CustomBeneficiaryRegistrationBloc
               }
             }
           }
+          final HouseholdMemberModel? existingHouseholdMember =
+              (await householdMemberRepository
+                      .search(HouseholdMemberSearchModel(
+            individualClientReferenceId: [individual.clientReferenceId],
+          )))
+                  .firstOrNull;
+          if (existingHouseholdMember != null) {
+            try {
+              await householdMemberRepository
+                  .update(existingHouseholdMember.copyWith(
+                auditDetails: existingHouseholdMember.auditDetails?.copyWith(
+                  lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
+                ),
+                clientAuditDetails:
+                    existingHouseholdMember.clientAuditDetails?.copyWith(
+                  lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
+                ),
+                additionalFields: HouseholdMemberAdditionalFields(
+                  fields: [...getIndividualAdditionalFields(individual)],
+                  version: 1,
+                ),
+              ));
+            } catch (e) {
+              print(e);
+            }
+          }
         } catch (error) {
           rethrow;
         } finally {
@@ -792,6 +829,12 @@ class CustomBeneficiaryRegistrationBloc
                 lastModifiedTime: initialModifiedAt,
                 lastModifiedBy: event.userUuid,
                 createdBy: event.userUuid,
+              ),
+              additionalFields: HouseholdMemberAdditionalFields(
+                fields: [
+                  ...getIndividualAdditionalFields(event.individualModel)
+                ],
+                version: 1,
               ),
             ),
           );

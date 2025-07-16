@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 // import 'package:digit_ui_components/widgets/atoms/digit_reactive_dropdown.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_scanner/blocs/scanner.dart';
+import '../../data/repositories/local/inventory_management/custom_stock.dart';
 import '../../router/app_router.dart';
 import './qr_scanner.dart';
 import 'package:digit_ui_components/digit_components.dart';
@@ -32,7 +33,9 @@ import '../../utils/i18_key_constants.dart' as i18_local;
 
 @RoutePage()
 class CustomStockDetailsPage extends LocalizedStatefulWidget {
+  final String? warehouseId;
   const CustomStockDetailsPage({
+    this.warehouseId,
     super.key,
     super.appLocalizations,
   });
@@ -51,7 +54,7 @@ class CustomStockDetailsPageState
   bool deliveryTeamSelected = false;
   String? selectedFacilityId;
   List<InventoryTransportTypes> transportTypes = [];
-
+  String? senderId;
   List<GS1Barcode> scannedResources = [];
   TextEditingController controller1 = TextEditingController();
 
@@ -77,9 +80,23 @@ class CustomStockDetailsPageState
   @override
   void initState() {
     clearQRCodes();
+    getDispatchedStocks();
     transportTypes = InventorySingleton().transportType;
     context.read<LocationBloc>().add(const LoadLocationEvent());
     super.initState();
+  }
+
+  getDispatchedStocks() async {
+    final repository =
+        context.read<LocalRepository<StockModel, StockSearchModel>>()
+            as CustomStockLocalRepository;
+    List<StockModel> dispatchedStocks = await repository.search(
+        StockSearchModel(
+            transactionType: [TransactionType.dispatched.toValue()],
+            transactionReason: [],
+            receiverId:
+                widget.warehouseId == null ? [] : [widget.warehouseId!]));
+    senderId = dispatchedStocks.firstOrNull?.senderId;
   }
 
   @override
@@ -648,7 +665,16 @@ class CustomStockDetailsPageState
                                                     ? facilities
                                                     : filteredFacilities;
 
-                                        final teamFacilities = [
+                                        if (context.isDistributor &&
+                                            entryType !=
+                                                StockRecordEntryType.returned) {
+                                          facilities = facilities
+                                              .where((element) =>
+                                                  element.id == senderId)
+                                              .toList();
+                                        }
+
+                                        List<FacilityModel> teamFacilities = [
                                           FacilityModel(
                                             id: 'Delivery Team',
                                             name: 'CDD Team',
@@ -657,6 +683,7 @@ class CustomStockDetailsPageState
                                         teamFacilities.addAll(
                                           facilities,
                                         );
+
                                         return Column(
                                           children: [
                                             const SizedBox(
