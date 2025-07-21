@@ -103,8 +103,6 @@ class CustomBeneficiaryAcknowledgementPageState
                   type: PanelType.success,
                   title: localizations.translate(
                       i18.acknowledgementSuccess.acknowledgementLabelText),
-                  subTitle: subtitleMap(
-                      householdMemberWrapper, state.householdModel?.id),
                   actions: [
                     if (householdMemberWrapper != null)
                       DigitButton(
