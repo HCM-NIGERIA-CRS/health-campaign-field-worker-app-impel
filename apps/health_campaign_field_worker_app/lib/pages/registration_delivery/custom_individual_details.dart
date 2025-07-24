@@ -232,13 +232,10 @@ class CustomIndividualDetailsPageState
                         );
                       }
                       if (householdMemberWrapper != null) {
-                        (router.parent() as StackRouter).maybePop();
-
-                        router.popUntil((route) =>
-                            route.settings.name == SearchBeneficiaryRoute.name);
-
-                        router.push(BeneficiaryWrapperRoute(
-                            wrapper: householdMemberWrapper));
+                        router.push(CustomBeneficiaryAcknowledgementRoute(
+                          enableViewHousehold: true,
+                          acknowledgementType: AcknowledgementType.addHousehold,
+                        ));
                       }
                     } else if (isAddIndividual) {
                       HouseholdMemberWrapper? i =
@@ -264,8 +261,6 @@ class CustomIndividualDetailsPageState
                       if (householdMemberWrapper != null) {
                         (router.parent() as StackRouter).maybePop();
 
-                        router.popUntil((route) =>
-                            route.settings.name == SearchBeneficiaryRoute.name);
                         if (individualCaptured != null) {
                           // info get the relevant project beneficiary here
                           final projectBeneficiaryAddMember =
@@ -282,35 +277,17 @@ class CustomIndividualDetailsPageState
                               householdMemberWrapper.members ?? [];
                           if (verifyIfChildAgeValid(
                               context, individualCaptured!)) {
-                            List<AddressModel>? addressModel = householdMembers
-                                .firstWhereOrNull((element) =>
-                                    element.clientReferenceId ==
-                                    individualCaptured!.clientReferenceId)
-                                ?.address;
-                            IndividualModel? individualCapturedCopy =
-                                individualCaptured?.copyWith(
-                              address: addressModel,
-                            );
                             router.push(
                               BeneficiaryWrapperRoute(
                                 wrapper: householdMemberWrapper,
                                 children: [
-                                  EligibilityChecklistViewRoute(
+                                  CustomBeneficiaryDetailsRoute(
                                     eligibilityAssessmentType:
                                         EligibilityAssessmentType.smc,
-                                    projectBeneficiaryClientReferenceId:
-                                        projectBeneficiaryAddMember
-                                                ?.first.clientReferenceId ??
-                                            "",
-                                    individual: individualCapturedCopy,
-                                    showBackButton: false,
-                                  ),
+                                  )
                                 ],
                               ),
                             );
-                          } else {
-                            router.push(BeneficiaryWrapperRoute(
-                                wrapper: householdMemberWrapper));
                           }
                         } else {
                           router.push(CustomBeneficiaryAcknowledgementRoute(
@@ -410,24 +387,6 @@ class CustomIndividualDetailsPageState
                                         );
 
                                         if (submit ?? false) {
-                                          if (!widget.isHeadOfHousehold &&
-                                              form.control(_dobKey).value ==
-                                                  null) {
-                                            setState(() {
-                                              form
-                                                  .control(_dobKey)
-                                                  .setErrors({'': true});
-                                            });
-                                          }
-                                          if (!widget.isHeadOfHousehold &&
-                                              form.control(_genderKey).value ==
-                                                  null) {
-                                            setState(() {
-                                              form
-                                                  .control(_genderKey)
-                                                  .setErrors({'': true});
-                                            });
-                                          }
                                           final userId =
                                               RegistrationDeliverySingleton()
                                                   .loggedInUserUuid;
@@ -797,108 +756,100 @@ class CustomIndividualDetailsPageState
                                             ),
                                           ],
                                         ),
-                                        Offstage(
-                                          offstage: widget.isHeadOfHousehold,
-                                          child: individualDetailsShowcaseData
-                                              .dateOfBirth
-                                              .buildWith(
-                                            child: CustomDigitDobPicker(
-                                              datePickerFormControl: _dobKey,
-                                              datePickerLabel:
-                                                  localizations.translate(
-                                                i18.individualDetails
-                                                    .dobLabelText,
-                                              ),
-                                              ageFieldLabel:
-                                                  localizations.translate(
-                                                i18.individualDetails
-                                                    .ageLabelText,
-                                              ),
-                                              yearsHintLabel:
-                                                  localizations.translate(
-                                                i18.individualDetails
-                                                    .yearsHintText,
-                                              ),
-                                              separatorLabel:
-                                                  localizations.translate(
-                                                i18.individualDetails
-                                                    .separatorLabelText,
-                                              ),
-                                              yearsAndMonthsErrMsg:
-                                                  localizations.translate(
-                                                i18.individualDetails
-                                                    .yearsAndMonthsErrorText,
-                                              ),
-                                              initialDate: before150Years,
-                                              onChangeOfFormControl:
-                                                  (formControl) {
-                                                // Handle changes to the control's value here
-                                                DateTime? value =
-                                                    formControl.value;
-                                                if (value == null) return;
-                                                digits.DigitDOBAge age =
-                                                    digits.DigitDateUtils
-                                                        .calculateAge(value);
-                                                if ((age.years == 0 &&
-                                                        age.months == 0) ||
-                                                    age.months > 11 ||
-                                                    (age.years >= 150 &&
-                                                        age.months >= 0)) {
-                                                  formControl
-                                                      .setErrors({'': true});
-                                                } else {
-                                                  formControl.removeError('');
-                                                }
-                                              },
-                                              cancelText:
-                                                  localizations.translate(i18
-                                                      .common.coreCommonCancel),
-                                              confirmText:
-                                                  localizations.translate(
-                                                      i18.common.coreCommonOk),
-                                              monthsHintLabel: 'Month',
-                                            ),
-                                          ),
-                                        ),
-                                        Offstage(
-                                          offstage: widget.isHeadOfHousehold,
-                                          child: dropdown.DigitDropdown<String>(
-                                            label: localizations.translate(
+                                        individualDetailsShowcaseData
+                                            .dateOfBirth
+                                            .buildWith(
+                                          child: CustomDigitDobPicker(
+                                            datePickerFormControl: _dobKey,
+                                            datePickerLabel:
+                                                localizations.translate(
                                               i18.individualDetails
-                                                  .genderLabelText,
+                                                  .dobLabelText,
                                             ),
-                                            valueMapper: (value) =>
-                                                localizations.translate(value),
-                                            initialValue:
-                                                form.control(_genderKey).value,
-                                            menuItems:
-                                                RegistrationDeliverySingleton()
-                                                    .genderOptions!
-                                                    .map((e) => e)
-                                                    .toList(),
-                                            formControlName: _genderKey,
-                                            isRequired: true,
-                                            validationMessages: {
-                                              'required': (_) =>
-                                                  localizations.translate(
-                                                    i18.common
-                                                        .corecommonRequired,
-                                                  ),
-                                            },
-                                            onChanged: (value) {
-                                              if (value != null &&
-                                                  value.isNotEmpty) {
-                                                form.control(_genderKey).value =
-                                                    value;
-                                              } else {
-                                                form.control(_genderKey).value =
-                                                    null;
-                                                form
-                                                    .control(_genderKey)
+                                            ageFieldLabel:
+                                                localizations.translate(
+                                              i18.individualDetails
+                                                  .ageLabelText,
+                                            ),
+                                            yearsHintLabel:
+                                                localizations.translate(
+                                              i18.individualDetails
+                                                  .yearsHintText,
+                                            ),
+                                            separatorLabel:
+                                                localizations.translate(
+                                              i18.individualDetails
+                                                  .separatorLabelText,
+                                            ),
+                                            yearsAndMonthsErrMsg:
+                                                localizations.translate(
+                                              i18.individualDetails
+                                                  .yearsAndMonthsErrorText,
+                                            ),
+                                            initialDate: before150Years,
+                                            onChangeOfFormControl:
+                                                (formControl) {
+                                              // Handle changes to the control's value here
+                                              DateTime? value =
+                                                  formControl.value;
+                                              if (value == null) return;
+                                              digits.DigitDOBAge age =
+                                                  digits.DigitDateUtils
+                                                      .calculateAge(value);
+                                              if ((age.years == 0 &&
+                                                      age.months == 0) ||
+                                                  age.months > 11 ||
+                                                  (age.years >= 150 &&
+                                                      age.months >= 0)) {
+                                                formControl
                                                     .setErrors({'': true});
+                                              } else {
+                                                formControl.removeError('');
                                               }
                                             },
+                                            cancelText: localizations.translate(
+                                                i18.common.coreCommonCancel),
+                                            confirmText:
+                                                localizations.translate(
+                                                    i18.common.coreCommonOk),
+                                            monthsHintLabel: 'Month',
                                           ),
+                                        ),
+                                        dropdown.DigitDropdown<String>(
+                                          label: localizations.translate(
+                                            i18.individualDetails
+                                                .genderLabelText,
+                                          ),
+                                          valueMapper: (value) =>
+                                              localizations.translate(value),
+                                          initialValue:
+                                              form.control(_genderKey).value,
+                                          menuItems:
+                                              RegistrationDeliverySingleton()
+                                                  .genderOptions!
+                                                  .map((e) => e)
+                                                  .toList(),
+                                          formControlName: _genderKey,
+                                          isRequired: true,
+                                          validationMessages: {
+                                            'required': (_) =>
+                                                localizations.translate(
+                                                  i18.common.corecommonRequired,
+                                                ),
+                                          },
+                                          onChanged: (value) {
+                                            if (value != null &&
+                                                value.isNotEmpty) {
+                                              form.control(_genderKey).value =
+                                                  value;
+                                            } else {
+                                              form.control(_genderKey).value =
+                                                  null;
+                                              form
+                                                  .control(_genderKey)
+                                                  .setErrors({'': true});
+                                            }
+                                          },
                                         ),
                                         individualDetailsShowcaseData.mobile
                                             .buildWith(

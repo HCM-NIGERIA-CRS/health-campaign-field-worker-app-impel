@@ -55,6 +55,17 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    CampaignDeliverySelectRoute.name: (routeData) {
+      final args = routeData.argsAs<CampaignDeliverySelectRouteArgs>(
+          orElse: () => const CampaignDeliverySelectRouteArgs());
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CampaignDeliverySelectPage(
+          key: args.key,
+          appLocalizations: args.appLocalizations,
+        ),
+      );
+    },
     CaregiverConsentRoute.name: (routeData) {
       final args = routeData.argsAs<CaregiverConsentRouteArgs>(
           orElse: () => const CaregiverConsentRouteArgs());
@@ -963,6 +974,45 @@ class BoundarySelectionRouteArgs {
   @override
   String toString() {
     return 'BoundarySelectionRouteArgs{key: $key, appLocalizations: $appLocalizations}';
+  }
+}
+
+/// generated route for
+/// [CampaignDeliverySelectPage]
+class CampaignDeliverySelectRoute
+    extends PageRouteInfo<CampaignDeliverySelectRouteArgs> {
+  CampaignDeliverySelectRoute({
+    Key? key,
+    AppLocalizations? appLocalizations,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CampaignDeliverySelectRoute.name,
+          args: CampaignDeliverySelectRouteArgs(
+            key: key,
+            appLocalizations: appLocalizations,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CampaignDeliverySelectRoute';
+
+  static const PageInfo<CampaignDeliverySelectRouteArgs> page =
+      PageInfo<CampaignDeliverySelectRouteArgs>(name);
+}
+
+class CampaignDeliverySelectRouteArgs {
+  const CampaignDeliverySelectRouteArgs({
+    this.key,
+    this.appLocalizations,
+  });
+
+  final Key? key;
+
+  final AppLocalizations? appLocalizations;
+
+  @override
+  String toString() {
+    return 'CampaignDeliverySelectRouteArgs{key: $key, appLocalizations: $appLocalizations}';
   }
 }
 

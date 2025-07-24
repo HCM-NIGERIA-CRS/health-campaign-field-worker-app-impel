@@ -296,6 +296,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.3"
+  change_app_package_name:
+    dependency: "direct main"
+    description:
+      name: change_app_package_name
+      sha256: "8e43b754fe960426904d77ed4c62fa8c9834deaf6e293ae40963fa447482c4c5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.5.0"
   characters:
     dependency: transitive
     description:
@@ -509,10 +517,10 @@ packages:
     dependency: "direct main"
     description:
       name: digit_data_model
-      sha256: "7afbe29d6cdc6b3c1f83174d55cc5fa09d34b2205d5791894f9f36d11d2217a1"
+      sha256: "90987efbd5dd0ca01914d3b548774f2b91a5f7d50f241f6ea35d98f18ad7f4dd"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.7-dev.2-idGen"
+    version: "1.0.7-dev.4-idGen"
   digit_dss:
     dependency: "direct main"
     description:

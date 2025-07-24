@@ -679,24 +679,6 @@ class _CustomSearchBeneficiaryPageState
                           localizations: localizations,
                           shouldProceedFurther: (bool proceed) {
                             if (proceed) {
-                              // FocusManager.instance.primaryFocus
-                              //     ?.unfocus();
-                              // context.read<DigitScannerBloc>().add(
-                              //       const DigitScannerEvent
-                              //           .handleScanner(),
-                              //     );
-                              // context.router.push(
-                              //     BeneficiaryRegistrationWrapperRoute(
-                              //   initialState:
-                              //       BeneficiaryRegistrationCreateState(
-                              //     searchQuery:
-                              //         searchHouseholdsState.searchQuery,
-                              //   ),
-                              // ));
-                              // searchController.clear();
-                              // selectedFilters = [];
-                              // blocWrapper.clearEvent();
-
                               context.router.push(
                                   CustomBeneficiaryRegistrationWrapperRoute(
                                 initialState:
@@ -710,22 +692,6 @@ class _CustomSearchBeneficiaryPageState
                     } else if (availableIdCount >=
                         RegistrationDeliverySingleton()
                             .beneficiaryIdMinCount!) {
-                      // FocusManager.instance.primaryFocus?.unfocus();
-                      // context.read<DigitScannerBloc>().add(
-                      //       const DigitScannerEvent.handleScanner(),
-                      //     );
-                      // context.router
-                      //     .push(BeneficiaryRegistrationWrapperRoute(
-                      //   initialState:
-                      //       BeneficiaryRegistrationCreateState(
-                      //     searchQuery:
-                      //         searchHouseholdsState.searchQuery,
-                      //   ),
-                      // ));
-                      // searchController.clear();
-                      // selectedFilters = [];
-                      // blocWrapper.clearEvent();
-
                       context.router
                           .push(CustomBeneficiaryRegistrationWrapperRoute(
                         initialState: BeneficiaryRegistrationCreateState(
@@ -739,25 +705,7 @@ class _CustomSearchBeneficiaryPageState
                             context: context,
                             showSkip: true,
                             localizations: localizations,
-                            shouldProceedFurther: (bool skip) {
-                              // FocusManager.instance.primaryFocus
-                              //     ?.unfocus();
-                              // context.read<DigitScannerBloc>().add(
-                              //       const DigitScannerEvent
-                              //           .handleScanner(),
-                              //     );
-                              // context.router.push(
-                              //     BeneficiaryRegistrationWrapperRoute(
-                              //   initialState:
-                              //       BeneficiaryRegistrationCreateState(
-                              //     searchQuery:
-                              //         searchHouseholdsState.searchQuery,
-                              //   ),
-                              // ));
-                              // searchController.clear();
-                              // selectedFilters = [];
-                              // blocWrapper.clearEvent();
-                            });
+                            shouldProceedFurther: (bool skip) {});
                       });
                     }
                   },
@@ -930,17 +878,6 @@ class _CustomSearchBeneficiaryPageState
 
                       if ((spaq1 > 0 || spaq2 > 0)) {
                         FocusManager.instance.primaryFocus?.unfocus();
-                        // context.read<DigitScannerBloc>().add(
-                        //       const DigitScannerEvent.handleScanner(),
-                        //     );
-
-                        // Info : moved to the listener of uniqueId
-                        // context.router
-                        //     .push(CustomBeneficiaryRegistrationWrapperRoute(
-                        //   initialState: BeneficiaryRegistrationCreateState(
-                        //     searchQuery: searchHouseholdsState.searchQuery,
-                        //   ),
-                        // ));
 
                         searchController.clear();
                         selectedFilters = [];

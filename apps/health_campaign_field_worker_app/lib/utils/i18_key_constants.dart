@@ -192,6 +192,9 @@ class HouseholdOverView {
 class DeliverIntervention {
   const DeliverIntervention();
 
+  String get campaignDeliverySelectionLabel =>
+      'CAMPAIGN_DELIVERY_SELECTION_LABEL';
+
   String get patternValidationFailed => 'PATTERN_VALIDATION_FAILED';
 
   String get otherReasonLabel =>
@@ -329,6 +332,11 @@ class HouseholdDetails {
   String get noOfMembersCountLabel => 'NO_OF_MEMBERS_COUNT_LABEL';
   String get viewHouseHoldDetailsActionSMC =>
       'VIEW_HOUSEHOLD_DETAILS_ACTION_LABEL_SMC';
+  String get householdNumberLabel => 'HOUSEHOLD_NUMBER_LABEL';
+
+  String get noOfChildrenAbsentLabel => 'NO_OF_CHILDREN_ABSENT_LABEL';
+  String get noOfChildrenAFPLabel => 'NO_OF_CHILDREN_AFP_LABEL';
+  String get guineaWormCountLabel => 'NO_OF_GUINEA_WORM_COUNT_LABEL';
 
   String get reasonLabelText => 'REASON_LABEL_TEXT';
   String get householdDetailsDescriptionSMC =>
@@ -343,6 +351,9 @@ class HouseholdDetails {
   String get cardAztTitle => 'HOUSEHOLD_CONSENT_LABELL';
   String get treatNextChildAction =>
       'VIEW_HOUSEHOLD_DETAILS_TREAT_NEXT_CHILD_ACTION_LABEL';
+
+  String get householdConsentDescription => 'HOUSEHOLD_CONSENT_DESCRIPTION';
+  String get householdConsentAction => 'HOUSEHOLD_CONSENT_ACTION_LABEL';
 }
 
 class ForgotPassword {
@@ -926,6 +937,9 @@ class Home {
   String get clfLabel => "HOME_COMMUNAL_LIVING_FACILITIES_LABEL";
   String get beneficiaryIdLabel => 'HOME_BENEFICIARY_ID_LABEL';
   String get dailyImplementationPlanLabel => 'HOME_DIP_LABEL';
+  String get campaignDeliverySelection =>
+      'HOME_CAMPAIGN_DELIVERY_SELECTION_LABEL';
+
   String get viewSummaryReportsLabel => 'VIEW_SUMMARY_REPORTS_LABEL';
 }
 

@@ -352,18 +352,18 @@ class _HomePageState extends LocalizedState<HomePage> {
           },
         ),
       ),
-      i18.home.beneficiaryLabel:
-          homeShowcaseData.distributorBeneficiaries.buildWith(
-        child: HomeItemCard(
-          icon: Icons.family_restroom_rounded,
-          label: i18.home.beneficiaryLabel,
-          onPressed: () async {
-            RegistrationDeliverySingleton()
-                .setHouseholdType(HouseholdType.family);
-            context.router.push(const CustomRegistrationDeliveryWrapperRoute());
-          },
-        ),
-      ),
+      // i18.home.beneficiaryLabel:
+      //     homeShowcaseData.distributorBeneficiaries.buildWith(
+      //   child: HomeItemCard(
+      //     icon: Icons.family_restroom_rounded,
+      //     label: i18.home.beneficiaryLabel,
+      //     onPressed: () async {
+      //       RegistrationDeliverySingleton()
+      //           .setHouseholdType(HouseholdType.family);
+      //       context.router.push(const CustomRegistrationDeliveryWrapperRoute());
+      //     },
+      //   ),
+      // ),
       i18.home.beneficiaryReferralLabel:
           homeShowcaseData.hfBeneficiaryReferral.buildWith(
         child: HomeItemCard(
@@ -560,8 +560,16 @@ class _HomePageState extends LocalizedState<HomePage> {
             showDIPFLowDialog(context, localizations);
           },
           icon: Icons.people,
-          enableCustomIcon: true,
-          customIconSize: spacer9,
+        ),
+      ),
+      i18.home.campaignDeliverySelection:
+          homeShowcaseData.campaignDeliverySelection.buildWith(
+        child: HomeItemCard(
+          label: i18.home.campaignDeliverySelection,
+          onPressed: () {
+            context.router.push(CampaignDeliverySelectRoute());
+          },
+          icon: Icons.groups,
         ),
       ),
     };
@@ -577,8 +585,8 @@ class _HomePageState extends LocalizedState<HomePage> {
       i18.home.beneficiaryReferralLabel:
           homeShowcaseData.hfBeneficiaryReferral.showcaseKey,
 
-      i18.home.beneficiaryLabel:
-          homeShowcaseData.distributorBeneficiaries.showcaseKey,
+      // i18.home.beneficiaryLabel:
+      //     homeShowcaseData.distributorBeneficiaries.showcaseKey,
 
       i18.home.manageStockLabel:
           homeShowcaseData.warehouseManagerManageStock.showcaseKey,
@@ -590,6 +598,8 @@ class _HomePageState extends LocalizedState<HomePage> {
           homeShowcaseData.distributorFileComplaint.showcaseKey,
       i18.home.dailyImplementationPlanLabel:
           homeShowcaseData.dailyImplementationPlan.showcaseKey,
+      i18.home.campaignDeliverySelection:
+          homeShowcaseData.campaignDeliverySelection.showcaseKey,
       i18.home.db: homeShowcaseData.db.showcaseKey,
       i18.home.dashboard: homeShowcaseData.dashBoard.showcaseKey,
       i18.home.clfLabel: homeShowcaseData.clf.showcaseKey,
@@ -607,7 +617,7 @@ class _HomePageState extends LocalizedState<HomePage> {
       i18.home.manageAttendanceLabel,
 
       i18.home.beneficiaryReferralLabel,
-      i18.home.beneficiaryLabel,
+      // i18.home.beneficiaryLabel,
       i18.home.manageStockLabel,
       i18.home.stockReconciliationLabel,
       i18.home.viewReportsLabel,
@@ -615,6 +625,7 @@ class _HomePageState extends LocalizedState<HomePage> {
       i18.home.syncDataLabel,
       i18.home.fileComplaint,
       i18.home.dailyImplementationPlanLabel,
+      i18.home.campaignDeliverySelection,
       i18.home.db,
       i18.home.dashboard,
       i18.home.beneficiaryIdLabel,
@@ -627,7 +638,9 @@ class _HomePageState extends LocalizedState<HomePage> {
                   .map((e) => e.displayName)
                   .toList()
                   .contains(element) ||
-              element == i18.home.db,
+              element == i18.home.db ||
+              element == i18.home.dailyImplementationPlanLabel ||
+              element == i18.home.campaignDeliverySelection,
         )
         .toList();
 

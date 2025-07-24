@@ -3,6 +3,7 @@ import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/address_type.dart';
 import 'package:digit_data_model/models/entities/household_type.dart';
 import 'package:digit_ui_components/digit_components.dart';
+import 'package:digit_ui_components/models/RadioButtonModel.dart';
 import 'package:digit_ui_components/services/location_bloc.dart';
 import 'package:digit_ui_components/theme/digit_extended_theme.dart';
 import 'package:digit_ui_components/utils/component_utils.dart';
@@ -55,6 +56,8 @@ class CustomHouseholdLocationPageState
   static const _accuracyKey = 'accuracy';
   static const maxLength = 64;
   static const _buildingNameKey = 'buildingName';
+  static const _householdNumberKey = 'householdNumber';
+  static const _consent = 'consent';
 
   @override
   void initState() {
@@ -240,7 +243,7 @@ class CustomHouseholdLocationPageState
                                     addressModel,
                                   ),
                                 );
-                                router.push(CaregiverConsentRoute());
+                                router.push(CustomHouseHoldDetailsRoute());
                               },
                               editHousehold: (
                                 address,
@@ -287,7 +290,7 @@ class CustomHouseholdLocationPageState
                                     addressModel,
                                   ),
                                 );
-                                router.push(CaregiverConsentRoute());
+                                router.push(CustomHouseHoldDetailsRoute());
                               },
                               addMember: (
                                 address,
@@ -330,7 +333,7 @@ class CustomHouseholdLocationPageState
                                     addressModel,
                                   ),
                                 );
-                                router.push(CaregiverConsentRoute());
+                                router.push(CustomHouseHoldDetailsRoute());
                               },
                             );
                           },
@@ -384,6 +387,69 @@ class CustomHouseholdLocationPageState
                             ),
                           ),
                         ),
+                        ReactiveWrapperField(
+                          formControlName: _householdNumberKey,
+                          validationMessages: {
+                            'required': (object) => localizations.translate(
+                                  '${i18_local.householdDetails.householdNumberLabel}_IS_REQUIRED',
+                                ),
+                            'maxLength': (object) => localizations
+                                .translate(i18.common.maxCharsRequired)
+                                .replaceAll('{}', maxLength.toString()),
+                          },
+                          builder: (field) => LabeledField(
+                            label: localizations.translate(
+                              i18_local.householdDetails.householdNumberLabel,
+                            ),
+                            child: DigitTextFormInput(
+                              initialValue:
+                                  form.control(_householdNumberKey).value,
+                              onChange: (value) {
+                                form.control(_householdNumberKey).value = value;
+                              },
+                              errorMessage: field.errorText,
+                            ),
+                          ),
+                        ),
+                        ReactiveWrapperField<String>(
+                            formControlName: _consent,
+                            validationMessages: {
+                              'required': (_) => localizations.translate(
+                                    i18.common.corecommonRequired,
+                                  ),
+                            },
+                            showErrors: (control) =>
+                                control.invalid && control.touched,
+                            // Ensures error is shown if invalid and touched
+                            builder: (field) {
+                              return LabeledField(
+                                isRequired: true,
+                                label: localizations.translate(
+                                  i18_local
+                                      .householdDetails.householdConsentAction,
+                                ),
+                                child: RadioList(
+                                    onChanged: (val) {
+                                      form.control(_consent).markAsTouched();
+                                      form.control(_consent).value = val.code;
+                                    },
+                                    groupValue:
+                                        form.control(_consent).value ?? "",
+                                    errorMessage: field.errorText,
+                                    radioDigitButtons: [
+                                      RadioButtonModel(
+                                          code: "1",
+                                          name: localizations.translate(
+                                              i18_local
+                                                  .householdDetails.submitYes)),
+                                      RadioButtonModel(
+                                          code: "0",
+                                          name: localizations.translate(
+                                            i18_local.householdDetails.submitNo,
+                                          )),
+                                    ]),
+                              );
+                            }),
                         if (RegistrationDeliverySingleton().householdType ==
                             HouseholdType.community)
                           householdLocationShowcaseData.buildingName.buildWith(
@@ -476,6 +542,17 @@ class CustomHouseholdLocationPageState
       ),
       _accuracyKey: FormControl<double>(
         value: addressModel?.locationAccuracy,
+      ),
+      _householdNumberKey: FormControl<String>(validators: [
+        Validators.delegate(
+            (validator) => CustomValidator.requiredMin(validator)),
+        Validators.maxLength(200),
+      ]),
+      _consent: FormControl<String>(
+        value: null,
+        validators: [
+          Validators.required,
+        ],
       ),
       if (RegistrationDeliverySingleton().householdType ==
           HouseholdType.community)

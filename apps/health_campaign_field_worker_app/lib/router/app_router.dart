@@ -107,6 +107,10 @@ import '../pages/checklist/custom_survey_form_acknowledgement.dart';
 import '../pages/checklist/custom_survey_form_wrapper.dart';
 import '../pages/summary_report/custom_distribution_summary_report.dart';
 
+import '../pages/campaign_delivery_select.dart';
+
+import '../pages/dailyImplementationPlan/select_boundary.dart';
+
 part 'app_router.gr.dart';
 
 @AutoRouterConfig(
@@ -142,6 +146,9 @@ class AppRouter extends _$AppRouter {
       path: '/',
       children: [
         AutoRoute(page: HomeRoute.page, path: 'home'),
+        AutoRoute(
+            page: CampaignDeliverySelectRoute.page,
+            path: 'campaign-delivery-select'),
         AutoRoute(page: BeneficiaryIdDownSyncRoute.page),
         AutoRoute(page: ProfileRoute.page, path: 'profile'),
         AutoRoute(page: UserQRDetailsRoute.page, path: 'user-qr-code'),
@@ -178,25 +185,11 @@ class AppRouter extends _$AppRouter {
           page: ViewTransactionsRoute.page,
           path: 'beneficiary-downsync-report',
         ),
-        // INFO : Need to add Router of package Here
-        // SurveyForm Route
-        // AutoRoute(
-        //     page: SurveyFormWrapperRoute.page,
-        //     path: 'surveyForm',
-        //     children: [
-        //       AutoRoute(
-        //         page: SurveyformRoute.page,
-        //         path: '',
-        //       ),
-        //       AutoRoute(
-        //           page: SurveyFormBoundaryViewRoute.page,
-        //           path: 'view-boundary'),
-        //       AutoRoute(page: SurveyFormViewRoute.page, path: 'view'),
-        //       AutoRoute(page: SurveyFormPreviewRoute.page, path: 'preview'),
-        //       AutoRoute(
-        //           page: SurveyFormAcknowledgementRoute.page,
-        //           path: 'surveyForm-acknowledgement'),
-        //     ]),
+
+        AutoRoute(
+          page: SelectBoundaryRoute.page,
+          path: 'select-boundary',
+        ),
 
         // Attendance Route
         AutoRoute(

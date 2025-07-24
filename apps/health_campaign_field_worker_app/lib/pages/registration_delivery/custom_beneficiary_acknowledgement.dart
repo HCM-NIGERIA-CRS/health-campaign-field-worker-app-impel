@@ -112,7 +112,11 @@ class CustomBeneficiaryAcknowledgementPageState
                             i18.householdDetails.viewHouseHoldDetailsAction,
                           ),
                           onPressed: () {
-                            context.router.popAndPush(
+                            (context.router.parent() as StackRouter).maybePop();
+                            context.router.popUntil((route) =>
+                                route.settings.name ==
+                                SearchBeneficiaryRoute.name);
+                            context.router.push(
                               BeneficiaryWrapperRoute(
                                 wrapper: householdMemberWrapper!,
                               ),
@@ -124,7 +128,10 @@ class CustomBeneficiaryAcknowledgementPageState
                         label: localizations.translate(
                             i18.acknowledgementSuccess.actionLabelText),
                         onPressed: () {
-                          context.router.maybePop();
+                          (context.router.parent() as StackRouter).maybePop();
+                          context.router.popUntil((route) =>
+                              route.settings.name ==
+                              SearchBeneficiaryRoute.name);
                         },
                         type: DigitButtonType.secondary,
                         size: DigitButtonSize.large),

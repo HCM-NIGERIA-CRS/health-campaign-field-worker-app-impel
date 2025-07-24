@@ -52,7 +52,10 @@ class CustomHouseHoldDetailsPageState
     extends LocalizedState<CustomHouseHoldDetailsPage> {
   static const _dateOfRegistrationKey = 'dateOfRegistration';
   static const _memberCountKey = 'memberCount';
+  static const _childrenAbsentCountKey = 'childrenAbsentCount';
   static const _childrenCountKey = 'childrenCount';
+  static const _childrenAFPCountKey = 'childrenAFPCount';
+  static const _guineaWormDiseaseCountKey = 'guineaWormDiseaseCount';
 
   // Define controllers
   final TextEditingController _pregnantWomenController =
@@ -274,19 +277,27 @@ class CustomHouseHoldDetailsPageState
 
                           final children =
                               form.control(_childrenCountKey).value as int;
+                          final childrenAbsent = form
+                              .control(_childrenAbsentCountKey)
+                              .value as int;
+                          final childrenAFP =
+                              form.control(_childrenAFPCountKey).value as int;
+                          final guineaWormCount = form
+                              .control(_guineaWormDiseaseCountKey)
+                              .value as int;
 
                           final dateOfRegistration = form
                               .control(_dateOfRegistrationKey)
                               .value as DateTime;
-                          if ((memberCount < children)) {
-                            DigitToast.show(context,
-                                options: DigitToastOptions(
-                                    localizations.translate(i18_local
-                                        .beneficiaryDetails.invalidChildCount),
-                                    true,
-                                    theme));
-                            return;
-                          }
+                          // if ((memberCount < children)) {
+                          //   DigitToast.show(context,
+                          //       options: DigitToastOptions(
+                          //           localizations.translate(i18_local
+                          //               .beneficiaryDetails.invalidChildCount),
+                          //           true,
+                          //           theme));
+                          //   return;
+                          // }
                           registrationState.maybeWhen(
                             orElse: () {
                               return;
@@ -385,12 +396,34 @@ class CustomHouseHoldDetailsPageState
                                                         .children
                                                         .toValue() &&
                                                 e.key !=
+                                                    local_constants.Constants
+                                                        .headConsent &&
+                                                e.key !=
+                                                    local_constants.Constants
+                                                        .childrenAFP &&
+                                                e.key !=
+                                                    local_constants.Constants
+                                                        .childrenAbsent &&
+                                                e.key !=
                                                     local_constants
-                                                        .Constants.headConsent),
+                                                        .Constants.guineaWorm),
                                         AdditionalField(
                                           AdditionalFieldsType.children
                                               .toValue(),
                                           children,
+                                        ),
+                                        AdditionalField(
+                                          local_constants.Constants.childrenAFP,
+                                          childrenAFP,
+                                        ),
+                                        AdditionalField(
+                                          local_constants
+                                              .Constants.childrenAbsent,
+                                          childrenAbsent,
+                                        ),
+                                        AdditionalField(
+                                          local_constants.Constants.guineaWorm,
+                                          guineaWormCount,
                                         ),
                                         const AdditionalField(
                                           local_constants.Constants.headConsent,
@@ -449,17 +482,39 @@ class CustomHouseHoldDetailsPageState
                                         //[TODO: Use pregnant women form value based on project config
                                         ...?householdModel
                                             .additionalFields?.fields
-                                            .where(
-                                          (e) =>
-                                              e.key !=
-                                              AdditionalFieldsType.children
-                                                  .toValue(),
-                                        ),
+                                            .where((e) =>
+                                                e
+                                                        .key !=
+                                                    AdditionalFieldsType
+                                                        .children
+                                                        .toValue() &&
+                                                e.key !=
+                                                    local_constants.Constants
+                                                        .childrenAFP &&
+                                                e.key !=
+                                                    local_constants.Constants
+                                                        .childrenAbsent &&
+                                                e.key !=
+                                                    local_constants
+                                                        .Constants.guineaWorm),
 
                                         AdditionalField(
                                           AdditionalFieldsType.children
                                               .toValue(),
                                           children,
+                                        ),
+                                        AdditionalField(
+                                          local_constants.Constants.childrenAFP,
+                                          childrenAFP,
+                                        ),
+                                        AdditionalField(
+                                          local_constants
+                                              .Constants.childrenAbsent,
+                                          childrenAbsent,
+                                        ),
+                                        AdditionalField(
+                                          local_constants.Constants.guineaWorm,
+                                          guineaWormCount,
                                         ),
                                       ]));
 
@@ -564,43 +619,43 @@ class CustomHouseHoldDetailsPageState
                           ),
                           //[TODO: Use pregnant women form value based on project config
 
-                          householdDetailsShowcaseData
-                              .numberOfMembersLivingInHousehold
-                              .buildWith(
-                            child: ReactiveWrapperField(
-                              formControlName: _memberCountKey,
-                              builder: (field) => LabeledField(
-                                child: DigitIntegerFormPicker(
-                                  minimum: 1,
-                                  maximum: !isCommunity ? 30 : 1000000,
-                                  form: form,
-                                  formControlName: _memberCountKey,
-                                  onChange: () {
-                                    int children =
-                                        form.control(_childrenCountKey).value;
-                                    int memberCount =
-                                        form.control(_memberCountKey).value;
-                                    form.control(_childrenCountKey).value =
-                                        memberCount < children
-                                            ? memberCount
-                                            : children;
-                                  },
-                                  label: (RegistrationDeliverySingleton()
-                                              .householdType ==
-                                          HouseholdType.community)
-                                      ? localizations.translate(
-                                          i18.householdDetails
-                                              .noOfMembersCountCLFLabel,
-                                        )
-                                      : localizations.translate(
-                                          i18.householdDetails
-                                              .noOfMembersCountLabel,
-                                        ),
-                                  incrementer: true,
-                                ),
-                              ),
-                            ),
-                          ),
+                          // householdDetailsShowcaseData
+                          //     .numberOfMembersLivingInHousehold
+                          //     .buildWith(
+                          //   child: ReactiveWrapperField(
+                          //     formControlName: _memberCountKey,
+                          //     builder: (field) => LabeledField(
+                          //       child: DigitIntegerFormPicker(
+                          //         minimum: 1,
+                          //         maximum: !isCommunity ? 30 : 1000000,
+                          //         form: form,
+                          //         formControlName: _memberCountKey,
+                          //         onChange: () {
+                          //           int children =
+                          //               form.control(_childrenCountKey).value;
+                          //           int memberCount =
+                          //               form.control(_memberCountKey).value;
+                          //           form.control(_childrenCountKey).value =
+                          //               memberCount < children
+                          //                   ? memberCount
+                          //                   : children;
+                          //         },
+                          //         label: (RegistrationDeliverySingleton()
+                          //                     .householdType ==
+                          //                 HouseholdType.community)
+                          //             ? localizations.translate(
+                          //                 i18.householdDetails
+                          //                     .noOfMembersCountCLFLabel,
+                          //               )
+                          //             : localizations.translate(
+                          //                 i18.householdDetails
+                          //                     .noOfMembersCountLabel,
+                          //               ),
+                          //         incrementer: true,
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
                           householdDetailsShowcaseData
                               .numberOfChildrenBelow5InHousehold
                               .buildWith(
@@ -610,14 +665,7 @@ class CustomHouseHoldDetailsPageState
                               form: form,
                               formControlName: _childrenCountKey,
                               onChange: () {
-                                int children =
-                                    form.control(_childrenCountKey).value;
-                                int memberCount =
-                                    form.control(_memberCountKey).value;
-                                form.control(_childrenCountKey).value =
-                                    memberCount - 1 < children
-                                        ? memberCount - 1
-                                        : children;
+                                form.control(_childrenCountKey).value;
                               },
                               label: localizations.translate(
                                 i18.householdDetails
@@ -625,6 +673,48 @@ class CustomHouseHoldDetailsPageState
                               ),
                               incrementer: true,
                             ),
+                          ),
+                          DigitIntegerFormPicker(
+                            minimum: 0,
+                            maximum: 20,
+                            form: form,
+                            formControlName: _childrenAbsentCountKey,
+                            onChange: () {
+                              form.control(_childrenAbsentCountKey).value;
+                            },
+                            label: localizations.translate(
+                              i18_local
+                                  .householdDetails.noOfChildrenAbsentLabel,
+                            ),
+                            incrementer: true,
+                          ),
+
+                          DigitIntegerFormPicker(
+                            minimum: 0,
+                            maximum: 20,
+                            form: form,
+                            formControlName: _childrenAFPCountKey,
+                            onChange: () {
+                              form.control(_childrenAFPCountKey).value;
+                            },
+                            label: localizations.translate(
+                              i18_local.householdDetails.noOfChildrenAFPLabel,
+                            ),
+                            incrementer: true,
+                          ),
+
+                          DigitIntegerFormPicker(
+                            minimum: 0,
+                            maximum: 20,
+                            form: form,
+                            formControlName: _guineaWormDiseaseCountKey,
+                            onChange: () {
+                              form.control(_guineaWormDiseaseCountKey).value;
+                            },
+                            label: localizations.translate(
+                              i18_local.householdDetails.guineaWormCountLabel,
+                            ),
+                            incrementer: true,
                           ),
                         ]),
                   ),
@@ -669,6 +759,18 @@ class CustomHouseHoldDetailsPageState
                     .toString() ??
                 '0')
             : 0,
+        validators: [Validators.max<int>(20)],
+      ),
+      _childrenAbsentCountKey: FormControl<int>(
+        value: 0,
+        validators: [Validators.max<int>(20)],
+      ),
+      _childrenAFPCountKey: FormControl<int>(
+        value: 0,
+        validators: [Validators.max<int>(20)],
+      ),
+      _guineaWormDiseaseCountKey: FormControl<int>(
+        value: 0,
         validators: [Validators.max<int>(20)],
       ),
       _memberCountKey: FormControl<int>(
