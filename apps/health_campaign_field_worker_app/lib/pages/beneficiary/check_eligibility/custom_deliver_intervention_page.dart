@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:digit_components/utils/date_utils.dart';
+import 'package:digit_components/widgets/atoms/digit_reactive_search_dropdown.dart';
 import 'package:digit_components/widgets/digit_dialog.dart' as dialog;
 // import 'package:digit_components/digit_components.dart';
 import 'package:digit_data_model/data_model.dart';
@@ -33,6 +34,8 @@ import 'package:registration_delivery/widgets/beneficiary/resource_beneficiary_c
 import 'package:registration_delivery/widgets/component_wrapper/product_variant_bloc_wrapper.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 
+import '../../../blocs/app_initialization/app_initialization.dart';
+import '../../../data/local_store/no_sql/schema/app_configuration.dart';
 import '../../../router/app_router.dart';
 import '../../../utils/app_enums.dart';
 import '../../../utils/i18_key_constants.dart' as i18_local;
@@ -67,6 +70,7 @@ class CustomDeliverInterventionPageState
   static const _quantityDistributedKey = 'quantityDistributed';
   static const _doseAdministrationKey = 'doseAdministered';
   static const _dateOfAdministrationKey = 'dateOfAdministration';
+  static const _deliveryCommentKey = 'deliveryComment';
   final clickedStatus = ValueNotifier<bool>(false);
   bool? shouldSubmit = false;
 
@@ -701,6 +705,63 @@ class CustomDeliverInterventionPageState
                                                       },
                                                     )),
                                               ]),
+                                          DigitCard(children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                BlocBuilder<
+                                                    AppInitializationBloc,
+                                                    AppInitializationState>(
+                                                  builder: (context, state) {
+                                                    if (state
+                                                        is! AppInitialized) {
+                                                      return const Offstage();
+                                                    }
+
+                                                    final deliveryCommentOptions = state
+                                                            .appConfiguration
+                                                            .deliveryCommentOptions ??
+                                                        <DeliveryCommentOptions>[];
+
+                                                    return DigitReactiveSearchDropdown<
+                                                        String>(
+                                                      label: localizations
+                                                          .translate(
+                                                        i18.deliverIntervention
+                                                            .deliveryCommentLabel,
+                                                      ),
+                                                      form: form,
+                                                      enabled: true,
+                                                      isRequired: false,
+                                                      menuItems:
+                                                          deliveryCommentOptions
+                                                              .map((e) {
+                                                        return e.code;
+                                                      }).toList(),
+                                                      formControlName:
+                                                          _deliveryCommentKey,
+                                                      valueMapper: (value) =>
+                                                          localizations
+                                                              .translate(
+                                                        value,
+                                                      ),
+                                                      emptyText: localizations
+                                                          .translate(i18.common
+                                                              .noMatchFound),
+                                                      validationMessage:
+                                                          localizations
+                                                              .translate(
+                                                        i18.common
+                                                            .corecommonRequired,
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ]),
                                         ],
                                       ),
                                     ],
@@ -857,6 +918,9 @@ class CustomDeliverInterventionPageState
     final productvariantList =
         ((form.control(_resourceDeliveredKey) as FormArray).value
             as List<ProductVariantModel?>);
+
+    // get the delivery comment
+    final deliveryComment = form.control(_deliveryCommentKey).value as String?;
     // Update the task with information from the form and other context
     task = task.copyWith(
       projectId: RegistrationDeliverySingleton().projectId,
@@ -927,6 +991,12 @@ class CustomDeliverInterventionPageState
             AdditionalField(
               AdditionalFieldsType.longitude.toValue(),
               longitude,
+            ),
+          if (deliveryComment != null &&
+              deliveryComment.trim().toString().isNotEmpty)
+            AdditionalField(
+              AdditionalFieldsType.deliveryComment.toValue(),
+              deliveryComment,
             ),
           AdditionalField(
             additional_fields_local.AdditionalFieldsType.deliveryType.toValue(),
@@ -1002,6 +1072,25 @@ class CustomDeliverInterventionPageState
                         : null),
               )),
         ],
+      ),
+      _deliveryCommentKey: FormControl<String>(
+        value: RegistrationDeliverySingleton().beneficiaryType !=
+                BeneficiaryType.individual
+            ? (bloc.tasks?.lastOrNull?.additionalFields?.fields
+                            .where((a) =>
+                                a.key ==
+                                AdditionalFieldsType.deliveryComment.toValue())
+                            .toList() ??
+                        [])
+                    .isNotEmpty
+                ? bloc.tasks?.lastOrNull?.additionalFields?.fields
+                    .where((a) =>
+                        a.key == AdditionalFieldsType.deliveryComment.toValue())
+                    .first
+                    .value
+                : ''
+            : null,
+        validators: [],
       ),
       _quantityDistributedKey: FormArray<int>([
         ..._controllers.mapIndexed(
