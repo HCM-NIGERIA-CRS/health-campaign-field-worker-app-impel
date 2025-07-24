@@ -22,6 +22,7 @@ import 'package:inventory_management/blocs/app_localization.dart';
 import 'package:inventory_management/router/inventory_router.dart';
 import 'package:inventory_management/router/inventory_router.gm.dart';
 import 'package:inventory_management/blocs/record_stock.dart' as _i15;
+import 'package:transit_post/router/transit_post_router.dart';
 
 import '../blocs/inventory_management/custom_inventory_report.dart';
 import '../blocs/localization/app_localization.dart';
@@ -122,6 +123,7 @@ part 'app_router.gr.dart';
     AttendanceRoute,
     ComplaintsRoute,
     SurveyFormRoute,
+    TransitPostRoute,
   ],
 )
 class AppRouter extends _$AppRouter {

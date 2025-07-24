@@ -897,6 +897,8 @@ class Home {
 
   String get beneficiaryLabel => 'HOME_BENEFICIARY_LABEL';
 
+  String get transitPostLabel => 'HOME_TRANSIT_POST_ABEL';
+
   String get beneficiaryDistributionLabel =>
       'HOME_BENEFICIARY_DISTRIBUTION_LABEL';
 

@@ -517,10 +517,10 @@ packages:
     dependency: "direct main"
     description:
       name: digit_data_model
-      sha256: "90987efbd5dd0ca01914d3b548774f2b91a5f7d50f241f6ea35d98f18ad7f4dd"
+      sha256: "85764601509108706433e241a838982b37fcce6d35abd9e9ceb4b6c712f768fc"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.7-dev.4-idGen"
+    version: "1.1.1"
   digit_dss:
     dependency: "direct main"
     description:
@@ -549,10 +549,10 @@ packages:
     dependency: "direct main"
     description:
       name: digit_scanner
-      sha256: c8f82938906a11c516d445d7e5e27b7e6c6a1d07e0a608c2f90f63dd234241a5
+      sha256: "1bf24bdaf71f99de0f1281136478bb141f058a984752176ffa63ad580b467e18"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.5+1"
+    version: "1.0.6+2"
   digit_showcase:
     dependency: "direct main"
     description:
@@ -2177,6 +2177,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  transit_post:
+    dependency: "direct main"
+    description:
+      name: transit_post
+      sha256: "4d1f8ba6e01c0dd454a340e5b1c9b1f9178b8b8d5a1ea95874bfe2ca62d880ad"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   type_plus:
     dependency: transitive
     description:

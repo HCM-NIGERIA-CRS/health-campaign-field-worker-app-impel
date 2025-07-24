@@ -8,6 +8,7 @@ import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:registration_delivery/utils/utils.dart';
+import 'package:transit_post/router/transit_post_router.gm.dart';
 
 import '../router/app_router.dart';
 import '../widgets/header/back_navigation_help_header.dart';
@@ -97,6 +98,13 @@ class CampaignDeliverySelectPageState
           context.router.push(const CustomRegistrationDeliveryWrapperRoute());
         },
       ),
+      HomeItemCard(
+        icon: Icons.vaccines_outlined,
+        label: i18.home.transitPostLabel,
+        onPressed: () {
+          context.router.push(const TransitPostWrapperRoute());
+        },
+      )
     ];
 
     return _HomeItemDataModel(homeItemsList);

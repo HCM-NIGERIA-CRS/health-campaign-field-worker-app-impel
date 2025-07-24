@@ -125,6 +125,7 @@ class CustomStockLocalRepository
   FutureOr<void> update(
     StockModel entity, {
     bool createOpLog = true,
+    DataOperation dataOperation = DataOperation.create,
   }) async {
     return retryLocalCallOperation(() async {
       final stockCompanion = entity.companion;
