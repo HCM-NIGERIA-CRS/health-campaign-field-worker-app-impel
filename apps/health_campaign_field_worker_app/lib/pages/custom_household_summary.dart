@@ -3,9 +3,11 @@ import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/theme/digit_extended_theme.dart';
 import 'package:digit_ui_components/utils/date_utils.dart';
 import 'package:digit_ui_components/widgets/atoms/label_value_list.dart';
+import 'package:digit_ui_components/widgets/atoms/pop_up_card.dart';
 
 import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
 import 'package:digit_ui_components/widgets/molecules/label_value_summary.dart';
+import 'package:digit_ui_components/widgets/molecules/show_pop_up.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -24,6 +26,7 @@ import '../../router/app_router.dart';
 import '../blocs/compliance/consent_household.dart';
 import '../utils/extensions/extensions.dart';
 import 'registration_delivery/custom_beneficiary_acknowledgement.dart';
+import '../../utils/i18_key_constants.dart' as i18_local;
 
 @RoutePage()
 class CustomHouseholdSummaryPage extends LocalizedStatefulWidget {
@@ -87,25 +90,11 @@ class CustomHouseholdSummaryPageState
         builder: (context, householdState) {
           return ScrollableContent(
               enableFixedDigitButton: true,
-              header: Column(children: [
+              header: const Column(children: [
                 const Padding(
                   padding: EdgeInsets.only(bottom: spacer2),
                   child: BackNavigationHelpHeaderWidget(
                     showHelp: false,
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.only(bottom: spacer2, left: spacer2),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      localizations.translate(
-                        i18.common.coreCommonSummaryDetails,
-                      ),
-                      style: textTheme.headingXl
-                          .copyWith(color: theme.colorTheme.primary.primary2),
-                    ),
                   ),
                 ),
               ]),
@@ -123,38 +112,91 @@ class CustomHouseholdSummaryPageState
                           mainAxisSize: MainAxisSize.max,
                           isDisabled: isClicked ? true : false,
                           onPressed: () async {
-                            final consentBloc =
-                                context.read<ConsentHouseholdBloc>();
+                            final submit = await showCustomPopup(
+                              context: context,
+                              builder: (popupContext) => Popup(
+                                title: localizations.translate(
+                                  i18.deliverIntervention.dialogTitle,
+                                ),
+                                onOutsideTap: () {
+                                  Navigator.of(popupContext).pop(false);
+                                },
+                                description: localizations.translate(
+                                  i18.deliverIntervention.dialogContent,
+                                ),
+                                type: PopUpType.simple,
+                                actions: [
+                                  DigitButton(
+                                    label: localizations.translate(
+                                      i18.common.coreCommonSubmit,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.of(
+                                        popupContext,
+                                        rootNavigator: true,
+                                      ).pop(true);
+                                    },
+                                    type: DigitButtonType.primary,
+                                    size: DigitButtonSize.large,
+                                  ),
+                                  DigitButton(
+                                    label: localizations.translate(
+                                      i18.common.coreCommonCancel,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.of(
+                                        popupContext,
+                                        rootNavigator: true,
+                                      ).pop(false);
+                                    },
+                                    type: DigitButtonType.secondary,
+                                    size: DigitButtonSize.large,
+                                  ),
+                                ],
+                              ),
+                            ) as bool;
 
-                            final boundary =
-                                RegistrationDeliverySingleton().boundary;
-                            final tenantId =
-                                RegistrationDeliverySingleton().tenantId;
-                            final projectId =
-                                RegistrationDeliverySingleton().projectId;
-                            final beneficiaryType =
-                                (RegistrationDeliverySingleton()
-                                            .beneficiaryType ??
-                                        context.beneficiaryType)
-                                    .toValue();
+                            if (submit ?? false) {
+                              if (context.mounted) {
+                                final consentBloc =
+                                    context.read<ConsentHouseholdBloc>();
 
-                            consentBloc.add(ConsentHouseholdEvent.handleSubmit(
-                              boundary!.code,
-                              boundary!.name,
-                              context.loggedInUserUuid,
-                              tenantId,
-                              projectId,
-                              "",
-                              widget.householdNumber,
-                              beneficiaryType,
-                              false,
-                            ));
-                            Future.delayed(const Duration(milliseconds: 700))
-                                .then((value) {
-                              context.router.push(HouseholdAcknowledgementRoute(
-                                enableViewHousehold: false,
-                              ));
-                            });
+                                final boundary =
+                                    RegistrationDeliverySingleton().boundary;
+                                final tenantId =
+                                    RegistrationDeliverySingleton().tenantId;
+                                final projectId =
+                                    RegistrationDeliverySingleton().projectId;
+                                final beneficiaryType =
+                                    (RegistrationDeliverySingleton()
+                                                .beneficiaryType ??
+                                            context.beneficiaryType)
+                                        .toValue();
+
+                                consentBloc
+                                    .add(ConsentHouseholdEvent.handleSubmit(
+                                  boundary!.code,
+                                  boundary!.name,
+                                  context.loggedInUserUuid,
+                                  tenantId,
+                                  projectId,
+                                  "",
+                                  widget.householdNumber,
+                                  beneficiaryType,
+                                  false,
+                                ));
+                                Future.delayed(
+                                        const Duration(milliseconds: 700))
+                                    .then((value) {
+                                  context.router.push(
+                                      CustomBeneficiaryAcknowledgementRoute(
+                                    enableViewHousehold: false,
+                                    acknowledgementType:
+                                        AcknowledgementType.addHousehold,
+                                  ));
+                                });
+                              }
+                            }
                           },
                         );
                       },
@@ -169,154 +211,54 @@ class CustomHouseholdSummaryPageState
                           children: [
                             LabelValueSummary(
                                 padding: EdgeInsets.zero,
-                                heading: localizations.translate(i18
-                                    .householdLocation
-                                    .householdLocationLabelText),
+                                heading: localizations.translate(i18_local
+                                    .caregiverConsent
+                                    .householdSummaryComplianceLabel),
                                 headingStyle: textTheme.headingL.copyWith(
                                   color: theme.colorTheme.primary.primary2,
                                 ),
                                 items: [
+                                  LabelValueItem(
+                                      label: localizations.translate(i18_local
+                                          .householdDetails
+                                          .householdNumberLabel),
+                                      value: widget.householdNumber ??
+                                          localizations.translate(
+                                              i18.common.coreCommonNA),
+                                      labelFlex: 5,
+                                      padding: const EdgeInsets.only(
+                                          bottom: spacer2)),
                                   LabelValueItem(
                                       label: localizations.translate(
                                           i18.householdLocation.villageLabel),
                                       value: localizations.translate(
-                                          householdState.householdModel?.address
-                                                  ?.locality?.code ??
+                                          RegistrationDeliverySingleton()
+                                                  .boundary
+                                                  ?.code ??
                                               i18.common.coreCommonNA),
                                       isInline: true,
                                       labelFlex: 5,
                                       padding: const EdgeInsets.only(
                                           bottom: spacer2)),
-                                  LabelValueItem(
-                                    label: localizations.translate(i18
-                                        .householdLocation.landmarkFormLabel),
-                                    value: householdState.householdModel
-                                            ?.address?.landmark ??
-                                        localizations
-                                            .translate(i18.common.coreCommonNA),
-                                    isInline: true,
-                                    labelFlex: 5,
-                                    padding:
-                                        const EdgeInsets.only(top: spacer2),
-                                  ),
-                                ]),
-                          ]),
-                      DigitCard(
-                          margin: const EdgeInsets.all(spacer2),
-                          children: [
-                            LabelValueSummary(
-                                padding: EdgeInsets.zero,
-                                heading: localizations.translate(
-                                    i18.householdDetails.householdDetailsLabel),
-                                headingStyle: textTheme.headingL.copyWith(
-                                  color: theme.colorTheme.primary.primary2,
-                                ),
-                                items: [
-                                  LabelValueItem(
-                                      label: localizations.translate(
-                                          i18.beneficiaryDetails.totalMembers),
-                                      value: householdState
-                                              .householdModel?.memberCount
-                                              .toString() ??
-                                          '0',
-                                      isInline: true,
-                                      labelFlex: 5,
-                                      padding: const EdgeInsets.only(
-                                          bottom: spacer2)),
-                                ]),
-                          ]),
-                      DigitCard(
-                          margin: const EdgeInsets.all(spacer2),
-                          children: [
-                            LabelValueSummary(
-                                padding: EdgeInsets.zero,
-                                heading: localizations.translate(i18
-                                    .individualDetails
-                                    .individualsDetailsLabelText),
-                                headingStyle: textTheme.headingL.copyWith(
-                                  color: theme.colorTheme.primary.primary2,
-                                ),
-                                items: [
                                   LabelValueItem(
                                       label: localizations.translate(
                                           i18.individualDetails.nameLabelText),
-                                      value: householdState.maybeWhen(
-                                          orElse: () => localizations.translate(
+                                      value: widget.headName ??
+                                          localizations.translate(
                                               i18.common.coreCommonNA),
-                                          summary: (
-                                            navigateToRoot,
-                                            householdModel,
-                                            individualModel,
-                                            projectBeneficiaryModel,
-                                            registrationDate,
-                                            addressModel,
-                                            loading,
-                                            isHeadOfHousehold,
-                                          ) =>
-                                              individualModel
-                                                  ?.name?.givenName ??
-                                              localizations.translate(
-                                                  i18.common.coreCommonNA)),
                                       labelFlex: 5,
                                       padding: const EdgeInsets.only(
                                           bottom: spacer2)),
                                   LabelValueItem(
-                                    label: localizations.translate(
-                                        i18.individualDetails.dobLabelText),
-                                    value: householdState.maybeWhen(
-                                        orElse: () => localizations
-                                            .translate(i18.common.coreCommonNA),
-                                        summary: (
-                                          navigateToRoot,
-                                          householdModel,
-                                          individualModel,
-                                          projectBeneficiaryModel,
-                                          registrationDate,
-                                          addressModel,
-                                          loading,
-                                          isHeadOfHousehold,
-                                        ) =>
-                                            individualModel?.dateOfBirth != null
-                                                ? DigitDateUtils.getFilteredDate(
-                                                        DigitDateUtils.getFormattedDateToDateTime(
-                                                                individualModel
-                                                                        ?.dateOfBirth ??
-                                                                    '')
-                                                            .toString(),
-                                                        dateFormat: Constants()
-                                                            .dateMonthYearFormat)
-                                                    .toString()
-                                                : localizations.translate(
-                                                    i18.common.coreCommonNA)),
-                                    labelFlex: 5,
-                                  ),
-                                  LabelValueItem(
-                                      label: localizations.translate(i18
-                                          .individualDetails.genderLabelText),
-                                      value: householdState.maybeWhen(
-                                          orElse: () => localizations.translate(
+                                      label: localizations.translate(i18_local
+                                          .caregiverConsent
+                                          .reasonForNonComplianceLabel),
+                                      value: widget.reasonNonCompliance ??
+                                          localizations.translate(
                                               i18.common.coreCommonNA),
-                                          summary: (
-                                            navigateToRoot,
-                                            householdModel,
-                                            individualModel,
-                                            projectBeneficiaryModel,
-                                            registrationDate,
-                                            addressModel,
-                                            loading,
-                                            isHeadOfHousehold,
-                                          ) =>
-                                              individualModel?.gender != null
-                                                  ? localizations.translate(
-                                                      individualModel
-                                                              ?.gender?.name
-                                                              .toUpperCase() ??
-                                                          '')
-                                                  : localizations.translate(
-                                                      i18.common.coreCommonNA)),
                                       labelFlex: 5,
-                                      padding:
-                                          const EdgeInsets.only(top: spacer2)),
+                                      padding: const EdgeInsets.only(
+                                          bottom: spacer2))
                                 ]),
                           ]),
                     ],

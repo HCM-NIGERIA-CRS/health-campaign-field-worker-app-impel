@@ -525,8 +525,8 @@ class CustomHouseholdLocationPageState
                           offstage: isConsent,
                           child: dropdown.DigitDropdown<String>(
                             label: localizations.translate(
-                              i18_local.caregiverConsent
-                                  .reeasonForNonComplianceLabel,
+                              i18_local
+                                  .caregiverConsent.reasonForNonComplianceLabel,
                             ),
                             valueMapper: (value) =>
                                 localizations.translate(value),
@@ -666,6 +666,8 @@ class CustomHouseholdLocationPageState
         validators: isConsent
             ? [
                 Validators.required,
+                Validators.delegate(
+                    (validator) => CustomValidator.sizeLessThan2(validator)),
               ]
             : [],
       ),
