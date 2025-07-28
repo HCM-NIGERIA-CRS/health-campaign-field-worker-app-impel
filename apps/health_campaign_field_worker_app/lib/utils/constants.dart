@@ -107,6 +107,8 @@ class Constants {
   static const int validMinAge = 3;
   static const int validMaxAge = 59;
   static const String pipeSeparator = '||';
+  static const String consent = 'consent';
+  static const String householdNumber = 'householdNumber';
 
   static const int mlPerBottle = 30;
   static const int apiCallLimit = 1000;

@@ -10,26 +10,27 @@ import 'package:digit_ui_components/utils/component_utils.dart';
 import 'package:digit_ui_components/widgets/atoms/text_block.dart';
 import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:health_campaign_field_worker_app/widgets/custom_back_navigation.dart';
+import '../../widgets/custom_back_navigation.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:registration_delivery/utils/extensions/extensions.dart';
 
-import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
 import '../../utils/i18_key_constants.dart' as i18_local;
 import 'package:registration_delivery/utils/utils.dart';
-import 'package:registration_delivery/widgets/back_navigation_help_header.dart';
+
 import 'package:registration_delivery/widgets/localized.dart';
 import 'package:registration_delivery/widgets/showcase/config/showcase_constants.dart';
-import 'package:registration_delivery/widgets/showcase/showcase_button.dart';
 
 import '../../blocs/registration_delivery/custom_beneficairy_registration.dart';
-import '../../models/entities/identifier_types.dart';
+
 import '../../router/app_router.dart';
-import '../../utils/constants.dart';
+
 import '../../utils/utils.dart' as local_utils;
+
+import 'package:digit_components/widgets/atoms/digit_dropdown.dart' as dropdown;
+
 import 'caregiver_consent.dart';
 
 @RoutePage()
@@ -58,6 +59,10 @@ class CustomHouseholdLocationPageState
   static const _buildingNameKey = 'buildingName';
   static const _householdNumberKey = 'householdNumber';
   static const _consent = 'consent';
+  static const _householdHeadNameKey = 'householdHeadName';
+  static const _reasonNonComplianceKey = 'reasonNonCompliance';
+
+  bool isConsent = true;
 
   @override
   void initState() {
@@ -161,6 +166,19 @@ class CustomHouseholdLocationPageState
                                 form.control(_landmarkKey).value as String?;
                             final postalCode =
                                 form.control(_postalCodeKey).value as String?;
+
+                            final householdNumberCaptured = form
+                                .control(_householdNumberKey)
+                                .value as String?;
+
+                            final householdHeadName = form
+                                .control(_householdHeadNameKey)
+                                .value as String?;
+
+                            final reasonForNonCompliance = form
+                                .control(_reasonNonComplianceKey)
+                                .value as String?;
+
                             registrationState.maybeWhen(
                               orElse: () {
                                 return;
@@ -175,75 +193,87 @@ class CustomHouseholdLocationPageState
                                 loading,
                                 isHeadOfHousehold,
                               ) {
-                                var addressModel = AddressModel(
-                                  addressLine1: addressLine1 != null &&
-                                          addressLine1.trim().isNotEmpty
-                                      ? addressLine1
-                                      : null,
-                                  addressLine2: addressLine2 != null &&
-                                          addressLine2.trim().isNotEmpty
-                                      ? addressLine2
-                                      : null,
-                                  landmark: landmark != null &&
-                                          landmark.trim().isNotEmpty
-                                      ? landmark
-                                      : null,
-                                  pincode: postalCode != null &&
-                                          postalCode.trim().isNotEmpty
-                                      ? postalCode
-                                      : null,
-                                  type: AddressType.correspondence,
-                                  latitude: form.control(_latKey).value ??
-                                      locationState.latitude,
-                                  longitude: form.control(_lngKey).value ??
-                                      locationState.longitude,
-                                  locationAccuracy:
-                                      form.control(_accuracyKey).value ??
-                                          locationState.accuracy,
-                                  locality: LocalityModel(
-                                    code: RegistrationDeliverySingleton()
-                                        .boundary!
-                                        .code!,
-                                    name: RegistrationDeliverySingleton()
-                                        .boundary!
-                                        .name,
-                                  ),
-                                  tenantId:
-                                      RegistrationDeliverySingleton().tenantId,
-                                  rowVersion: 1,
-                                  buildingName: (RegistrationDeliverySingleton()
-                                              .householdType ==
-                                          HouseholdType.community)
-                                      ? form.control(_buildingNameKey).value
-                                      : null,
-                                  auditDetails: AuditDetails(
-                                    createdBy: RegistrationDeliverySingleton()
-                                        .loggedInUserUuid!,
-                                    createdTime:
-                                        ContextUtilityExtensions(context)
-                                            .millisecondsSinceEpoch(),
-                                  ),
-                                  clientAuditDetails: ClientAuditDetails(
-                                    createdBy: RegistrationDeliverySingleton()
-                                        .loggedInUserUuid!,
-                                    createdTime:
-                                        ContextUtilityExtensions(context)
-                                            .millisecondsSinceEpoch(),
-                                    lastModifiedBy:
-                                        RegistrationDeliverySingleton()
-                                            .loggedInUserUuid,
-                                    lastModifiedTime:
-                                        ContextUtilityExtensions(context)
-                                            .millisecondsSinceEpoch(),
-                                  ),
-                                );
+                                if (!isConsent) {
+                                  context.router
+                                      .push(CustomHouseholdSummaryRoute(
+                                    householdNumber: householdNumberCaptured,
+                                    headName: householdHeadName,
+                                    reasonNonCompliance: reasonForNonCompliance,
+                                  ));
+                                } else {
+                                  var addressModel = AddressModel(
+                                    addressLine1: addressLine1 != null &&
+                                            addressLine1.trim().isNotEmpty
+                                        ? addressLine1
+                                        : null,
+                                    addressLine2: addressLine2 != null &&
+                                            addressLine2.trim().isNotEmpty
+                                        ? addressLine2
+                                        : null,
+                                    landmark: landmark != null &&
+                                            landmark.trim().isNotEmpty
+                                        ? landmark
+                                        : null,
+                                    pincode: postalCode != null &&
+                                            postalCode.trim().isNotEmpty
+                                        ? postalCode
+                                        : null,
+                                    type: AddressType.correspondence,
+                                    latitude: form.control(_latKey).value ??
+                                        locationState.latitude,
+                                    longitude: form.control(_lngKey).value ??
+                                        locationState.longitude,
+                                    locationAccuracy:
+                                        form.control(_accuracyKey).value ??
+                                            locationState.accuracy,
+                                    locality: LocalityModel(
+                                      code: RegistrationDeliverySingleton()
+                                          .boundary!
+                                          .code!,
+                                      name: RegistrationDeliverySingleton()
+                                          .boundary!
+                                          .name,
+                                    ),
+                                    tenantId: RegistrationDeliverySingleton()
+                                        .tenantId,
+                                    rowVersion: 1,
+                                    buildingName:
+                                        (RegistrationDeliverySingleton()
+                                                    .householdType ==
+                                                HouseholdType.community)
+                                            ? form
+                                                .control(_buildingNameKey)
+                                                .value
+                                            : null,
+                                    auditDetails: AuditDetails(
+                                      createdBy: RegistrationDeliverySingleton()
+                                          .loggedInUserUuid!,
+                                      createdTime:
+                                          ContextUtilityExtensions(context)
+                                              .millisecondsSinceEpoch(),
+                                    ),
+                                    clientAuditDetails: ClientAuditDetails(
+                                      createdBy: RegistrationDeliverySingleton()
+                                          .loggedInUserUuid!,
+                                      createdTime:
+                                          ContextUtilityExtensions(context)
+                                              .millisecondsSinceEpoch(),
+                                      lastModifiedBy:
+                                          RegistrationDeliverySingleton()
+                                              .loggedInUserUuid,
+                                      lastModifiedTime:
+                                          ContextUtilityExtensions(context)
+                                              .millisecondsSinceEpoch(),
+                                    ),
+                                  );
 
-                                bloc.add(
-                                  BeneficiaryRegistrationSaveAddressEvent(
-                                    addressModel,
-                                  ),
-                                );
-                                router.push(CustomHouseHoldDetailsRoute());
+                                  bloc.add(
+                                    BeneficiaryRegistrationSaveAddressEvent(
+                                      addressModel,
+                                    ),
+                                  );
+                                  router.push(CustomHouseHoldDetailsRoute());
+                                }
                               },
                               editHousehold: (
                                 address,
@@ -432,24 +462,101 @@ class CustomHouseholdLocationPageState
                                     onChanged: (val) {
                                       form.control(_consent).markAsTouched();
                                       form.control(_consent).value = val.code;
+                                      if (val.code ==
+                                          CaregiverConsentEnum.yes.toString()) {
+                                        setState(() {
+                                          isConsent = true;
+                                        });
+                                      } else if (val.code ==
+                                          CaregiverConsentEnum.no.toString()) {
+                                        setState(() {
+                                          isConsent = false;
+                                        });
+                                      }
                                     },
                                     groupValue:
                                         form.control(_consent).value ?? "",
                                     errorMessage: field.errorText,
                                     radioDigitButtons: [
                                       RadioButtonModel(
-                                          code: "1",
+                                          code: CaregiverConsentEnum.yes
+                                              .toString(),
                                           name: localizations.translate(
                                               i18_local
                                                   .householdDetails.submitYes)),
                                       RadioButtonModel(
-                                          code: "0",
+                                          code: CaregiverConsentEnum.no
+                                              .toString(),
                                           name: localizations.translate(
                                             i18_local.householdDetails.submitNo,
                                           )),
                                     ]),
                               );
                             }),
+                        Offstage(
+                          offstage: isConsent,
+                          child: ReactiveWrapperField(
+                            formControlName: _householdHeadNameKey,
+                            validationMessages: {
+                              'required': (object) => localizations.translate(
+                                    '${i18_local.individualDetails.nameLabelText}_IS_REQUIRED',
+                                  ),
+                              'maxLength': (object) => localizations
+                                  .translate(i18.common.maxCharsRequired)
+                                  .replaceAll('{}', maxLength.toString()),
+                            },
+                            builder: (field) => LabeledField(
+                              label: localizations.translate(
+                                i18_local.individualDetails.nameLabelText,
+                              ),
+                              child: DigitTextFormInput(
+                                initialValue:
+                                    form.control(_householdHeadNameKey).value,
+                                onChange: (value) {
+                                  form.control(_householdHeadNameKey).value =
+                                      value;
+                                },
+                                errorMessage: field.errorText,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Offstage(
+                          offstage: isConsent,
+                          child: dropdown.DigitDropdown<String>(
+                            label: localizations.translate(
+                              i18_local.caregiverConsent
+                                  .reeasonForNonComplianceLabel,
+                            ),
+                            valueMapper: (value) =>
+                                localizations.translate(value),
+                            initialValue:
+                                form.control(_reasonNonComplianceKey).value,
+                            menuItems: RegistrationDeliverySingleton()
+                                .genderOptions!
+                                .map((e) => e)
+                                .toList(),
+                            formControlName: _reasonNonComplianceKey,
+                            isRequired: true,
+                            validationMessages: {
+                              'required': (_) => localizations.translate(
+                                    i18.common.corecommonRequired,
+                                  ),
+                            },
+                            onChanged: (value) {
+                              if (value != null && value.isNotEmpty) {
+                                form.control(_reasonNonComplianceKey).value =
+                                    value;
+                              } else {
+                                form.control(_reasonNonComplianceKey).value =
+                                    null;
+                                form
+                                    .control(_reasonNonComplianceKey)
+                                    .setErrors({'': true});
+                              }
+                            },
+                          ),
+                        ),
                         if (RegistrationDeliverySingleton().householdType ==
                             HouseholdType.community)
                           householdLocationShowcaseData.buildingName.buildWith(
@@ -549,10 +656,26 @@ class CustomHouseholdLocationPageState
         Validators.maxLength(200),
       ]),
       _consent: FormControl<String>(
-        value: null,
+        value: CaregiverConsentEnum.yes.toString(),
         validators: [
           Validators.required,
         ],
+      ),
+      _householdHeadNameKey: FormControl<String>(
+        value: null,
+        validators: isConsent
+            ? [
+                Validators.required,
+              ]
+            : [],
+      ),
+      _reasonNonComplianceKey: FormControl<String>(
+        value: null,
+        validators: isConsent
+            ? [
+                Validators.required,
+              ]
+            : [],
       ),
       if (RegistrationDeliverySingleton().householdType ==
           HouseholdType.community)

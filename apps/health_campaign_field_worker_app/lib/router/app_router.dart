@@ -1,13 +1,11 @@
 import 'package:complaints/blocs/localization/app_localization.dart';
 import 'package:digit_scanner/blocs/app_localization.dart';
-import 'package:survey_form/router/survey_form_router.gm.dart';
 import 'package:survey_form/router/survey_form_router.dart';
 import 'package:attendance_management/router/attendance_router.dart';
 import 'package:attendance_management/router/attendance_router.gm.dart';
 import 'package:complaints/router/complaints_router.dart';
 import 'package:complaints/router/complaints_router.gm.dart';
-import 'package:health_campaign_field_worker_app/blocs/registration_delivery/custom_beneficairy_registration.dart';
-import 'package:referral_reconciliation/pages/search_referral_reconciliations.dart';
+import '../blocs/registration_delivery/custom_beneficairy_registration.dart';
 import 'package:referral_reconciliation/router/referral_reconciliation_router.gm.dart';
 import 'package:referral_reconciliation/router/referral_reconciliation_router.dart';
 import 'package:registration_delivery/blocs/app_localization.dart';
@@ -18,11 +16,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:inventory_management/blocs/app_localization.dart';
-// import 'package:inventory_management/blocs/inventory_report.dart';
 import 'package:inventory_management/router/inventory_router.dart';
 import 'package:inventory_management/router/inventory_router.gm.dart';
-import 'package:inventory_management/blocs/record_stock.dart' as _i15;
-
 import '../blocs/inventory_management/custom_inventory_report.dart';
 import '../blocs/localization/app_localization.dart';
 import '../pages/acknowledgement.dart';
@@ -37,6 +32,7 @@ import '../pages/beneficiary/check_eligibility/inventory_facility_selection_smc.
 import '../pages/beneficiary/check_eligibility/refer_beneficiary_smc.dart';
 import '../pages/beneficiary/check_eligibility/refer_beneficiary_vas.dart';
 import '../pages/complaints/custom_complaints_inbox.dart';
+import '../pages/custom_household_summary.dart';
 import '../pages/inventory_management/custom_inventory_facility_selection.dart';
 import '../pages/inventory_management/qr_scanner.dart';
 import '../pages/inventory_management/view_record_lga.dart';
@@ -52,11 +48,9 @@ import '../pages/inventory_management/custom_warehouse_details.dart';
 import '../pages/inventory_management/custom_inventory_report_details.dart';
 import '../pages/inventory_management/custom_min_number.dart';
 import '../pages/inventory_management/view_transactions_page.dart';
-import '../pages/inventory_management/custom_stock_details_in_tabs.dart';
 import '../pages/inventory_management/custom_acknowledgement.dart';
 import '../pages/inventory_management/view_stock_records.dart';
 import 'package:inventory_management/models/entities/stock.dart';
-import '../pages/inventory_management/custom_min_number.dart';
 import '../pages/inventory_management/view_all_transactions_page.dart';
 import '../pages/inventory_management/view_record_cdd.dart';
 import '../pages/inventory_management/qrscanner.dart';
@@ -89,14 +83,11 @@ import 'package:referral_reconciliation/blocs/app_localization.dart';
 import '../pages/referral_reconcillation/custom_record_referral_details.dart';
 import '../pages/referral_reconcillation/custom_hf_referral_wrapper_page.dart';
 import '../pages/referral_reconcillation/custom_record_facility_page.dart';
-import '../pages/referral_reconcillation/custom_record_referral_details.dart';
 import '../pages/referral_reconcillation/custom_referral_reason_checklist_page.dart';
 import '../pages/referral_reconcillation/custom_referral_reason_checklist_preview_page.dart';
 import '../pages/referral_reconcillation/custom_referral_facility_selection_page.dart';
 import 'package:referral_reconciliation/models/entities/hf_referral.dart';
 import '../utils/app_enums.dart';
-import 'package:survey_form/router/survey_form_router.dart';
-import 'package:survey_form/router/survey_form_router.gm.dart';
 import 'package:inventory_management/blocs/record_stock.dart';
 import 'package:survey_form/blocs/app_localization.dart';
 import '../pages/checklist/custom_survey_form_view.dart';
@@ -307,6 +298,10 @@ class AppRouter extends _$AppRouter {
                     page: CustomHouseholdLocationRoute.page,
                     path: 'custom-household-location',
                     initial: true,
+                  ),
+                  AutoRoute(
+                    page: CustomHouseholdSummaryRoute.page,
+                    path: 'household-summary',
                   ),
                   AutoRoute(
                     page: CaregiverConsentRoute.page,

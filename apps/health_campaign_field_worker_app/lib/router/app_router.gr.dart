@@ -291,6 +291,19 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    CustomHouseholdSummaryRoute.name: (routeData) {
+      final args = routeData.argsAs<CustomHouseholdSummaryRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CustomHouseholdSummaryPage(
+          householdNumber: args.householdNumber,
+          headName: args.headName,
+          reasonNonCompliance: args.reasonNonCompliance,
+          key: args.key,
+          appLocalizations: args.appLocalizations,
+        ),
+      );
+    },
     CustomIndividualDetailsRoute.name: (routeData) {
       final args = routeData.argsAs<CustomIndividualDetailsRouteArgs>(
           orElse: () => const CustomIndividualDetailsRouteArgs());
@@ -1853,6 +1866,60 @@ class CustomHouseholdOverviewRouteArgs {
   @override
   String toString() {
     return 'CustomHouseholdOverviewRouteArgs{key: $key, appLocalizations: $appLocalizations}';
+  }
+}
+
+/// generated route for
+/// [CustomHouseholdSummaryPage]
+class CustomHouseholdSummaryRoute
+    extends PageRouteInfo<CustomHouseholdSummaryRouteArgs> {
+  CustomHouseholdSummaryRoute({
+    required String? householdNumber,
+    required String? headName,
+    required String? reasonNonCompliance,
+    Key? key,
+    RegistrationDeliveryLocalization? appLocalizations,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CustomHouseholdSummaryRoute.name,
+          args: CustomHouseholdSummaryRouteArgs(
+            householdNumber: householdNumber,
+            headName: headName,
+            reasonNonCompliance: reasonNonCompliance,
+            key: key,
+            appLocalizations: appLocalizations,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CustomHouseholdSummaryRoute';
+
+  static const PageInfo<CustomHouseholdSummaryRouteArgs> page =
+      PageInfo<CustomHouseholdSummaryRouteArgs>(name);
+}
+
+class CustomHouseholdSummaryRouteArgs {
+  const CustomHouseholdSummaryRouteArgs({
+    required this.householdNumber,
+    required this.headName,
+    required this.reasonNonCompliance,
+    this.key,
+    this.appLocalizations,
+  });
+
+  final String? householdNumber;
+
+  final String? headName;
+
+  final String? reasonNonCompliance;
+
+  final Key? key;
+
+  final RegistrationDeliveryLocalization? appLocalizations;
+
+  @override
+  String toString() {
+    return 'CustomHouseholdSummaryRouteArgs{householdNumber: $householdNumber, headName: $headName, reasonNonCompliance: $reasonNonCompliance, key: $key, appLocalizations: $appLocalizations}';
   }
 }
 

@@ -7,6 +7,7 @@ import 'package:digit_ui_components/widgets/atoms/text_block.dart';
 import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../blocs/dailyImplementationPlan/register_daily_plan.dart';
 import '../../router/app_router.dart';
 import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -58,12 +59,12 @@ class SelectBoundaryPageState extends LocalizedState<SelectBoundaryPage> {
     final textTheme = theme.digitTextTheme(context);
 
     return Scaffold(
-      body: BlocBuilder<CustomBeneficiaryRegistrationBloc,
-          BeneficiaryRegistrationState>(builder: (context, registrationState) {
+      body: BlocBuilder<RegisterDailyPlanBloc, RegisterDailyPlanState>(
+          builder: (context, registrationState) {
         return ReactiveFormBuilder(
           form: () => buildForm(true),
           builder: (_, form, __) => ScrollableContent(
-            enableFixedDigitButton: true,
+            // enableFixedDigitButton: true,
             header: const Column(
               children: [
                 Padding(
