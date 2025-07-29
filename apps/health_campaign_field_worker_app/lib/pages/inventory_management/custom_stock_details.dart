@@ -527,16 +527,6 @@ class CustomStockDetailsPageState
                                       )),
                                     ),
                                     fetched: (productVariants) {
-                                      ProductVariantModel? spaq1 =
-                                          productVariants
-                                              .firstWhereOrNull((element) =>
-                                                  element.sku ==
-                                                  Constants.spaq1);
-                                      ProductVariantModel? spaq2 =
-                                          productVariants
-                                              .firstWhereOrNull((element) =>
-                                                  element.sku ==
-                                                  Constants.spaq2);
                                       return ReactiveWrapperField(
                                         formControlName: _productVariantKey,
                                         validationMessages: {
@@ -555,10 +545,8 @@ class CustomStockDetailsPageState
                                               // errorText: field.errorText,
                                               selectionType:
                                                   SelectionType.defaultSelect,
-                                              options: [
-                                                if (spaq1 != null) spaq1,
-                                                if (spaq2 != null) spaq2
-                                              ].map((variant) {
+                                              options: productVariants
+                                                  .map((variant) {
                                                 return DropdownItem(
                                                   name: localizations.translate(
                                                       variant.sku ??
