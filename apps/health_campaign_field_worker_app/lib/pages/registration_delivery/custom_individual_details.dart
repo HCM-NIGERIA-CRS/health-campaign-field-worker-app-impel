@@ -282,6 +282,7 @@ class CustomIndividualDetailsPageState
                                 wrapper: householdMemberWrapper,
                                 children: [
                                   CustomBeneficiaryDetailsRoute(
+                                    individualSelected: individualCaptured,
                                     eligibilityAssessmentType:
                                         EligibilityAssessmentType.smc,
                                   )

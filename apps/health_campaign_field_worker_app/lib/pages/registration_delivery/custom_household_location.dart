@@ -466,11 +466,34 @@ class CustomHouseholdLocationPageState
                                           CaregiverConsentEnum.yes.toString()) {
                                         setState(() {
                                           isConsent = true;
+
+                                          form
+                                              .control(_reasonNonComplianceKey)
+                                              .clearValidators();
+                                          form
+                                              .control(_householdHeadNameKey)
+                                              .clearValidators();
                                         });
                                       } else if (val.code ==
                                           CaregiverConsentEnum.no.toString()) {
                                         setState(() {
                                           isConsent = false;
+                                          form
+                                              .control(_householdHeadNameKey)
+                                              .setValidators([
+                                            Validators.required,
+                                            Validators.delegate((validator) =>
+                                                CustomValidator.sizeLessThan2(
+                                                    validator)),
+                                          ]);
+                                          form
+                                              .control(_reasonNonComplianceKey)
+                                              .setValidators([
+                                            Validators.required,
+                                            Validators.delegate((validator) =>
+                                                CustomValidator.sizeLessThan2(
+                                                    validator)),
+                                          ]);
                                         });
                                       }
                                     },
@@ -663,21 +686,9 @@ class CustomHouseholdLocationPageState
       ),
       _householdHeadNameKey: FormControl<String>(
         value: null,
-        validators: isConsent
-            ? [
-                Validators.required,
-                Validators.delegate(
-                    (validator) => CustomValidator.sizeLessThan2(validator)),
-              ]
-            : [],
       ),
       _reasonNonComplianceKey: FormControl<String>(
         value: null,
-        validators: isConsent
-            ? [
-                Validators.required,
-              ]
-            : [],
       ),
       if (RegistrationDeliverySingleton().householdType ==
           HouseholdType.community)

@@ -454,27 +454,13 @@ class CustomStockDetailsPageState
                                             .control(_productVariantKey)
                                             .value as List<ProductVariantModel>;
 
-                                        ProductVariantModel? spaq1Product =
-                                            selectedProducts.firstWhereOrNull(
-                                                (element) =>
-                                                    element.sku ==
-                                                    Constants.spaq1);
-                                        ProductVariantModel? spaq2Product =
-                                            selectedProducts.firstWhereOrNull(
-                                                (element) =>
-                                                    element.sku ==
-                                                    Constants.spaq2);
                                         final receivedFrom = form
                                             .control(_secondaryPartyKey)
                                             .value as String;
                                         context.read<StockBloc>().add(
                                               StockSelectedEvent(
-                                                selectedProducts: [
-                                                  if (spaq1Product != null)
-                                                    spaq1Product,
-                                                  if (spaq2Product != null)
-                                                    spaq2Product,
-                                                ],
+                                                selectedProducts:
+                                                    selectedProducts,
                                                 secondaryPartyType:
                                                     deliveryTeamSelected
                                                         ? "STAFF"

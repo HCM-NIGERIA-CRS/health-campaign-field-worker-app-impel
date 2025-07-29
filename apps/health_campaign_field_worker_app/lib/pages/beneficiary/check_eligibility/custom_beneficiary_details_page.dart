@@ -276,12 +276,6 @@ class CustomBeneficiaryDetailsPageState
                                                                       rootNavigator:
                                                                           true,
                                                                     ).pop();
-                                                                    final spaq1 =
-                                                                        context
-                                                                            .spaq1;
-                                                                    final spaq2 =
-                                                                        context
-                                                                            .spaq2;
 
                                                                     final currentCycle =
                                                                         deliverState.cycle >=
@@ -302,21 +296,14 @@ class CustomBeneficiaryDetailsPageState
                                                                             null)
                                                                         ?.productVariants;
 
-                                                                    final value =
-                                                                        variant!
+                                                                    final value = variant!
                                                                             .firstWhere(
                                                                               (element) => element.id == productVariants!.first.productVariantId,
                                                                             )
-                                                                            .sku;
+                                                                            .sku ??
+                                                                        "";
 
-                                                                    if (value ==
-                                                                            null ||
-                                                                        (value.contains(Constants.spaq1) &&
-                                                                            spaq1 >
-                                                                                0) ||
-                                                                        (value.contains(Constants.spaq2) &&
-                                                                            spaq2 >
-                                                                                0)) {
+                                                                    if (true) {
                                                                       router
                                                                           .push(
                                                                         CustomDeliverInterventionRoute(
