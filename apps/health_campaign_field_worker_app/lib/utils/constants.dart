@@ -117,7 +117,7 @@ class Constants {
   static const String childrenAbsent = 'childrenAbsent';
   static const String childrenAFP = 'childrenAFP';
   static const String guineaWorm = 'guineaWorm';
-  static const int dailyTarget = 100;
+  static const int dailyTarget = 40;
 
   // for stock validation
 
