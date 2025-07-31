@@ -742,6 +742,10 @@ class CaregiverConsent {
 
   String get caregiverConsentActionLabelText =>
       'CARE_GIVER_CONSENT_ACTION_LABEL_TEXT';
+  String get reasonForNonComplianceLabel =>
+      'CARE_GIVER_CONSENT_REASON_NON_COMPLIANCE';
+  String get householdSummaryComplianceLabel =>
+      'HOUSEHOLD_SUMMARY_COMPLIANCE_LABEL';
 }
 
 class DailyImplementationFlow {

@@ -454,27 +454,13 @@ class CustomStockDetailsPageState
                                             .control(_productVariantKey)
                                             .value as List<ProductVariantModel>;
 
-                                        ProductVariantModel? spaq1Product =
-                                            selectedProducts.firstWhereOrNull(
-                                                (element) =>
-                                                    element.sku ==
-                                                    Constants.spaq1);
-                                        ProductVariantModel? spaq2Product =
-                                            selectedProducts.firstWhereOrNull(
-                                                (element) =>
-                                                    element.sku ==
-                                                    Constants.spaq2);
                                         final receivedFrom = form
                                             .control(_secondaryPartyKey)
                                             .value as String;
                                         context.read<StockBloc>().add(
                                               StockSelectedEvent(
-                                                selectedProducts: [
-                                                  if (spaq1Product != null)
-                                                    spaq1Product,
-                                                  if (spaq2Product != null)
-                                                    spaq2Product,
-                                                ],
+                                                selectedProducts:
+                                                    selectedProducts,
                                                 secondaryPartyType:
                                                     deliveryTeamSelected
                                                         ? "STAFF"
@@ -527,16 +513,6 @@ class CustomStockDetailsPageState
                                       )),
                                     ),
                                     fetched: (productVariants) {
-                                      ProductVariantModel? spaq1 =
-                                          productVariants
-                                              .firstWhereOrNull((element) =>
-                                                  element.sku ==
-                                                  Constants.spaq1);
-                                      ProductVariantModel? spaq2 =
-                                          productVariants
-                                              .firstWhereOrNull((element) =>
-                                                  element.sku ==
-                                                  Constants.spaq2);
                                       return ReactiveWrapperField(
                                         formControlName: _productVariantKey,
                                         validationMessages: {
@@ -555,10 +531,8 @@ class CustomStockDetailsPageState
                                               // errorText: field.errorText,
                                               selectionType:
                                                   SelectionType.defaultSelect,
-                                              options: [
-                                                if (spaq1 != null) spaq1,
-                                                if (spaq2 != null) spaq2
-                                              ].map((variant) {
+                                              options: productVariants
+                                                  .map((variant) {
                                                 return DropdownItem(
                                                   name: localizations.translate(
                                                       variant.sku ??

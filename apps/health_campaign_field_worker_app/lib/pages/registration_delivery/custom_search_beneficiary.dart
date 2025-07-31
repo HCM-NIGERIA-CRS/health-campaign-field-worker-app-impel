@@ -876,7 +876,7 @@ class _CustomSearchBeneficiaryPageState
                             "\n ${localizations.translate(i18_local.beneficiaryDetails.spaq2DoseUnit)}";
                       }
 
-                      if ((spaq1 > 0 || spaq2 > 0)) {
+                      if ((spaq1 > 0 || spaq2 > 0) || true) {
                         FocusManager.instance.primaryFocus?.unfocus();
 
                         searchController.clear();

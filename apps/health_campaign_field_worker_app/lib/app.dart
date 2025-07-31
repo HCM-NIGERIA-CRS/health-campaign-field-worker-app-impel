@@ -21,6 +21,8 @@ import 'package:survey_form/survey_form.dart';
 
 import 'blocs/app_initialization/app_initialization.dart';
 import 'blocs/auth/auth.dart';
+import 'blocs/compliance/consent_household.dart';
+import 'blocs/dailyImplementationPlan/register_daily_plan.dart';
 import 'blocs/inventory_management/stock_bloc.dart';
 import 'blocs/localization/localization.dart';
 import 'blocs/project/project.dart';
@@ -449,6 +451,33 @@ class MainApplicationState extends State<MainApplication>
                                 ProjectFacilitySearchModel>(),
                           ),
                         ),
+                        BlocProvider(
+                          create: (ctx) => RegisterDailyPlanBloc(
+                            const RegisterDailyPlanCreateState(),
+                            taskDataRepository: context
+                                .repository<TaskModel, TaskSearchModel>(),
+                          ),
+                        ),
+                        BlocProvider(
+                            create: (ctx) => ConsentHouseholdBloc(
+                                  const ConsentHouseholdState(),
+                                  individualRepository: ctx.repository<
+                                      IndividualModel, IndividualSearchModel>(),
+                                  householdRepository: ctx.repository<
+                                      HouseholdModel, HouseholdSearchModel>(),
+                                  householdMemberRepository: ctx.repository<
+                                      HouseholdMemberModel,
+                                      HouseholdMemberSearchModel>(),
+                                  projectBeneficiaryRepository: ctx.repository<
+                                      ProjectBeneficiaryModel,
+                                      ProjectBeneficiarySearchModel>(),
+                                  taskDataRepository: ctx
+                                      .repository<TaskModel, TaskSearchModel>(),
+                                  beneficiaryType:
+                                      RegistrationDeliverySingleton()
+                                              .beneficiaryType ??
+                                          BeneficiaryType.individual,
+                                )),
                       ],
                       child: BlocBuilder<LocalizationBloc, LocalizationState>(
                         builder: (context, langState) {

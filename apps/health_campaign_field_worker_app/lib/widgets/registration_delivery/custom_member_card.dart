@@ -304,10 +304,8 @@ class CustomMemberCard extends StatelessWidget {
               );
 
               context.router.push(
-                EligibilityChecklistViewRoute(
-                  projectBeneficiaryClientReferenceId:
-                      projectBeneficiaryClientReferenceId,
-                  individual: individual,
+                CustomBeneficiaryDetailsRoute(
+                  individualSelected: individual,
                   eligibilityAssessmentType: EligibilityAssessmentType.smc,
                 ),
               );
@@ -437,12 +435,6 @@ class CustomMemberCard extends StatelessWidget {
               );
 
               if ((vasTasks ?? []).isEmpty) {
-                // context.router.push(
-                //   CustomBeneficiaryDetailsRoute(
-                //     eligibilityAssessmentType:
-                //         EligibilityAssessmentType.smc,
-                //   ),
-                // );
                 context.router.push(
                   EligibilityChecklistViewRoute(
                     showBackButton: false,
