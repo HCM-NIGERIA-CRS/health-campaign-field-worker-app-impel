@@ -61,6 +61,8 @@ class _CustomSearchBeneficiaryPageState
   bool isProximityEnabled = false;
   bool isSearchByBeneficiaryIdEnabled = false;
 
+  bool isChildAbsentEnabled = false;
+
   int offset = 0;
   int limit = 10;
   RegExp pattern = RegExp(r'^\d{9}$');
@@ -347,6 +349,49 @@ class _CustomSearchBeneficiaryPageState
                                                   localizations.translate(i18_local
                                                       .individualDetails
                                                       .beneficiarySearchTextLabel),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      spacer2),
+                                                  child: DigitSwitch(
+                                                    value: isChildAbsentEnabled,
+                                                    onChanged: (value) {
+                                                      customSearchHouseholdsBloc
+                                                          .add(
+                                                        const SearchHouseholdsClearEvent(),
+                                                      );
+                                                      searchController.clear();
+                                                      context
+                                                          .read<
+                                                              IndividualGlobalSearchSMCBloc>()
+                                                          .add(const searchHouseholdSMCBloc
+                                                              .SearchHouseholdsSMCEvent.clear());
+                                                      setState(() {
+                                                        isChildAbsentEnabled =
+                                                            value;
+                                                        isProximityEnabled =
+                                                            false;
+                                                        searchController
+                                                            .clear();
+                                                        blocWrapper
+                                                            .clearEvent();
+                                                      });
+
+                                                      if (isChildAbsentEnabled) {
+                                                        searchAbsentChild();
+                                                      }
+                                                    },
+                                                  ),
+                                                ),
+                                                Text(
+                                                  localizations.translate(
+                                                      i18_local
+                                                          .individualDetails
+                                                          .absentSearchTextLabel),
                                                 ),
                                               ],
                                             )
@@ -637,6 +682,112 @@ class _CustomSearchBeneficiaryPageState
                                       setState(() {
                                         isProximityEnabled = false;
                                         isSearchByBeneficiaryIdEnabled = false;
+                                      });
+                                      searchController.clear();
+                                      selectedFilters.clear();
+                                      blocWrapper.clearEvent();
+                                    },
+                                  ),
+                                );
+                              },
+                              childCount:
+                                  searchSMCstate.householdMembers.length,
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  if (isChildAbsentEnabled)
+                    BlocConsumer<IndividualGlobalSearchSMCBloc,
+                        searchHouseholdSMCBloc.SearchHouseholdsSMCState>(
+                      listener: (context, searchSMCstate) {},
+                      builder: (context, searchSMCstate) {
+                        if (searchSMCstate.loading) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else {
+                          if (isChildAbsentEnabled &&
+                              searchSMCstate.householdMembers.isEmpty) {
+                            return SliverList(
+                                delegate:
+                                    SliverChildBuilderDelegate((ctx, index) {
+                              return DigitInfoCard(
+                                description: localizations.translate(
+                                  i18_local.searchBeneficiary
+                                      .beneficiaryInfoDescription,
+                                ),
+                                title: localizations.translate(
+                                  i18.searchBeneficiary.beneficiaryInfoTitle,
+                                ),
+                              );
+                            }, childCount: 1));
+                          }
+                          return SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (ctx, index) {
+                                final i =
+                                    searchSMCstate.householdMembers[index];
+                                return Container(
+                                  margin:
+                                      const EdgeInsets.only(bottom: kPadding),
+                                  child: ViewBeneficiaryCard(
+                                    householdMember: i,
+                                    onOpenPressed: () async {
+                                      final scannerBloc =
+                                          context.read<DigitScannerBloc>();
+
+                                      scannerBloc.add(
+                                        const DigitScannerEvent.handleScanner(),
+                                      );
+
+                                      if ((i.tasks != null &&
+                                              i.tasks?.last.status ==
+                                                  Status.closeHousehold
+                                                      .toValue() &&
+                                              (i.tasks ?? []).isNotEmpty) ||
+                                          (i.projectBeneficiaries ?? [])
+                                              .isEmpty) {
+                                        setState(() {
+                                          selectedFilters = [];
+                                        });
+                                        blocWrapper.clearEvent();
+                                        await context.router.push(
+                                          CustomBeneficiaryRegistrationWrapperRoute(
+                                            initialState: BeneficiaryRegistrationState.editHousehold(
+                                                householdModel: i.household!,
+                                                individualModel: i.members!,
+                                                registrationDate:
+                                                    DateTime.now(),
+                                                projectBeneficiaryModel:
+                                                    (i.projectBeneficiaries ??
+                                                                [])
+                                                            .isNotEmpty
+                                                        ? i.projectBeneficiaries
+                                                            ?.lastOrNull
+                                                        : null,
+                                                addressModel:
+                                                    (RegistrationDeliverySingleton()
+                                                                .householdType ==
+                                                            HouseholdType
+                                                                .community)
+                                                        ? i.household!.address!
+                                                        : i
+                                                            .headOfHousehold!
+                                                            .address!
+                                                            .lastOrNull!,
+                                                headOfHousehold:
+                                                    i.headOfHousehold),
+                                          ),
+                                        );
+                                      } else {
+                                        await context.router.push(
+                                            BeneficiaryWrapperRoute(
+                                                wrapper: i));
+                                      }
+                                      setState(() {
+                                        isProximityEnabled = false;
+                                        isSearchByBeneficiaryIdEnabled = false;
+                                        isChildAbsentEnabled = false;
                                       });
                                       searchController.clear();
                                       selectedFilters.clear();
@@ -991,6 +1142,7 @@ class _CustomSearchBeneficiaryPageState
       maxRadius: RegistrationDeliverySingleton().maxRadius,
       nameSearch: "",
       beneficiaryId: beneficiaryId,
+      isChildAbsentEnabled: false,
       filter: selectedFilters,
       offset: isPagination
           ? blocWrapper.individualGlobalSearchBloc.state.offset
@@ -1069,6 +1221,32 @@ class _CustomSearchBeneficiaryPageState
         );
       }
     }
+  }
+
+  void searchAbsentChild({
+    bool isPagination = false,
+  }) {
+    final individualglobalsearchSMC =
+        context.read<IndividualGlobalSearchSMCBloc>();
+    individualglobalsearchSMC
+        .add(searchHouseholdSMCBloc.IndividualGlobalSearchSMCEvent(
+            globalSearchParams: GlobalSearchParametersSMC(
+      isProximityEnabled: isProximityEnabled,
+      latitude: lat,
+      longitude: long,
+      maxRadius: RegistrationDeliverySingleton().maxRadius,
+      nameSearch: "",
+      beneficiaryId: "",
+      isChildAbsentEnabled: isChildAbsentEnabled,
+      filter: selectedFilters,
+      offset: isPagination
+          ? blocWrapper.individualGlobalSearchBloc.state.offset
+          : offset,
+      limit: isPagination
+          ? blocWrapper.individualGlobalSearchBloc.state.limit
+          : limit,
+      projectId: RegistrationDeliverySingleton().projectId!,
+    )));
   }
 
   void fetchBeneficiaryIdCount() {

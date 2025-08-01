@@ -1362,6 +1362,7 @@ class IndividualDetails {
 
   String get linkVoucherToIndividual => 'LINK_VOUCHER_TO_INDIVIDUAL';
   String get beneficiarySearchTextLabel => 'SEARCH_BY_BENEFICIARY_ID';
+  String get absentSearchTextLabel => 'SEARCH_CHILD_ABSENT';
 }
 
 class BeneficiaryDetails {

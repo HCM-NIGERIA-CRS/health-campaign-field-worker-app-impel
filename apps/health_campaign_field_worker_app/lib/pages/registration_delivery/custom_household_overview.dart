@@ -37,6 +37,7 @@ import '../../blocs/registration_delivery/custom_search_household.dart'
     as customSearchHouseholdBloc;
 import '../../utils/utils.dart';
 import '../../utils/date_utils.dart' as digits;
+import '../../utils/i18_key_constants.dart' as i18_local;
 import '../../widgets/custom_back_navigation.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 import 'package:registration_delivery/widgets/member_card/member_card.dart';
@@ -349,6 +350,12 @@ class _CustomHouseholdOverviewPageState
                                                   state.householdMemberWrapper
                                                       .household);
 
+                                          final childrenAbsentCount =
+                                              getValueForTheKey(
+                                                  Constants.childrenAbsent,
+                                                  state.householdMemberWrapper
+                                                      .household);
+
                                           if (RegistrationDeliverySingleton()
                                                   .householdType ==
                                               HouseholdType.community) {
@@ -424,6 +431,10 @@ class _CustomHouseholdOverviewPageState
                                                     i18.householdDetails
                                                         .noOfChildrenBelow5YearsLabel,
                                                   ): childrenCount,
+                                                  localizations.translate(
+                                                    i18_local.householdDetails
+                                                        .noOfChildrenAbsentLabel,
+                                                  ): childrenAbsentCount,
                                                   if (shouldShowStatus)
                                                     localizations.translate(i18
                                                             .beneficiaryDetails
@@ -657,6 +668,13 @@ class _CustomHouseholdOverviewPageState
                                                 checkIfBeneficiaryRefused(
                                               taskData,
                                             );
+
+                                            final isBeneficiaryAbsent =
+                                                local_utils
+                                                    .checkIfBeneficiaryAbsent(
+                                              taskData,
+                                            );
+
                                             final isBeneficiaryReferred =
                                                 checkBeneficiaryReferredSMC(
                                                     taskData,
@@ -870,28 +888,6 @@ class _CustomHouseholdOverviewPageState
                                                                 )
                                                               : false,
                                                       isNotEligibleVAS: true,
-                                                      // info disable vas flow , but code kept for future use
-                                                      // RegistrationDeliverySingleton()
-                                                      //             .projectType
-                                                      //             ?.cycles !=
-                                                      //         null
-                                                      //     ? !checkEligibilityForAgeAndSideEffectAll(
-                                                      //         DigitDOBAgeConvertor(
-                                                      //           years: ageInYears,
-                                                      //           months: ageInMonths,
-                                                      //         ),
-                                                      //         RegistrationDeliverySingleton()
-                                                      //             .selectedProject
-                                                      //             ?.additionalDetails
-                                                      //             ?.additionalProjectType,
-                                                      //         (taskData ?? [])
-                                                      //                 .isNotEmpty
-                                                      //             ? taskData
-                                                      //                 ?.lastOrNull
-                                                      //             : null,
-                                                      //         sideEffectData,
-                                                      //       )
-                                                      //     : false,
                                                       name: e.name?.givenName ??
                                                           ' - - ',
                                                       years: (e.dateOfBirth ==
@@ -923,6 +919,8 @@ class _CustomHouseholdOverviewPageState
                                                           false,
                                                       isBeneficiaryReferred:
                                                           isBeneficiaryReferred,
+                                                      isBeneficiaryAbsent:
+                                                          isBeneficiaryAbsent,
                                                       isSMCDelivered:
                                                           !assessmentSMCPending(
                                                               taskData,

@@ -25,5 +25,7 @@ enum Status {
   inComplete,
   @MappableValue("TO_ADMINISTER")
   toAdminister,
+  @MappableValue("BENEFICIARY_ABSENT")
+  beneficiaryAbsent,
   ;
 }

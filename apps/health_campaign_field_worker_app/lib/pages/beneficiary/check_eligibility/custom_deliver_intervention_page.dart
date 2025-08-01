@@ -43,6 +43,7 @@ import '../../../models/entities/additional_fields_type.dart'
     as additional_fields_local;
 import '../../../utils/utils.dart' show getAgeMonths;
 import '../../../widgets/custom_back_navigation.dart';
+import '../../../models/entities/status.dart' as local_status;
 
 @RoutePage()
 class CustomDeliverInterventionPage extends LocalizedStatefulWidget {
@@ -921,6 +922,12 @@ class CustomDeliverInterventionPageState
 
     // get the delivery comment
     final deliveryComment = form.control(_deliveryCommentKey).value as String?;
+
+    final isChildAbsent = deliveryComment != null && deliveryComment.isNotEmpty
+        ? deliveryComment == local_status.Status.beneficiaryAbsent.toValue()
+            ? true
+            : false
+        : false;
     // Update the task with information from the form and other context
     task = task.copyWith(
       projectId: RegistrationDeliverySingleton().projectId,
@@ -950,7 +957,9 @@ class CustomDeliverInterventionPageState
         relatedClientReferenceId: clientReferenceId,
         id: null,
       ),
-      status: Status.administeredSuccess.toValue(),
+      status: isChildAbsent
+          ? local_status.Status.beneficiaryAbsent.toValue()
+          : Status.administeredSuccess.toValue(),
       additionalFields: TaskAdditionalFields(
         version: task.additionalFields?.version ?? 1,
         fields: [
@@ -998,12 +1007,6 @@ class CustomDeliverInterventionPageState
               AdditionalFieldsType.deliveryComment.toValue(),
               deliveryComment,
             ),
-          AdditionalField(
-            additional_fields_local.AdditionalFieldsType.deliveryType.toValue(),
-            widget.eligibilityAssessmentType == EligibilityAssessmentType.smc
-                ? EligibilityAssessmentStatus.smcDone.name
-                : EligibilityAssessmentStatus.vasDone.name,
-          ),
           ...getIndividualAdditionalFields(selectedIndividual)
         ],
       ),
@@ -1036,7 +1039,8 @@ class CustomDeliverInterventionPageState
           : fetchProductVariant(
                       projectTypeModel
                           ?.cycles![bloc.cycle - 1].deliveries?[bloc.dose - 1],
-                      overViewbloc.selectedIndividual,
+                      overViewbloc.selectedIndividual ??
+                          widget.selectedIndividual,
                       overViewbloc.householdMemberWrapper.household)
                   ?.productVariants
                   ?.length ??

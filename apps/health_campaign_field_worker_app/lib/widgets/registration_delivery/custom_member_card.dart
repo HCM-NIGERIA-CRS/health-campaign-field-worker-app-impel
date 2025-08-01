@@ -27,6 +27,8 @@ import '../../utils/i18_key_constants.dart' as i18_local;
 import '../../models/entities/additional_fields_type.dart'
     as additional_fields_local;
 
+import '../../models/entities/status.dart' as local_status;
+
 class CustomMemberCard extends StatelessWidget {
   final List<ProductVariantModel> variant;
   final String name;
@@ -50,6 +52,7 @@ class CustomMemberCard extends StatelessWidget {
   final bool isBeneficiaryRefused;
   final bool isBeneficiaryIneligible;
   final bool isBeneficiaryReferred;
+  final bool isBeneficiaryAbsent;
   final String? projectBeneficiaryClientReferenceId;
 
   const CustomMemberCard({
@@ -74,6 +77,7 @@ class CustomMemberCard extends StatelessWidget {
     this.isBeneficiaryRefused = false,
     this.isBeneficiaryIneligible = false,
     this.isBeneficiaryReferred = false,
+    this.isBeneficiaryAbsent = false,
     this.sideEffects,
     required this.variant,
   });
@@ -215,29 +219,19 @@ class CustomMemberCard extends StatelessWidget {
                 iconColor: theme.colorScheme.error,
               ),
             ),
-          // if (isBeneficiaryReferredSMC || isBeneficiaryReferredVAS)
-          //   Align(
-          //     alignment: Alignment.centerLeft,
-          //     child: DigitIconButton(
-          //       icon: Icons.info_rounded,
-          //       iconSize: 20,
-          //       iconText: localizations.translate(
-          //         isBeneficiaryReferredSMC || isBeneficiaryReferredVAS
-          //             ? isBeneficiaryReferredSMC
-          //                 ? (i18_local.householdOverView
-          //                     .householdOverViewBeneficiaryReferredSMCLabel)
-          //                 : (i18_local.householdOverView
-          //                     .householdOverViewBeneficiaryReferredVACLabel)
-          //             : isBeneficiaryRefused
-          //                 ? Status.beneficiaryRefused.toValue()
-          //                 : Status.notVisited.toValue(),
-          //       ),
-          //       iconTextColor: theme.colorScheme.error,
-          //       iconColor: theme.colorScheme.error,
-          //     ),
-          //   ),
         ],
       );
+    } else if (isBeneficiaryAbsent) {
+      return Align(
+          alignment: Alignment.centerLeft,
+          child: DigitIconButton(
+            icon: Icons.info_rounded,
+            iconSize: 20,
+            iconText: localizations
+                .translate(local_status.Status.beneficiaryAbsent.toValue()),
+            iconTextColor: theme.colorScheme.error,
+            iconColor: theme.colorScheme.error,
+          ));
     } else if (isBeneficiaryRefused) {
       return Align(
           alignment: Alignment.centerLeft,
@@ -274,8 +268,8 @@ class CustomMemberCard extends StatelessWidget {
     final redosePendingStatus = smcAssessmentPendingStatus
         ? true
         : redosePending(smcTasks, context.selectedCycle);
-    if ((isNotEligibleSMC || isBeneficiaryIneligible) && !doseStatus)
-      return const Offstage();
+    if ((isNotEligibleSMC || isBeneficiaryIneligible || isBeneficiaryAbsent) &&
+        !doseStatus) return const Offstage();
     if (isNotEligibleSMC ||
         (!vasAssessmentPendingStatus && !redosePendingStatus)) {
       return const Offstage();
@@ -284,7 +278,8 @@ class CustomMemberCard extends StatelessWidget {
       children: [
         if (smcAssessmentPendingStatus &&
             !isBeneficiaryReferredSMC &&
-            !isBeneficiaryInEligibleSMC)
+            !isBeneficiaryInEligibleSMC &&
+            !isBeneficiaryAbsent)
           DigitElevatedButton(
             child: Center(
               child: Text(
@@ -415,7 +410,8 @@ class CustomMemberCard extends StatelessWidget {
             vasAssessmentPendingStatus &&
             !isBeneficiaryReferredVAS &&
             !isBeneficiaryInEligibleVAS &&
-            !isNotEligibleVAS)
+            !isNotEligibleVAS &&
+            !isBeneficiaryAbsent)
           DigitElevatedButton(
             child: Center(
               child: Text(
@@ -553,7 +549,8 @@ class CustomMemberCard extends StatelessWidget {
                           null &&
                       !isSMCDelivered &&
                       !isBeneficiaryIneligible &&
-                      !isBeneficiaryReferred)
+                      !isBeneficiaryReferred &&
+                      !isBeneficiaryAbsent)
                   ? Positioned(
                       child: Align(
                         alignment: Alignment.topRight,

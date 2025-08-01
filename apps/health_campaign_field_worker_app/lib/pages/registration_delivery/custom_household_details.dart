@@ -665,7 +665,15 @@ class CustomHouseHoldDetailsPageState
                               form: form,
                               formControlName: _childrenCountKey,
                               onChange: () {
-                                form.control(_childrenCountKey).value;
+                                final childUnder5 =
+                                    form.control(_childrenCountKey).value;
+
+                                final absent =
+                                    form.control(_childrenAbsentCountKey).value;
+                                if (absent > childUnder5) {
+                                  form.control(_childrenAbsentCountKey).value =
+                                      childUnder5;
+                                }
                               },
                               label: localizations.translate(
                                 i18.householdDetails
@@ -680,7 +688,14 @@ class CustomHouseHoldDetailsPageState
                             form: form,
                             formControlName: _childrenAbsentCountKey,
                             onChange: () {
-                              form.control(_childrenAbsentCountKey).value;
+                              final absent =
+                                  form.control(_childrenAbsentCountKey).value;
+                              final childUnder5 =
+                                  form.control(_childrenCountKey).value;
+                              if (absent > childUnder5) {
+                                form.control(_childrenAbsentCountKey).value =
+                                    childUnder5;
+                              }
                             },
                             label: localizations.translate(
                               i18_local
