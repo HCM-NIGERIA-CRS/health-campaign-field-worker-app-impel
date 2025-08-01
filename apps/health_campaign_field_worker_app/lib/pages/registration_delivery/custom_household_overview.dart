@@ -420,13 +420,13 @@ class _CustomHouseholdOverviewPageState
                                                           .locality
                                                           ?.code ??
                                                       i18.common.coreCommonNA),
-                                                  localizations.translate(
-                                                    i18.deliverIntervention
-                                                        .memberCountText,
-                                                  ): state
-                                                      .householdMemberWrapper
-                                                      .household
-                                                      ?.memberCount,
+                                                  // localizations.translate(
+                                                  //   i18.deliverIntervention
+                                                  //       .memberCountText,
+                                                  // ): state
+                                                  //     .householdMemberWrapper
+                                                  //     .household
+                                                  //     ?.memberCount,
                                                   localizations.translate(
                                                     i18.householdDetails
                                                         .noOfChildrenBelow5YearsLabel,
@@ -887,7 +887,6 @@ class _CustomHouseholdOverviewPageState
                                                                   sideEffectData,
                                                                 )
                                                               : false,
-                                                      isNotEligibleVAS: true,
                                                       name: e.name?.givenName ??
                                                           ' - - ',
                                                       years: (e.dateOfBirth ==
@@ -921,12 +920,11 @@ class _CustomHouseholdOverviewPageState
                                                           isBeneficiaryReferred,
                                                       isBeneficiaryAbsent:
                                                           isBeneficiaryAbsent,
-                                                      isSMCDelivered:
+                                                      isDelivered:
                                                           !assessmentSMCPending(
                                                               taskData,
                                                               context
                                                                   .selectedCycle),
-                                                      isVASDelivered: false,
                                                       localizations:
                                                           localizations,
                                                       projectBeneficiaryClientReferenceId:

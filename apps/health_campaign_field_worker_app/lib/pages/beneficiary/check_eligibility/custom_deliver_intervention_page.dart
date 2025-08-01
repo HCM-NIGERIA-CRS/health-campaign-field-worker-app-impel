@@ -931,6 +931,7 @@ class CustomDeliverInterventionPageState
     // Update the task with information from the form and other context
     task = task.copyWith(
       projectId: RegistrationDeliverySingleton().projectId,
+      // set quantity as 0  in resource if childAbsent
       resources: productvariantList
           .map((e) => TaskResourceModel(
                 taskclientReferenceId: clientReferenceId,
@@ -940,9 +941,11 @@ class CustomDeliverInterventionPageState
                 taskId: task?.id,
                 tenantId: RegistrationDeliverySingleton().tenantId,
                 rowVersion: oldTask?.rowVersion ?? 1,
-                quantity: (((form.control(_quantityDistributedKey) as FormArray)
-                        .value)?[productvariantList.indexOf(e)])
-                    .toString(),
+                quantity: isChildAbsent
+                    ? "0"
+                    : (((form.control(_quantityDistributedKey) as FormArray)
+                            .value)?[productvariantList.indexOf(e)])
+                        .toString(),
                 clientAuditDetails: ClientAuditDetails(
                   createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
                   createdTime: context.millisecondsSinceEpoch(),
