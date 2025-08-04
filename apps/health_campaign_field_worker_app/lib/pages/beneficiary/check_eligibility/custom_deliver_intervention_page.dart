@@ -292,19 +292,19 @@ class CustomDeliverInterventionPageState
                           projectTypeModel?.cycles?.isNotEmpty == true
                               ? (fetchProductVariant(
                                       projectTypeModel
-                                              ?.cycles![
-                                                  deliveryInterventionState
-                                                          .cycle -
-                                                      1]
+                                              ?.cycles![deliveryInterventionState
+                                                      .cycle -
+                                                  1]
                                               .deliveries?[
                                           deliveryInterventionState.dose - 1],
                                       state?.selectedIndividual ??
                                           widget?.selectedIndividual,
-                                      state.householdMemberWrapper.household)
+                                      state.householdMemberWrapper
+                                          .household)["criteria"]
                                   ?.productVariants)
                               : projectTypeModel?.resources
-                                  ?.map((r) => DeliveryProductVariant(
-                                      productVariantId: r.productVariantId))
+                                  ?.map((r) =>
+                                      DeliveryProductVariant(productVariantId: r.productVariantId))
                                   .toList();
 
                       final int numberOfDoses = (projectTypeModel
@@ -1037,8 +1037,9 @@ class CustomDeliverInterventionPageState
                       projectTypeModel
                           ?.cycles![bloc.cycle - 1].deliveries?[bloc.dose - 1],
                       overViewbloc.selectedIndividual,
-                      overViewbloc.householdMemberWrapper.household)
-                  ?.productVariants
+                      overViewbloc
+                          .householdMemberWrapper.household)?["criteria"]
+                  .productVariants
                   ?.length ??
               0;
 

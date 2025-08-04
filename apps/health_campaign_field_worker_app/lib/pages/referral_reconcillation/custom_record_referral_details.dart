@@ -194,15 +194,17 @@ class _CustomRecordReferralDetailsPageState
                                                           ServiceSearchEvent(
                                                             serviceSearchModel:
                                                                 ServiceSearchModel(
-                                                              relatedClientReferenceId:
+                                                              referenceIds:
                                                                   recordState
                                                                       .mapOrNull(
-                                                                create: (value) => value
-                                                                        .viewOnly
-                                                                    ? value
-                                                                        .hfReferralModel
-                                                                        ?.clientReferenceId
-                                                                    : null,
+                                                                create: (value) =>
+                                                                    value.viewOnly &&
+                                                                            value.hfReferralModel?.clientReferenceId !=
+                                                                                null
+                                                                        ? [
+                                                                            value.hfReferralModel!.clientReferenceId
+                                                                          ]
+                                                                        : null,
                                                               ),
                                                             ),
                                                           ),
@@ -516,15 +518,15 @@ class _CustomRecordReferralDetailsPageState
                                                               ServiceSearchEvent(
                                                                 serviceSearchModel:
                                                                     ServiceSearchModel(
-                                                                  relatedClientReferenceId:
+                                                                  referenceIds:
                                                                       recordState
                                                                           .mapOrNull(
-                                                                    create: (value) => value
-                                                                            .viewOnly
-                                                                        ? value
-                                                                            .hfReferralModel
-                                                                            ?.clientReferenceId
-                                                                        : null,
+                                                                    create: (value) =>
+                                                                        value.viewOnly
+                                                                            ? [
+                                                                                value.hfReferralModel?.clientReferenceId ?? ''
+                                                                              ]
+                                                                            : null,
                                                                   ),
                                                                 ),
                                                               ),

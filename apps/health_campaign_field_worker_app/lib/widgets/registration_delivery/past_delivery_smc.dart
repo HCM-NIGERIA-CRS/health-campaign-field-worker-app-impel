@@ -48,9 +48,9 @@ Widget buildTableContentSMC(
       RegistrationDeliverySingleton().projectType!;
   final item =
       projectType.cycles?[currentCycle - 1].deliveries?[currentDose - 1];
-  final productVariants =
-      fetchProductVariant(item, individualModel, householdModel)
-          ?.productVariants;
+  final productVariants = fetchProductVariant(
+      item, individualModel, householdModel,
+      context: context)['criteria'];
   final numRows = productVariants?.length ?? 0;
   const rowHeight = 84;
   const paddingHeight = (spacer2 * 2);
@@ -78,11 +78,12 @@ Widget buildTableContentSMC(
             element: {
               localizations.translate(
                 i18.beneficiaryDetails.beneficiaryAge,
-              ): fetchProductVariant(item, individualModel, householdModel)
-                          ?.condition !=
+              ): getProductVariant(item, individualModel, householdModel,
+                              context)['criteria']
+                          .condition !=
                       null
-                  ? customFormatAgeRange(fetchProductVariant(
-                          item, individualModel, householdModel)!
+                  ? customFormatAgeRange(getProductVariant(item,
+                          individualModel, householdModel, context)['criteria']
                       .condition!)
                   : null,
             },
@@ -90,8 +91,9 @@ Widget buildTableContentSMC(
         ),
         const DigitDivider(),
         // Build the DigitTable with the data
-        if (fetchProductVariant(item, individualModel, householdModel)
-                ?.productVariants !=
+        if (getProductVariant(
+                    item, individualModel, householdModel, context)['criteria']
+                .productVariants !=
             null)
           DigitTable(
             enableBorder: false,
@@ -102,7 +104,8 @@ Widget buildTableContentSMC(
             scrollPhysics: const ClampingScrollPhysics(),
             columns: columnListResource,
             rows: [
-              ...fetchProductVariant(item, individualModel, householdModel)!
+              ...getProductVariant(item, individualModel, householdModel,
+                      context)!['criteria']
                   .productVariants!
                   .map(
                 (e) {
@@ -117,8 +120,9 @@ Widget buildTableContentSMC(
                     // Display the dose information in the first column if it's the first row,
                     // otherwise, display an empty cell.
 
-                    fetchProductVariant(item, individualModel, householdModel)
-                                ?.productVariants
+                    getProductVariant(item, individualModel, householdModel,
+                                    context)['criteria']
+                                .productVariants
                                 ?.indexOf(e) ==
                             0
                         ? DigitTableData(
@@ -178,4 +182,12 @@ Widget buildTableContentSMC(
       ],
     ),
   );
+}
+
+getProductVariant(ProjectCycleDelivery? item, IndividualModel? individualModel,
+    HouseholdModel? householdModel, BuildContext context) {
+  var result = (fetchProductVariant(item, individualModel, householdModel,
+      context: context));
+
+  return result;
 }

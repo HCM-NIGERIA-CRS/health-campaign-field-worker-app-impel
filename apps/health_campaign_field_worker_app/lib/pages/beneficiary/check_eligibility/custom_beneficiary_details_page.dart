@@ -239,28 +239,16 @@ class CustomBeneficiaryDetailsPageState
                                                             contentPadding:
                                                                 EdgeInsets.zero,
                                                             additionalWidgets: [
-                                                              widget.eligibilityAssessmentType ==
-                                                                      EligibilityAssessmentType
-                                                                          .smc
-                                                                  ? buildTableContentSMC(
-                                                                      deliverState,
-                                                                      context,
-                                                                      variant,
-                                                                      state?.selectedIndividual ??
-                                                                          widget
-                                                                              .individualSelected,
-                                                                      state
-                                                                          .householdMemberWrapper
-                                                                          .household)
-                                                                  : buildTableContentVAS(
-                                                                      deliverState,
-                                                                      context,
-                                                                      variant,
-                                                                      state
-                                                                          .selectedIndividual,
-                                                                      state
-                                                                          .householdMemberWrapper
-                                                                          .household),
+                                                              buildTableContentSMC(
+                                                                  deliverState,
+                                                                  context,
+                                                                  variant,
+                                                                  state?.selectedIndividual ??
+                                                                      widget
+                                                                          .individualSelected,
+                                                                  state
+                                                                      .householdMemberWrapper
+                                                                      .household)
                                                             ],
                                                             actions: [
                                                               DigitButton(
@@ -289,12 +277,23 @@ class CustomBeneficiaryDetailsPageState
                                                                                 0
                                                                             ? deliverState.dose
                                                                             : 0;
-                                                                    final productVariants = fetchProductVariant(
-                                                                            projectType.cycles![currentCycle - 1].deliveries![currentDose -
-                                                                                1],
-                                                                            state.selectedIndividual,
-                                                                            null)
-                                                                        ?.productVariants;
+
+                                                                    final items = RegistrationDeliverySingleton()
+                                                                        .projectType!
+                                                                        .cycles?[
+                                                                            currentCycle -
+                                                                                1]
+                                                                        .deliveries?[currentDose - 1];
+
+                                                                    var productVariants = fetchProductVariant(
+                                                                        items,
+                                                                        state
+                                                                            .selectedIndividual,
+                                                                        state
+                                                                            .householdMemberWrapper
+                                                                            .household,
+                                                                        context:
+                                                                            context)['criteria'];
 
                                                                     final value = variant!
                                                                             .firstWhere(
