@@ -660,7 +660,7 @@ class CustomHouseHoldDetailsPageState
                               .numberOfChildrenBelow5InHousehold
                               .buildWith(
                             child: DigitIntegerFormPicker(
-                              minimum: 0,
+                              minimum: 1,
                               maximum: 20,
                               form: form,
                               formControlName: _childrenCountKey,
@@ -774,7 +774,7 @@ class CustomHouseHoldDetailsPageState
                     .toString() ??
                 '0')
             : 0,
-        validators: [Validators.max<int>(20)],
+        validators: [Validators.max<int>(20), Validators.min<int>(1)],
       ),
       _childrenAbsentCountKey: FormControl<int>(
         value: 0,
