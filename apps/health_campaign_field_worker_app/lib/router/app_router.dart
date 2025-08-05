@@ -5,6 +5,7 @@ import 'package:attendance_management/router/attendance_router.dart';
 import 'package:attendance_management/router/attendance_router.gm.dart';
 import 'package:complaints/router/complaints_router.dart';
 import 'package:complaints/router/complaints_router.gm.dart';
+import 'package:transit_post/router/transit_post_router.gm.dart';
 import '../blocs/registration_delivery/custom_beneficairy_registration.dart';
 import 'package:referral_reconciliation/router/referral_reconciliation_router.gm.dart';
 import 'package:referral_reconciliation/router/referral_reconciliation_router.dart';
@@ -100,6 +101,7 @@ import '../pages/checklist/custom_survey_form_boundary_view.dart';
 import '../pages/checklist/custom_survey_form_acknowledgement.dart';
 import '../pages/checklist/custom_survey_form_wrapper.dart';
 import '../pages/summary_report/custom_distribution_summary_report.dart';
+import '../pages/transitPost/custom_transit_post_selection.dart';
 
 import '../pages/campaign_delivery_select.dart';
 
@@ -270,6 +272,29 @@ class AppRouter extends _$AppRouter {
           page: SearchReferralReconciliationsRoute.page,
           path: 'search-referrals',
         ),
+
+        // Transit post routes
+        AutoRoute(
+            page: TransitPostWrapperRoute.page,
+            path: 'transit-post-wrapper',
+            children: [
+              AutoRoute(
+                page: TransitPostSelectionRoute.page,
+                // initial: true,
+                path: 'transit-post-selection',
+              ),
+              AutoRoute(
+                page: CustomTransitPostSelectionRoute.page,
+                initial: true,
+                path: 'custom-transit-post-selection',
+              ),
+              AutoRoute(
+                  page: TransitPostRecordVaccinationRoute.page,
+                  path: 'transit-post-record'),
+              AutoRoute(
+                  page: TransitPostAcknowledgmentRoute.page,
+                  path: 'transit-post-acknowledgment')
+            ]),
 
         AutoRoute(
             page: CustomRegistrationDeliveryWrapperRoute.page,

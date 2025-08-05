@@ -5,6 +5,9 @@ import 'package:complaints/data/repositories/oplog/oplog.dart';
 import 'package:complaints/data/repositories/remote/pgr_service.dart';
 import 'package:complaints/models/pgr_complaints.dart';
 import 'package:digit_data_model/data_model.dart';
+import 'package:digit_data_model/models/entities/user_action.dart';
+import 'package:digit_location_tracker/data/oplog/oplog.dart';
+import 'package:digit_location_tracker/data/repositories/local/location_tracker.dart';
 import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
 import 'package:dio/dio.dart';
@@ -25,6 +28,7 @@ import 'package:survey_form/data/repositories/remote/service.dart';
 import 'package:survey_form/data/repositories/remote/service_definition.dart';
 import 'package:survey_form/models/entities/service.dart';
 import 'package:survey_form/models/entities/service_definition.dart';
+import 'package:transit_post/transit_post.dart';
 
 import '../blocs/app_initialization/app_initialization.dart';
 import '../data/local_store/downsync/downsync.dart';
@@ -189,9 +193,21 @@ class NetworkManagerProviderWrapper extends StatelessWidget {
           BoundaryOpLogManager(isar),
         ),
       ),
+      RepositoryProvider<
+          LocalRepository<UserActionModel, UserActionSearchModel>>(
+        create: (_) => LocationTrackerLocalBaseRepository(
+          sql,
+          LocationTrackerOpLogManager(isar),
+        ),
+      ),
 
       // INFO Need to add packages here
-
+      RepositoryProvider<UserActionLocalRepository>(
+        create: (_) => UserActionLocalRepository(
+          sql,
+          UserActionOpLogManager(isar),
+        ),
+      ),
       RepositoryProvider<LocalRepository<StockModel, StockSearchModel>>(
         create: (_) => CustomStockLocalRepository(
           sql,

@@ -636,6 +636,12 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    CustomTransitPostSelectionRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const CustomTransitPostSelectionPage(),
+      );
+    },
     CustomWarehouseDetailsRoute.name: (routeData) {
       final args = routeData.argsAs<CustomWarehouseDetailsRouteArgs>(
           orElse: () => const CustomWarehouseDetailsRouteArgs());
@@ -3142,6 +3148,20 @@ class CustomTransactionalDetailsRouteArgs {
   String toString() {
     return 'CustomTransactionalDetailsRouteArgs{key: $key, appLocalizations: $appLocalizations}';
   }
+}
+
+/// generated route for
+/// [CustomTransitPostSelectionPage]
+class CustomTransitPostSelectionRoute extends PageRouteInfo<void> {
+  const CustomTransitPostSelectionRoute({List<PageRouteInfo>? children})
+      : super(
+          CustomTransitPostSelectionRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'CustomTransitPostSelectionRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for

@@ -1,5 +1,9 @@
 library app_utils;
 
+import 'package:digit_data_model/data_model.dart';
+import 'package:digit_data_model/models/entities/user_action.dart';
+import 'package:digit_data_model/utils/utils.dart';
+import 'package:digit_location_tracker/utils/utils.dart';
 import 'package:inventory_management/inventory_management.dart';
 import 'package:referral_reconciliation/referral_reconciliation.dart'
     as referral_reconciliation_mappers;
@@ -768,6 +772,52 @@ List<dss_mappers.DashboardConfigSchema?> filterDashboardConfig(
               element != null && element.projectTypeCode == projectTypeCode)
           .toList() ??
       [];
+}
+
+Future<List<UserActionModel>> parseLocationData(List<String> logs) async {
+  List<UserActionModel> locationDataList = [];
+
+  for (var log in logs) {
+    final pattern = RegExp(
+        r'Latitude:\s*(-?\d+\.\d+),\s*Longitude:\s*(-?\d+\.\d+),\s*Accuracy:\s*(\d+\.\d+),\s*isSync:\s*(\w+),\s*timestamp:\s*(\d+)');
+
+    final match = pattern.firstMatch(log);
+    if (match != null) {
+      final latitude = double.parse(match.group(1)!);
+      final longitude = double.parse(match.group(2)!);
+      final accuracy = double.parse(match.group(3)!);
+      final isSync = match.group(4)!.toLowerCase() == 'true';
+      final timestamp = int.parse(match.group(5)!);
+
+      locationDataList.add(UserActionModel(
+        latitude: latitude,
+        longitude: longitude,
+        locationAccuracy: accuracy,
+        tenantId: LocationTrackerSingleton().tenantId,
+        clientReferenceId: IdGen.instance.identifier,
+        isSync: isSync,
+        timestamp: timestamp,
+        boundaryCode: LocationTrackerSingleton().boundaryName,
+        action: 'LOCATION_CAPTURE',
+        projectId: LocationTrackerSingleton().projectId,
+        rowVersion: 1,
+        auditDetails: AuditDetails(
+          createdBy: LocationTrackerSingleton().loggedInUserUuid,
+          createdTime: DateTime.now().millisecondsSinceEpoch,
+          lastModifiedBy: LocationTrackerSingleton().loggedInUserUuid,
+          lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
+        ),
+        clientAuditDetails: ClientAuditDetails(
+          createdBy: LocationTrackerSingleton().loggedInUserUuid,
+          createdTime: DateTime.now().millisecondsSinceEpoch,
+          lastModifiedBy: LocationTrackerSingleton().loggedInUserUuid,
+          lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
+        ),
+      ));
+    }
+  }
+
+  return locationDataList;
 }
 
 getSelectedLanguage(AppInitialized state, int index) {
