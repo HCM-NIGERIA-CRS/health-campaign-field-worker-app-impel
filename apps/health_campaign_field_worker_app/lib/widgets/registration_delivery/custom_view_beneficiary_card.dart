@@ -20,6 +20,8 @@ import 'package:registration_delivery/widgets/localized.dart';
 import '../../utils/i18_key_constants.dart' as i18_local;
 import '../../utils/registration_delivery/utils_smc.dart';
 import '../../utils/registration_delivery/utils_smc.dart' as util_local;
+import '../../utils/utils.dart';
+import '../../models/entities/status.dart' as local_status;
 
 class CustomViewBeneficiaryCard extends LocalizedStatefulWidget {
   final HouseholdMemberWrapper householdMember;
@@ -169,6 +171,7 @@ class CustomViewBeneficiaryCardState
         );
 
         final isBeneficiaryRefused = checkIfBeneficiaryRefused(taskData);
+        final isBeneficiaryAbsent = checkIfBeneficiaryAbsent(taskData);
         final isBeneficiaryIneligible =
             checkBeneficiaryInEligibleSMC(taskData, context.selectedCycle);
         final isBeneficiaryReferred =
@@ -214,6 +217,7 @@ class CustomViewBeneficiaryCardState
                         isBeneficiaryRefused,
                         isBeneficiaryReferred,
                         isBeneficiaryIneligible,
+                        isBeneficiaryAbsent,
                         isStatusReset,
                       ),
                       taskData,
@@ -224,8 +228,9 @@ class CustomViewBeneficiaryCardState
                     : getTableCellTextColor(
                         isNotEligible: isNotEligible,
                         taskdata: taskData,
-                        isBeneficiaryRefused:
-                            isBeneficiaryRefused || isBeneficiaryReferred,
+                        isBeneficiaryRefused: isBeneficiaryRefused ||
+                            isBeneficiaryReferred ||
+                            isBeneficiaryAbsent,
                         isBeneficiaryIneligible: isBeneficiaryIneligible,
                         isStatusReset: isStatusReset,
                         theme: theme,
@@ -419,6 +424,9 @@ class CustomViewBeneficiaryCardState
           i18.householdOverView.householdOverViewNotEligibleIconLabel);
     } else if (statusKeys.isBeneficiaryReferred) {
       return localizations.translate(Status.beneficiaryReferred.toValue());
+    } else if (statusKeys.isBeneficiaryAbsent) {
+      return localizations
+          .translate(local_status.Status.beneficiaryAbsent.toValue());
     } else if (taskData != null) {
       if (taskData.isEmpty) {
         return localizations.translate(Status.notVisited.toValue());
@@ -476,6 +484,7 @@ class CustomStatusKeys {
   bool isBeneficiaryRefused;
   bool isBeneficiaryReferred;
   bool isBeneficiaryIneligible;
+  bool isBeneficiaryAbsent;
   bool isStatusReset;
 
   CustomStatusKeys(
@@ -483,6 +492,7 @@ class CustomStatusKeys {
     this.isBeneficiaryRefused,
     this.isBeneficiaryReferred,
     this.isBeneficiaryIneligible,
+    this.isBeneficiaryAbsent,
     this.isStatusReset,
   );
 }

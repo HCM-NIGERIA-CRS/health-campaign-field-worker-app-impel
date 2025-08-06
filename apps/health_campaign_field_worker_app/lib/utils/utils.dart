@@ -59,7 +59,7 @@ import '../data/local_store/app_shared_preferences.dart';
 import '../data/local_store/no_sql/schema/localization.dart';
 import '../data/local_store/secure_store/secure_store.dart';
 import '../models/app_config/app_config_model.dart';
-import '../models/entities/roles_type.dart';
+import '../models/entities/status.dart' as local_status;
 import '../router/app_router.dart';
 import '../widgets/progress_indicator/progress_indicator.dart';
 import 'constants.dart';
@@ -206,6 +206,16 @@ String? formatBeneficiaryId(String? id) {
     }
   }
   return buffer.toString();
+}
+
+bool checkIfBeneficiaryAbsent(
+  List<TaskModel>? tasks,
+) {
+  final isBeneficiaryAbsent = (tasks != null &&
+      (tasks ?? []).isNotEmpty &&
+      tasks.last.status == local_status.Status.beneficiaryAbsent.toValue());
+
+  return isBeneficiaryAbsent;
 }
 
 String formatDateFromMillis(int millis) {

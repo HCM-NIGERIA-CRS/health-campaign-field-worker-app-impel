@@ -1,4 +1,4 @@
-package com.digit.hcm
+package org.egov.training.ng
 
 import android.annotation.TargetApi
 import android.app.NotificationChannel

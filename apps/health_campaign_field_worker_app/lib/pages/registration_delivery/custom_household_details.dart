@@ -660,12 +660,20 @@ class CustomHouseHoldDetailsPageState
                               .numberOfChildrenBelow5InHousehold
                               .buildWith(
                             child: DigitIntegerFormPicker(
-                              minimum: 0,
+                              minimum: 1,
                               maximum: 20,
                               form: form,
                               formControlName: _childrenCountKey,
                               onChange: () {
-                                form.control(_childrenCountKey).value;
+                                final childUnder5 =
+                                    form.control(_childrenCountKey).value;
+
+                                final absent =
+                                    form.control(_childrenAbsentCountKey).value;
+                                if (absent > childUnder5) {
+                                  form.control(_childrenAbsentCountKey).value =
+                                      childUnder5;
+                                }
                               },
                               label: localizations.translate(
                                 i18.householdDetails
@@ -680,7 +688,14 @@ class CustomHouseHoldDetailsPageState
                             form: form,
                             formControlName: _childrenAbsentCountKey,
                             onChange: () {
-                              form.control(_childrenAbsentCountKey).value;
+                              final absent =
+                                  form.control(_childrenAbsentCountKey).value;
+                              final childUnder5 =
+                                  form.control(_childrenCountKey).value;
+                              if (absent > childUnder5) {
+                                form.control(_childrenAbsentCountKey).value =
+                                    childUnder5;
+                              }
                             },
                             label: localizations.translate(
                               i18_local
@@ -759,7 +774,7 @@ class CustomHouseHoldDetailsPageState
                     .toString() ??
                 '0')
             : 0,
-        validators: [Validators.max<int>(20)],
+        validators: [Validators.max<int>(20), Validators.min<int>(1)],
       ),
       _childrenAbsentCountKey: FormControl<int>(
         value: 0,

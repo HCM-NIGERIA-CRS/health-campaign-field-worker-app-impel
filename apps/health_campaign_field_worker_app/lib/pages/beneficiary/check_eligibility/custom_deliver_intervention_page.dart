@@ -43,6 +43,7 @@ import '../../../models/entities/additional_fields_type.dart'
     as additional_fields_local;
 import '../../../utils/utils.dart' show getAgeMonths;
 import '../../../widgets/custom_back_navigation.dart';
+import '../../../models/entities/status.dart' as local_status;
 
 @RoutePage()
 class CustomDeliverInterventionPage extends LocalizedStatefulWidget {
@@ -261,7 +262,8 @@ class CustomDeliverInterventionPageState
       child: BlocBuilder<HouseholdOverviewBloc, HouseholdOverviewState>(
         builder: (context, state) {
           final householdMemberWrapper = state.householdMemberWrapper;
-          final individualModel = state.selectedIndividual;
+          final individualModel =
+              state.selectedIndividual ?? widget.selectedIndividual;
 
           final projectBeneficiary =
               RegistrationDeliverySingleton().beneficiaryType !=
@@ -921,9 +923,16 @@ class CustomDeliverInterventionPageState
 
     // get the delivery comment
     final deliveryComment = form.control(_deliveryCommentKey).value as String?;
+
+    final isChildAbsent = deliveryComment != null && deliveryComment.isNotEmpty
+        ? deliveryComment == local_status.Status.beneficiaryAbsent.toValue()
+            ? true
+            : false
+        : false;
     // Update the task with information from the form and other context
     task = task.copyWith(
       projectId: RegistrationDeliverySingleton().projectId,
+      // set quantity as 0  in resource if childAbsent
       resources: productvariantList
           .map((e) => TaskResourceModel(
                 taskclientReferenceId: clientReferenceId,
@@ -933,9 +942,11 @@ class CustomDeliverInterventionPageState
                 taskId: task?.id,
                 tenantId: RegistrationDeliverySingleton().tenantId,
                 rowVersion: oldTask?.rowVersion ?? 1,
-                quantity: (((form.control(_quantityDistributedKey) as FormArray)
-                        .value)?[productvariantList.indexOf(e)])
-                    .toString(),
+                quantity: isChildAbsent
+                    ? "0"
+                    : (((form.control(_quantityDistributedKey) as FormArray)
+                            .value)?[productvariantList.indexOf(e)])
+                        .toString(),
                 clientAuditDetails: ClientAuditDetails(
                   createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
                   createdTime: context.millisecondsSinceEpoch(),
@@ -950,7 +961,9 @@ class CustomDeliverInterventionPageState
         relatedClientReferenceId: clientReferenceId,
         id: null,
       ),
-      status: Status.administeredSuccess.toValue(),
+      status: isChildAbsent
+          ? local_status.Status.beneficiaryAbsent.toValue()
+          : Status.administeredSuccess.toValue(),
       additionalFields: TaskAdditionalFields(
         version: task.additionalFields?.version ?? 1,
         fields: [
@@ -998,12 +1011,6 @@ class CustomDeliverInterventionPageState
               AdditionalFieldsType.deliveryComment.toValue(),
               deliveryComment,
             ),
-          AdditionalField(
-            additional_fields_local.AdditionalFieldsType.deliveryType.toValue(),
-            widget.eligibilityAssessmentType == EligibilityAssessmentType.smc
-                ? EligibilityAssessmentStatus.smcDone.name
-                : EligibilityAssessmentStatus.vasDone.name,
-          ),
           ...getIndividualAdditionalFields(selectedIndividual)
         ],
       ),

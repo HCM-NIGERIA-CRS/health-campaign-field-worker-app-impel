@@ -344,6 +344,33 @@ class CustomIndividualDetailsPageState
                                       size: DigitButtonSize.large,
                                       mainAxisSize: MainAxisSize.max,
                                       onPressed: () async {
+                                        final age =
+                                            form.control(_dobKey).value == null
+                                                ? DigitDOBAgeConvertor(
+                                                    years: 0,
+                                                    months: 0,
+                                                    days: 0)
+                                                : DigitDateUtils.calculateAge(
+                                                    form.control(_dobKey).value
+                                                        as DateTime,
+                                                  );
+
+                                        if (age.years < 18 &&
+                                            widget.isHeadOfHousehold) {
+                                          await DigitToast.show(
+                                            context,
+                                            options: DigitToastOptions(
+                                              localizations.translate(i18_local
+                                                  .individualDetails
+                                                  .headAgeValidError),
+                                              true,
+                                              theme,
+                                            ),
+                                          );
+
+                                          return;
+                                        }
+
                                         final submit = await showDialog(
                                           context: context,
                                           builder: (ctx) => Popup(

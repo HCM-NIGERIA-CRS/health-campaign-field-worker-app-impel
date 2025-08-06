@@ -287,8 +287,9 @@ class CustomBeneficiaryDetailsPageState
 
                                                                     var productVariants = fetchProductVariant(
                                                                         items,
-                                                                        state
-                                                                            .selectedIndividual,
+                                                                        state.selectedIndividual ??
+                                                                            widget
+                                                                                .individualSelected,
                                                                         state
                                                                             .householdMemberWrapper
                                                                             .household,
@@ -307,7 +308,8 @@ class CustomBeneficiaryDetailsPageState
                                                                           .push(
                                                                         CustomDeliverInterventionRoute(
                                                                             eligibilityAssessmentType:
-                                                                                widget.eligibilityAssessmentType),
+                                                                                widget.eligibilityAssessmentType,
+                                                                            selectedIndividual: widget.individualSelected),
                                                                       );
                                                                     } else {
                                                                       DigitDialog
@@ -381,9 +383,11 @@ class CustomBeneficiaryDetailsPageState
                                               onPressed: () {
                                                 context.router.push(
                                                     CustomDeliverInterventionRoute(
-                                                        eligibilityAssessmentType:
-                                                            widget
-                                                                .eligibilityAssessmentType));
+                                                  eligibilityAssessmentType: widget
+                                                      .eligibilityAssessmentType,
+                                                  selectedIndividual:
+                                                      widget.individualSelected,
+                                                ));
                                               },
                                             ),
                                           ]);
@@ -545,7 +549,9 @@ class CustomBeneficiaryDetailsPageState
                                                             taskData:
                                                                 taskData ?? [],
                                                             individualModel: state
-                                                                .selectedIndividual,
+                                                                    .selectedIndividual ??
+                                                                widget
+                                                                    .individualSelected,
                                                           )
                                                         : const Offstage(),
                                                   ],
