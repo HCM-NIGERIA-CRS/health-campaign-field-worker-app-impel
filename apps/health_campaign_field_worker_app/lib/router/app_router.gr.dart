@@ -636,6 +636,12 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    CustomTransitPostRecordVaccinationRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const CustomTransitPostRecordVaccinationPage(),
+      );
+    },
     CustomTransitPostSelectionRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -3148,6 +3154,20 @@ class CustomTransactionalDetailsRouteArgs {
   String toString() {
     return 'CustomTransactionalDetailsRouteArgs{key: $key, appLocalizations: $appLocalizations}';
   }
+}
+
+/// generated route for
+/// [CustomTransitPostRecordVaccinationPage]
+class CustomTransitPostRecordVaccinationRoute extends PageRouteInfo<void> {
+  const CustomTransitPostRecordVaccinationRoute({List<PageRouteInfo>? children})
+      : super(
+          CustomTransitPostRecordVaccinationRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'CustomTransitPostRecordVaccinationRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for

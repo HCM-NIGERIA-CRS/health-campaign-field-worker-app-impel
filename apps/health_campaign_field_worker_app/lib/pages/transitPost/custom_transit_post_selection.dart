@@ -23,6 +23,8 @@ import 'package:transit_post/widgets/total_delivery.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart'
     as i18_registration_delivery;
 
+import '../../router/app_router.dart';
+
 @RoutePage()
 class CustomTransitPostSelectionPage extends LocalizedStatefulWidget {
   const CustomTransitPostSelectionPage({super.key});
@@ -103,10 +105,10 @@ class CustomTransitPostSelectionPageState
                             label: localizations.translate(
                               i18.transitPost.scanResourceLabel,
                             ),
-                            isDisabled: !form.valid,
+                            isDisabled: false,
                             onPressed: () async {
                               form.markAllAsTouched();
-                              if (!form.valid) return;
+                              // if (!form.valid) return;
 
                               final transitPostType =
                                   form.control(_transitPostType).value;
@@ -126,55 +128,55 @@ class CustomTransitPostSelectionPageState
                                     transitPostType: transitPostType,
                                   ));
 
-                              final bloc = context.read<DigitScannerBloc>();
-                              final state = bloc.state.barCodes;
+                              // final bloc = context.read<DigitScannerBloc>();
+                              // final state = bloc.state.barCodes;
 
-                              if (state.isNotEmpty) {
-                                await showCustomPopup(
-                                    context: context,
-                                    builder: (popUpContext) => Popup(
-                                          title: localizations.translate(
-                                            i18.transitPost.alertPopupTitle,
-                                          ),
-                                          type: PopUpType.alert,
-                                          description: localizations.translate(
-                                            i18.transitPost
-                                                .alertPopupDescription,
-                                          ),
-                                          actions: [
-                                            DigitButton(
-                                              label: localizations.translate(
-                                                i18.common.coreCommonOk,
-                                              ),
-                                              onPressed: () {
-                                                Navigator.of(popUpContext)
-                                                    .pop();
-                                              },
-                                              type: DigitButtonType.primary,
-                                              size: DigitButtonSize.large,
-                                            )
-                                          ],
-                                        ));
-                              }
+                              // if (state.isNotEmpty) {
+                              //   await showCustomPopup(
+                              //       context: context,
+                              //       builder: (popUpContext) => Popup(
+                              //             title: localizations.translate(
+                              //               i18.transitPost.alertPopupTitle,
+                              //             ),
+                              //             type: PopUpType.alert,
+                              //             description: localizations.translate(
+                              //               i18.transitPost
+                              //                   .alertPopupDescription,
+                              //             ),
+                              //             actions: [
+                              //               DigitButton(
+                              //                 label: localizations.translate(
+                              //                   i18.common.coreCommonOk,
+                              //                 ),
+                              //                 onPressed: () {
+                              //                   Navigator.of(popUpContext)
+                              //                       .pop();
+                              //                 },
+                              //                 type: DigitButtonType.primary,
+                              //                 size: DigitButtonSize.large,
+                              //               )
+                              //             ],
+                              //           ));
+                              // }
 
-                              await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const DigitScannerPage(
-                                    quantity: 1,
-                                    isGS1code: true,
-                                    singleValue: true,
-                                  ),
-                                  settings:
-                                      const RouteSettings(name: '/qr-scanner'),
-                                ),
-                              );
+                              // await Navigator.of(context).push(
+                              //   MaterialPageRoute(
+                              //     builder: (context) => const DigitScannerPage(
+                              //       quantity: 1,
+                              //       isGS1code: true,
+                              //       singleValue: true,
+                              //     ),
+                              //     settings:
+                              //         const RouteSettings(name: '/qr-scanner'),
+                              //   ),
+                              // );
                               if (context.mounted) {
-                                final bloc = context.read<DigitScannerBloc>();
-                                final state = bloc.state.barCodes;
-                                if (state.isNotEmpty) {
-                                  context.router.push(
-                                      const TransitPostRecordVaccinationRoute());
-                                }
+                                // final bloc = context.read<DigitScannerBloc>();
+                                // final state = bloc.state.barCodes;
+                                // if (state.isNotEmpty) {
+                                context.router.push(
+                                    const CustomTransitPostRecordVaccinationRoute());
+                                // }
                               }
                             },
                             type: DigitButtonType.primary,

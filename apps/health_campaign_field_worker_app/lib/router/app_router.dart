@@ -102,6 +102,7 @@ import '../pages/checklist/custom_survey_form_acknowledgement.dart';
 import '../pages/checklist/custom_survey_form_wrapper.dart';
 import '../pages/summary_report/custom_distribution_summary_report.dart';
 import '../pages/transitPost/custom_transit_post_selection.dart';
+import '../pages/transitPost/custom_transit_post_record_vaccination.dart';
 
 import '../pages/campaign_delivery_select.dart';
 
@@ -291,6 +292,12 @@ class AppRouter extends _$AppRouter {
               AutoRoute(
                   page: TransitPostRecordVaccinationRoute.page,
                   path: 'transit-post-record'),
+              AutoRoute(
+                  page: CustomTransitPostRecordVaccinationRoute.page,
+                  path: 'custom-transit-post-record'),
+              RedirectRoute(
+                  path: 'transit-post-record',
+                  redirectTo: 'custom-transit-post-record'),
               AutoRoute(
                   page: TransitPostAcknowledgmentRoute.page,
                   path: 'transit-post-acknowledgment')

@@ -231,6 +231,14 @@ class DeliverIntervention {
   String get doseadministeredby => 'DOSE_ADMINISTERED_BY_LABEL';
   String get proceedToVASLabel => 'PROCEED_TO_VAS_LABEL';
   String get proceedToVASDescription => 'PROCEED_TO_VAS_DESCRIPTION';
+
+  String get noOfChildrenVaccinated => 'CHILDREN_VACCINATED';
+  String get polioDeliverySummary => 'POLIO_DELIVERY_SUMMARY';
+  String get measlesDeliverySummary => 'MEASLES_DELIVERY_SUMMARY';
+  String get vaccinateBeneficiary => 'VACCINATE_BENEFICIARY';
+  String get selectAgeRange => 'SELECT_AGE_RANGE';
+  String get ninetoElevenAgeRange => 'NINE_ELEVEN_AGE_RANGE';
+  String get twelvetofiftyNineAgeRange => 'TWELVE_FIFTYNINE_AGE_RANGE';
 }
 
 class Checklist {
