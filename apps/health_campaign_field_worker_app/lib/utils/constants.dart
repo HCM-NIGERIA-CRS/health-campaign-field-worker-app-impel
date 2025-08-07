@@ -125,7 +125,7 @@ class Constants {
   static const String productVariantId2 = 'PVAR-2025-05-08-000002';
 
   // todo enable before cycle2
-  static const bool isDownSyncEnabled = false;
+  static const bool isDownSyncEnabled = true;
   static const String dashboardAnalyticsPath =
       '/dashboard-analytics/dashboard/getChartV2';
 
