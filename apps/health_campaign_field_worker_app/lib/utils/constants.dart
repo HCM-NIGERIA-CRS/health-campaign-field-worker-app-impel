@@ -112,7 +112,7 @@ class Constants {
   static const int apiCallLimit = 1000;
   static const int beneficiaryIdLength = 9;
   static const String headConsent = 'caregiver_consent_registration';
-  static const int dailyTarget = 100;
+  static const int dailyTarget = 90;
 
   // for stock validation
 
