@@ -441,6 +441,71 @@ class CustomIndividualDetailsPageState
 
                                           isEditIndividual = false;
                                           isAddIndividual = false;
+
+                                          if (generatedUniqueId == null) {
+                                            showCustomPopup(
+                                                context: context,
+                                                builder: (ctx) {
+                                                  return Popup(
+                                                    type: PopUpType.alert,
+                                                    onCrossTap: () {
+                                                      Navigator.of(ctx).pop();
+                                                    },
+                                                    actions: [
+                                                      DigitButton(
+                                                        capitalizeLetters:
+                                                            false,
+                                                        type: DigitButtonType
+                                                            .primary,
+                                                        size: DigitButtonSize
+                                                            .large,
+                                                        mainAxisSize:
+                                                            MainAxisSize.max,
+                                                        onPressed: () {
+                                                          Navigator.pop(ctx);
+                                                          context
+                                                              .read<
+                                                                  UniqueIdBloc>()
+                                                              .add(
+                                                                const UniqueIdEvent
+                                                                    .fetchUniqueIdsFromServer(
+                                                                    reFetch:
+                                                                        true),
+                                                              );
+                                                        },
+                                                        label: localizations
+                                                            .translate(i18
+                                                                .beneficiaryDetails
+                                                                .beneficiaryIdsReFetch),
+                                                      ),
+                                                      DigitButton(
+                                                        capitalizeLetters:
+                                                            false,
+                                                        type: DigitButtonType
+                                                            .secondary,
+                                                        size: DigitButtonSize
+                                                            .large,
+                                                        mainAxisSize:
+                                                            MainAxisSize.max,
+                                                        onPressed: () {
+                                                          Navigator.pop(ctx);
+                                                        },
+                                                        label: localizations
+                                                            .translate(
+                                                          i18.common
+                                                              .corecommonclose,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                    title: localizations
+                                                        .translate(i18
+                                                            .beneficiaryDetails
+                                                            .noBeneficiaryIdsLabel),
+                                                  );
+                                                });
+                                            return;
+                                          }
+
                                           state.maybeWhen(
                                             orElse: () {
                                               return;
