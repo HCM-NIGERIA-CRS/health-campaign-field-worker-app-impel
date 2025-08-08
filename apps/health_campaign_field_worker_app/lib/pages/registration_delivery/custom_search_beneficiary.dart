@@ -433,6 +433,12 @@ class _CustomSearchBeneficiaryPageState
                       return SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (ctx, index) {
+                            if (index >=
+                                searchHouseholdsState.householdMembers.length) {
+                              return Container(
+                                height: 100,
+                              );
+                            }
                             HouseholdMemberWrapper i = searchHouseholdsState
                                 .householdMembers
                                 .elementAt(index);
@@ -539,7 +545,7 @@ class _CustomSearchBeneficiaryPageState
                             );
                           },
                           childCount:
-                              searchHouseholdsState.householdMembers.length,
+                              searchHouseholdsState.householdMembers.length + 1,
                         ),
                       );
                     },
