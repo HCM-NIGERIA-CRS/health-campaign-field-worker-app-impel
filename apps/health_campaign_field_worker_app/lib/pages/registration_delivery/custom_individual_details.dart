@@ -1279,14 +1279,7 @@ class CustomIndividualDetailsPageState
       ),
       _genderKey: FormControl<String>(value: getGenderOptions(individual)),
       _mobileNumberKey:
-          FormControl<String>(value: individual?.mobileNumber, validators: [
-        Validators.delegate(
-          (validator) =>
-              local_utils.CustomValidator.validMobileNumber(validator),
-        ),
-        Validators.minLength(11),
-        Validators.maxLength(11),
-      ]),
+          FormControl<String>(value: individual?.mobileNumber, validators: []),
     });
   }
 
