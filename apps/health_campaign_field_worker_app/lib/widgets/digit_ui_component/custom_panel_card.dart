@@ -312,6 +312,8 @@ class _PanelState extends State<Panel> with SingleTickerProviderStateMixin {
         theme.extension<PanelThemeData>() ??
         PanelThemeData.defaultTheme(context);
 
+    final textTheme = theme.digitTextTheme(context);
+
     bool isMobile = AppView.isMobileView(MediaQuery.of(context).size);
     bool isTab = AppView.isTabletView(MediaQuery.of(context).size);
 
@@ -375,15 +377,16 @@ class _PanelState extends State<Panel> with SingleTickerProviderStateMixin {
           Text(
             widget.subTitle?['id'] ?? "",
             textAlign: TextAlign.center,
-            style: themeData.titleTextStyle.copyWith(fontSize: 30),
-          ),
-          Text(
-            widget.subTitle?['value'] ?? "", // 👈 Name should be on top
-            textAlign: TextAlign.center,
             style: themeData.titleTextStyle.copyWith(
               fontSize: 20, // Bigger font for name
               fontWeight: FontWeight.bold,
             ),
+          ),
+          Text(
+            widget.subTitle?['value'] ?? "", // 👈 Name should be on top
+            textAlign: TextAlign.center,
+            style: textTheme.headingL
+                .copyWith(color: theme.colorTheme.primary.primaryBg),
           ),
           if (widget.description != null)
             SizedBox(

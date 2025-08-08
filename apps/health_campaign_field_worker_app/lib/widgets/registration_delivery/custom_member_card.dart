@@ -524,7 +524,7 @@ class CustomMemberCard extends StatelessWidget {
                                           ?.identifierId) ??
                                       localizations
                                           .translate(i18.common.noResultsFound),
-                                  style: textTheme.headingXS.copyWith(
+                                  style: textTheme.headingS.copyWith(
                                       color: theme.colorTheme.primary.primary2),
                                 ),
                               ),
