@@ -1275,6 +1275,9 @@ class SearchBeneficiary {
 class IndividualDetails {
   const IndividualDetails();
 
+  String get dobValidationMessage =>
+      'INDIVIDUAL_DETAILS_DOB_VALIDATION_MESSAGE';
+
   String get landmarkValidationMessage =>
       'INDIVIDUAL_DETAILS_LANDMARK_VALIDATION_MESSAGE';
 

@@ -10,6 +10,7 @@ import '../../utils/date_utils.dart' as digits;
 import 'package:digit_components/widgets/atoms/digit_toaster.dart';
 import 'package:digit_ui_components/theme/ComponentTheme/checkbox_theme.dart';
 import '../../utils/app_enums.dart';
+import '../../utils/utils.dart' as utils;
 import '../../widgets/custom_back_navigation.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/household_type.dart';
@@ -368,6 +369,43 @@ class CustomIndividualDetailsPageState
                                       onPressed: () async {
                                         form.markAllAsTouched();
                                         if (!form.valid) return;
+                                        if (!widget.isHeadOfHousehold &&
+                                            form.control(_dobKey).value ==
+                                                null) {
+                                          setState(() {
+                                            form
+                                                .control(_dobKey)
+                                                .setErrors({'': true});
+                                          });
+                                          return;
+                                        }
+                                        if (!widget.isHeadOfHousehold &&
+                                            form.control(_genderKey).value ==
+                                                null) {
+                                          setState(() {
+                                            form
+                                                .control(_genderKey)
+                                                .setErrors({'': true});
+                                          });
+                                          return;
+                                        }
+                                        DateTime dob =
+                                            form.control(_dobKey).value;
+                                        int ageInMonth = DateTime.now()
+                                                .difference(dob)
+                                                .inDays ~/
+                                            30;
+                                        if (ageInMonth < 3 || ageInMonth > 59) {
+                                          Toast.showToast(
+                                            context,
+                                            message: localizations.translate(
+                                              i18_local.individualDetails
+                                                  .dobValidationMessage,
+                                            ),
+                                            type: ToastType.error,
+                                          );
+                                          return;
+                                        }
                                         final submit = await showDialog(
                                           context: context,
                                           builder: (ctx) => Popup(
@@ -412,24 +450,6 @@ class CustomIndividualDetailsPageState
                                         );
 
                                         if (submit ?? false) {
-                                          if (!widget.isHeadOfHousehold &&
-                                              form.control(_dobKey).value ==
-                                                  null) {
-                                            setState(() {
-                                              form
-                                                  .control(_dobKey)
-                                                  .setErrors({'': true});
-                                            });
-                                          }
-                                          if (!widget.isHeadOfHousehold &&
-                                              form.control(_genderKey).value ==
-                                                  null) {
-                                            setState(() {
-                                              form
-                                                  .control(_genderKey)
-                                                  .setErrors({'': true});
-                                            });
-                                          }
                                           final userId =
                                               RegistrationDeliverySingleton()
                                                   .loggedInUserUuid;
