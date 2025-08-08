@@ -217,7 +217,7 @@ class _CustomSearchBeneficiaryPageState
                                                   .SearchHouseholdsSMCEvent.clear());
                                         } else if (!isSearchByBeneficiaryIdEnabled &&
                                             (value.isEmpty ||
-                                                beneficiaryId.length > 2)) {
+                                                value.trim().length > 2)) {
                                           triggerGlobalSearchEvent();
                                         }
                                       },
@@ -547,15 +547,15 @@ class _CustomSearchBeneficiaryPageState
                   if (isSearchByBeneficiaryIdEnabled)
                     BlocConsumer<IndividualGlobalSearchSMCBloc,
                         searchHouseholdSMCBloc.SearchHouseholdsSMCState>(
-                      listener: (context, searchSMCstate) {},
-                      builder: (context, searchSMCstate) {
-                        if (searchSMCstate.loading) {
+                      listener: (context, searchSMCState) {},
+                      builder: (context, searchSMCState) {
+                        if (searchSMCState.loading) {
                           return const Center(
                               child: CircularProgressIndicator());
                         } else {
                           if (searchController.text.trim().length ==
                                   Constants.beneficiaryIdLength &&
-                              searchSMCstate.householdMembers.isEmpty) {
+                              searchSMCState.householdMembers.isEmpty) {
                             return SliverList(
                                 delegate:
                                     SliverChildBuilderDelegate((ctx, index) {
@@ -574,11 +574,11 @@ class _CustomSearchBeneficiaryPageState
                             delegate: SliverChildBuilderDelegate(
                               (ctx, index) {
                                 final i =
-                                    searchSMCstate.householdMembers[index];
+                                    searchSMCState.householdMembers[index];
                                 return Container(
                                   margin:
                                       const EdgeInsets.only(bottom: kPadding),
-                                  child: ViewBeneficiaryCard(
+                                  child: CustomViewBeneficiaryCard(
                                     householdMember: i,
                                     onOpenPressed: () async {
                                       final scannerBloc =
@@ -644,7 +644,7 @@ class _CustomSearchBeneficiaryPageState
                                 );
                               },
                               childCount:
-                                  searchSMCstate.householdMembers.length,
+                                  searchSMCState.householdMembers.length,
                             ),
                           );
                         }
