@@ -366,6 +366,8 @@ class CustomIndividualDetailsPageState
                                       size: DigitButtonSize.large,
                                       mainAxisSize: MainAxisSize.max,
                                       onPressed: () async {
+                                        form.markAllAsTouched();
+                                        if (!form.valid) return;
                                         final submit = await showDialog(
                                           context: context,
                                           builder: (ctx) => Popup(
@@ -434,8 +436,7 @@ class CustomIndividualDetailsPageState
                                           final projectId =
                                               RegistrationDeliverySingleton()
                                                   .projectId;
-                                          form.markAllAsTouched();
-                                          if (!form.valid) return;
+
                                           FocusManager.instance.primaryFocus
                                               ?.unfocus();
 
@@ -973,16 +974,26 @@ class CustomIndividualDetailsPageState
                                               formControlName: _mobileNumberKey,
                                               validationMessages: {
                                                 'minLength': (object) =>
-                                                    localizations.translate(
-                                                        i18_local
+                                                    localizations
+                                                        .translate(i18_local
                                                             .individualDetails
-                                                            .mobileNumberLengthValidationMessage),
+                                                            .mobileNumberLengthValidationMessage)
+                                                        .replaceAll(
+                                                            '9 or 10', '11'),
                                                 'maxLength': (object) =>
                                                     localizations
                                                         .translate(i18_local
                                                             .individualDetails
                                                             .mobileNumberLengthValidationMessage)
-                                                        .replaceAll('{}', '11'),
+                                                        .replaceAll(
+                                                            '9 or 10', '11'),
+                                                'mobileNumber': (object) =>
+                                                    localizations
+                                                        .translate(i18_local
+                                                            .individualDetails
+                                                            .mobileNumberLengthValidationMessage)
+                                                        .replaceAll(
+                                                            '9 or 10', '11'),
                                               },
                                               builder: (field) => LabeledField(
                                                 label: localizations.translate(
@@ -1006,6 +1017,40 @@ class CustomIndividualDetailsPageState
                                                         .control(
                                                             _mobileNumberKey)
                                                         .value = value;
+
+                                                    if (value != "") {
+                                                      form
+                                                          .control(
+                                                              _mobileNumberKey)
+                                                          .setValidators(
+                                                        [
+                                                          Validators.delegate(
+                                                            (validator) => local_utils
+                                                                    .CustomValidator
+                                                                .validMobileNumber(
+                                                                    validator),
+                                                          ),
+                                                          Validators.minLength(
+                                                              11),
+                                                          Validators.maxLength(
+                                                              11),
+                                                        ],
+                                                        autoValidate: true,
+                                                      );
+                                                    } else {
+                                                      form
+                                                          .control(
+                                                              _mobileNumberKey)
+                                                          .setValidators(
+                                                        [],
+                                                        autoValidate: true,
+                                                      );
+                                                    }
+
+                                                    form
+                                                        .control(
+                                                            _mobileNumberKey)
+                                                        .touched;
                                                   },
                                                   errorMessage: field.errorText,
                                                 ),
@@ -1213,8 +1258,10 @@ class CustomIndividualDetailsPageState
       _genderKey: FormControl<String>(value: getGenderOptions(individual)),
       _mobileNumberKey:
           FormControl<String>(value: individual?.mobileNumber, validators: [
-        Validators.delegate((validator) =>
-            local_utils.CustomValidator.validMobileNumber(validator)),
+        Validators.delegate(
+          (validator) =>
+              local_utils.CustomValidator.validMobileNumber(validator),
+        ),
         Validators.minLength(11),
         Validators.maxLength(11),
       ]),
