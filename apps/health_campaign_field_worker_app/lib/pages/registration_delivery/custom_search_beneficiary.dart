@@ -188,19 +188,17 @@ class _CustomSearchBeneficiaryPageState
                                       textCapitalization:
                                           TextCapitalization.words,
                                       onChanged: (value) {
+                                        String beneficiaryId =
+                                            value.trim().replaceAll("-", "");
                                         if (isSearchByBeneficiaryIdEnabled &&
                                             isBeneficiaryIdValid(
-                                                value.trim()) &&
-                                            searchController.text
-                                                    .trim()
-                                                    .length ==
+                                                beneficiaryId) &&
+                                            beneficiaryId.length ==
                                                 Constants.beneficiaryIdLength) {
                                           searchByBeneficiaryId(
-                                              beneficiaryId: value.trim());
+                                              beneficiaryId: beneficiaryId);
                                         } else if (isSearchByBeneficiaryIdEnabled &&
-                                            searchController.text
-                                                    .trim()
-                                                    .length <
+                                            beneficiaryId.length <
                                                 Constants.beneficiaryIdLength) {
                                           blocWrapper.clearEvent();
                                           context
@@ -210,7 +208,7 @@ class _CustomSearchBeneficiaryPageState
                                                   .SearchHouseholdsSMCEvent.clear());
                                         } else if (isSearchByBeneficiaryIdEnabled &&
                                             !isBeneficiaryIdValidPattern(
-                                                searchController.text.trim())) {
+                                                beneficiaryId)) {
                                           blocWrapper.clearEvent();
                                           context
                                               .read<
@@ -219,7 +217,7 @@ class _CustomSearchBeneficiaryPageState
                                                   .SearchHouseholdsSMCEvent.clear());
                                         } else if (!isSearchByBeneficiaryIdEnabled &&
                                             (value.isEmpty ||
-                                                value.trim().length > 2)) {
+                                                beneficiaryId.length > 2)) {
                                           triggerGlobalSearchEvent();
                                         }
                                       },
