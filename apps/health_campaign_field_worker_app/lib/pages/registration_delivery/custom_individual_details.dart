@@ -369,15 +369,34 @@ class CustomIndividualDetailsPageState
                                       onPressed: () async {
                                         form.markAllAsTouched();
                                         if (!form.valid) return;
-                                        if (!widget.isHeadOfHousehold &&
-                                            form.control(_dobKey).value ==
-                                                null) {
-                                          setState(() {
-                                            form
-                                                .control(_dobKey)
-                                                .setErrors({'': true});
-                                          });
-                                          return;
+                                        if (!widget.isHeadOfHousehold) {
+                                          if (form.control(_dobKey).value ==
+                                              null) {
+                                            setState(() {
+                                              form
+                                                  .control(_dobKey)
+                                                  .setErrors({'': true});
+                                            });
+                                            return;
+                                          }
+                                          DateTime dob =
+                                              form.control(_dobKey).value;
+                                          int ageInMonth = DateTime.now()
+                                                  .difference(dob)
+                                                  .inDays ~/
+                                              30;
+                                          if (ageInMonth < 3 ||
+                                              ageInMonth > 59) {
+                                            Toast.showToast(
+                                              context,
+                                              message: localizations.translate(
+                                                i18_local.individualDetails
+                                                    .dobValidationMessage,
+                                              ),
+                                              type: ToastType.error,
+                                            );
+                                            return;
+                                          }
                                         }
                                         if (!widget.isHeadOfHousehold &&
                                             form.control(_genderKey).value ==
@@ -387,23 +406,6 @@ class CustomIndividualDetailsPageState
                                                 .control(_genderKey)
                                                 .setErrors({'': true});
                                           });
-                                          return;
-                                        }
-                                        DateTime dob =
-                                            form.control(_dobKey).value;
-                                        int ageInMonth = DateTime.now()
-                                                .difference(dob)
-                                                .inDays ~/
-                                            30;
-                                        if (ageInMonth < 3 || ageInMonth > 59) {
-                                          Toast.showToast(
-                                            context,
-                                            message: localizations.translate(
-                                              i18_local.individualDetails
-                                                  .dobValidationMessage,
-                                            ),
-                                            type: ToastType.error,
-                                          );
                                           return;
                                         }
                                         final submit = await showDialog(
