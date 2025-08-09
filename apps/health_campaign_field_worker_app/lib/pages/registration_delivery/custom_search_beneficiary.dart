@@ -544,8 +544,11 @@ class _CustomSearchBeneficiaryPageState
                               ),
                             );
                           },
-                          childCount:
-                              searchHouseholdsState.householdMembers.length + 1,
+                          childCount: searchHouseholdsState
+                                  .householdMembers.isEmpty
+                              ? 0
+                              : searchHouseholdsState.householdMembers.length +
+                                  1,
                         ),
                       );
                     },
@@ -555,11 +558,13 @@ class _CustomSearchBeneficiaryPageState
                         searchHouseholdSMCBloc.SearchHouseholdsSMCState>(
                       listener: (context, searchSMCState) {},
                       builder: (context, searchSMCState) {
+                        String beneficiaryId =
+                            searchController.text.trim().replaceAll("-", "");
                         if (searchSMCState.loading) {
                           return const Center(
                               child: CircularProgressIndicator());
                         } else {
-                          if (searchController.text.trim().length ==
+                          if (beneficiaryId.length ==
                                   Constants.beneficiaryIdLength &&
                               searchSMCState.householdMembers.isEmpty) {
                             return SliverList(
