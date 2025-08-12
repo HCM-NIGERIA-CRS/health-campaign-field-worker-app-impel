@@ -136,15 +136,8 @@ class CustomIndividualDetailsPageState
   onSubmit(name, bool isCreate, bool isAddIndividual,
       HouseholdModel? householdModel) async {
     final bloc = context.read<CustomBeneficiaryRegistrationBloc>();
-    final router = context.router;
 
     if (context.mounted) {
-      // Future.delayed(Duration(milliseconds: 200), () {
-
-      // }).then((value) {
-
-      // });
-
       if (isCreate) {
         bloc.add(
           BeneficiaryRegistrationCreateEvent(
@@ -305,8 +298,8 @@ class CustomIndividualDetailsPageState
                       listener: (context, state) {
                         state.mapOrNull(
                           persisted: (value) async {
-                            await Future.delayed(Duration(milliseconds: 200),
-                                () {
+                            await Future.delayed(
+                                const Duration(milliseconds: 200), () {
                               if (value.householdModel != null) {
                                 customSearchHouseholdsBloc.add(
                                     const CustomSearchHouseholdsEvent.clear());
