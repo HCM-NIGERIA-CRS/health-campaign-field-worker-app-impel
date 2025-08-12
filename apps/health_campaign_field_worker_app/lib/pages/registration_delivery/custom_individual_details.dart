@@ -133,11 +133,18 @@ class CustomIndividualDetailsPageState
     super.initState();
   }
 
-  onSubmit(name, bool isCreate, bool isAddIndividual) {
+  onSubmit(name, bool isCreate, bool isAddIndividual,
+      HouseholdModel? householdModel) async {
     final bloc = context.read<CustomBeneficiaryRegistrationBloc>();
     final router = context.router;
 
     if (context.mounted) {
+      // Future.delayed(Duration(milliseconds: 200), () {
+
+      // }).then((value) {
+
+      // });
+
       if (isCreate) {
         bloc.add(
           BeneficiaryRegistrationCreateEvent(
@@ -146,36 +153,6 @@ class CustomIndividualDetailsPageState
               boundary: RegistrationDeliverySingleton().boundary!,
               tag: null,
               navigateToSummary: false),
-        );
-      }
-
-      customSearchHouseholdsBloc.add(const CustomSearchHouseholdsEvent.clear());
-      customSearchHouseholdsBloc.add(
-        CustomSearchHouseholdsEvent.searchByHouseholdHead(
-          searchText: name.trim(),
-          projectId: RegistrationDeliverySingleton().projectId!,
-          isProximityEnabled: false,
-          maxRadius: RegistrationDeliverySingleton().maxRadius,
-          limit: customSearchHouseholdsBloc.state.limit,
-          offset: 0,
-        ),
-      );
-
-      final reloadState = context.read<HouseholdOverviewBloc>();
-
-      reloadState.add(
-        HouseholdOverviewReloadEvent(
-          projectId: RegistrationDeliverySingleton().projectId!,
-          projectBeneficiaryType:
-              RegistrationDeliverySingleton().beneficiaryType!,
-        ),
-      );
-
-      if (individualCaptured != null) {
-        reloadState.add(
-          HouseholdOverviewEvent.selectedIndividual(
-            individualModel: individualCaptured!,
-          ),
         );
       }
     }
@@ -212,8 +189,8 @@ class CustomIndividualDetailsPageState
                     CustomSearchHouseholdsState>(
                   listener: (context, searchHouseholdsState) {
                     if (isCreate) {
-                      HouseholdMemberWrapper? i =
-                          searchHouseholdsState.householdMembers.lastOrNull;
+                      HouseholdMemberWrapper? i = customSearchHouseholdsBloc
+                          .state.householdMembers.lastOrNull;
 
                       registration_delivery.HouseholdMemberWrapper?
                           householdMemberWrapper;
@@ -242,8 +219,8 @@ class CustomIndividualDetailsPageState
                             wrapper: householdMemberWrapper));
                       }
                     } else if (isAddIndividual) {
-                      HouseholdMemberWrapper? i =
-                          searchHouseholdsState.householdMembers.lastOrNull;
+                      HouseholdMemberWrapper? i = customSearchHouseholdsBloc
+                          .state.householdMembers.lastOrNull;
 
                       registration_delivery.HouseholdMemberWrapper?
                           householdMemberWrapper;
@@ -325,7 +302,53 @@ class CustomIndividualDetailsPageState
                   builder: (context, searchHouseholdsState) {
                     return BlocConsumer<CustomBeneficiaryRegistrationBloc,
                         BeneficiaryRegistrationState>(
-                      listener: (context, state) {},
+                      listener: (context, state) {
+                        state.mapOrNull(
+                          persisted: (value) async {
+                            await Future.delayed(Duration(milliseconds: 200),
+                                () {
+                              if (value.householdModel != null) {
+                                customSearchHouseholdsBloc.add(
+                                    const CustomSearchHouseholdsEvent.clear());
+                                customSearchHouseholdsBloc.add(
+                                  CustomSearchHouseholdsEvent.searchByHousehold(
+                                    // searchText: name.trim(),
+                                    projectId: RegistrationDeliverySingleton()
+                                        .projectId!,
+                                    isProximityEnabled: false,
+                                    maxRadius: RegistrationDeliverySingleton()
+                                        .maxRadius,
+                                    householdModel: value.householdModel,
+                                    // limit: customSearchHouseholdsBloc.state.limit,
+                                    // offset: 0,
+                                  ),
+                                );
+                              }
+                            }).then((value) {
+                              final reloadState =
+                                  context.read<HouseholdOverviewBloc>();
+
+                              reloadState.add(
+                                HouseholdOverviewReloadEvent(
+                                  projectId: RegistrationDeliverySingleton()
+                                      .projectId!,
+                                  projectBeneficiaryType:
+                                      RegistrationDeliverySingleton()
+                                          .beneficiaryType!,
+                                ),
+                              );
+
+                              if (individualCaptured != null) {
+                                reloadState.add(
+                                  HouseholdOverviewEvent.selectedIndividual(
+                                    individualModel: individualCaptured!,
+                                  ),
+                                );
+                              }
+                            });
+                          },
+                        );
+                      },
                       builder: (context, state) {
                         return ScrollableContent(
                           enableFixedDigitButton: true,
@@ -605,6 +628,7 @@ class CustomIndividualDetailsPageState
                                                       "",
                                                   true,
                                                   false,
+                                                  householdModel,
                                                 );
                                               }
                                             },
@@ -690,7 +714,8 @@ class CustomIndividualDetailsPageState
                                                             .name?.givenName ??
                                                         "",
                                                     false,
-                                                    false);
+                                                    false,
+                                                    householdModel);
                                                 context.router.maybePop();
                                               }
                                             },
@@ -761,6 +786,7 @@ class CustomIndividualDetailsPageState
                                                         "",
                                                     false,
                                                     true,
+                                                    householdModel,
                                                   );
                                                 }
                                               }
