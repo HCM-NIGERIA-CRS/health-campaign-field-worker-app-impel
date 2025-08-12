@@ -39,6 +39,16 @@ class SelectBoundaryPageState extends LocalizedState<SelectBoundaryPage> {
   String? selectedFacilityId;
   TextEditingController controller1 = TextEditingController();
 
+  List<String> settlementList = [
+    'Settlement 1',
+    'Settlement 2',
+    'Settlement 3',
+    'Settlement 4',
+    'Settlement 5',
+  ];
+
+  List<DropdownItem> initialOptions = [];
+
   FormGroup buildForm(bool isDistributor) => fb.group(<String, Object>{
         _dateOfEntryKey: FormControl<DateTime>(value: DateTime.now()),
         _administrativeUnitKey: FormControl<String>(
@@ -47,6 +57,7 @@ class SelectBoundaryPageState extends LocalizedState<SelectBoundaryPage> {
         ),
         _wfpSupervisorKey: FormControl<String>(
           validators: isDistributor ? [] : [Validators.required],
+          value: "Test Supervisor",
         ),
         _settlementKey: FormControl<String>(
           validators: isDistributor ? [] : [Validators.required],
@@ -59,109 +70,137 @@ class SelectBoundaryPageState extends LocalizedState<SelectBoundaryPage> {
     final textTheme = theme.digitTextTheme(context);
 
     return Scaffold(
-      body: BlocBuilder<RegisterDailyPlanBloc, RegisterDailyPlanState>(
-          builder: (context, registrationState) {
-        return ReactiveFormBuilder(
-          form: () => buildForm(true),
-          builder: (_, form, __) => ScrollableContent(
-            // enableFixedDigitButton: true,
-            header: const Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(bottom: spacer2),
-                  child: CustomBackNavigationHelpHeaderWidget(
-                    showHelp: false,
+      body: Column(
+        children: [
+          Expanded(
+            child: BlocBuilder<RegisterDailyPlanBloc, RegisterDailyPlanState>(
+                builder: (context, registrationState) {
+              return ReactiveFormBuilder(
+                form: () => buildForm(true),
+                builder: (_, form, __) => ScrollableContent(
+                  // enableFixedDigitButton: true,
+                  header: const Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(bottom: spacer2),
+                        child: CustomBackNavigationHelpHeaderWidget(
+                          showHelp: false,
+                        ),
+                      ),
+                    ],
                   ),
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: DigitCard(
+                          margin: const EdgeInsets.all(spacer2),
+                          children: [
+                            DigitTextBlock(
+                              padding: EdgeInsets.zero,
+                              heading: localizations.translate(i18
+                                  .dailyImplementationFlow.selectBoundaryLabel),
+                              headingStyle: textTheme.headingXl.copyWith(
+                                  color: theme.colorTheme.text.primary),
+                            ),
+                            ReactiveWrapperField(
+                                formControlName: _dateOfEntryKey,
+                                builder: (field) {
+                                  return InputField(
+                                    type: InputType.date,
+                                    label: localizations.translate(
+                                      i18.dailyImplementationFlow.dateOfEntry,
+                                    ),
+                                    confirmText: localizations.translate(
+                                      i18.common.coreCommonOk,
+                                    ),
+                                    cancelText: localizations.translate(
+                                      i18.common.coreCommonCancel,
+                                    ),
+                                    initialValue: DateFormat('dd MMM yyyy')
+                                        .format(field.control.value),
+                                    readOnly: true,
+                                  );
+                                }),
+                            ReactiveWrapperField(
+                                formControlName: _administrativeUnitKey,
+                                builder: (field) {
+                                  return InputField(
+                                    isRequired: true,
+                                    type: InputType.text,
+                                    label:
+                                        '${localizations.translate(i18.dailyImplementationFlow.administrativeUnitLabel)} ',
+                                    initialValue: field.control.value,
+                                    readOnly: true,
+                                  );
+                                }),
+                            ReactiveWrapperField(
+                                formControlName: _wfpSupervisorKey,
+                                builder: (field) {
+                                  return InputField(
+                                    isRequired: true,
+                                    type: InputType.text,
+                                    label:
+                                        '${localizations.translate(i18.dailyImplementationFlow.wfpSupervisorLabel)} ',
+                                    initialValue: field.control.value,
+                                    readOnly: true,
+                                  );
+                                }),
+                            ReactiveWrapperField(
+                              formControlName: _settlementKey,
+                              validationMessages: {
+                                'required': (object) =>
+                                    '${i18.dailyImplementationFlow.boundaryLabel}_IS_REQUIRED',
+                              },
+                              showErrors: (control) =>
+                                  control.invalid && control.touched,
+                              builder: (field) {
+                                return LabeledField(
+                                  label: localizations.translate(
+                                    i18.dailyImplementationFlow.boundaryLabel,
+                                  ),
+                                  isRequired: true,
+                                  child: MultiSelectDropDown(
+                                    initialOptions: initialOptions,
+                                    selectionType: SelectionType.nestedSelect,
+                                    errorMessage: field.errorText,
+                                    emptyItemText: localizations.translate(
+                                      i18.common.noMatchFound,
+                                    ),
+                                    options: settlementList
+                                        .map((e) => DropdownItem(
+                                              code: e,
+                                              name: e,
+                                            ))
+                                        .toList(),
+                                    onOptionSelected: (value) {
+                                      setState(() {
+                                        initialOptions = value;
+                                      });
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                          ]),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            slivers: [
-              SliverToBoxAdapter(
-                child:
-                    DigitCard(margin: const EdgeInsets.all(spacer2), children: [
-                  DigitTextBlock(
-                    padding: EdgeInsets.zero,
-                    heading: localizations.translate(
-                        i18.dailyImplementationFlow.selectBoundaryLabel),
-                    headingStyle: textTheme.headingXl
-                        .copyWith(color: theme.colorTheme.text.primary),
-                  ),
-                  ReactiveWrapperField(
-                      formControlName: _dateOfEntryKey,
-                      builder: (field) {
-                        return InputField(
-                          type: InputType.date,
-                          label: localizations.translate(
-                            i18.dailyImplementationFlow.dateOfEntry,
-                          ),
-                          confirmText: localizations.translate(
-                            i18.common.coreCommonOk,
-                          ),
-                          cancelText: localizations.translate(
-                            i18.common.coreCommonCancel,
-                          ),
-                          initialValue: DateFormat('dd MMM yyyy')
-                              .format(field.control.value),
-                          readOnly: true,
-                        );
-                      }),
-                  ReactiveWrapperField(
-                      formControlName: _administrativeUnitKey,
-                      builder: (field) {
-                        return InputField(
-                          isRequired: true,
-                          type: InputType.text,
-                          label:
-                              '${localizations.translate(i18.dailyImplementationFlow.administrativeUnitLabel)} ',
-                          initialValue: field.control.value,
-                          readOnly: true,
-                        );
-                      }),
-                  ReactiveWrapperField(
-                      formControlName: _wfpSupervisorKey,
-                      builder: (field) {
-                        return InputField(
-                          isRequired: true,
-                          type: InputType.text,
-                          label:
-                              '${localizations.translate(i18.dailyImplementationFlow.wfpSupervisorLabel)} ',
-                          initialValue: field.control.value,
-                          readOnly: true,
-                        );
-                      }),
-                  ReactiveWrapperField(
-                    formControlName: _settlementKey,
-                    validationMessages: {
-                      'required': (object) =>
-                          '${i18.dailyImplementationFlow.boundaryLabel}_IS_REQUIRED',
-                    },
-                    showErrors: (control) => control.invalid && control.touched,
-                    builder: (field) {
-                      return LabeledField(
-                        label: localizations.translate(
-                          i18.dailyImplementationFlow.boundaryLabel,
-                        ),
-                        isRequired: true,
-                        child: MultiSelectDropDown(
-                          selectionType: SelectionType.nestedSelect,
-                          errorMessage: field.errorText,
-                          emptyItemText: localizations.translate(
-                            i18.common.noMatchFound,
-                          ),
-                          options: [],
-                          onOptionSelected: (value) {
-                            setState(() {});
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ]),
-              ),
-            ],
+              );
+            }),
           ),
-        );
-      }),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: DigitButton(
+              type: DigitButtonType.primary,
+              size: DigitButtonSize.large,
+              mainAxisSize: MainAxisSize.max,
+              onPressed: () {
+                context.router.push(SelectSettlementsRoute());
+              },
+              label: localizations.translate(i18.common.coreCommonNext),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

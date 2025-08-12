@@ -772,6 +772,12 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    SelectSettlementsRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const SelectSettlementsPage(),
+      );
+    },
     UnauthenticatedRouteWrapper.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -3635,6 +3641,20 @@ class SelectBoundaryRouteArgs {
   String toString() {
     return 'SelectBoundaryRouteArgs{key: $key, appLocalizations: $appLocalizations}';
   }
+}
+
+/// generated route for
+/// [SelectSettlementsPage]
+class SelectSettlementsRoute extends PageRouteInfo<void> {
+  const SelectSettlementsRoute({List<PageRouteInfo>? children})
+      : super(
+          SelectSettlementsRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'SelectSettlementsRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for

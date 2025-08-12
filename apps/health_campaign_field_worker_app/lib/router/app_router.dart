@@ -33,6 +33,7 @@ import '../pages/beneficiary/check_eligibility/refer_beneficiary_smc.dart';
 import '../pages/beneficiary/check_eligibility/refer_beneficiary_vas.dart';
 import '../pages/complaints/custom_complaints_inbox.dart';
 import '../pages/custom_household_summary.dart';
+import '../pages/dailyImplementationPlan/select_settlements.dart';
 import '../pages/inventory_management/custom_inventory_facility_selection.dart';
 import '../pages/inventory_management/qr_scanner.dart';
 import '../pages/inventory_management/view_record_lga.dart';
@@ -180,6 +181,10 @@ class AppRouter extends _$AppRouter {
         AutoRoute(
           page: SelectBoundaryRoute.page,
           path: 'select-boundary',
+        ),
+        AutoRoute(
+          page: SelectSettlementsRoute.page,
+          path: 'select-settlements',
         ),
 
         // Attendance Route
