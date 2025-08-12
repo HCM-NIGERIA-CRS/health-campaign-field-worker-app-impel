@@ -14,6 +14,7 @@ import 'package:registration_delivery/models/entities/status.dart';
 import 'package:registration_delivery/models/entities/task.dart';
 import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
+import 'package:registration_delivery/utils/utils.dart';
 import '../../blocs/localization/app_localization.dart';
 
 import '../../router/app_router.dart';
@@ -77,6 +78,34 @@ class CustomMemberCard extends StatelessWidget {
     this.sideEffects,
     required this.variant,
   });
+
+  bool enableEdit(List<TaskModel>? tasks, ProjectCycle? currentCycle) {
+    // this task confirms eligibility and dose administrations is done
+
+    if (currentCycle == null) {
+      return true;
+    }
+    if ((tasks ?? []).isEmpty) {
+      return true;
+    }
+    var successfulTask = tasks!
+        .where((element) =>
+            element.status == Status.administeredSuccess.toValue() ||
+            element.status == Status.beneficiaryReferred.toValue())
+        .lastOrNull;
+
+    final successfulTaskCreatedTime =
+        successfulTask?.clientAuditDetails?.createdTime;
+
+    if (successfulTaskCreatedTime == null) {
+      return true;
+    }
+    final isLastCycleRunning =
+        successfulTaskCreatedTime >= currentCycle.startDate &&
+            successfulTaskCreatedTime <= currentCycle.endDate;
+
+    return !isLastCycleRunning;
+  }
 
   List<TaskModel>? _getSMCStatusData() {
     return tasks
@@ -551,14 +580,7 @@ class CustomMemberCard extends StatelessWidget {
                   ),
                 ],
               ),
-              ((tasks ?? [])
-                              .where(
-                                (element) =>
-                                    element.status ==
-                                    Status.administeredSuccess.toValue(),
-                              )
-                              .lastOrNull ==
-                          null &&
+              (enableEdit(tasks, context.selectedCycle) &&
                       !isSMCDelivered &&
                       !isBeneficiaryIneligible &&
                       !isBeneficiaryReferred)
