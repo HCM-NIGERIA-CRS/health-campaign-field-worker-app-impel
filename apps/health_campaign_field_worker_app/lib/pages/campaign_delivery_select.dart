@@ -102,7 +102,7 @@ class CampaignDeliverySelectPageState
         icon: Icons.vaccines_outlined,
         label: i18.home.transitPostLabel,
         onPressed: () {
-          context.router.push(const TransitPostWrapperRoute());
+          context.router.push(const CustomTransitPostWrapperRoute());
         },
       )
     ];

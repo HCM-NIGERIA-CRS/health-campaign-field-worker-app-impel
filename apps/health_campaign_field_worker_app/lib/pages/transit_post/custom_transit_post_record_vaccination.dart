@@ -1,4 +1,6 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:digit_components/widgets/atoms/digit_toaster.dart';
+import 'package:digit_data_model/data_model.dart';
 import 'package:digit_scanner/digit_scanner.dart';
 import 'package:digit_scanner/utils/scanner_utils.dart';
 import 'package:digit_ui_components/digit_components.dart';
@@ -14,6 +16,7 @@ import 'package:digit_ui_components/widgets/molecules/digit_table.dart';
 import 'package:digit_ui_components/widgets/molecules/label_value_summary.dart';
 import 'package:digit_ui_components/widgets/molecules/show_pop_up.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
@@ -27,6 +30,8 @@ import 'package:transit_post/widgets/total_delivery.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart'
     as registration_delivery;
 import '../../../utils/i18_key_constants.dart' as i18_local;
+import '../../blocs/transit_post/custom_transit_post.dart';
+import '../../utils/environment_config.dart';
 import '../../widgets/showcase/showcase_wrappers.dart';
 
 @RoutePage()
@@ -38,9 +43,13 @@ class CustomTransitPostRecordVaccinationPage extends LocalizedStatefulWidget {
       CustomTransitPostRecordVaccinationPageState();
 }
 
+enum AgeRange { nineToEleven, twelveToFiftyNine }
+
 class CustomTransitPostRecordVaccinationPageState
     extends LocalizedState<CustomTransitPostRecordVaccinationPage> {
   String? ageRangeSelected;
+  static const int beneficiaryCount = 50;
+  String? drugType;
 
   @override
   Widget build(BuildContext context) {
@@ -163,6 +172,7 @@ class CustomTransitPostRecordVaccinationPageState
                                             ? 1
                                             : transitPostState.totalCount! + 1,
                                     scannedResource: ""));
+
                             context.router
                                 .push(const TransitPostAcknowledgmentRoute());
                           }
@@ -302,7 +312,30 @@ class CustomTransitPostRecordVaccinationPageState
                         size: DigitButtonSize.large,
                         mainAxisSize: MainAxisSize.max,
                         isDisabled: false,
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            drugType = "POLIO";
+                          });
+                          if (context.mounted) {
+                            context.read<CustomTransitPostBloc>().add(
+                                CustomTransitPostEvent.submitDelivery(
+                                    latitude: latKey.text.isNotEmpty
+                                        ? double.parse(latKey.text)
+                                        : transitPostState.latitude,
+                                    longitude: lngKey.text.isNotEmpty
+                                        ? double.parse(lngKey.text)
+                                        : transitPostState.longitude,
+                                    locationAccuracy:
+                                        accuracyKey.text.isNotEmpty
+                                            ? double.parse(accuracyKey.text)
+                                            : transitPostState.locationAccuracy,
+                                    scannedResource: "",
+                                    drugType: drugType,
+                                    beneficiaryDelivered: 50));
+                            context.router
+                                .push(const TransitPostAcknowledgmentRoute());
+                          }
+                        },
                       ),
                     ],
                   ),
@@ -335,7 +368,51 @@ class CustomTransitPostRecordVaccinationPageState
                         size: DigitButtonSize.large,
                         mainAxisSize: MainAxisSize.max,
                         isDisabled: false,
-                        onPressed: () {},
+                        onPressed: () async {
+                          setState(() {
+                            drugType = "MEASLES";
+                          });
+                          if (ageRangeSelected == null ||
+                              (ageRangeSelected?.isEmpty ?? true)) {
+                            await DigitToast.show(
+                              context,
+                              options: DigitToastOptions(
+                                localizations.translate(i18_local
+                                    .deliverIntervention.selectAgeRange),
+                                true,
+                                theme,
+                              ),
+                            );
+
+                            return;
+                          }
+
+                          var ageRangeAdditionalField =
+                              getAgeRangeSelected(ageRangeSelected);
+
+                          if (context.mounted) {
+                            context.read<CustomTransitPostBloc>().add(
+                                    CustomTransitPostEvent.submitDelivery(
+                                        latitude: latKey.text.isNotEmpty
+                                            ? double.parse(latKey.text)
+                                            : transitPostState.latitude,
+                                        longitude: lngKey.text.isNotEmpty
+                                            ? double.parse(lngKey.text)
+                                            : transitPostState.longitude,
+                                        locationAccuracy: accuracyKey
+                                                .text.isNotEmpty
+                                            ? double.parse(accuracyKey.text)
+                                            : transitPostState.locationAccuracy,
+                                        scannedResource: "",
+                                        drugType: drugType,
+                                        beneficiaryDelivered: 50,
+                                        additionalFields: [
+                                      ageRangeAdditionalField
+                                    ]));
+                            context.router
+                                .push(const TransitPostAcknowledgmentRoute());
+                          }
+                        },
                       ),
                     ],
                   ),
@@ -350,8 +427,8 @@ class CustomTransitPostRecordVaccinationPageState
                             .copyWith(color: theme.colorTheme.text.primary),
                       ),
                       Padding(
-                          padding:
-                              EdgeInsets.fromLTRB(kPadding, 0, kPadding, 0),
+                          padding: const EdgeInsets.fromLTRB(
+                              kPadding, 0, kPadding, 0),
                           child: FormField(
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
@@ -359,26 +436,33 @@ class CustomTransitPostRecordVaccinationPageState
                                 return RadioList(
                                   radioDigitButtons: [
                                     RadioButtonModel(
-                                      code: "0",
+                                      code: AgeRange.nineToEleven.name,
                                       name: localizations.translate(
                                         i18_local.deliverIntervention
                                             .ninetoElevenAgeRange,
                                       ),
                                     ),
                                     RadioButtonModel(
-                                      code: "1",
+                                      code: AgeRange.twelveToFiftyNine.name,
                                       name: localizations.translate(
                                         i18_local.deliverIntervention
                                             .twelvetofiftyNineAgeRange,
                                       ),
                                     ),
                                   ],
-                                  groupValue: "0",
+                                  groupValue: ageRangeSelected ?? '',
                                   onChanged: (value) {
-                                    if (value.code == "0") {
-                                      "0";
+                                    if (value.code ==
+                                        AgeRange.nineToEleven.name) {
+                                      setState(() {
+                                        ageRangeSelected =
+                                            AgeRange.nineToEleven.name;
+                                      });
                                     } else {
-                                      "1";
+                                      setState(() {
+                                        ageRangeSelected =
+                                            AgeRange.twelveToFiftyNine.name;
+                                      });
                                     }
                                   },
                                 );
@@ -390,6 +474,13 @@ class CustomTransitPostRecordVaccinationPageState
         },
       ),
     );
+  }
+
+  dynamic getAgeRangeSelected(String? ageRangeSelected) {
+    if (ageRangeSelected == null) {
+      return;
+    }
+    return AdditionalField("ageRangeSelectedMeasles", ageRangeSelected);
   }
 
   List<DigitTableRow> buildTableData() {

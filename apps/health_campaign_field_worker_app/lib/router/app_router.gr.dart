@@ -648,6 +648,12 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const CustomTransitPostSelectionPage(),
       );
     },
+    CustomTransitPostWrapperRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const CustomTransitPostWrapperPage(),
+      );
+    },
     CustomWarehouseDetailsRoute.name: (routeData) {
       final args = routeData.argsAs<CustomWarehouseDetailsRouteArgs>(
           orElse: () => const CustomWarehouseDetailsRouteArgs());
@@ -3180,6 +3186,20 @@ class CustomTransitPostSelectionRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'CustomTransitPostSelectionRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [CustomTransitPostWrapperPage]
+class CustomTransitPostWrapperRoute extends PageRouteInfo<void> {
+  const CustomTransitPostWrapperRoute({List<PageRouteInfo>? children})
+      : super(
+          CustomTransitPostWrapperRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'CustomTransitPostWrapperRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
