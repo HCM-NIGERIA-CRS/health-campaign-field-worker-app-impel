@@ -219,6 +219,12 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    CustomFixedPostSelectionRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const CustomFixedPostSelectionPage(),
+      );
+    },
     CustomHFCreateReferralWrapperRoute.name: (routeData) {
       final args = routeData.argsAs<CustomHFCreateReferralWrapperRouteArgs>();
       return AutoRoutePage<dynamic>(
@@ -637,9 +643,14 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
     CustomTransitPostRecordVaccinationRoute.name: (routeData) {
+      final args =
+          routeData.argsAs<CustomTransitPostRecordVaccinationRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const CustomTransitPostRecordVaccinationPage(),
+        child: CustomTransitPostRecordVaccinationPage(
+          key: args.key,
+          postType: args.postType,
+        ),
       );
     },
     CustomTransitPostSelectionRoute.name: (routeData) {
@@ -1612,6 +1623,20 @@ class CustomFacilitySelectionSMCRouteArgs {
   String toString() {
     return 'CustomFacilitySelectionSMCRouteArgs{key: $key, appLocalizations: $appLocalizations, facilities: $facilities}';
   }
+}
+
+/// generated route for
+/// [CustomFixedPostSelectionPage]
+class CustomFixedPostSelectionRoute extends PageRouteInfo<void> {
+  const CustomFixedPostSelectionRoute({List<PageRouteInfo>? children})
+      : super(
+          CustomFixedPostSelectionRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'CustomFixedPostSelectionRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for
@@ -3164,16 +3189,41 @@ class CustomTransactionalDetailsRouteArgs {
 
 /// generated route for
 /// [CustomTransitPostRecordVaccinationPage]
-class CustomTransitPostRecordVaccinationRoute extends PageRouteInfo<void> {
-  const CustomTransitPostRecordVaccinationRoute({List<PageRouteInfo>? children})
-      : super(
+class CustomTransitPostRecordVaccinationRoute
+    extends PageRouteInfo<CustomTransitPostRecordVaccinationRouteArgs> {
+  CustomTransitPostRecordVaccinationRoute({
+    Key? key,
+    required String postType,
+    List<PageRouteInfo>? children,
+  }) : super(
           CustomTransitPostRecordVaccinationRoute.name,
+          args: CustomTransitPostRecordVaccinationRouteArgs(
+            key: key,
+            postType: postType,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'CustomTransitPostRecordVaccinationRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static const PageInfo<CustomTransitPostRecordVaccinationRouteArgs> page =
+      PageInfo<CustomTransitPostRecordVaccinationRouteArgs>(name);
+}
+
+class CustomTransitPostRecordVaccinationRouteArgs {
+  const CustomTransitPostRecordVaccinationRouteArgs({
+    this.key,
+    required this.postType,
+  });
+
+  final Key? key;
+
+  final String postType;
+
+  @override
+  String toString() {
+    return 'CustomTransitPostRecordVaccinationRouteArgs{key: $key, postType: $postType}';
+  }
 }
 
 /// generated route for

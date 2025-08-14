@@ -45,6 +45,7 @@ const deliverIntervention = DeliverIntervention();
 const checklist = Checklist();
 const referBeneficiary = ReferBeneficiary();
 const householdDetails = HouseholdDetails();
+const transitFixedPost = TransitFixedPost();
 
 class Common {
   const Common();
@@ -234,9 +235,12 @@ class DeliverIntervention {
 
   String get noOfChildrenVaccinated => 'CHILDREN_VACCINATED';
   String get polioDeliverySummary => 'POLIO_DELIVERY_SUMMARY';
+  String get onchoDeliverySummary => 'ONCHO_DELIVERY_SUMMARY';
   String get measlesDeliverySummary => 'MEASLES_DELIVERY_SUMMARY';
   String get vaccinateBeneficiary => 'VACCINATE_BENEFICIARY';
   String get selectAgeRange => 'SELECT_AGE_RANGE';
+  String get selectHeightRange => 'SELECT_HEIGHT_RANGE';
+
   String get ninetoElevenAgeRange => 'NINE_ELEVEN_AGE_RANGE';
   String get twelvetofiftyNineAgeRange => 'TWELVE_FIFTYNINE_AGE_RANGE';
   String get selectAgeRangeMessage => 'SELECT_AGE_RANGE';
@@ -327,6 +331,12 @@ class ReferBeneficiary {
   String get referAlertDialogTitle => 'REFERRAL_ALERT_DIALOG_TITLE';
   String get referAlertDialogContent => 'REFERRAL_ALERT_DIALOG_CONTENT';
   String get validationForReferralAge => 'REFERRAL_AGE_VALIDATION';
+}
+
+class TransitFixedPost {
+  const TransitFixedPost();
+  String get fixedTypeSelectionLabel => 'FIXED_POST_TYPE_SELECTION_LABEL';
+  String get fixedPostnameLabel => 'FIXED_POST_NAME_LABEL';
 }
 
 class HouseholdDetails {
@@ -910,7 +920,8 @@ class Home {
 
   String get beneficiaryLabel => 'HOME_BENEFICIARY_LABEL';
 
-  String get transitPostLabel => 'HOME_TRANSIT_POST_ABEL';
+  String get transitPostLabel => 'HOME_TRANSIT_POST_LABEL';
+  String get fixedPostLabel => 'HOME_FIXED_POST_LABEL';
 
   String get beneficiaryDistributionLabel =>
       'HOME_BENEFICIARY_DISTRIBUTION_LABEL';
