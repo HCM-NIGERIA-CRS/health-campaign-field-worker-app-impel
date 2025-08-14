@@ -22,21 +22,22 @@ import 'package:transit_post/widgets/localized.dart';
 import 'package:transit_post/widgets/total_delivery.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart'
     as i18_registration_delivery;
+import '../../utils/i18_key_constants.dart' as i18_local;
 
 import '../../router/app_router.dart';
 import '../campaign_delivery_select.dart';
 
 @RoutePage()
-class CustomTransitPostSelectionPage extends LocalizedStatefulWidget {
-  const CustomTransitPostSelectionPage({super.key});
+class CustomFixedPostSelectionPage extends LocalizedStatefulWidget {
+  const CustomFixedPostSelectionPage({super.key});
 
   @override
-  LocalizedState<CustomTransitPostSelectionPage> createState() =>
-      CustomTransitPostSelectionPageState();
+  LocalizedState<CustomFixedPostSelectionPage> createState() =>
+      CustomFixedPostSelectionPageState();
 }
 
-class CustomTransitPostSelectionPageState
-    extends LocalizedState<CustomTransitPostSelectionPage> {
+class CustomFixedPostSelectionPageState
+    extends LocalizedState<CustomFixedPostSelectionPage> {
   static const _transitPostType = 'transitPostType';
   static const _transitPostName = 'transitPostName';
   static const _latKey = 'latKey';
@@ -177,7 +178,7 @@ class CustomTransitPostSelectionPageState
                                 // if (state.isNotEmpty) {
                                 context.router.push(
                                     CustomTransitPostRecordVaccinationRoute(
-                                        postType: PostType.transit.toString()));
+                                        postType: PostType.fixed.toString()));
                                 // }
                               }
                             },
@@ -273,7 +274,8 @@ class CustomTransitPostSelectionPageState
                                 },
                                 builder: (field) => LabeledField(
                                   label: localizations.translate(
-                                    i18.transitPost.typeSelectionLabel,
+                                    i18_local.transitFixedPost
+                                        .fixedTypeSelectionLabel,
                                   ),
                                   isRequired: true,
                                   child: DigitDropdown(
@@ -314,7 +316,8 @@ class CustomTransitPostSelectionPageState
                                 },
                                 builder: (field) => LabeledField(
                                   label: localizations.translate(
-                                    i18.transitPost.nameLabel,
+                                    i18_local
+                                        .transitFixedPost.fixedPostnameLabel,
                                   ),
                                   isRequired: true,
                                   child: DigitTextFormInput(
