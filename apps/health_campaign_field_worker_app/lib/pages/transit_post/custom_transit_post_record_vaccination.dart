@@ -53,7 +53,6 @@ enum AgeRange { nineToEleven, twelveToFiftyNine }
 class CustomTransitPostRecordVaccinationPageState
     extends LocalizedState<CustomTransitPostRecordVaccinationPage> {
   String? ageRangeSelected;
-  String? heightRangeSelected;
 
   static const int beneficiaryCount = 50;
   String? drugType;
@@ -346,118 +345,6 @@ class CustomTransitPostRecordVaccinationPageState
                       ),
                     ],
                   ),
-                  if (widget.postType == PostType.fixed.toString())
-                    DigitCard(
-                      margin: const EdgeInsets.all(spacer2),
-                      children: [
-                        Text(
-                          localizations.translate(
-                            i18_local.deliverIntervention.onchoDeliverySummary,
-                          ),
-                          style: textTheme.headingL
-                              .copyWith(color: theme.colorTheme.text.primary),
-                        ),
-                        LabelValueSummary(items: [
-                          LabelValueItem(
-                            labelFlex: 5,
-                            maxLines: 4,
-                            label: localizations.translate(
-                              i18_local
-                                  .deliverIntervention.noOfChildrenVaccinated,
-                            ),
-                            value: "50",
-                          )
-                        ]),
-                        DigitButton(
-                          label: localizations.translate(
-                            i18_local.deliverIntervention.vaccinateBeneficiary,
-                          ),
-                          type: DigitButtonType.primary,
-                          size: DigitButtonSize.large,
-                          mainAxisSize: MainAxisSize.max,
-                          isDisabled: false,
-                          onPressed: () async {
-                            setState(() {
-                              drugType = "ONCHO";
-                            });
-                            if (ageRangeSelected == null ||
-                                (ageRangeSelected?.isEmpty ?? true)) {
-                              await DigitToast.show(
-                                context,
-                                options: DigitToastOptions(
-                                  localizations.translate(i18_local
-                                      .deliverIntervention.selectHeightRange),
-                                  true,
-                                  theme,
-                                ),
-                              );
-
-                              return;
-                            }
-                            var heightSelected =
-                                getHeightRangeSelected(heightRangeSelected);
-                            if (context.mounted) {
-                              context.read<CustomTransitPostBloc>().add(
-                                  CustomTransitPostEvent.submitDelivery(
-                                      latitude: latKey.text.isNotEmpty
-                                          ? double.parse(latKey.text)
-                                          : transitPostState.latitude,
-                                      longitude: lngKey.text.isNotEmpty
-                                          ? double.parse(lngKey.text)
-                                          : transitPostState.longitude,
-                                      locationAccuracy: accuracyKey
-                                              .text.isNotEmpty
-                                          ? double.parse(accuracyKey.text)
-                                          : transitPostState.locationAccuracy,
-                                      scannedResource: "",
-                                      drugType: drugType,
-                                      beneficiaryDelivered: 50,
-                                      additionalFields: [heightSelected]));
-                              context.router
-                                  .push(const TransitPostAcknowledgmentRoute());
-                            }
-                          },
-                        ),
-                        DigitCard(
-                          margin: const EdgeInsets.all(spacer2),
-                          children: [
-                            Text(
-                              localizations.translate(
-                                i18_local.deliverIntervention.selectHeightRange,
-                              ),
-                              style: textTheme.headingL.copyWith(
-                                  color: theme.colorTheme.text.primary),
-                            ),
-                            Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                    kPadding, 0, kPadding, 0),
-                                child: FormField(
-                                    autovalidateMode:
-                                        AutovalidateMode.onUserInteraction,
-                                    builder: (context) {
-                                      return RadioList(
-                                        radioDigitButtons: [
-                                          "90to110",
-                                          "110to150",
-                                          "150to200"
-                                        ]
-                                            .map((element) => RadioButtonModel(
-                                                code: element,
-                                                name: localizations
-                                                    .translate(element)))
-                                            .toList(),
-                                        onChanged: (value) {
-                                          if (value.code.isNotEmpty) {}
-                                          setState(() {
-                                            heightRangeSelected = value.code;
-                                          });
-                                        },
-                                      );
-                                    }))
-                          ],
-                        ),
-                      ],
-                    ),
                   DigitCard(
                     margin: const EdgeInsets.all(spacer2),
                     children: [
@@ -600,13 +487,6 @@ class CustomTransitPostRecordVaccinationPageState
       return;
     }
     return AdditionalField("ageRangeSelectedMeasles", ageRangeSelected);
-  }
-
-  dynamic getHeightRangeSelected(String? heightRangeSelected) {
-    if (heightRangeSelected == null) {
-      return;
-    }
-    return AdditionalField("heightRangeSelectedMeasles", heightRangeSelected);
   }
 
   List<DigitTableRow> buildTableData() {
