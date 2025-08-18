@@ -1496,6 +1496,7 @@ class BeneficiaryDetails {
   String get recordCycle => 'BENEFICIARY_DETAILS_RECORD_CYCLE';
 
   String get currentSmcCycleLabel => 'BENEFICIARY_DETAILS_CURRENT_SMC_CYCLE';
+  String get reasonForNonComplianceNeeded => 'REASON_FOR_NON_COMPLIANCE_NEEDED';
   String get invalidChildCount => 'INVALID_CHILD_COUNT_MESSAGE';
   String get noHealthFacilityError => 'NO_HEALTH_FACILITY_ERROR';
 }

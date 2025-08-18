@@ -38,7 +38,6 @@ class CustomFixedPostSelectionPage extends LocalizedStatefulWidget {
 
 class CustomFixedPostSelectionPageState
     extends LocalizedState<CustomFixedPostSelectionPage> {
-  static const _transitPostType = 'transitPostType';
   static const _transitPostName = 'transitPostName';
   static const _latKey = 'latKey';
   static const _lngKey = 'lngKey';
@@ -112,8 +111,6 @@ class CustomFixedPostSelectionPageState
                               form.markAllAsTouched();
                               // if (!form.valid) return;
 
-                              final transitPostType =
-                                  form.control(_transitPostType).value;
                               final transitPostName =
                                   form.control(_transitPostName).value;
                               final lat = form.control(_latKey).value;
@@ -127,7 +124,7 @@ class CustomFixedPostSelectionPageState
                                     latitude: lat,
                                     locationAccuracy: accuracy,
                                     transitPostName: transitPostName,
-                                    transitPostType: transitPostType,
+                                    transitPostType: "",
                                   ));
 
                               // final bloc = context.read<DigitScannerBloc>();
@@ -267,48 +264,6 @@ class CustomFixedPostSelectionPageState
                                 ),
                               ),
                               ReactiveWrapperField(
-                                formControlName: _transitPostType,
-                                validationMessages: {
-                                  "required": (_) => localizations
-                                      .translate(i18.common.coreCommonRequired)
-                                },
-                                builder: (field) => LabeledField(
-                                  label: localizations.translate(
-                                    i18_local.transitFixedPost
-                                        .fixedTypeSelectionLabel,
-                                  ),
-                                  isRequired: true,
-                                  child: DigitDropdown(
-                                    selectedOption: DropdownItem(
-                                        name: localizations.translate(form
-                                                .control(_transitPostType)
-                                                .value ??
-                                            ''),
-                                        code: form
-                                                .control(_transitPostType)
-                                                .value ??
-                                            ''),
-                                    items: TransitPostSingleton()
-                                            .transitPostType
-                                            ?.map((transitPostType) =>
-                                                DropdownItem(
-                                                    name:
-                                                        localizations.translate(
-                                                            transitPostType),
-                                                    code: transitPostType))
-                                            .toList() ??
-                                        [],
-                                    onSelect: (value) {
-                                      setState(() {
-                                        form.control(_transitPostType).value =
-                                            value.code;
-                                      });
-                                    },
-                                    errorMessage: field.errorText,
-                                  ),
-                                ),
-                              ),
-                              ReactiveWrapperField(
                                 formControlName: _transitPostName,
                                 validationMessages: {
                                   "required": (_) => localizations
@@ -346,9 +301,6 @@ class CustomFixedPostSelectionPageState
       _administrationAreaKey: FormControl<String>(
         value: localizations
             .translate(RegistrationDeliverySingleton().boundary!.code ?? ''),
-        validators: [Validators.required],
-      ),
-      _transitPostType: FormControl<String>(
         validators: [Validators.required],
       ),
       _transitPostName: FormControl<String>(

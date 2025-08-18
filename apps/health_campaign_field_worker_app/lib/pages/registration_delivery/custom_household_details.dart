@@ -289,15 +289,7 @@ class CustomHouseHoldDetailsPageState
                           final dateOfRegistration = form
                               .control(_dateOfRegistrationKey)
                               .value as DateTime;
-                          // if ((memberCount < children)) {
-                          //   DigitToast.show(context,
-                          //       options: DigitToastOptions(
-                          //           localizations.translate(i18_local
-                          //               .beneficiaryDetails.invalidChildCount),
-                          //           true,
-                          //           theme));
-                          //   return;
-                          // }
+
                           registrationState.maybeWhen(
                             orElse: () {
                               return;
@@ -617,45 +609,6 @@ class CustomHouseHoldDetailsPageState
                               ),
                             ),
                           ),
-                          //[TODO: Use pregnant women form value based on project config
-
-                          // householdDetailsShowcaseData
-                          //     .numberOfMembersLivingInHousehold
-                          //     .buildWith(
-                          //   child: ReactiveWrapperField(
-                          //     formControlName: _memberCountKey,
-                          //     builder: (field) => LabeledField(
-                          //       child: DigitIntegerFormPicker(
-                          //         minimum: 1,
-                          //         maximum: !isCommunity ? 30 : 1000000,
-                          //         form: form,
-                          //         formControlName: _memberCountKey,
-                          //         onChange: () {
-                          //           int children =
-                          //               form.control(_childrenCountKey).value;
-                          //           int memberCount =
-                          //               form.control(_memberCountKey).value;
-                          //           form.control(_childrenCountKey).value =
-                          //               memberCount < children
-                          //                   ? memberCount
-                          //                   : children;
-                          //         },
-                          //         label: (RegistrationDeliverySingleton()
-                          //                     .householdType ==
-                          //                 HouseholdType.community)
-                          //             ? localizations.translate(
-                          //                 i18.householdDetails
-                          //                     .noOfMembersCountCLFLabel,
-                          //               )
-                          //             : localizations.translate(
-                          //                 i18.householdDetails
-                          //                     .noOfMembersCountLabel,
-                          //               ),
-                          //         incrementer: true,
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
                           householdDetailsShowcaseData
                               .numberOfChildrenBelow5InHousehold
                               .buildWith(
@@ -703,7 +656,6 @@ class CustomHouseHoldDetailsPageState
                             ),
                             incrementer: true,
                           ),
-
                           DigitIntegerFormPicker(
                             minimum: 0,
                             maximum: 20,
@@ -717,7 +669,6 @@ class CustomHouseHoldDetailsPageState
                             ),
                             incrementer: true,
                           ),
-
                           DigitIntegerFormPicker(
                             minimum: 0,
                             maximum: 20,

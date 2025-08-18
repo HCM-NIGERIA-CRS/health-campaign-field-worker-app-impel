@@ -1124,7 +1124,9 @@ class CustomIndividualDetailsPageState
               )
             : null,
       ),
-      _genderKey: FormControl<String>(value: getGenderOptions(individual)),
+      _genderKey: FormControl<String>(
+          value: getGenderOptions(individual),
+          validators: [Validators.required]),
       _mobileNumberKey:
           FormControl<String>(value: individual?.mobileNumber, validators: [
         Validators.delegate((validator) =>

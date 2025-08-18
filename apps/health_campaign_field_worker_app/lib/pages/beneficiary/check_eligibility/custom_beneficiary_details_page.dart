@@ -285,7 +285,7 @@ class CustomBeneficiaryDetailsPageState
                                                                                 1]
                                                                         .deliveries?[currentDose - 1];
 
-                                                                    var productVariants = fetchProductVariant(
+                                                                    DeliveryDoseCriteria deliveryCriteria = getProductVariant(
                                                                         items,
                                                                         state.selectedIndividual ??
                                                                             widget
@@ -293,12 +293,15 @@ class CustomBeneficiaryDetailsPageState
                                                                         state
                                                                             .householdMemberWrapper
                                                                             .household,
-                                                                        context:
-                                                                            context)['criteria'];
+                                                                        context)["criteria"];
+
+                                                                    var productVariants =
+                                                                        deliveryCriteria
+                                                                            .productVariants;
 
                                                                     final value = variant!
                                                                             .firstWhere(
-                                                                              (element) => element.id == productVariants!.first.productVariantId,
+                                                                              (element) => element.id == productVariants?.first.productVariantId,
                                                                             )
                                                                             .sku ??
                                                                         "";

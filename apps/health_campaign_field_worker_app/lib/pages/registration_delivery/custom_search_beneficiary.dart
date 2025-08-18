@@ -286,6 +286,8 @@ class _CustomSearchBeneficiaryPageState
                                                           value;
                                                       isSearchByBeneficiaryIdEnabled =
                                                           false;
+                                                      isChildAbsentEnabled =
+                                                          false;
                                                       lat = locationState
                                                           .latitude!;
                                                       long = locationState
@@ -337,6 +339,8 @@ class _CustomSearchBeneficiaryPageState
                                                             value;
                                                         isProximityEnabled =
                                                             false;
+                                                        isChildAbsentEnabled =
+                                                            false;
                                                         searchController
                                                             .clear();
                                                         blocWrapper
@@ -374,6 +378,8 @@ class _CustomSearchBeneficiaryPageState
                                                         isChildAbsentEnabled =
                                                             value;
                                                         isProximityEnabled =
+                                                            false;
+                                                        isSearchByBeneficiaryIdEnabled =
                                                             false;
                                                         searchController
                                                             .clear();

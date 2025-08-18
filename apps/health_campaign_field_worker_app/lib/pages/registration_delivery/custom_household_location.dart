@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:digit_components/widgets/atoms/digit_toaster.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/address_type.dart';
 import 'package:digit_data_model/models/entities/household_type.dart';
@@ -28,6 +29,8 @@ import '../../blocs/registration_delivery/custom_beneficairy_registration.dart';
 import '../../router/app_router.dart';
 
 import '../../utils/utils.dart' as local_utils;
+import 'package:registration_delivery/utils/i18_key_constants.dart'
+    as i18_registration_delivery;
 
 import 'package:digit_components/widgets/atoms/digit_dropdown.dart' as dropdown;
 
@@ -178,6 +181,20 @@ class CustomHouseholdLocationPageState
                             final reasonForNonCompliance = form
                                 .control(_reasonNonComplianceKey)
                                 .value as String?;
+
+                            if (!isConsent &&
+                                (reasonForNonCompliance == null ||
+                                    (reasonForNonCompliance?.isEmpty ??
+                                        true))) {
+                              DigitToast.show(context,
+                                  options: DigitToastOptions(
+                                      localizations.translate(i18_local
+                                          .beneficiaryDetails
+                                          .reasonForNonComplianceNeeded),
+                                      true,
+                                      theme));
+                              return;
+                            }
 
                             registrationState.maybeWhen(
                               orElse: () {
@@ -414,6 +431,32 @@ class CustomHouseholdLocationPageState
                                       value;
                                 },
                               ),
+                            ),
+                          ),
+                        ),
+                        ReactiveWrapperField(
+                          formControlName: _accuracyKey,
+                          validationMessages: {
+                            'required': (_) => localizations.translate(
+                                  i18_registration_delivery
+                                      .householdLocation.gpsAccuracyLabel,
+                                ),
+                          },
+                          builder: (field) => LabeledField(
+                            isRequired: true,
+                            label: localizations.translate(
+                              i18_registration_delivery
+                                  .householdLocation.gpsAccuracyLabel,
+                            ),
+                            child: DigitTextFormInput(
+                              readOnly: true,
+                              errorMessage: field.errorText,
+                              initialValue:
+                                  (form.control(_accuracyKey).value ?? 0.0)
+                                      .toString(),
+                              onChange: (value) {
+                                form.control(_accuracyKey).value = value;
+                              },
                             ),
                           ),
                         ),
