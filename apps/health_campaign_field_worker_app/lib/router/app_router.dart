@@ -33,7 +33,7 @@ import '../pages/beneficiary/check_eligibility/refer_beneficiary_smc.dart';
 import '../pages/beneficiary/check_eligibility/refer_beneficiary_vas.dart';
 import '../pages/complaints/custom_complaints_inbox.dart';
 import '../pages/custom_household_summary.dart';
-import '../pages/dailyImplementationPlan/select_settlements.dart';
+import '../pages/daily_Implementation_plan/select_settlements.dart';
 import '../pages/inventory_management/custom_inventory_facility_selection.dart';
 import '../pages/inventory_management/qr_scanner.dart';
 import '../pages/inventory_management/view_record_lga.dart';
@@ -101,7 +101,7 @@ import '../pages/summary_report/custom_distribution_summary_report.dart';
 
 import '../pages/campaign_delivery_select.dart';
 
-import '../pages/dailyImplementationPlan/select_boundary.dart';
+import '../pages/daily_Implementation_plan/select_boundary.dart';
 
 part 'app_router.gr.dart';
 
