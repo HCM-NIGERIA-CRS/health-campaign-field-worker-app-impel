@@ -1,11 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:digit_components/widgets/atoms/digit_text_form_field.dart';
 import 'package:digit_ui_components/widgets/molecules/show_pop_up.dart';
 import 'package:registration_delivery/blocs/app_localization.dart';
 import 'package:registration_delivery/blocs/unique_id/unique_id.dart';
 import 'package:registration_delivery/widgets/beneficiary/id_count_alert.dart';
 // import 'package:digit_components/utils/date_utils.dart' as digits;
+import '../../models/entities/project_types.dart';
 import '../../utils/date_utils.dart' as digits;
 import 'package:digit_components/widgets/atoms/digit_toaster.dart';
 import 'package:digit_ui_components/theme/ComponentTheme/checkbox_theme.dart';
@@ -55,6 +57,7 @@ import '../../router/app_router.dart';
 import '../../utils/utils.dart' as local_utils;
 import '../../utils/registration_delivery/registration_delivery_utils.dart';
 import '../../utils/constants.dart' as local_constants;
+import '../../widgets/showcase/showcase_wrappers.dart';
 import 'custom_beneficiary_acknowledgement.dart';
 import '../../utils/i18_key_constants.dart' as i18_local;
 
@@ -79,6 +82,7 @@ class CustomIndividualDetailsPageState
   static const _dobKey = 'dob';
   static const _genderKey = 'gender';
   static const _mobileNumberKey = 'mobileNumber';
+  static const _heightKey = 'height';
 
   bool isDuplicateTag = false;
   static const maxLength = 200;
@@ -879,6 +883,41 @@ class CustomIndividualDetailsPageState
                                             }
                                           },
                                         ),
+                                        // enable only when projectType oncho
+                                        Offstage(
+                                          offstage: true,
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                              kPadding / 2,
+                                              0,
+                                              kPadding / 2,
+                                              0,
+                                            ),
+                                            child: DigitTextFormField(
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              isRequired: true,
+                                              formControlName: _heightKey,
+                                              inputFormatters: [
+                                                FilteringTextInputFormatter
+                                                    .allow(
+                                                  RegExp("[0-9]"),
+                                                ),
+                                              ],
+                                              label: localizations.translate(
+                                                i18.individualDetails
+                                                    .heightLabelText,
+                                              ),
+                                              maxLength: 3,
+                                              validationMessages: {
+                                                'required': (object) =>
+                                                    localizations.translate(i18
+                                                        .common
+                                                        .corecommonRequired),
+                                              },
+                                            ),
+                                          ),
+                                        ),
                                         individualDetailsShowcaseData.mobile
                                             .buildWith(
                                           child: Offstage(
@@ -975,26 +1014,31 @@ class CustomIndividualDetailsPageState
       dobString = DateFormat(Constants().dateFormat).format(dob);
     }
 
+    final height = form.control(_heightKey).value as String? ?? "0";
+
     var individual = oldIndividual;
     individual ??= IndividualModel(
-      clientReferenceId: IdGen.i.identifier,
-      tenantId: RegistrationDeliverySingleton().tenantId,
-      rowVersion: 1,
-      auditDetails: AuditDetails(
-        createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
-        createdTime: ContextUtilityExtensions(context).millisecondsSinceEpoch(),
-        lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid,
-        lastModifiedTime:
-            ContextUtilityExtensions(context).millisecondsSinceEpoch(),
-      ),
-      clientAuditDetails: ClientAuditDetails(
-        createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
-        createdTime: ContextUtilityExtensions(context).millisecondsSinceEpoch(),
-        lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid,
-        lastModifiedTime:
-            ContextUtilityExtensions(context).millisecondsSinceEpoch(),
-      ),
-    );
+        clientReferenceId: IdGen.i.identifier,
+        tenantId: RegistrationDeliverySingleton().tenantId,
+        rowVersion: 1,
+        auditDetails: AuditDetails(
+          createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
+          createdTime:
+              ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+          lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid,
+          lastModifiedTime:
+              ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+        ),
+        clientAuditDetails: ClientAuditDetails(
+          createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
+          createdTime:
+              ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+          lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid,
+          lastModifiedTime:
+              ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+        ),
+        additionalFields: IndividualAdditionalFields(
+            version: 1, fields: [AdditionalField("height", height)]));
 
     var name = individual.name;
     name ??= NameModel(
@@ -1125,6 +1169,11 @@ class CustomIndividualDetailsPageState
             : null,
       ),
       _genderKey: FormControl<String>(value: getGenderOptions(individual)),
+      // todo set based on projectType
+      _heightKey: FormControl<String>(
+        value: height,
+        validators: true ? [] : [Validators.required],
+      ),
       _mobileNumberKey:
           FormControl<String>(value: individual?.mobileNumber, validators: [
         Validators.delegate((validator) =>
