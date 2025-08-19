@@ -343,6 +343,14 @@ class CustomIndividualDetailsPageState
                                                     form.control(_dobKey).value
                                                         as DateTime,
                                                   );
+                                        if ((age.years == 0 &&
+                                                age.months == 0) ||
+                                            age.years >= 150 &&
+                                                age.months > 0) {
+                                          form
+                                              .control(_dobKey)
+                                              .setErrors({'': true});
+                                        }
 
                                         if (age.years < 18 &&
                                             widget.isHeadOfHousehold) {
