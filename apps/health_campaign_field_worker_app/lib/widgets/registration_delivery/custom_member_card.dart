@@ -394,12 +394,10 @@ class CustomMemberCard extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: isHead
-                      ? const Text("")
-                      : Text(
-                          " | $years ${localizations.translate(i18.memberCard.deliverDetailsYearText)} $months ${localizations.translate(i18.memberCard.deliverDetailsMonthsText)}",
-                          style: theme.textTheme.bodyMedium,
-                        ),
+                  child: Text(
+                    " | $years ${localizations.translate(i18.memberCard.deliverDetailsYearText)} $months ${localizations.translate(i18.memberCard.deliverDetailsMonthsText)}",
+                    style: theme.textTheme.bodyMedium,
+                  ),
                 ),
               ],
             ),
