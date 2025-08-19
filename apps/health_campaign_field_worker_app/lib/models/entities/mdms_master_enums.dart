@@ -59,4 +59,6 @@ enum MasterEnums {
   dashboardConfig,
   @MappableValue("TRANSIT_POST_TYPE")
   transitPostType,
+  @MappableValue("NON_COMPLIANCE_REASONS")
+  nonComplianceReasons,
 }

@@ -87,6 +87,8 @@ class AppConfiguration {
   late List<ReferralReasons>? referralReasons;
   late List<HouseStructureTypes>? houseStructureTypes;
   late List<RefusalReasons>? refusalReasons;
+  @Name('NON_COMPLIANCE_REASONS')
+  late List<NonComplianceReasons>? nonComplianceReasons;
   late PrivacyPolicy? privacyPolicyConfig;
 }
 
@@ -116,6 +118,12 @@ class IdTypeOptions {
 
 @embedded
 class DeliveryCommentOptions {
+  late String name;
+  late String code;
+}
+
+@embedded
+class NonComplianceReasons {
   late String name;
   late String code;
 }

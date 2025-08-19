@@ -13,6 +13,8 @@ import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
 import 'package:registration_delivery/utils/utils.dart';
 import 'package:registration_delivery/widgets/table_card/table_card.dart';
 
+import '../../utils/utils.dart';
+
 // This function builds a table with the given data and headers
 Widget buildTableContentSMC(
   DeliverInterventionState deliverInterventionState,
@@ -74,9 +76,10 @@ Widget buildTableContentSMC(
                               context)['criteria']
                           .condition !=
                       null
-                  ? localizations.translate(getProductVariant(item,
-                          individualModel, householdModel, context)!['criteria']
-                      .condition!)
+                  ? localizations.translate(customFormatAgeRange(
+                      getProductVariant(item, individualModel, householdModel,
+                              context)!['criteria']
+                          .condition!))
                   : null,
             },
           ),
