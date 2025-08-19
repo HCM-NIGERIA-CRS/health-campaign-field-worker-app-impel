@@ -159,7 +159,7 @@ class SelectBoundaryPageState extends LocalizedState<SelectBoundaryPage> {
                                   ),
                                   isRequired: true,
                                   child: MultiSelectDropDown(
-                                    initialOptions: initialOptions,
+                                    // initialOptions: initialOptions,
                                     selectionType: SelectionType.nestedSelect,
                                     errorMessage: field.errorText,
                                     emptyItemText: localizations.translate(
@@ -173,7 +173,7 @@ class SelectBoundaryPageState extends LocalizedState<SelectBoundaryPage> {
                                         .toList(),
                                     onOptionSelected: (value) {
                                       setState(() {
-                                        initialOptions = value;
+                                        initialOptions.addAll(value);
                                       });
                                     },
                                   ),
@@ -194,7 +194,7 @@ class SelectBoundaryPageState extends LocalizedState<SelectBoundaryPage> {
               size: DigitButtonSize.large,
               mainAxisSize: MainAxisSize.max,
               onPressed: () {
-                context.router.push(SelectSettlementsRoute());
+                context.router.push(const SelectSettlementsRoute());
               },
               label: localizations.translate(i18.common.coreCommonNext),
             ),

@@ -3,13 +3,14 @@ import 'package:digit_ui_components/theme/spacers.dart';
 import 'package:digit_ui_components/widgets/atoms/text_block.dart';
 import 'package:digit_ui_components/widgets/scrollable_content.dart';
 import 'package:flutter/material.dart';
+import 'package:pluto_grid/pluto_grid.dart';
 
 import '../../blocs/localization/app_localization.dart';
 import '../../router/app_router.dart';
 import '../../widgets/custom_back_navigation.dart';
 import '../../widgets/localized.dart';
 import '../../utils/i18_key_constants.dart' as i18;
-import '../../widgets/reports/readonly_pluto_grid.dart';
+import '../../widgets/reports/editable_pluto_grid.dart';
 
 @RoutePage()
 class SelectSettlementsPage extends LocalizedStatefulWidget {
@@ -80,7 +81,7 @@ class _ReportDetailsContentState extends LocalizedState<ReportDetailsContent> {
           children: [
             const SizedBox(height: spacer4),
             Expanded(
-              child: ReadonlyDigitGrid(
+              child: EditableDigitGrid(
                 data: DigitGridData(columns: [
                   DigitGridColumn(
                     label: localizations.translate(
@@ -94,6 +95,7 @@ class _ReportDetailsContentState extends LocalizedState<ReportDetailsContent> {
                       i18.inventoryReportDetails.dateLabel,
                     ),
                     key: _dateOfVisitKey,
+                    type: PlutoColumnType.select(["Day 1", "Day 2", "Day 3"]),
                     width: 200,
                   ),
                 ], rows: [
