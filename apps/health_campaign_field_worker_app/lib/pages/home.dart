@@ -921,7 +921,10 @@ void setPackagesSingleton(BuildContext context) {
 
         TransitPostSingleton().setInitialData(
           resources: context.selectedProjectType?.resources,
-          transitPostType: [],
+          transitPostType: appConfiguration.transitPostType
+                  ?.map((element) => element.code)
+                  .toList() ??
+              [],
           loggedInUserUuid: context.loggedInUserUuid,
           projectId: context.selectedProject.id,
           minAge: context.selectedProjectType?.validMinAge,
