@@ -236,6 +236,7 @@ class CustomDeliverInterventionPageState
       context.router.popAndPush(
         CustomHouseholdAcknowledgementRoute(
           enableViewHousehold: true,
+          isAddChild: true,
           eligibilityAssessmentType: widget.eligibilityAssessmentType,
         ),
       );
@@ -251,7 +252,7 @@ class CustomDeliverInterventionPageState
             ?.projectType
             ?.cycles![deliveryInterventionState.cycle - 1]
             .deliveries?[deliveryInterventionState.dose - 1],
-        state.selectedIndividual,
+        state.selectedIndividual ?? widget.selectedIndividual,
         state.householdMemberWrapper.household,
         context: context));
 
@@ -1045,7 +1046,11 @@ class CustomDeliverInterventionPageState
     if (_controllers.isEmpty) {
       final int r = projectTypeModel?.cycles == null
           ? 1
-          : getProductVariants(bloc, overViewbloc) != null
+          : getProductVariants(
+                    bloc,
+                    overViewbloc,
+                  ) !=
+                  null
               ? getProductVariants(bloc, overViewbloc)['criteria']
                   .productVariants
                   .length

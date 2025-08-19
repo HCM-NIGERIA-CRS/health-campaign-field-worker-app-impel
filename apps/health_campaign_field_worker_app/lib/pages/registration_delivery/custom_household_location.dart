@@ -196,6 +196,19 @@ class CustomHouseholdLocationPageState
                               return;
                             }
 
+                            if (!isConsent &&
+                                (householdHeadName == null ||
+                                    (householdHeadName?.isEmpty ?? true))) {
+                              DigitToast.show(context,
+                                  options: DigitToastOptions(
+                                      localizations.translate(i18_local
+                                          .beneficiaryDetails
+                                          .houseHeadNameNeeded),
+                                      true,
+                                      theme));
+                              return;
+                            }
+
                             registrationState.maybeWhen(
                               orElse: () {
                                 return;

@@ -349,7 +349,11 @@ class CustomTransitPostSelectionPageState
         validators: [Validators.required],
       ),
       _transitPostName: FormControl<String>(
-        validators: [Validators.required],
+        validators: [
+          Validators.required,
+          Validators.delegate(
+              (validator) => CustomValidator.sizeLessThan2(validator))
+        ],
       ),
       _latKey: FormControl<double>(),
       _lngKey: FormControl<double>(),

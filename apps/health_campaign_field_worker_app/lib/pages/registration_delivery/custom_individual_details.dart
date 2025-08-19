@@ -262,19 +262,8 @@ class CustomIndividualDetailsPageState
                         (router.parent() as StackRouter).maybePop();
 
                         if (individualCaptured != null) {
-                          // info get the relevant project beneficiary here
-                          final projectBeneficiaryAddMember =
-                              householdMemberWrapper
-                                  .projectBeneficiaries
-                                  ?.where((e) =>
-                                      e.beneficiaryClientReferenceId ==
-                                      individualCaptured!.clientReferenceId)
-                                  .toSet();
-
                           // assumption add individual here is used for creating child,
                           //if invalid age send to overview no checklist
-                          List<IndividualModel> householdMembers =
-                              householdMemberWrapper.members ?? [];
                           if (verifyIfChildAgeValid(
                               context, individualCaptured!)) {
                             router.push(
