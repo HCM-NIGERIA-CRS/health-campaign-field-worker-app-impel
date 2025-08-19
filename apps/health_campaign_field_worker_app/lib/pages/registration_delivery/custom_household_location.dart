@@ -589,6 +589,7 @@ class CustomHouseholdLocationPageState
                                 i18_local.individualDetails.nameLabelText,
                               ),
                               child: DigitTextFormInput(
+                                isRequired: !isConsent,
                                 initialValue:
                                     form.control(_householdHeadNameKey).value,
                                 onChange: (value) {

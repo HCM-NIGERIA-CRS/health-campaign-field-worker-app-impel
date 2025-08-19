@@ -179,8 +179,8 @@ class CustomTransitPostRecordVaccinationPageState
                                             : transitPostState.totalCount! + 1,
                                     scannedResource: ""));
 
-                            context.router
-                                .push(const TransitPostAcknowledgmentRoute());
+                            context.router.replaceAll(
+                                [const TransitPostSelectionRoute()]);
                           }
                         }
                       },
@@ -188,18 +188,18 @@ class CustomTransitPostRecordVaccinationPageState
                       size: DigitButtonSize.large,
                       mainAxisSize: MainAxisSize.max,
                     ),
-                    DigitButton(
-                      label: localizations.translate(
-                        i18.transitPost.closeDeliveryLabel,
-                      ),
-                      onPressed: () {
-                        context.router
-                            .replaceAll([const TransitPostSelectionRoute()]);
-                      },
-                      type: DigitButtonType.secondary,
-                      size: DigitButtonSize.large,
-                      mainAxisSize: MainAxisSize.max,
-                    )
+                    // DigitButton(
+                    //   label: localizations.translate(
+                    //     i18.transitPost.closeDeliveryLabel,
+                    //   ),
+                    //   onPressed: () {
+                    //     context.router
+                    //         .replaceAll([const TransitPostSelectionRoute()]);
+                    //   },
+                    //   type: DigitButtonType.secondary,
+                    //   size: DigitButtonSize.large,
+                    //   mainAxisSize: MainAxisSize.max,
+                    // )
                   ],
                 ),
                 children: [
@@ -263,11 +263,11 @@ class CustomTransitPostRecordVaccinationPageState
                         )
                       ]),
                     SizedBox(
-                      height: (tableRow.length * 50.0).toDouble().clamp(
+                      height: (tableRow.length * 70.0).toDouble().clamp(
                               100, MediaQuery.of(context).size.height * 0.5) +
                           40,
                       child: DigitTable(
-                          tableHeight: (tableRow.length * 50.0)
+                          tableHeight: (tableRow.length * 70.0)
                               .toDouble()
                               .clamp(100,
                                   MediaQuery.of(context).size.height * 0.5),

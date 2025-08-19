@@ -81,6 +81,9 @@ class AppConfiguration {
   @Name('BENEFICIARY_ID_CONFIG')
   late List<BeneficiaryIdConfig>? beneficiaryIdConfig;
 
+  @Name('TRANSIT_POST_TYPE')
+  late List<TransitPostType>? transitPostType;
+
   late List<ReferralReasons>? referralReasons;
   late List<HouseStructureTypes>? houseStructureTypes;
   late List<RefusalReasons>? refusalReasons;
@@ -155,6 +158,13 @@ class TransportTypes {
 class ComplaintTypes {
   late String name;
   late String code;
+}
+
+@embedded
+class TransitPostType {
+  late String name;
+  late String code;
+  late bool active;
 }
 
 @embedded
