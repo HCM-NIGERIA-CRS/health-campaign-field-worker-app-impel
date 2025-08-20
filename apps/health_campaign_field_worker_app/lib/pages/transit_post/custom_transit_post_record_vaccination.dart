@@ -54,7 +54,9 @@ class CustomTransitPostRecordVaccinationPageState
     extends LocalizedState<CustomTransitPostRecordVaccinationPage> {
   String? ageRangeSelected;
 
-  static const int beneficiaryCount = 50;
+  int polioBeneficiaryCount = 0;
+  int measlesBeneficiaryCount = 0;
+
   String? drugType;
 
   @override
@@ -157,8 +159,9 @@ class CustomTransitPostRecordVaccinationPageState
 
                         if (submit ?? false) {
                           if (context.mounted) {
-                            context.read<TransitPostBloc>().add(
-                                TransitPostDeliveryEvent(
+                            // submit polio event
+                            context.read<CustomTransitPostBloc>().add(
+                                CustomTransitPostEvent.submitDelivery(
                                     latitude: latKey.text.isNotEmpty
                                         ? double.parse(latKey.text)
                                         : transitPostState.latitude,
@@ -169,15 +172,29 @@ class CustomTransitPostRecordVaccinationPageState
                                         accuracyKey.text.isNotEmpty
                                             ? double.parse(accuracyKey.text)
                                             : transitPostState.locationAccuracy,
-                                    curCount:
-                                        (transitPostState.curCount == null)
-                                            ? 1
-                                            : transitPostState.curCount! + 1,
-                                    totalCount:
-                                        (transitPostState.totalCount == null)
-                                            ? 1
-                                            : transitPostState.totalCount! + 1,
-                                    scannedResource: ""));
+                                    scannedResource: "",
+                                    drugType: "POLIO",
+                                    beneficiaryDelivered:
+                                        polioBeneficiaryCount));
+
+                            // submit measles event
+
+                            context
+                                .read<CustomTransitPostBloc>()
+                                .add(CustomTransitPostEvent.submitDelivery(
+                                  latitude: latKey.text.isNotEmpty
+                                      ? double.parse(latKey.text)
+                                      : transitPostState.latitude,
+                                  longitude: lngKey.text.isNotEmpty
+                                      ? double.parse(lngKey.text)
+                                      : transitPostState.longitude,
+                                  locationAccuracy: accuracyKey.text.isNotEmpty
+                                      ? double.parse(accuracyKey.text)
+                                      : transitPostState.locationAccuracy,
+                                  scannedResource: "",
+                                  drugType: drugType,
+                                  beneficiaryDelivered: measlesBeneficiaryCount,
+                                ));
 
                             context.router.replaceAll(
                                 [const TransitPostSelectionRoute()]);
@@ -224,17 +241,23 @@ class CustomTransitPostRecordVaccinationPageState
                                     ),
                                     value: DateFormat("d MMMM yyyy")
                                         .format(DateTime.now())),
+                                if (widget.postType ==
+                                    PostType.transit.toString())
+                                  LabelValueItem(
+                                      labelFlex: 5,
+                                      label: localizations.translate(
+                                          i18.transitPost.transitPostTypeLabel),
+                                      value: localizations.translate(
+                                          transitPostState.transitPostType ??
+                                              '')),
                                 LabelValueItem(
                                     labelFlex: 5,
                                     label: localizations.translate(
-                                        i18.transitPost.transitPostTypeLabel),
-                                    value: localizations.translate(
-                                        transitPostState.transitPostType ??
-                                            '')),
-                                LabelValueItem(
-                                    labelFlex: 5,
-                                    label: localizations.translate(
-                                      i18.transitPost.transitPostNameLabel,
+                                      widget.postType ==
+                                              PostType.transit.toString()
+                                          ? i18.transitPost.transitPostNameLabel
+                                          : i18_local.transitFixedPost
+                                              .fixedPostnameLabel,
                                     ),
                                     value: transitPostState.transitPostName)
                               ])
@@ -307,7 +330,7 @@ class CustomTransitPostRecordVaccinationPageState
                             i18_local
                                 .deliverIntervention.noOfChildrenVaccinated,
                           ),
-                          value: "0",
+                          value: polioBeneficiaryCount.toString(),
                         )
                       ]),
                       DigitButton(
@@ -323,8 +346,11 @@ class CustomTransitPostRecordVaccinationPageState
                             drugType = "POLIO";
                           });
                           if (context.mounted) {
-                            context.read<CustomTransitPostBloc>().add(
-                                CustomTransitPostEvent.submitDelivery(
+                            setState(() {
+                              polioBeneficiaryCount += 1;
+                            });
+                            context.read<TransitPostBloc>().add(
+                                TransitPostDeliveryEvent(
                                     latitude: latKey.text.isNotEmpty
                                         ? double.parse(latKey.text)
                                         : transitPostState.latitude,
@@ -335,9 +361,16 @@ class CustomTransitPostRecordVaccinationPageState
                                         accuracyKey.text.isNotEmpty
                                             ? double.parse(accuracyKey.text)
                                             : transitPostState.locationAccuracy,
-                                    scannedResource: "",
-                                    drugType: drugType,
-                                    beneficiaryDelivered: 50));
+                                    curCount:
+                                        (transitPostState.curCount == null)
+                                            ? 1
+                                            : transitPostState.curCount! + 1,
+                                    totalCount:
+                                        (transitPostState.totalCount == null)
+                                            ? 1
+                                            : transitPostState.totalCount! + 1,
+                                    scannedResource: ""));
+
                             context.router
                                 .push(const TransitPostAcknowledgmentRoute());
                           }
@@ -363,7 +396,7 @@ class CustomTransitPostRecordVaccinationPageState
                             i18_local
                                 .deliverIntervention.noOfChildrenVaccinated,
                           ),
-                          value: "0",
+                          value: measlesBeneficiaryCount.toString(),
                         )
                       ]),
                       DigitButton(
@@ -397,24 +430,10 @@ class CustomTransitPostRecordVaccinationPageState
                               getAgeRangeSelected(ageRangeSelected);
 
                           if (context.mounted) {
-                            context.read<CustomTransitPostBloc>().add(
-                                    CustomTransitPostEvent.submitDelivery(
-                                        latitude: latKey.text.isNotEmpty
-                                            ? double.parse(latKey.text)
-                                            : transitPostState.latitude,
-                                        longitude: lngKey.text.isNotEmpty
-                                            ? double.parse(lngKey.text)
-                                            : transitPostState.longitude,
-                                        locationAccuracy: accuracyKey
-                                                .text.isNotEmpty
-                                            ? double.parse(accuracyKey.text)
-                                            : transitPostState.locationAccuracy,
-                                        scannedResource: "",
-                                        drugType: drugType,
-                                        beneficiaryDelivered: 50,
-                                        additionalFields: [
-                                      ageRangeAdditionalField
-                                    ]));
+                            setState(() {
+                              measlesBeneficiaryCount += 1;
+                            });
+
                             context.router
                                 .push(const TransitPostAcknowledgmentRoute());
                           }
