@@ -31,6 +31,7 @@ import 'package:registration_delivery/utils/i18_key_constants.dart'
     as registration_delivery;
 import '../../../utils/i18_key_constants.dart' as i18_local;
 import '../../blocs/transit_post/custom_transit_post.dart';
+import '../../router/app_router.dart';
 import '../../utils/environment_config.dart';
 import '../../widgets/showcase/showcase_wrappers.dart';
 import '../campaign_delivery_select.dart';
@@ -196,8 +197,13 @@ class CustomTransitPostRecordVaccinationPageState
                                   beneficiaryDelivered: measlesBeneficiaryCount,
                                 ));
 
-                            context.router.replaceAll(
-                                [const TransitPostSelectionRoute()]);
+                            if (widget.postType == PostType.fixed.toString()) {
+                              context.router.replaceAll(
+                                  [const CustomFixedPostSelectionRoute()]);
+                            } else {
+                              context.router.replaceAll(
+                                  [const TransitPostSelectionRoute()]);
+                            }
                           }
                         }
                       },
