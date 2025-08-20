@@ -278,6 +278,19 @@ class CustomIndividualDetailsPageState
                                 ],
                               ),
                             );
+                          } else {
+                            router.push(
+                              BeneficiaryWrapperRoute(
+                                wrapper: householdMemberWrapper,
+                                children: [
+                                  CustomBeneficiaryDetailsRoute(
+                                    individualSelected: individualCaptured,
+                                    eligibilityAssessmentType:
+                                        EligibilityAssessmentType.smc,
+                                  )
+                                ],
+                              ),
+                            );
                           }
                         } else {
                           router.push(CustomBeneficiaryAcknowledgementRoute(
