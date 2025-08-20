@@ -282,13 +282,6 @@ class CustomIndividualDetailsPageState
                             router.push(
                               BeneficiaryWrapperRoute(
                                 wrapper: householdMemberWrapper,
-                                children: [
-                                  CustomBeneficiaryDetailsRoute(
-                                    individualSelected: individualCaptured,
-                                    eligibilityAssessmentType:
-                                        EligibilityAssessmentType.smc,
-                                  )
-                                ],
                               ),
                             );
                           }
