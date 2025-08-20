@@ -166,6 +166,28 @@ class IndividualGlobalSearchSMCRepository extends LocalRepository {
 
         return {"data": data, "total_count": count};
       }
+    } else if (params.beneficiaryId?.isNotEmpty ?? false) {
+      var beneficiarySelectQuery =
+          await beneficiaryIdSearch(selectQuery, params, super.sql);
+
+      // Return empty list if no results found
+      if (beneficiarySelectQuery == null) {
+        return [];
+      } else {
+        // Get total count if offset is zero and filters are applied
+        if (params.offset == 0 &&
+            params.filter != null &&
+            params.filter!.isNotEmpty) {
+          count =
+              await _getTotalCount(beneficiarySelectQuery, params, super.sql);
+        }
+        await beneficiarySelectQuery.limit(params.limit ?? 50,
+            offset: params.offset ?? 0);
+
+        final results = await beneficiarySelectQuery.get();
+
+        return _returnIndividualModel(results, count);
+      }
     } else {
       if (params.isChildAbsentEnabled != null) {
         if (params.isChildAbsentEnabled!) {
