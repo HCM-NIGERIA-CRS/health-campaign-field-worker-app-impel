@@ -262,21 +262,21 @@ class CustomTransitPostRecordVaccinationPageState
                         color: theme.colorTheme.text.primary,
                       ),
                     ),
-                    if (TransitPostSingleton().minAge != null &&
-                        TransitPostSingleton().maxAge != null)
-                      LabelValueSummary(items: [
-                        LabelValueItem(
-                          labelFlex: 5,
-                          maxLines: 4,
-                          label: localizations.translate(
-                            i18.transitPost.beneficiaryAgeLabel,
-                          ),
-                          value:
-                              "${localizations.translate(i18.transitPost.beneficiaryAgeDescription)} ${TransitPostSingleton().minAge!.toString()} ${"-"} ${TransitPostSingleton().maxAge!.toString()} ${localizations.translate(
-                            i18_local.individualDetails.monthsHintText,
-                          )}",
-                        )
-                      ]),
+                    // if (TransitPostSingleton().minAge != null &&
+                    //     TransitPostSingleton().maxAge != null)
+                    //   LabelValueSummary(items: [
+                    //     LabelValueItem(
+                    //       labelFlex: 5,
+                    //       maxLines: 4,
+                    //       label: localizations.translate(
+                    //         i18.transitPost.beneficiaryAgeLabel,
+                    //       ),
+                    //       value:
+                    //           "${localizations.translate(i18.transitPost.beneficiaryAgeDescription)} ${TransitPostSingleton().minAge!.toString()} ${"-"} ${TransitPostSingleton().maxAge!.toString()} ${localizations.translate(
+                    //         i18_local.individualDetails.monthsHintText,
+                    //       )}",
+                    //     )
+                    //   ]),
                     SizedBox(
                       height: (tableRow.length * 70.0).toDouble().clamp(
                               100, MediaQuery.of(context).size.height * 0.5) +
@@ -463,59 +463,54 @@ class CustomTransitPostRecordVaccinationPageState
                           }
                         },
                       ),
-                      DigitCard(
-                        margin: const EdgeInsets.all(spacer2),
-                        children: [
-                          Text(
-                            localizations.translate(
-                              i18_local.deliverIntervention.selectAgeRange,
-                            ),
-                            style: textTheme.headingL
-                                .copyWith(color: theme.colorTheme.text.primary),
-                          ),
-                          Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                  kPadding, 0, kPadding, 0),
-                              child: FormField(
-                                  autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
-                                  builder: (context) {
-                                    return RadioList(
-                                      radioDigitButtons: [
-                                        RadioButtonModel(
-                                          code: AgeRange.nineToEleven.name,
-                                          name: localizations.translate(
-                                            i18_local.deliverIntervention
-                                                .ninetoElevenAgeRange,
-                                          ),
-                                        ),
-                                        RadioButtonModel(
-                                          code: AgeRange.twelveToFiftyNine.name,
-                                          name: localizations.translate(
-                                            i18_local.deliverIntervention
-                                                .twelvetofiftyNineAgeRange,
-                                          ),
-                                        ),
-                                      ],
-                                      groupValue: ageRangeSelected ?? '',
-                                      onChanged: (value) {
-                                        if (value.code ==
-                                            AgeRange.nineToEleven.name) {
-                                          setState(() {
-                                            ageRangeSelected =
-                                                AgeRange.nineToEleven.name;
-                                          });
-                                        } else {
-                                          setState(() {
-                                            ageRangeSelected =
-                                                AgeRange.twelveToFiftyNine.name;
-                                          });
-                                        }
-                                      },
-                                    );
-                                  }))
-                        ],
+                      Text(
+                        localizations.translate(
+                          i18_local.deliverIntervention.selectAgeRange,
+                        ),
+                        style: textTheme.headingL
+                            .copyWith(color: theme.colorTheme.text.primary),
                       ),
+                      Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                              kPadding, 0, kPadding, 0),
+                          child: FormField(
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              builder: (context) {
+                                return RadioList(
+                                  radioDigitButtons: [
+                                    RadioButtonModel(
+                                      code: AgeRange.nineToEleven.name,
+                                      name: localizations.translate(
+                                        i18_local.deliverIntervention
+                                            .ninetoElevenAgeRange,
+                                      ),
+                                    ),
+                                    RadioButtonModel(
+                                      code: AgeRange.twelveToFiftyNine.name,
+                                      name: localizations.translate(
+                                        i18_local.deliverIntervention
+                                            .twelvetofiftyNineAgeRange,
+                                      ),
+                                    ),
+                                  ],
+                                  groupValue: ageRangeSelected ?? '',
+                                  onChanged: (value) {
+                                    if (value.code ==
+                                        AgeRange.nineToEleven.name) {
+                                      setState(() {
+                                        ageRangeSelected =
+                                            AgeRange.nineToEleven.name;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        ageRangeSelected =
+                                            AgeRange.twelveToFiftyNine.name;
+                                      });
+                                    }
+                                  },
+                                );
+                              }))
                     ],
                   ),
                 ],
