@@ -8,7 +8,7 @@ import 'package:transit_post/blocs/transit_post.dart';
 import 'package:transit_post/data/repositories/local/user_action.dart';
 import 'package:transit_post/utils/extensions/extensions.dart';
 
-import '../../blocs/transit_post/custom_transit_post.dart';
+import '../../blocs/transit_post/fixed_post.dart';
 
 @RoutePage()
 class CustomTransitPostWrapperPage extends StatelessWidget {
@@ -41,8 +41,8 @@ class CustomTransitPostWrapperPage extends StatelessWidget {
           ),
           BlocProvider(
             create: (_) {
-              return CustomTransitPostBloc(
-                const CustomTransitPostState(),
+              return FixedPostBloc(
+                const FixedPostState(),
                 userActionLocalRepository:
                     context.read<UserActionLocalRepository>(),
                 userActionRemoteRepository:

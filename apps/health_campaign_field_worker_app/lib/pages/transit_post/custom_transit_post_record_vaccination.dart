@@ -30,7 +30,7 @@ import 'package:transit_post/widgets/total_delivery.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart'
     as registration_delivery;
 import '../../../utils/i18_key_constants.dart' as i18_local;
-import '../../blocs/transit_post/custom_transit_post.dart';
+import '../../blocs/transit_post/fixed_post.dart';
 import '../../router/app_router.dart';
 import '../../widgets/showcase/showcase_wrappers.dart';
 import '../campaign_delivery_select.dart';
@@ -156,49 +156,49 @@ class CustomTransitPostRecordVaccinationPageState
 
                         if (submit ?? false) {
                           if (context.mounted) {
-                            // submit polio event
-                            context.read<CustomTransitPostBloc>().add(
-                                CustomTransitPostEvent.submitDelivery(
-                                    latitude: latKey.text.isNotEmpty
-                                        ? double.parse(latKey.text)
-                                        : transitPostState.latitude,
-                                    longitude: lngKey.text.isNotEmpty
-                                        ? double.parse(lngKey.text)
-                                        : transitPostState.longitude,
-                                    locationAccuracy:
-                                        accuracyKey.text.isNotEmpty
-                                            ? double.parse(accuracyKey.text)
-                                            : transitPostState.locationAccuracy,
-                                    scannedResource: "",
-                                    drugType: "POLIO",
-                                    beneficiaryDelivered:
-                                        polioBeneficiaryCount));
+                            // // submit polio event
+                            // context.read<CustomTransitPostBloc>().add(
+                            //     CustomTransitPostEvent.submitDelivery(
+                            //         latitude: latKey.text.isNotEmpty
+                            //             ? double.parse(latKey.text)
+                            //             : transitPostState.latitude,
+                            //         longitude: lngKey.text.isNotEmpty
+                            //             ? double.parse(lngKey.text)
+                            //             : transitPostState.longitude,
+                            //         locationAccuracy:
+                            //             accuracyKey.text.isNotEmpty
+                            //                 ? double.parse(accuracyKey.text)
+                            //                 : transitPostState.locationAccuracy,
+                            //         scannedResource: "",
+                            //         drugType: "POLIO",
+                            //         beneficiaryDelivered:
+                            //             polioBeneficiaryCount));
 
-                            // submit measles event
+                            // // submit measles event
 
-                            context
-                                .read<CustomTransitPostBloc>()
-                                .add(CustomTransitPostEvent.submitDelivery(
-                                  latitude: latKey.text.isNotEmpty
-                                      ? double.parse(latKey.text)
-                                      : transitPostState.latitude,
-                                  longitude: lngKey.text.isNotEmpty
-                                      ? double.parse(lngKey.text)
-                                      : transitPostState.longitude,
-                                  locationAccuracy: accuracyKey.text.isNotEmpty
-                                      ? double.parse(accuracyKey.text)
-                                      : transitPostState.locationAccuracy,
-                                  scannedResource: "",
-                                  drugType: drugType,
-                                  beneficiaryDelivered: measlesBeneficiaryCount,
-                                ));
+                            // context
+                            //     .read<CustomTransitPostBloc>()
+                            //     .add(CustomTransitPostEvent.submitDelivery(
+                            //       latitude: latKey.text.isNotEmpty
+                            //           ? double.parse(latKey.text)
+                            //           : transitPostState.latitude,
+                            //       longitude: lngKey.text.isNotEmpty
+                            //           ? double.parse(lngKey.text)
+                            //           : transitPostState.longitude,
+                            //       locationAccuracy: accuracyKey.text.isNotEmpty
+                            //           ? double.parse(accuracyKey.text)
+                            //           : transitPostState.locationAccuracy,
+                            //       scannedResource: "",
+                            //       drugType: drugType,
+                            //       beneficiaryDelivered: measlesBeneficiaryCount,
+                            //     ));
 
                             if (widget.postType == PostType.fixed.toString()) {
                               context.router.replaceAll(
                                   [const CustomFixedPostSelectionRoute()]);
                             } else {
                               context.router.replaceAll(
-                                  [const TransitPostSelectionRoute()]);
+                                  [const CustomTransitPostSelectionRoute()]);
                             }
                           }
                         }
@@ -272,7 +272,9 @@ class CustomTransitPostRecordVaccinationPageState
                             i18.transitPost.beneficiaryAgeLabel,
                           ),
                           value:
-                              "${localizations.translate(i18.transitPost.beneficiaryAgeDescription)} ${TransitPostSingleton().minAge!.toString()} ${"-"} ${TransitPostSingleton().maxAge!.toString()}",
+                              "${localizations.translate(i18.transitPost.beneficiaryAgeDescription)} ${TransitPostSingleton().minAge!.toString()} ${"-"} ${TransitPostSingleton().maxAge!.toString()} ${localizations.translate(
+                            i18_local.individualDetails.monthsHintText,
+                          )}",
                         )
                       ]),
                     SizedBox(
