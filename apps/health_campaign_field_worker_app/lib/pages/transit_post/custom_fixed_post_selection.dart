@@ -104,12 +104,12 @@ class CustomFixedPostSelectionPageState
                         children: [
                           DigitButton(
                             label: localizations.translate(
-                              i18.transitPost.scanResourceLabel,
+                              i18_local.common.coreCommonNext,
                             ),
-                            isDisabled: false,
+                            isDisabled: !form.valid,
                             onPressed: () async {
                               form.markAllAsTouched();
-                              // if (!form.valid) return;
+                              if (!form.valid) return;
 
                               final transitPostName =
                                   form.control(_transitPostName).value;
@@ -127,62 +127,15 @@ class CustomFixedPostSelectionPageState
                                     transitPostType: "",
                                   ));
 
-                              // final bloc = context.read<DigitScannerBloc>();
-                              // final state = bloc.state.barCodes;
-
-                              // if (state.isNotEmpty) {
-                              //   await showCustomPopup(
-                              //       context: context,
-                              //       builder: (popUpContext) => Popup(
-                              //             title: localizations.translate(
-                              //               i18.transitPost.alertPopupTitle,
-                              //             ),
-                              //             type: PopUpType.alert,
-                              //             description: localizations.translate(
-                              //               i18.transitPost
-                              //                   .alertPopupDescription,
-                              //             ),
-                              //             actions: [
-                              //               DigitButton(
-                              //                 label: localizations.translate(
-                              //                   i18.common.coreCommonOk,
-                              //                 ),
-                              //                 onPressed: () {
-                              //                   Navigator.of(popUpContext)
-                              //                       .pop();
-                              //                 },
-                              //                 type: DigitButtonType.primary,
-                              //                 size: DigitButtonSize.large,
-                              //               )
-                              //             ],
-                              //           ));
-                              // }
-
-                              // await Navigator.of(context).push(
-                              //   MaterialPageRoute(
-                              //     builder: (context) => const DigitScannerPage(
-                              //       quantity: 1,
-                              //       isGS1code: true,
-                              //       singleValue: true,
-                              //     ),
-                              //     settings:
-                              //         const RouteSettings(name: '/qr-scanner'),
-                              //   ),
-                              // );
                               if (context.mounted) {
-                                // final bloc = context.read<DigitScannerBloc>();
-                                // final state = bloc.state.barCodes;
-                                // if (state.isNotEmpty) {
                                 context.router.push(
                                     CustomTransitPostRecordVaccinationRoute(
                                         postType: PostType.fixed.toString()));
-                                // }
                               }
                             },
                             type: DigitButtonType.primary,
                             size: DigitButtonSize.large,
                             mainAxisSize: MainAxisSize.max,
-                            prefixIcon: Icons.document_scanner_sharp,
                           )
                         ],
                       ),
