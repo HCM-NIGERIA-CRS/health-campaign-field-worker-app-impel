@@ -791,7 +791,7 @@ void setPackagesSingleton(BuildContext context) {
           tenantId: envConfig.variables.tenantId,
           validIndividualAgeForCampaign: ValidIndividualAgeForCampaign(
             validMinAge: context.selectedProjectType?.validMinAge ?? 3,
-            validMaxAge: context.selectedProjectType?.validMaxAge ?? 64,
+            validMaxAge: context.selectedProjectType?.validMaxAge ?? 62,
           ),
           genderOptions:
               appConfiguration.genderOptions?.map((e) => e.code).toList() ?? [],

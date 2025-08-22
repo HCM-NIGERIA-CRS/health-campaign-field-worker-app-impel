@@ -10,6 +10,7 @@ import '../../utils/date_utils.dart' as digits;
 import 'package:digit_components/widgets/atoms/digit_toaster.dart';
 import 'package:digit_ui_components/theme/ComponentTheme/checkbox_theme.dart';
 import '../../utils/app_enums.dart';
+import '../../utils/utils.dart' as utils;
 import '../../widgets/custom_back_navigation.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/household_type.dart';
@@ -132,9 +133,9 @@ class CustomIndividualDetailsPageState
     super.initState();
   }
 
-  onSubmit(name, bool isCreate, bool isAddIndividual) {
+  onSubmit(name, bool isCreate, bool isAddIndividual,
+      HouseholdModel? householdModel) async {
     final bloc = context.read<CustomBeneficiaryRegistrationBloc>();
-    final router = context.router;
 
     if (context.mounted) {
       if (isCreate) {
@@ -145,36 +146,6 @@ class CustomIndividualDetailsPageState
               boundary: RegistrationDeliverySingleton().boundary!,
               tag: null,
               navigateToSummary: false),
-        );
-      }
-
-      customSearchHouseholdsBloc.add(const CustomSearchHouseholdsEvent.clear());
-      customSearchHouseholdsBloc.add(
-        CustomSearchHouseholdsEvent.searchByHouseholdHead(
-          searchText: name.trim(),
-          projectId: RegistrationDeliverySingleton().projectId!,
-          isProximityEnabled: false,
-          maxRadius: RegistrationDeliverySingleton().maxRadius,
-          limit: customSearchHouseholdsBloc.state.limit,
-          offset: 0,
-        ),
-      );
-
-      final reloadState = context.read<HouseholdOverviewBloc>();
-
-      reloadState.add(
-        HouseholdOverviewReloadEvent(
-          projectId: RegistrationDeliverySingleton().projectId!,
-          projectBeneficiaryType:
-              RegistrationDeliverySingleton().beneficiaryType!,
-        ),
-      );
-
-      if (individualCaptured != null) {
-        reloadState.add(
-          HouseholdOverviewEvent.selectedIndividual(
-            individualModel: individualCaptured!,
-          ),
         );
       }
     }
@@ -211,8 +182,8 @@ class CustomIndividualDetailsPageState
                     CustomSearchHouseholdsState>(
                   listener: (context, searchHouseholdsState) {
                     if (isCreate) {
-                      HouseholdMemberWrapper? i =
-                          searchHouseholdsState.householdMembers.lastOrNull;
+                      HouseholdMemberWrapper? i = customSearchHouseholdsBloc
+                          .state.householdMembers.lastOrNull;
 
                       registration_delivery.HouseholdMemberWrapper?
                           householdMemberWrapper;
@@ -241,8 +212,8 @@ class CustomIndividualDetailsPageState
                             wrapper: householdMemberWrapper));
                       }
                     } else if (isAddIndividual) {
-                      HouseholdMemberWrapper? i =
-                          searchHouseholdsState.householdMembers.lastOrNull;
+                      HouseholdMemberWrapper? i = customSearchHouseholdsBloc
+                          .state.householdMembers.lastOrNull;
 
                       registration_delivery.HouseholdMemberWrapper?
                           householdMemberWrapper;
@@ -324,7 +295,53 @@ class CustomIndividualDetailsPageState
                   builder: (context, searchHouseholdsState) {
                     return BlocConsumer<CustomBeneficiaryRegistrationBloc,
                         BeneficiaryRegistrationState>(
-                      listener: (context, state) {},
+                      listener: (context, state) {
+                        state.mapOrNull(
+                          persisted: (value) async {
+                            await Future.delayed(
+                                const Duration(milliseconds: 200), () {
+                              if (value.householdModel != null) {
+                                customSearchHouseholdsBloc.add(
+                                    const CustomSearchHouseholdsEvent.clear());
+                                customSearchHouseholdsBloc.add(
+                                  CustomSearchHouseholdsEvent.searchByHousehold(
+                                    // searchText: name.trim(),
+                                    projectId: RegistrationDeliverySingleton()
+                                        .projectId!,
+                                    isProximityEnabled: false,
+                                    maxRadius: RegistrationDeliverySingleton()
+                                        .maxRadius,
+                                    householdModel: value.householdModel,
+                                    // limit: customSearchHouseholdsBloc.state.limit,
+                                    // offset: 0,
+                                  ),
+                                );
+                              }
+                            }).then((value) {
+                              final reloadState =
+                                  context.read<HouseholdOverviewBloc>();
+
+                              reloadState.add(
+                                HouseholdOverviewReloadEvent(
+                                  projectId: RegistrationDeliverySingleton()
+                                      .projectId!,
+                                  projectBeneficiaryType:
+                                      RegistrationDeliverySingleton()
+                                          .beneficiaryType!,
+                                ),
+                              );
+
+                              if (individualCaptured != null) {
+                                reloadState.add(
+                                  HouseholdOverviewEvent.selectedIndividual(
+                                    individualModel: individualCaptured!,
+                                  ),
+                                );
+                              }
+                            });
+                          },
+                        );
+                      },
                       builder: (context, state) {
                         return ScrollableContent(
                           enableFixedDigitButton: true,
@@ -366,6 +383,47 @@ class CustomIndividualDetailsPageState
                                       size: DigitButtonSize.large,
                                       mainAxisSize: MainAxisSize.max,
                                       onPressed: () async {
+                                        form.markAllAsTouched();
+                                        if (!form.valid) return;
+                                        if (!widget.isHeadOfHousehold) {
+                                          if (form.control(_dobKey).value ==
+                                              null) {
+                                            setState(() {
+                                              form
+                                                  .control(_dobKey)
+                                                  .setErrors({'': true});
+                                            });
+                                            return;
+                                          }
+                                          DateTime dob =
+                                              form.control(_dobKey).value;
+                                          int ageInMonth = DateTime.now()
+                                                  .difference(dob)
+                                                  .inDays ~/
+                                              30;
+                                          if (ageInMonth < 3 ||
+                                              ageInMonth > 59) {
+                                            Toast.showToast(
+                                              context,
+                                              message: localizations.translate(
+                                                i18_local.individualDetails
+                                                    .dobValidationMessage,
+                                              ),
+                                              type: ToastType.error,
+                                            );
+                                            return;
+                                          }
+                                        }
+                                        if (!widget.isHeadOfHousehold &&
+                                            form.control(_genderKey).value ==
+                                                null) {
+                                          setState(() {
+                                            form
+                                                .control(_genderKey)
+                                                .setErrors({'': true});
+                                          });
+                                          return;
+                                        }
                                         final submit = await showDialog(
                                           context: context,
                                           builder: (ctx) => Popup(
@@ -410,37 +468,83 @@ class CustomIndividualDetailsPageState
                                         );
 
                                         if (submit ?? false) {
-                                          if (!widget.isHeadOfHousehold &&
-                                              form.control(_dobKey).value ==
-                                                  null) {
-                                            setState(() {
-                                              form
-                                                  .control(_dobKey)
-                                                  .setErrors({'': true});
-                                            });
-                                          }
-                                          if (!widget.isHeadOfHousehold &&
-                                              form.control(_genderKey).value ==
-                                                  null) {
-                                            setState(() {
-                                              form
-                                                  .control(_genderKey)
-                                                  .setErrors({'': true});
-                                            });
-                                          }
                                           final userId =
                                               RegistrationDeliverySingleton()
                                                   .loggedInUserUuid;
                                           final projectId =
                                               RegistrationDeliverySingleton()
                                                   .projectId;
-                                          form.markAllAsTouched();
-                                          if (!form.valid) return;
+
                                           FocusManager.instance.primaryFocus
                                               ?.unfocus();
 
                                           isEditIndividual = false;
                                           isAddIndividual = false;
+
+                                          if (generatedUniqueId == null) {
+                                            showCustomPopup(
+                                                context: context,
+                                                builder: (ctx) {
+                                                  return Popup(
+                                                    type: PopUpType.alert,
+                                                    onCrossTap: () {
+                                                      Navigator.of(ctx).pop();
+                                                    },
+                                                    actions: [
+                                                      DigitButton(
+                                                        capitalizeLetters:
+                                                            false,
+                                                        type: DigitButtonType
+                                                            .primary,
+                                                        size: DigitButtonSize
+                                                            .large,
+                                                        mainAxisSize:
+                                                            MainAxisSize.max,
+                                                        onPressed: () {
+                                                          Navigator.pop(ctx);
+                                                          context
+                                                              .read<
+                                                                  UniqueIdBloc>()
+                                                              .add(
+                                                                const UniqueIdEvent
+                                                                    .fetchUniqueIdsFromServer(
+                                                                    reFetch:
+                                                                        true),
+                                                              );
+                                                        },
+                                                        label: localizations
+                                                            .translate(i18
+                                                                .beneficiaryDetails
+                                                                .beneficiaryIdsReFetch),
+                                                      ),
+                                                      DigitButton(
+                                                        capitalizeLetters:
+                                                            false,
+                                                        type: DigitButtonType
+                                                            .secondary,
+                                                        size: DigitButtonSize
+                                                            .large,
+                                                        mainAxisSize:
+                                                            MainAxisSize.max,
+                                                        onPressed: () {
+                                                          Navigator.pop(ctx);
+                                                        },
+                                                        label: localizations
+                                                            .translate(
+                                                          i18.common
+                                                              .corecommonclose,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                    title: localizations
+                                                        .translate(i18
+                                                            .beneficiaryDetails
+                                                            .noBeneficiaryIdsLabel),
+                                                  );
+                                                });
+                                            return;
+                                          }
+
                                           state.maybeWhen(
                                             orElse: () {
                                               return;
@@ -517,6 +621,7 @@ class CustomIndividualDetailsPageState
                                                       "",
                                                   true,
                                                   false,
+                                                  householdModel,
                                                 );
                                               }
                                             },
@@ -602,7 +707,8 @@ class CustomIndividualDetailsPageState
                                                             .name?.givenName ??
                                                         "",
                                                     false,
-                                                    false);
+                                                    false,
+                                                    householdModel);
                                                 context.router.maybePop();
                                               }
                                             },
@@ -673,6 +779,7 @@ class CustomIndividualDetailsPageState
                                                         "",
                                                     false,
                                                     true,
+                                                    householdModel,
                                                   );
                                                 }
                                               }
@@ -908,16 +1015,26 @@ class CustomIndividualDetailsPageState
                                               formControlName: _mobileNumberKey,
                                               validationMessages: {
                                                 'minLength': (object) =>
-                                                    localizations.translate(
-                                                        i18_local
+                                                    localizations
+                                                        .translate(i18_local
                                                             .individualDetails
-                                                            .mobileNumberLengthValidationMessage),
+                                                            .mobileNumberLengthValidationMessage)
+                                                        .replaceAll(
+                                                            '9 or 10', '11'),
                                                 'maxLength': (object) =>
                                                     localizations
                                                         .translate(i18_local
                                                             .individualDetails
                                                             .mobileNumberLengthValidationMessage)
-                                                        .replaceAll('{}', '11'),
+                                                        .replaceAll(
+                                                            '9 or 10', '11'),
+                                                'mobileNumber': (object) =>
+                                                    localizations
+                                                        .translate(i18_local
+                                                            .individualDetails
+                                                            .mobileNumberLengthValidationMessage)
+                                                        .replaceAll(
+                                                            '9 or 10', '11'),
                                               },
                                               builder: (field) => LabeledField(
                                                 label: localizations.translate(
@@ -941,6 +1058,40 @@ class CustomIndividualDetailsPageState
                                                         .control(
                                                             _mobileNumberKey)
                                                         .value = value;
+
+                                                    if (value != "") {
+                                                      form
+                                                          .control(
+                                                              _mobileNumberKey)
+                                                          .setValidators(
+                                                        [
+                                                          Validators.delegate(
+                                                            (validator) => local_utils
+                                                                    .CustomValidator
+                                                                .validMobileNumber(
+                                                                    validator),
+                                                          ),
+                                                          Validators.minLength(
+                                                              11),
+                                                          Validators.maxLength(
+                                                              11),
+                                                        ],
+                                                        autoValidate: true,
+                                                      );
+                                                    } else {
+                                                      form
+                                                          .control(
+                                                              _mobileNumberKey)
+                                                          .setValidators(
+                                                        [],
+                                                        autoValidate: true,
+                                                      );
+                                                    }
+
+                                                    form
+                                                        .control(
+                                                            _mobileNumberKey)
+                                                        .touched;
                                                   },
                                                   errorMessage: field.errorText,
                                                 ),
@@ -1147,12 +1298,7 @@ class CustomIndividualDetailsPageState
       ),
       _genderKey: FormControl<String>(value: getGenderOptions(individual)),
       _mobileNumberKey:
-          FormControl<String>(value: individual?.mobileNumber, validators: [
-        Validators.delegate((validator) =>
-            local_utils.CustomValidator.validMobileNumber(validator)),
-        Validators.minLength(11),
-        Validators.maxLength(11),
-      ]),
+          FormControl<String>(value: individual?.mobileNumber, validators: []),
     });
   }
 

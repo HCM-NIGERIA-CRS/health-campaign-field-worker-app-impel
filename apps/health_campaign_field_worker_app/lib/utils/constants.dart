@@ -112,7 +112,7 @@ class Constants {
   static const int apiCallLimit = 1000;
   static const int beneficiaryIdLength = 9;
   static const String headConsent = 'caregiver_consent_registration';
-  static const int dailyTarget = 100;
+  static const int dailyTarget = 90;
 
   // for stock validation
 
@@ -125,7 +125,7 @@ class Constants {
   static const String productVariantId2 = 'PVAR-2025-05-08-000002';
 
   // todo enable before cycle2
-  static const bool isDownSyncEnabled = false;
+  static const bool isDownSyncEnabled = true;
   static const String dashboardAnalyticsPath =
       '/dashboard-analytics/dashboard/getChartV2';
 
