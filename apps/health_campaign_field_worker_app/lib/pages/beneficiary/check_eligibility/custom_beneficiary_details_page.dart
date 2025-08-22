@@ -401,13 +401,9 @@ class CustomBeneficiaryDetailsPageState
                                   margin: const EdgeInsets.all(spacer2),
                                   children: [
                                     Text(
-                                      localizations.translate(
-                                          widget.eligibilityAssessmentType ==
-                                                  EligibilityAssessmentType.smc
-                                              ? i18_local.deliverIntervention
-                                                  .deliversmcintervention
-                                              : i18_local.deliverIntervention
-                                                  .deliverVASIntervention),
+                                      localizations.translate(i18_local
+                                          .deliverIntervention
+                                          .deliverintervention),
                                       style: textTheme.headingXl.copyWith(
                                           color: theme.colorTheme.text.primary),
                                     ),
