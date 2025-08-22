@@ -127,6 +127,9 @@ _$HCMWrapperModelImpl _$$HCMWrapperModelImplFromJson(
           .map(
               (e) => DeliveryCommentOptions.fromJson(e as Map<String, dynamic>))
           .toList(),
+      nonComplianceReasons: (json['NON_COMPLIANCE_REASONS'] as List<dynamic>)
+          .map((e) => NonComplianceReasons.fromJson(e as Map<String, dynamic>))
+          .toList(),
       backendInterface: (json['BACKEND_INTERFACE'] as List<dynamic>)
           .map((e) => BackendInterface.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -159,6 +162,9 @@ _$HCMWrapperModelImpl _$$HCMWrapperModelImplFromJson(
       firebaseConfig: (json['FIREBASE_CONFIG'] as List<dynamic>?)
           ?.map((e) => FirebaseConfig.fromJson(e as Map<String, dynamic>))
           .toList(),
+      transitPostType: (json['TRANSIT_POST_TYPE'] as List<dynamic>?)
+          ?.map((e) => TransitPostType.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$$HCMWrapperModelImplToJson(
@@ -176,6 +182,7 @@ Map<String, dynamic> _$$HCMWrapperModelImplToJson(
       'CHECKLIST_TYPES': instance.checklistTypes,
       'ID_TYPE_OPTIONS_POPULATOR': instance.idTypeOptions,
       'DELIVERY_COMMENT_OPTIONS_POPULATOR': instance.deliveryCommentOptions,
+      'NON_COMPLIANCE_REASONS': instance.nonComplianceReasons,
       'BACKEND_INTERFACE': instance.backendInterface,
       'CALL_SUPPORT': instance.callSupportOptions,
       'TRANSPORT_TYPES': instance.transportTypes,
@@ -186,6 +193,7 @@ Map<String, dynamic> _$$HCMWrapperModelImplToJson(
       'HOUSE_STRUCTURE_TYPES': instance.houseStructureTypes,
       'REFUSAL_REASONS': instance.refusalReasons,
       'FIREBASE_CONFIG': instance.firebaseConfig,
+      'TRANSIT_POST_TYPE': instance.transitPostType,
     };
 
 _$AppConfigSecondaryWrapperModelImpl
@@ -349,6 +357,20 @@ Map<String, dynamic> _$$DeliveryCommentOptionsImplToJson(
       'code': instance.code,
     };
 
+_$NonComplianceReasonsImpl _$$NonComplianceReasonsImplFromJson(
+        Map<String, dynamic> json) =>
+    _$NonComplianceReasonsImpl(
+      name: json['name'] as String,
+      code: json['code'] as String,
+    );
+
+Map<String, dynamic> _$$NonComplianceReasonsImplToJson(
+        _$NonComplianceReasonsImpl instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'code': instance.code,
+    };
+
 _$DeletionReasonOptionsImpl _$$DeletionReasonOptionsImplFromJson(
         Map<String, dynamic> json) =>
     _$DeletionReasonOptionsImpl(
@@ -373,6 +395,22 @@ Map<String, dynamic> _$$GenderOptionsImplToJson(_$GenderOptionsImpl instance) =>
     <String, dynamic>{
       'name': instance.name,
       'code': instance.code,
+    };
+
+_$TransitPostTypeImpl _$$TransitPostTypeImplFromJson(
+        Map<String, dynamic> json) =>
+    _$TransitPostTypeImpl(
+      name: json['name'] as String,
+      code: json['code'] as String,
+      active: json['active'] as bool,
+    );
+
+Map<String, dynamic> _$$TransitPostTypeImplToJson(
+        _$TransitPostTypeImpl instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'code': instance.code,
+      'active': instance.active,
     };
 
 _$BackgroundServiceConfigImpl _$$BackgroundServiceConfigImplFromJson(

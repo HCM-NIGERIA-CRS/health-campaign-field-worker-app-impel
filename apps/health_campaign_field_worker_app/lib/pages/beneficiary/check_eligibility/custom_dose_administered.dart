@@ -209,7 +209,7 @@ class CustomDoseAdministeredPageState
                                               overViewBloc.selectedIndividual,
                                               overViewBloc
                                                   .householdMemberWrapper
-                                                  .household)
+                                                  .household)["criteria"]
                                           ?.productVariants
                                           ?.map((variant) => TaskResourceModel(
                                                 clientReferenceId:

@@ -5,6 +5,7 @@ import 'package:attendance_management/router/attendance_router.dart';
 import 'package:attendance_management/router/attendance_router.gm.dart';
 import 'package:complaints/router/complaints_router.dart';
 import 'package:complaints/router/complaints_router.gm.dart';
+import 'package:transit_post/router/transit_post_router.gm.dart';
 import '../blocs/registration_delivery/custom_beneficairy_registration.dart';
 import 'package:referral_reconciliation/router/referral_reconciliation_router.gm.dart';
 import 'package:referral_reconciliation/router/referral_reconciliation_router.dart';
@@ -18,6 +19,9 @@ import 'package:flutter/material.dart';
 import 'package:inventory_management/blocs/app_localization.dart';
 import 'package:inventory_management/router/inventory_router.dart';
 import 'package:inventory_management/router/inventory_router.gm.dart';
+import 'package:inventory_management/blocs/record_stock.dart' as _i15;
+import 'package:transit_post/router/transit_post_router.dart';
+
 import '../blocs/inventory_management/custom_inventory_report.dart';
 import '../blocs/localization/app_localization.dart';
 import '../pages/acknowledgement.dart';
@@ -98,6 +102,10 @@ import '../pages/checklist/custom_survey_form_boundary_view.dart';
 import '../pages/checklist/custom_survey_form_acknowledgement.dart';
 import '../pages/checklist/custom_survey_form_wrapper.dart';
 import '../pages/summary_report/custom_distribution_summary_report.dart';
+import '../pages/transit_post/custom_transit_post_selection.dart';
+import '../pages/transit_post/custom_fixed_post_selection.dart';
+import '../pages/transit_post/custom_transit_post_record_vaccination.dart';
+import '../pages/transit_post/custom_transit_post_wrapper.dart';
 
 import '../pages/campaign_delivery_select.dart';
 
@@ -114,6 +122,7 @@ part 'app_router.gr.dart';
     AttendanceRoute,
     ComplaintsRoute,
     SurveyFormRoute,
+    TransitPostRoute,
   ],
 )
 class AppRouter extends _$AppRouter {
@@ -271,6 +280,40 @@ class AppRouter extends _$AppRouter {
           page: SearchReferralReconciliationsRoute.page,
           path: 'search-referrals',
         ),
+
+        // Transit post routes
+        AutoRoute(
+            page: CustomTransitPostWrapperRoute.page,
+            path: 'custom-transit-post-wrapper',
+            children: [
+              AutoRoute(
+                page: TransitPostSelectionRoute.page,
+                // initial: true,
+                path: 'transit-post-selection',
+              ),
+              AutoRoute(
+                page: CustomTransitPostSelectionRoute.page,
+                initial: true,
+                path: 'custom-transit-post-selection',
+              ),
+              AutoRoute(
+                page: CustomFixedPostSelectionRoute.page,
+                // initial: true,
+                path: 'custom-fixed-post-selection',
+              ),
+              AutoRoute(
+                  page: TransitPostRecordVaccinationRoute.page,
+                  path: 'transit-post-record'),
+              AutoRoute(
+                  page: CustomTransitPostRecordVaccinationRoute.page,
+                  path: 'custom-transit-post-record'),
+              RedirectRoute(
+                  path: 'transit-post-record',
+                  redirectTo: 'custom-transit-post-record'),
+              AutoRoute(
+                  page: TransitPostAcknowledgmentRoute.page,
+                  path: 'transit-post-acknowledgment')
+            ]),
 
         AutoRoute(
             page: CustomRegistrationDeliveryWrapperRoute.page,

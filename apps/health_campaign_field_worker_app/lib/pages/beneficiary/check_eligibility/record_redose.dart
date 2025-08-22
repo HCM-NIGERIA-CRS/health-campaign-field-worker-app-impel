@@ -127,7 +127,8 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
       ),
       householdOverviewState.selectedIndividual,
       null,
-    )?.productVariants;
+    )["criteria"]
+        ?.productVariants;
     if (productVariants == null) {
       return [];
     }

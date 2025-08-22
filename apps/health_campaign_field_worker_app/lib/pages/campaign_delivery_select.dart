@@ -8,6 +8,8 @@ import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:registration_delivery/utils/utils.dart';
+import 'package:transit_post/router/transit_post_router.gm.dart';
+import 'package:transit_post/transit_post.dart';
 
 import '../router/app_router.dart';
 import '../widgets/header/back_navigation_help_header.dart';
@@ -28,6 +30,8 @@ class CampaignDeliverySelectPage extends LocalizedStatefulWidget {
   State<CampaignDeliverySelectPage> createState() =>
       CampaignDeliverySelectPageState();
 }
+
+enum PostType { fixed, transit }
 
 class CampaignDeliverySelectPageState
     extends LocalizedState<CampaignDeliverySelectPage> {
@@ -97,6 +101,21 @@ class CampaignDeliverySelectPageState
           context.router.push(const CustomRegistrationDeliveryWrapperRoute());
         },
       ),
+      HomeItemCard(
+        icon: Icons.pin_drop,
+        label: i18.home.transitPostLabel,
+        onPressed: () {
+          context.router.push(const CustomTransitPostWrapperRoute());
+        },
+      ),
+      HomeItemCard(
+        icon: Icons.location_pin,
+        label: i18.home.fixedPostLabel,
+        onPressed: () {
+          context.router.push(const CustomTransitPostWrapperRoute(
+              children: [CustomFixedPostSelectionRoute()]));
+        },
+      )
     ];
 
     return _HomeItemDataModel(homeItemsList);

@@ -29,8 +29,6 @@ import 'package:registration_delivery/utils/utils.dart';
 import 'package:registration_delivery/models/entities/additional_fields_type.dart';
 import 'package:registration_delivery/models/entities/status.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
-import 'package:registration_delivery/widgets/back_navigation_help_header.dart';
-import 'package:registration_delivery/widgets/beneficiary/resource_beneficiary_card.dart';
 import 'package:registration_delivery/widgets/component_wrapper/product_variant_bloc_wrapper.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 
@@ -238,10 +236,27 @@ class CustomDeliverInterventionPageState
       context.router.popAndPush(
         CustomHouseholdAcknowledgementRoute(
           enableViewHousehold: true,
+          isAddChild: true,
           eligibilityAssessmentType: widget.eligibilityAssessmentType,
         ),
       );
     }
+  }
+
+  getProductVariants(DeliverInterventionState deliveryInterventionState,
+      HouseholdOverviewState state) {
+    var result = (fetchProductVariant(
+        RegistrationDeliverySingleton()
+            .selectedProject
+            ?.additionalDetails
+            ?.projectType
+            ?.cycles![deliveryInterventionState.cycle - 1]
+            .deliveries?[deliveryInterventionState.dose - 1],
+        state.selectedIndividual ?? widget.selectedIndividual,
+        state.householdMemberWrapper.household,
+        context: context));
+
+    return result;
   }
 
   @override
@@ -262,7 +277,8 @@ class CustomDeliverInterventionPageState
       child: BlocBuilder<HouseholdOverviewBloc, HouseholdOverviewState>(
         builder: (context, state) {
           final householdMemberWrapper = state.householdMemberWrapper;
-          final individualModel = state.selectedIndividual;
+          final individualModel =
+              state.selectedIndividual ?? widget.selectedIndividual;
 
           final projectBeneficiary =
               RegistrationDeliverySingleton().beneficiaryType !=
@@ -291,18 +307,9 @@ class CustomDeliverInterventionPageState
 
                       List<DeliveryProductVariant>? productVariants =
                           projectTypeModel?.cycles?.isNotEmpty == true
-                              ? (fetchProductVariant(
-                                      projectTypeModel
-                                              ?.cycles![
-                                                  deliveryInterventionState
-                                                          .cycle -
-                                                      1]
-                                              .deliveries?[
-                                          deliveryInterventionState.dose - 1],
-                                      state?.selectedIndividual ??
-                                          widget?.selectedIndividual,
-                                      state.householdMemberWrapper.household)
-                                  ?.productVariants)
+                              ? getProductVariants(deliveryInterventionState,
+                                      state)['criteria']
+                                  ?.productVariants
                               : projectTypeModel?.resources
                                   ?.map((r) => DeliveryProductVariant(
                                       productVariantId: r.productVariantId))
@@ -1039,15 +1046,15 @@ class CustomDeliverInterventionPageState
     if (_controllers.isEmpty) {
       final int r = projectTypeModel?.cycles == null
           ? 1
-          : fetchProductVariant(
-                      projectTypeModel
-                          ?.cycles![bloc.cycle - 1].deliveries?[bloc.dose - 1],
-                      overViewbloc.selectedIndividual ??
-                          widget.selectedIndividual,
-                      overViewbloc.householdMemberWrapper.household)
-                  ?.productVariants
-                  ?.length ??
-              0;
+          : getProductVariants(
+                    bloc,
+                    overViewbloc,
+                  ) !=
+                  null
+              ? getProductVariants(bloc, overViewbloc)['criteria']
+                  .productVariants
+                  .length
+              : 0;
 
       _controllers.addAll(List.generate(r, (index) => index)
           .mapIndexed((index, element) => index));

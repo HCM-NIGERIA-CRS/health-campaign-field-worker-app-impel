@@ -459,6 +459,10 @@ class IndividualGlobalSearchSMCBloc extends SearchHouseholdsSMCBloc {
       if (taskList.isEmpty) {
         taskList =
             await fetchTaskbyProjectBeneficiary(projectBeneficiariesList);
+      } else {
+        final allTasksOfMembers =
+            await fetchTaskbyProjectBeneficiary(projectBeneficiariesList);
+        taskList.addAll(allTasksOfMembers);
       }
       sideEffectsList =
           await sideEffectDataRepository.search(SideEffectSearchModel(

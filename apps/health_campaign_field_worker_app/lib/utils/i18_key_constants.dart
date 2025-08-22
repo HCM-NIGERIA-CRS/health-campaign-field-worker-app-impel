@@ -45,6 +45,7 @@ const deliverIntervention = DeliverIntervention();
 const checklist = Checklist();
 const referBeneficiary = ReferBeneficiary();
 const householdDetails = HouseholdDetails();
+const transitFixedPost = TransitFixedPost();
 
 class Common {
   const Common();
@@ -225,12 +226,24 @@ class DeliverIntervention {
   String get beneficiaryIneligibleDescription => 'BENEFICIARY_INELIGIBLE_DESC';
   String get beneficiaryReferralDescription => 'BENEFICIARY_REFERRAL_DESC';
   String get spaqRedirectionScreenDescription => 'SPAQ_REDIRECTED_SCREEN_DESC';
-  String get deliversmcintervention => 'DELIVER_SMC_INTERVENTION';
+  String get deliverintervention => 'DELIVER_INTERVENTION';
   String get deliverVASIntervention => 'DELIVER_VAS_INTERVENTION';
   String get recordsmcdeliverdetails => 'RECORD_SMC_DELIVER_DETAILS';
   String get doseadministeredby => 'DOSE_ADMINISTERED_BY_LABEL';
   String get proceedToVASLabel => 'PROCEED_TO_VAS_LABEL';
   String get proceedToVASDescription => 'PROCEED_TO_VAS_DESCRIPTION';
+
+  String get noOfChildrenVaccinated => 'CHILDREN_VACCINATED';
+  String get polioDeliverySummary => 'POLIO_DELIVERY_SUMMARY';
+  String get onchoDeliverySummary => 'ONCHO_DELIVERY_SUMMARY';
+  String get measlesDeliverySummary => 'MEASLES_DELIVERY_SUMMARY';
+  String get vaccinateBeneficiary => 'VACCINATE_BENEFICIARY';
+  String get selectAgeRange => 'SELECT_AGE_RANGE';
+  String get selectHeightRange => 'SELECT_HEIGHT_RANGE';
+
+  String get ninetoElevenAgeRange => 'NINE_ELEVEN_AGE_RANGE';
+  String get twelvetofiftyNineAgeRange => 'TWELVE_FIFTYNINE_AGE_RANGE';
+  String get selectAgeRangeMessage => 'SELECT_AGE_RANGE';
 }
 
 class Checklist {
@@ -318,6 +331,12 @@ class ReferBeneficiary {
   String get referAlertDialogTitle => 'REFERRAL_ALERT_DIALOG_TITLE';
   String get referAlertDialogContent => 'REFERRAL_ALERT_DIALOG_CONTENT';
   String get validationForReferralAge => 'REFERRAL_AGE_VALIDATION';
+}
+
+class TransitFixedPost {
+  const TransitFixedPost();
+  String get fixedTypeSelectionLabel => 'FIXED_POST_TYPE_SELECTION_LABEL';
+  String get fixedPostnameLabel => 'FIXED_POST_NAME_LABEL';
 }
 
 class HouseholdDetails {
@@ -901,6 +920,9 @@ class Home {
 
   String get beneficiaryLabel => 'HOME_BENEFICIARY_LABEL';
 
+  String get transitPostLabel => 'HOME_TRANSIT_POST_LABEL';
+  String get fixedPostLabel => 'HOME_FIXED_POST_LABEL';
+
   String get beneficiaryDistributionLabel =>
       'HOME_BENEFICIARY_DISTRIBUTION_LABEL';
 
@@ -1474,6 +1496,8 @@ class BeneficiaryDetails {
   String get recordCycle => 'BENEFICIARY_DETAILS_RECORD_CYCLE';
 
   String get currentSmcCycleLabel => 'BENEFICIARY_DETAILS_CURRENT_SMC_CYCLE';
+  String get reasonForNonComplianceNeeded => 'REASON_FOR_NON_COMPLIANCE_NEEDED';
+  String get houseHeadNameNeeded => 'HEAD_NAME_NEEDED';
   String get invalidChildCount => 'INVALID_CHILD_COUNT_MESSAGE';
   String get noHealthFacilityError => 'NO_HEALTH_FACILITY_ERROR';
 }

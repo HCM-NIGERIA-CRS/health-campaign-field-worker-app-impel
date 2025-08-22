@@ -108,6 +108,8 @@ class AppInitializationBloc
                     MasterEnums.searchHouseHoldFilters.toValue(),
                     MasterEnums.searchCLFFilters.toValue(),
                     MasterEnums.beneficiaryIdConfig.toValue(),
+                    MasterEnums.transitPostType.toValue(),
+                    MasterEnums.nonComplianceReasons.toValue(),
                   ]),
                 ),
                 MdmsModuleDetailModel(

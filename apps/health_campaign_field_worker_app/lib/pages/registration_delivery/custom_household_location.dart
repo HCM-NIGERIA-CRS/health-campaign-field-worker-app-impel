@@ -1,4 +1,6 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:digit_components/widgets/atoms/digit_reactive_search_dropdown.dart';
+import 'package:digit_components/widgets/atoms/digit_toaster.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/address_type.dart';
 import 'package:digit_data_model/models/entities/household_type.dart';
@@ -12,6 +14,8 @@ import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../blocs/app_initialization/app_initialization.dart';
+import '../../data/local_store/no_sql/schema/app_configuration.dart';
 import '../../widgets/custom_back_navigation.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:registration_delivery/utils/extensions/extensions.dart';
@@ -28,6 +32,8 @@ import '../../blocs/registration_delivery/custom_beneficairy_registration.dart';
 import '../../router/app_router.dart';
 
 import '../../utils/utils.dart' as local_utils;
+import 'package:registration_delivery/utils/i18_key_constants.dart'
+    as i18_registration_delivery;
 
 import 'package:digit_components/widgets/atoms/digit_dropdown.dart' as dropdown;
 
@@ -178,6 +184,33 @@ class CustomHouseholdLocationPageState
                             final reasonForNonCompliance = form
                                 .control(_reasonNonComplianceKey)
                                 .value as String?;
+
+                            if (!isConsent &&
+                                (reasonForNonCompliance == null ||
+                                    (reasonForNonCompliance?.isEmpty ??
+                                        true))) {
+                              DigitToast.show(context,
+                                  options: DigitToastOptions(
+                                      localizations.translate(i18_local
+                                          .beneficiaryDetails
+                                          .reasonForNonComplianceNeeded),
+                                      true,
+                                      theme));
+                              return;
+                            }
+
+                            if (!isConsent &&
+                                (householdHeadName == null ||
+                                    (householdHeadName?.isEmpty ?? true))) {
+                              DigitToast.show(context,
+                                  options: DigitToastOptions(
+                                      localizations.translate(i18_local
+                                          .beneficiaryDetails
+                                          .houseHeadNameNeeded),
+                                      true,
+                                      theme));
+                              return;
+                            }
 
                             registrationState.maybeWhen(
                               orElse: () {
@@ -418,6 +451,32 @@ class CustomHouseholdLocationPageState
                           ),
                         ),
                         ReactiveWrapperField(
+                          formControlName: _accuracyKey,
+                          validationMessages: {
+                            'required': (_) => localizations.translate(
+                                  i18_registration_delivery
+                                      .householdLocation.gpsAccuracyLabel,
+                                ),
+                          },
+                          builder: (field) => LabeledField(
+                            isRequired: true,
+                            label: localizations.translate(
+                              i18_registration_delivery
+                                  .householdLocation.gpsAccuracyLabel,
+                            ),
+                            child: DigitTextFormInput(
+                              readOnly: true,
+                              errorMessage: field.errorText,
+                              initialValue:
+                                  (form.control(_accuracyKey).value ?? 0.0)
+                                      .toString(),
+                              onChange: (value) {
+                                form.control(_accuracyKey).value = value;
+                              },
+                            ),
+                          ),
+                        ),
+                        ReactiveWrapperField(
                           formControlName: _householdNumberKey,
                           validationMessages: {
                             'required': (object) => localizations.translate(
@@ -529,6 +588,7 @@ class CustomHouseholdLocationPageState
                                   .replaceAll('{}', maxLength.toString()),
                             },
                             builder: (field) => LabeledField(
+                              isRequired: !isConsent,
                               label: localizations.translate(
                                 i18_local.individualDetails.nameLabelText,
                               ),
@@ -546,37 +606,38 @@ class CustomHouseholdLocationPageState
                         ),
                         Offstage(
                           offstage: isConsent,
-                          child: dropdown.DigitDropdown<String>(
-                            label: localizations.translate(
-                              i18_local
-                                  .caregiverConsent.reasonForNonComplianceLabel,
-                            ),
-                            valueMapper: (value) =>
-                                localizations.translate(value),
-                            initialValue:
-                                form.control(_reasonNonComplianceKey).value,
-                            menuItems: RegistrationDeliverySingleton()
-                                .genderOptions!
-                                .map((e) => e)
-                                .toList(),
-                            formControlName: _reasonNonComplianceKey,
-                            isRequired: true,
-                            validationMessages: {
-                              'required': (_) => localizations.translate(
-                                    i18.common.corecommonRequired,
-                                  ),
-                            },
-                            onChanged: (value) {
-                              if (value != null && value.isNotEmpty) {
-                                form.control(_reasonNonComplianceKey).value =
-                                    value;
-                              } else {
-                                form.control(_reasonNonComplianceKey).value =
-                                    null;
-                                form
-                                    .control(_reasonNonComplianceKey)
-                                    .setErrors({'': true});
+                          child: BlocBuilder<AppInitializationBloc,
+                              AppInitializationState>(
+                            builder: (context, state) {
+                              if (state is! AppInitialized) {
+                                return const Offstage();
                               }
+
+                              final nonComplianceReasons =
+                                  state.appConfiguration.nonComplianceReasons ??
+                                      <NonComplianceReasons>[];
+
+                              return DigitReactiveSearchDropdown<String>(
+                                label: localizations.translate(
+                                  i18_local.caregiverConsent
+                                      .reasonForNonComplianceLabel,
+                                ),
+                                form: form,
+                                enabled: true,
+                                isRequired: false,
+                                menuItems: nonComplianceReasons.map((e) {
+                                  return e.code;
+                                }).toList(),
+                                formControlName: _reasonNonComplianceKey,
+                                valueMapper: (value) => localizations.translate(
+                                  value,
+                                ),
+                                emptyText: localizations
+                                    .translate(i18.common.noMatchFound),
+                                validationMessage: localizations.translate(
+                                  i18.common.corecommonRequired,
+                                ),
+                              );
                             },
                           ),
                         ),

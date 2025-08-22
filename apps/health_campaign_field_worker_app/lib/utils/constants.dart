@@ -17,6 +17,10 @@ import 'package:inventory_management/utils/utils.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sync_service/sync_service_lib.dart';
+import 'package:transit_post/data/repositories/local/user_action.dart';
+import 'package:transit_post/data/repositories/oplog/oplog.dart';
+import 'package:transit_post/data/repositories/remote/user_action.dart';
+import 'package:transit_post/utils/utils.dart';
 
 import '../data/local_store/no_sql/schema/app_configuration.dart';
 import '../data/local_store/no_sql/schema/entity_mapper.dart';
@@ -194,6 +198,9 @@ class Constants {
         sql,
         ServiceOpLogManager(isar),
       ),
+      LocationTrackerLocalBaseRepository(
+          sql, LocationTrackerOpLogManager(isar)),
+      UserActionLocalRepository(sql, UserActionOpLogManager(isar)),
     ];
   }
 
@@ -292,6 +299,8 @@ class Constants {
           ServiceDefinitionRemoteRepository(dio, actionMap: actions),
         if (value == DataModelType.service)
           ServiceRemoteRepository(dio, actionMap: actions),
+        if (value == DataModelType.userAction)
+          UserActionRemoteRepository(dio, actionMap: actions),
       ]);
     }
 
@@ -336,7 +345,9 @@ class Constants {
     SyncServiceSingleton().setRegistries(SyncServiceRegistry());
     SyncServiceSingleton().registries?.registerSyncRegistries({
       DataModelType.complaints: (remote) => CustomSyncRegistry(remote),
+      DataModelType.userAction: (remote) => CustomSyncRegistry(remote),
     });
+    TransitPostSingleton().setTenantId(envConfig.variables.tenantId);
     SurveyFormSingleton().setTenantId(envConfig.variables.tenantId);
     AttendanceSingleton().setTenantId(envConfig.variables.tenantId);
     InventorySingleton().setTenantId(tenantId: envConfig.variables.tenantId);

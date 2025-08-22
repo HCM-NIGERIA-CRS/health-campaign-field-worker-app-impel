@@ -8,9 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:registration_delivery/blocs/app_localization.dart';
 import 'package:registration_delivery/registration_delivery.dart';
 import 'package:registration_delivery/utils/utils.dart';
+
+import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
+import 'package:registration_delivery/utils/utils.dart';
 import 'package:registration_delivery/widgets/table_card/table_card.dart';
-import '../../../utils/i18_key_constants.dart' as i18;
-import '../../../utils/utils.dart';
+
+import '../../utils/utils.dart';
 
 // This function builds a table with the given data and headers
 Widget buildTableContentSMC(
@@ -48,15 +51,6 @@ Widget buildTableContentSMC(
       RegistrationDeliverySingleton().projectType!;
   final item =
       projectType.cycles?[currentCycle - 1].deliveries?[currentDose - 1];
-  final productVariants =
-      fetchProductVariant(item, individualModel, householdModel)
-          ?.productVariants;
-  final numRows = productVariants?.length ?? 0;
-  const rowHeight = 84;
-  const paddingHeight = (spacer2 * 2);
-  final containerHeight = (numRows + 1) * rowHeight + (paddingHeight * 2);
-  const columnWidth = spacer10 * 3;
-  const cellHeight = spacer10;
 
   return Container(
     padding: const EdgeInsets.only(
@@ -78,20 +72,26 @@ Widget buildTableContentSMC(
             element: {
               localizations.translate(
                 i18.beneficiaryDetails.beneficiaryAge,
-              ): fetchProductVariant(item, individualModel, householdModel)
-                          ?.condition !=
+              ): getProductVariant(item, individualModel, householdModel,
+                              context)['criteria']
+                          .condition !=
                       null
-                  ? customFormatAgeRange(fetchProductVariant(
-                          item, individualModel, householdModel)!
-                      .condition!)
+                  ? localizations.translate(customFormatAgeRange(
+                      getProductVariant(item, individualModel, householdModel,
+                              context)!['criteria']
+                          .condition!))
                   : null,
             },
           ),
         ),
         const DigitDivider(),
+        const SizedBox(
+          height: spacer4,
+        ),
         // Build the DigitTable with the data
-        if (fetchProductVariant(item, individualModel, householdModel)
-                ?.productVariants !=
+        if (getProductVariant(
+                    item, individualModel, householdModel, context)['criteria']
+                .productVariants !=
             null)
           DigitTable(
             enableBorder: false,
@@ -99,10 +99,10 @@ Widget buildTableContentSMC(
             withColumnDividers: false,
             showSelectedState: false,
             showPagination: false,
-            scrollPhysics: const ClampingScrollPhysics(),
             columns: columnListResource,
             rows: [
-              ...fetchProductVariant(item, individualModel, householdModel)!
+              ...getProductVariant(item, individualModel, householdModel,
+                      context)!['criteria']
                   .productVariants!
                   .map(
                 (e) {
@@ -112,13 +112,15 @@ Widget buildTableContentSMC(
                         (element) => element.id == e.productVariantId,
                       )
                       ?.sku;
+                  final quantity = e.quantity;
 
                   return DigitTableRow(tableRow: [
                     // Display the dose information in the first column if it's the first row,
                     // otherwise, display an empty cell.
 
-                    fetchProductVariant(item, individualModel, householdModel)
-                                ?.productVariants
+                    getProductVariant(item, individualModel, householdModel,
+                                    context)['criteria']
+                                .productVariants
                                 ?.indexOf(e) ==
                             0
                         ? DigitTableData(
@@ -128,54 +130,26 @@ Widget buildTableContentSMC(
                         : DigitTableData('', cellKey: ''),
                     // Display the SKU value in the second column.
                     DigitTableData(
-                      '', // label left empty since we're using widget instead
+                      '$quantity - ${localizations.translate(value.toString())}',
                       cellKey: 'resources',
-                      widget: RichText(
-                        text: TextSpan(
-                          children: () {
-                            final translated =
-                                localizations.translate(value.toString());
-
-                            if (translated == 'SPAQ 1') {
-                              return [
-                                TextSpan(
-                                  text: translated,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.orange,
-                                  ),
-                                ),
-                              ];
-                            } else if (translated == 'SPAQ 2') {
-                              return [
-                                TextSpan(
-                                  text: translated,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ];
-                            } else {
-                              return [
-                                TextSpan(
-                                  text: translated,
-                                  style: const TextStyle(color: Colors.black),
-                                ),
-                              ];
-                            }
-                          }(),
-                        ),
-                      ),
-                    )
+                    ),
                   ]);
                 },
               ),
             ],
           )
         else
-          Text(localizations.translate(i18.common.noProjectSelected))
+          Text(localizations
+              .translate(i18.deliverIntervention.checkForProductVariantsConfig))
       ],
     ),
   );
+}
+
+getProductVariant(ProjectCycleDelivery? item, IndividualModel? individualModel,
+    HouseholdModel? householdModel, BuildContext context) {
+  var result = (fetchProductVariant(item, individualModel, householdModel,
+      context: context));
+
+  return result;
 }

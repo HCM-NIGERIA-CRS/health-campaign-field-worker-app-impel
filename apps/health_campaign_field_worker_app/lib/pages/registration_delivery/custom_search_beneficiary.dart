@@ -256,11 +256,11 @@ class _CustomSearchBeneficiaryPageState
                                             ),
                                           )
                                         : const Offstage(),
-                                  locationState.latitude != null
-                                      ? Column(
-                                          children: [
-                                            Row(children: [
-                                              Padding(
+                                  Column(
+                                    children: [
+                                      Row(children: [
+                                        locationState.latitude != null
+                                            ? Padding(
                                                 padding: const EdgeInsets.all(
                                                     spacer2),
                                                 child: DigitSwitch(
@@ -285,6 +285,8 @@ class _CustomSearchBeneficiaryPageState
                                                       isProximityEnabled =
                                                           value;
                                                       isSearchByBeneficiaryIdEnabled =
+                                                          false;
+                                                      isChildAbsentEnabled =
                                                           false;
                                                       lat = locationState
                                                           .latitude!;
@@ -312,92 +314,85 @@ class _CustomSearchBeneficiaryPageState
                                                   },
                                                 ),
                                               )
-                                            ]),
-                                            Row(
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      spacer2),
-                                                  child: DigitSwitch(
-                                                    value:
-                                                        isSearchByBeneficiaryIdEnabled,
-                                                    onChanged: (value) {
-                                                      customSearchHouseholdsBloc
-                                                          .add(
-                                                        const SearchHouseholdsClearEvent(),
-                                                      );
-                                                      searchController.clear();
-                                                      context
-                                                          .read<
-                                                              IndividualGlobalSearchSMCBloc>()
-                                                          .add(const searchHouseholdSMCBloc
-                                                              .SearchHouseholdsSMCEvent.clear());
-                                                      setState(() {
-                                                        isSearchByBeneficiaryIdEnabled =
-                                                            value;
-                                                        isProximityEnabled =
-                                                            false;
-                                                        searchController
-                                                            .clear();
-                                                        blocWrapper
-                                                            .clearEvent();
-                                                      });
-                                                    },
-                                                  ),
-                                                ),
-                                                Text(
-                                                  localizations.translate(i18_local
-                                                      .individualDetails
-                                                      .beneficiarySearchTextLabel),
-                                                ),
-                                              ],
+                                            : const Offstage()
+                                      ]),
+                                      Row(
+                                        children: [
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.all(spacer2),
+                                            child: DigitSwitch(
+                                              value:
+                                                  isSearchByBeneficiaryIdEnabled,
+                                              onChanged: (value) {
+                                                customSearchHouseholdsBloc.add(
+                                                  const SearchHouseholdsClearEvent(),
+                                                );
+                                                searchController.clear();
+                                                context
+                                                    .read<
+                                                        IndividualGlobalSearchSMCBloc>()
+                                                    .add(const searchHouseholdSMCBloc
+                                                        .SearchHouseholdsSMCEvent.clear());
+                                                setState(() {
+                                                  isSearchByBeneficiaryIdEnabled =
+                                                      value;
+                                                  isProximityEnabled = false;
+                                                  isChildAbsentEnabled = false;
+                                                  searchController.clear();
+                                                  blocWrapper.clearEvent();
+                                                });
+                                              },
                                             ),
-                                            Row(
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      spacer2),
-                                                  child: DigitSwitch(
-                                                    value: isChildAbsentEnabled,
-                                                    onChanged: (value) {
-                                                      customSearchHouseholdsBloc
-                                                          .add(
-                                                        const SearchHouseholdsClearEvent(),
-                                                      );
-                                                      searchController.clear();
-                                                      context
-                                                          .read<
-                                                              IndividualGlobalSearchSMCBloc>()
-                                                          .add(const searchHouseholdSMCBloc
-                                                              .SearchHouseholdsSMCEvent.clear());
-                                                      setState(() {
-                                                        isChildAbsentEnabled =
-                                                            value;
-                                                        isProximityEnabled =
-                                                            false;
-                                                        searchController
-                                                            .clear();
-                                                        blocWrapper
-                                                            .clearEvent();
-                                                      });
+                                          ),
+                                          Text(
+                                            localizations.translate(i18_local
+                                                .individualDetails
+                                                .beneficiarySearchTextLabel),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.all(spacer2),
+                                            child: DigitSwitch(
+                                              value: isChildAbsentEnabled,
+                                              onChanged: (value) {
+                                                customSearchHouseholdsBloc.add(
+                                                  const SearchHouseholdsClearEvent(),
+                                                );
+                                                searchController.clear();
+                                                context
+                                                    .read<
+                                                        IndividualGlobalSearchSMCBloc>()
+                                                    .add(const searchHouseholdSMCBloc
+                                                        .SearchHouseholdsSMCEvent.clear());
+                                                setState(() {
+                                                  isChildAbsentEnabled = value;
+                                                  isProximityEnabled = false;
+                                                  isSearchByBeneficiaryIdEnabled =
+                                                      false;
+                                                  searchController.clear();
+                                                  blocWrapper.clearEvent();
+                                                });
 
-                                                      if (isChildAbsentEnabled) {
-                                                        searchAbsentChild();
-                                                      }
-                                                    },
-                                                  ),
-                                                ),
-                                                Text(
-                                                  localizations.translate(
-                                                      i18_local
-                                                          .individualDetails
-                                                          .absentSearchTextLabel),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        )
-                                      : const Offstage(),
+                                                if (isChildAbsentEnabled) {
+                                                  searchAbsentChild();
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                          Text(
+                                            localizations.translate(i18_local
+                                                .individualDetails
+                                                .absentSearchTextLabel),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                   selectedFilters.isNotEmpty
                                       ? Align(
                                           alignment: Alignment.topLeft,
@@ -625,7 +620,7 @@ class _CustomSearchBeneficiaryPageState
                                 return Container(
                                   margin:
                                       const EdgeInsets.only(bottom: kPadding),
-                                  child: ViewBeneficiaryCard(
+                                  child: CustomViewBeneficiaryCard(
                                     householdMember: i,
                                     onOpenPressed: () async {
                                       final scannerBloc =
@@ -730,7 +725,7 @@ class _CustomSearchBeneficiaryPageState
                                 return Container(
                                   margin:
                                       const EdgeInsets.only(bottom: kPadding),
-                                  child: ViewBeneficiaryCard(
+                                  child: CustomViewBeneficiaryCard(
                                     householdMember: i,
                                     onOpenPressed: () async {
                                       final scannerBloc =

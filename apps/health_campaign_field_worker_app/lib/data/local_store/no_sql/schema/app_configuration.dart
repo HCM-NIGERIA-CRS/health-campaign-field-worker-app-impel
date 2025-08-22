@@ -81,9 +81,14 @@ class AppConfiguration {
   @Name('BENEFICIARY_ID_CONFIG')
   late List<BeneficiaryIdConfig>? beneficiaryIdConfig;
 
+  @Name('TRANSIT_POST_TYPE')
+  late List<TransitPostType>? transitPostType;
+
   late List<ReferralReasons>? referralReasons;
   late List<HouseStructureTypes>? houseStructureTypes;
   late List<RefusalReasons>? refusalReasons;
+  @Name('NON_COMPLIANCE_REASONS')
+  late List<NonComplianceReasons>? nonComplianceReasons;
   late PrivacyPolicy? privacyPolicyConfig;
 }
 
@@ -113,6 +118,12 @@ class IdTypeOptions {
 
 @embedded
 class DeliveryCommentOptions {
+  late String name;
+  late String code;
+}
+
+@embedded
+class NonComplianceReasons {
   late String name;
   late String code;
 }
@@ -155,6 +166,13 @@ class TransportTypes {
 class ComplaintTypes {
   late String name;
   late String code;
+}
+
+@embedded
+class TransitPostType {
+  late String name;
+  late String code;
+  late bool active;
 }
 
 @embedded

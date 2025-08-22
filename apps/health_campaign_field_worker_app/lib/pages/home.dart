@@ -43,6 +43,7 @@ import 'package:survey_form/models/entities/service.dart';
 import 'package:survey_form/router/survey_form_router.gm.dart';
 import 'package:survey_form/utils/utils.dart';
 import 'package:sync_service/blocs/sync/sync.dart';
+import 'package:transit_post/utils/utils.dart';
 
 import '../blocs/app_initialization/app_initialization.dart';
 import '../blocs/auth/auth.dart';
@@ -609,10 +610,10 @@ class _HomePageState extends LocalizedState<HomePage> {
 
     final homeItemsLabel = <String>[
       // INFO: Need to add items label of package Here
+      i18.home.dailyImplementationPlanLabel,
+      i18.home.campaignDeliverySelection,
       i18.home.mySurveyForm,
-
       i18.home.manageAttendanceLabel,
-
       i18.home.beneficiaryReferralLabel,
       // i18.home.beneficiaryLabel,
       i18.home.manageStockLabel,
@@ -621,11 +622,9 @@ class _HomePageState extends LocalizedState<HomePage> {
       i18.home.viewSummaryReportsLabel,
       i18.home.syncDataLabel,
       i18.home.fileComplaint,
-      i18.home.dailyImplementationPlanLabel,
-      i18.home.campaignDeliverySelection,
+      i18.home.beneficiaryIdLabel,
       i18.home.db,
       i18.home.dashboard,
-      i18.home.beneficiaryIdLabel,
     ];
 
     final List<String> filteredLabels = homeItemsLabel
@@ -698,8 +697,8 @@ class _HomePageState extends LocalizedState<HomePage> {
 
                 context.read<
                     LocalRepository<IndividualModel, IndividualSearchModel>>(),
-                // context.read<
-                //     LocalRepository<UserActionModel, UserActionSearchModel>>(),
+                context.read<
+                    LocalRepository<UserActionModel, UserActionSearchModel>>(),
               ],
               remoteRepositories: [
                 // INFO : Need to add repo repo of package Here
@@ -737,8 +736,8 @@ class _HomePageState extends LocalizedState<HomePage> {
                 context.read<
                     RemoteRepository<PgrServiceModel, PgrServiceSearchModel>>(),
 
-                // context.read<
-                //     RemoteRepository<UserActionModel, UserActionSearchModel>>(),
+                context.read<
+                    RemoteRepository<UserActionModel, UserActionSearchModel>>(),
               ],
             ),
           );
@@ -867,29 +866,6 @@ void setPackagesSingleton(BuildContext context) {
           loggedInUser: context.loggedInUserModel,
         );
 
-        InventorySingleton().setInitialData(
-          isWareHouseMgr: context.loggedInUserRoles
-              .where(
-                  (role) => role.code == RolesType.warehouseManager.toValue())
-              .toList()
-              .isNotEmpty,
-          isDistributor: context.loggedInUserRoles
-              .where(
-                (role) =>
-                    role.code == RolesType.distributor.toValue() ||
-                    role.code == RolesType.communityDistributor.toValue(),
-              )
-              .toList()
-              .isNotEmpty,
-          projectId: context.projectId,
-          loggedInUserUuid: context.loggedInUserUuid,
-          transportTypes: appConfiguration.transportTypes
-              ?.map((e) => InventoryTransportTypes()
-                ..name = e.code
-                ..code = e.code)
-              .toList(),
-        );
-
         DashboardSingleton().setInitialData(
             projectId: context.projectId,
             tenantId: envConfig.variables.tenantId,
@@ -940,19 +916,17 @@ void setPackagesSingleton(BuildContext context) {
           userName: context.loggedInUser.name ?? '',
         );
         ComplaintsSingleton().setBoundary(boundary: context.boundary);
-        SurveyFormSingleton().setInitialData(
-          projectId: context.projectId,
-          projectName: context.selectedProject.name,
-          loggedInIndividualId: context.loggedInIndividualId ?? '',
+
+        TransitPostSingleton().setInitialData(
+          resources: context.selectedProjectType?.resources,
+          transitPostType: appConfiguration.transitPostType
+                  ?.map((element) => element.code)
+                  .toList() ??
+              [],
           loggedInUserUuid: context.loggedInUserUuid,
-          appVersion: Constants().version,
-          roles: context.read<AuthBloc>().state.maybeMap(
-              orElse: () => const Offstage(),
-              authenticated: (res) {
-                return res.userModel.roles
-                    .map((e) => e.code.snakeCase.toUpperCase())
-                    .toList();
-              }),
+          projectId: context.selectedProject.id,
+          minAge: context.selectedProjectType?.validMinAge,
+          maxAge: context.selectedProjectType?.validMaxAge,
         );
       });
 }

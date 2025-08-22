@@ -262,19 +262,8 @@ class CustomIndividualDetailsPageState
                         (router.parent() as StackRouter).maybePop();
 
                         if (individualCaptured != null) {
-                          // info get the relevant project beneficiary here
-                          final projectBeneficiaryAddMember =
-                              householdMemberWrapper
-                                  .projectBeneficiaries
-                                  ?.where((e) =>
-                                      e.beneficiaryClientReferenceId ==
-                                      individualCaptured!.clientReferenceId)
-                                  .toSet();
-
                           // assumption add individual here is used for creating child,
                           //if invalid age send to overview no checklist
-                          List<IndividualModel> householdMembers =
-                              householdMemberWrapper.members ?? [];
                           if (verifyIfChildAgeValid(
                               context, individualCaptured!)) {
                             router.push(
@@ -287,6 +276,12 @@ class CustomIndividualDetailsPageState
                                         EligibilityAssessmentType.smc,
                                   )
                                 ],
+                              ),
+                            );
+                          } else {
+                            router.push(
+                              BeneficiaryWrapperRoute(
+                                wrapper: householdMemberWrapper,
                               ),
                             );
                           }
@@ -344,6 +339,41 @@ class CustomIndividualDetailsPageState
                                       size: DigitButtonSize.large,
                                       mainAxisSize: MainAxisSize.max,
                                       onPressed: () async {
+                                        final age =
+                                            form.control(_dobKey).value == null
+                                                ? DigitDOBAgeConvertor(
+                                                    years: 0,
+                                                    months: 0,
+                                                    days: 0)
+                                                : DigitDateUtils.calculateAge(
+                                                    form.control(_dobKey).value
+                                                        as DateTime,
+                                                  );
+                                        if ((age.years == 0 &&
+                                                age.months == 0) ||
+                                            age.years >= 150 &&
+                                                age.months > 0) {
+                                          form
+                                              .control(_dobKey)
+                                              .setErrors({'': true});
+                                        }
+
+                                        if (age.years < 18 &&
+                                            widget.isHeadOfHousehold) {
+                                          await DigitToast.show(
+                                            context,
+                                            options: DigitToastOptions(
+                                              localizations.translate(i18_local
+                                                  .individualDetails
+                                                  .headAgeValidError),
+                                              true,
+                                              theme,
+                                            ),
+                                          );
+
+                                          return;
+                                        }
+
                                         final submit = await showDialog(
                                           context: context,
                                           builder: (ctx) => Popup(
@@ -1097,7 +1127,9 @@ class CustomIndividualDetailsPageState
               )
             : null,
       ),
-      _genderKey: FormControl<String>(value: getGenderOptions(individual)),
+      _genderKey: FormControl<String>(
+          value: getGenderOptions(individual),
+          validators: [Validators.required]),
       _mobileNumberKey:
           FormControl<String>(value: individual?.mobileNumber, validators: [
         Validators.delegate((validator) =>
