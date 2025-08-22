@@ -140,7 +140,7 @@ class CustomDistributionSummaryReportBloc extends Bloc<
 
     for (var stock in receivedStocks) {
       var dateKey = DigitDateUtils.getDateFromTimestamp(
-        stock.dateOfEntry ?? DateTime.now().millisecondsSinceEpoch,
+        stock.dateOfEntry ?? stock.clientAuditDetails!.createdTime,
       ); // Replace 'date' with the actual field name in your data model.
       final quantity = double.parse(stock.quantity ??
           '0'); // Replace 'quantity' with the actual field name.
