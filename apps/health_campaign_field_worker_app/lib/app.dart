@@ -1,6 +1,4 @@
-import 'package:attendance_management/models/entities/attendance_log.dart';
 import 'package:attendance_management/attendance_management.dart';
-import 'package:attendance_management/models/entities/attendance_register.dart';
 import 'package:digit_components/theme/theme.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_dss/digit_dss.dart';
@@ -22,7 +20,7 @@ import 'package:survey_form/survey_form.dart';
 import 'blocs/app_initialization/app_initialization.dart';
 import 'blocs/auth/auth.dart';
 import 'blocs/compliance/consent_household.dart';
-import 'blocs/dailyImplementationPlan/register_daily_plan.dart';
+import 'blocs/daily_implementation_plan/register_daily_plan.dart';
 import 'blocs/inventory_management/stock_bloc.dart';
 import 'blocs/localization/localization.dart';
 import 'blocs/project/project.dart';
@@ -454,8 +452,8 @@ class MainApplicationState extends State<MainApplication>
                         BlocProvider(
                           create: (ctx) => RegisterDailyPlanBloc(
                             const RegisterDailyPlanCreateState(),
-                            taskDataRepository: context
-                                .repository<TaskModel, TaskSearchModel>(),
+                            // taskDataRepository: context
+                            //     .repository<TaskModel, TaskSearchModel>(),
                           ),
                         ),
                         BlocProvider(

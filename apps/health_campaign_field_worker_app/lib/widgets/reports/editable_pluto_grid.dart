@@ -17,28 +17,28 @@ class EditableDigitGrid extends StatelessWidget {
     final theme = Theme.of(context);
 
     return PlutoGrid(
-      mode: PlutoGridMode.multiSelect,
+      // mode: PlutoGridMode.multiSelect,
       noRowsWidget: const Center(child: Text('No data found')),
       configuration: PlutoGridConfiguration(
-        scrollbar: const PlutoGridScrollbarConfig(
-          isAlwaysShown: true,
-        ),
-        columnSize: const PlutoGridColumnSizeConfig(
-          resizeMode: PlutoResizeMode.none,
-          restoreAutoSizeAfterFrozenColumn: true,
-        ),
-        style: PlutoGridStyleConfig(
-          gridBorderColor: const DigitColors().light.genericBackground,
-          oddRowColor: const DigitColors().light.genericBackground,
-          borderColor: const DigitColors().light.genericBackground,
-          iconColor: Colors.transparent,
-          evenRowColor: Colors.transparent,
-          activatedColor: theme.colorTheme.primary.primary1.withOpacity(0.2),
-          activatedBorderColor:
-              theme.colorTheme.primary.primary1.withOpacity(0.8),
-          enableRowColorAnimation: true,
-        ),
-      ),
+          // scrollbar: const PlutoGridScrollbarConfig(
+          //   isAlwaysShown: true,
+          // ),
+          // columnSize: const PlutoGridColumnSizeConfig(
+          //   resizeMode: PlutoResizeMode.none,
+          //   restoreAutoSizeAfterFrozenColumn: true,
+          // ),
+          // style: PlutoGridStyleConfig(
+          //   gridBorderColor: const DigitColors().light.genericBackground,
+          //   oddRowColor: const DigitColors().light.genericBackground,
+          //   borderColor: const DigitColors().light.genericBackground,
+          //   iconColor: Colors.transparent,
+          //   evenRowColor: Colors.transparent,
+          //   activatedColor: theme.colorTheme.primary.primary1.withOpacity(0.2),
+          //   activatedBorderColor:
+          //       theme.colorTheme.primary.primary1.withOpacity(0.8),
+          //   enableRowColorAnimation: true,
+          // ),
+          ),
       columns: [
         ...data.columns.mapIndexed(
           (index, element) {
@@ -48,19 +48,19 @@ class EditableDigitGrid extends StatelessWidget {
               title: element.label,
               field: element.key,
               type: element.type ?? PlutoColumnType.text(),
-              enableContextMenu: false,
-              enableColumnDrag: false,
+              // enableContextMenu: false,
+              // enableColumnDrag: false,
               width: element.width,
-              cellPadding: first ? EdgeInsets.zero : null,
-              frozen: first ? PlutoColumnFrozen.start : PlutoColumnFrozen.none,
-              renderer: first
-                  ? (rendererContext) => Container(
-                        color: Colors.white,
-                        child: Center(
-                          child: Text(rendererContext.cell.value.toString()),
-                        ),
-                      )
-                  : null,
+              // cellPadding: first ? EdgeInsets.zero : null,
+              // frozen: first ? PlutoColumnFrozen.start : PlutoColumnFrozen.none,
+              // renderer: first
+              //     ? (rendererContext) => Container(
+              //           color: Colors.white,
+              //           child: Center(
+              //             child: Text(rendererContext.cell.value.toString()),
+              //           ),
+              //         )
+              //     : null,
             );
           },
         ),

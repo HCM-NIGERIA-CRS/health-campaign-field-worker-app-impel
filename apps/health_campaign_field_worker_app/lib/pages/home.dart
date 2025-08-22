@@ -970,7 +970,7 @@ void showDIPFLowDialog(
             children: [
               GestureDetector(
                 onTap: () {
-                  context.router.push(SelectBoundaryRoute());
+                  context.router.push(SelectSettlementsRoute());
 
                   Navigator.of(context).pop();
                 },

@@ -761,21 +761,21 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
-    SelectBoundaryRoute.name: (routeData) {
-      final args = routeData.argsAs<SelectBoundaryRouteArgs>(
-          orElse: () => const SelectBoundaryRouteArgs());
+    SelectSettlementsDateRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: SelectBoundaryPage(
-          key: args.key,
-          appLocalizations: args.appLocalizations,
-        ),
+        child: const SelectSettlementsDatePage(),
       );
     },
     SelectSettlementsRoute.name: (routeData) {
+      final args = routeData.argsAs<SelectSettlementsRouteArgs>(
+          orElse: () => const SelectSettlementsRouteArgs());
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const SelectSettlementsPage(),
+        child: SelectSettlementsPage(
+          key: args.key,
+          appLocalizations: args.appLocalizations,
+        ),
       );
     },
     UnauthenticatedRouteWrapper.name: (routeData) {
@@ -3606,29 +3606,43 @@ class RecordRedoseRouteArgs {
 }
 
 /// generated route for
-/// [SelectBoundaryPage]
-class SelectBoundaryRoute extends PageRouteInfo<SelectBoundaryRouteArgs> {
-  SelectBoundaryRoute({
+/// [SelectSettlementsDatePage]
+class SelectSettlementsDateRoute extends PageRouteInfo<void> {
+  const SelectSettlementsDateRoute({List<PageRouteInfo>? children})
+      : super(
+          SelectSettlementsDateRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'SelectSettlementsDateRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [SelectSettlementsPage]
+class SelectSettlementsRoute extends PageRouteInfo<SelectSettlementsRouteArgs> {
+  SelectSettlementsRoute({
     Key? key,
     InventoryLocalization? appLocalizations,
     List<PageRouteInfo>? children,
   }) : super(
-          SelectBoundaryRoute.name,
-          args: SelectBoundaryRouteArgs(
+          SelectSettlementsRoute.name,
+          args: SelectSettlementsRouteArgs(
             key: key,
             appLocalizations: appLocalizations,
           ),
           initialChildren: children,
         );
 
-  static const String name = 'SelectBoundaryRoute';
+  static const String name = 'SelectSettlementsRoute';
 
-  static const PageInfo<SelectBoundaryRouteArgs> page =
-      PageInfo<SelectBoundaryRouteArgs>(name);
+  static const PageInfo<SelectSettlementsRouteArgs> page =
+      PageInfo<SelectSettlementsRouteArgs>(name);
 }
 
-class SelectBoundaryRouteArgs {
-  const SelectBoundaryRouteArgs({
+class SelectSettlementsRouteArgs {
+  const SelectSettlementsRouteArgs({
     this.key,
     this.appLocalizations,
   });
@@ -3639,22 +3653,8 @@ class SelectBoundaryRouteArgs {
 
   @override
   String toString() {
-    return 'SelectBoundaryRouteArgs{key: $key, appLocalizations: $appLocalizations}';
+    return 'SelectSettlementsRouteArgs{key: $key, appLocalizations: $appLocalizations}';
   }
-}
-
-/// generated route for
-/// [SelectSettlementsPage]
-class SelectSettlementsRoute extends PageRouteInfo<void> {
-  const SelectSettlementsRoute({List<PageRouteInfo>? children})
-      : super(
-          SelectSettlementsRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'SelectSettlementsRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for
