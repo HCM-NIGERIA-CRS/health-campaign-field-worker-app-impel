@@ -3,6 +3,7 @@ import 'package:attendance_management/attendance_management.dart';
 import 'package:attendance_management/models/entities/attendance_register.dart';
 import 'package:digit_components/theme/theme.dart';
 import 'package:digit_data_model/data_model.dart';
+import 'package:digit_data_model/models/entities/user_action.dart';
 import 'package:digit_dss/digit_dss.dart';
 import 'package:digit_scanner/blocs/scanner.dart';
 import 'package:digit_ui_components/services/location_bloc.dart';
@@ -18,6 +19,8 @@ import 'package:registration_delivery/data/repositories/local/household_global_s
 import 'package:registration_delivery/data/repositories/local/individual_global_search.dart';
 import 'package:registration_delivery/registration_delivery.dart';
 import 'package:survey_form/survey_form.dart';
+import 'package:transit_post/data/repositories/local/user_action.dart';
+import 'package:transit_post/data/repositories/oplog/oplog.dart';
 
 import 'blocs/app_initialization/app_initialization.dart';
 import 'blocs/auth/auth.dart';
@@ -29,10 +32,13 @@ import 'blocs/project/project.dart';
 import 'blocs/search/individual_global_search_smc.dart';
 import 'blocs/search/search_households_smc.dart';
 import 'blocs/summary_report/custom_distribution_summary_report.dart';
+import 'blocs/transit_post/custom_transit_post.dart';
+import 'blocs/transit_post/fixed_post.dart';
 import 'data/local_store/app_shared_preferences.dart';
 import 'data/network_manager.dart';
 import 'data/remote_client.dart';
 import 'data/repositories/local/search/individual_global_search_smc.dart';
+import 'data/repositories/local/transit_post/custom_user_action.dart';
 import 'data/repositories/remote/bandwidth_check.dart';
 import 'data/repositories/remote/localization.dart';
 import 'data/repositories/remote/mdms.dart';
@@ -94,6 +100,12 @@ class MainApplicationState extends State<MainApplication>
           create: (context) => IndividualGlobalSearchSMCRepository(
             widget.sql,
             IndividualOpLogManager(widget.isar),
+          ),
+        ),
+        RepositoryProvider<CustomUserActionLocalRepository>(
+          create: (context) => CustomUserActionLocalRepository(
+            widget.sql,
+            UserActionOpLogManager(widget.isar),
           ),
         ),
       ],
@@ -451,6 +463,34 @@ class MainApplicationState extends State<MainApplication>
                                 ProjectFacilitySearchModel>(),
                           ),
                         ),
+                        // BlocProvider(
+                        //   create: (_) {
+                        //     return CustomTransitPostBloc(
+                        //       const CustomTransitPostState(),
+                        //       customUserActionLocalRepository: context
+                        //           .read<CustomUserActionLocalRepository>(),
+                        //       userActionLocalRepository:
+                        //           context.read<UserActionLocalRepository>(),
+                        //       userActionRemoteRepository: context.repository<
+                        //           UserActionModel, UserActionSearchModel>(),
+                        //     );
+                        //   },
+                        //   lazy: false,
+                        // ),
+                        // BlocProvider(
+                        //   create: (_) {
+                        //     return FixedPostBloc(
+                        //       const FixedPostState(),
+                        //       userActionLocalRepository:
+                        //           context.read<UserActionLocalRepository>(),
+                        //       customUserActionLocalRepository: context
+                        //           .read<CustomUserActionLocalRepository>(),
+                        //       userActionRemoteRepository: context.repository<
+                        //           UserActionModel, UserActionSearchModel>(),
+                        //     );
+                        //   },
+                        //   lazy: false,
+                        // ),
                         BlocProvider(
                           create: (ctx) => RegisterDailyPlanBloc(
                             const RegisterDailyPlanCreateState(),

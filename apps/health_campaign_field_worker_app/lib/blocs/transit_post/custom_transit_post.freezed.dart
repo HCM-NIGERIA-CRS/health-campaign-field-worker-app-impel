@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'fixed_post.dart';
+part of 'custom_transit_post.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -15,15 +15,15 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$FixedPostEvent {
+mixin _$CustomTransitPostEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
             double latitude,
             double longitude,
             double locationAccuracy,
-            String? fixedPostType,
-            String? fixedPostName)
+            String? transitPostType,
+            String? transitPostName)
         handleSelection,
     required TResult Function(
             double latitude,
@@ -44,8 +44,8 @@ mixin _$FixedPostEvent {
             double latitude,
             double longitude,
             double locationAccuracy,
-            String? fixedPostType,
-            String? fixedPostName)?
+            String? transitPostType,
+            String? transitPostName)?
         handleSelection,
     TResult? Function(
             double latitude,
@@ -63,7 +63,7 @@ mixin _$FixedPostEvent {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(double latitude, double longitude, double locationAccuracy,
-            String? fixedPostType, String? fixedPostName)?
+            String? transitPostType, String? transitPostName)?
         handleSelection,
     TResult Function(
             double latitude,
@@ -81,40 +81,45 @@ mixin _$FixedPostEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(FixedPostSelectionEvent value) handleSelection,
-    required TResult Function(FixedPostDeliveryEvent value) handleDelivery,
-    required TResult Function(FixedPostDeliveryCountEvent value)
+    required TResult Function(CustomTransitPostSelectionEvent value)
+        handleSelection,
+    required TResult Function(CustomTransitPostDeliveryEvent value)
+        handleDelivery,
+    required TResult Function(CustomTransitPostDeliveryCountEvent value)
         handleDeliveryCount,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(FixedPostSelectionEvent value)? handleSelection,
-    TResult? Function(FixedPostDeliveryEvent value)? handleDelivery,
-    TResult? Function(FixedPostDeliveryCountEvent value)? handleDeliveryCount,
+    TResult? Function(CustomTransitPostSelectionEvent value)? handleSelection,
+    TResult? Function(CustomTransitPostDeliveryEvent value)? handleDelivery,
+    TResult? Function(CustomTransitPostDeliveryCountEvent value)?
+        handleDeliveryCount,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(FixedPostSelectionEvent value)? handleSelection,
-    TResult Function(FixedPostDeliveryEvent value)? handleDelivery,
-    TResult Function(FixedPostDeliveryCountEvent value)? handleDeliveryCount,
+    TResult Function(CustomTransitPostSelectionEvent value)? handleSelection,
+    TResult Function(CustomTransitPostDeliveryEvent value)? handleDelivery,
+    TResult Function(CustomTransitPostDeliveryCountEvent value)?
+        handleDeliveryCount,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $FixedPostEventCopyWith<$Res> {
-  factory $FixedPostEventCopyWith(
-          FixedPostEvent value, $Res Function(FixedPostEvent) then) =
-      _$FixedPostEventCopyWithImpl<$Res, FixedPostEvent>;
+abstract class $CustomTransitPostEventCopyWith<$Res> {
+  factory $CustomTransitPostEventCopyWith(CustomTransitPostEvent value,
+          $Res Function(CustomTransitPostEvent) then) =
+      _$CustomTransitPostEventCopyWithImpl<$Res, CustomTransitPostEvent>;
 }
 
 /// @nodoc
-class _$FixedPostEventCopyWithImpl<$Res, $Val extends FixedPostEvent>
-    implements $FixedPostEventCopyWith<$Res> {
-  _$FixedPostEventCopyWithImpl(this._value, this._then);
+class _$CustomTransitPostEventCopyWithImpl<$Res,
+        $Val extends CustomTransitPostEvent>
+    implements $CustomTransitPostEventCopyWith<$Res> {
+  _$CustomTransitPostEventCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -123,27 +128,28 @@ class _$FixedPostEventCopyWithImpl<$Res, $Val extends FixedPostEvent>
 }
 
 /// @nodoc
-abstract class _$$FixedPostSelectionEventImplCopyWith<$Res> {
-  factory _$$FixedPostSelectionEventImplCopyWith(
-          _$FixedPostSelectionEventImpl value,
-          $Res Function(_$FixedPostSelectionEventImpl) then) =
-      __$$FixedPostSelectionEventImplCopyWithImpl<$Res>;
+abstract class _$$CustomTransitPostSelectionEventImplCopyWith<$Res> {
+  factory _$$CustomTransitPostSelectionEventImplCopyWith(
+          _$CustomTransitPostSelectionEventImpl value,
+          $Res Function(_$CustomTransitPostSelectionEventImpl) then) =
+      __$$CustomTransitPostSelectionEventImplCopyWithImpl<$Res>;
   @useResult
   $Res call(
       {double latitude,
       double longitude,
       double locationAccuracy,
-      String? fixedPostType,
-      String? fixedPostName});
+      String? transitPostType,
+      String? transitPostName});
 }
 
 /// @nodoc
-class __$$FixedPostSelectionEventImplCopyWithImpl<$Res>
-    extends _$FixedPostEventCopyWithImpl<$Res, _$FixedPostSelectionEventImpl>
-    implements _$$FixedPostSelectionEventImplCopyWith<$Res> {
-  __$$FixedPostSelectionEventImplCopyWithImpl(
-      _$FixedPostSelectionEventImpl _value,
-      $Res Function(_$FixedPostSelectionEventImpl) _then)
+class __$$CustomTransitPostSelectionEventImplCopyWithImpl<$Res>
+    extends _$CustomTransitPostEventCopyWithImpl<$Res,
+        _$CustomTransitPostSelectionEventImpl>
+    implements _$$CustomTransitPostSelectionEventImplCopyWith<$Res> {
+  __$$CustomTransitPostSelectionEventImplCopyWithImpl(
+      _$CustomTransitPostSelectionEventImpl _value,
+      $Res Function(_$CustomTransitPostSelectionEventImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -152,10 +158,10 @@ class __$$FixedPostSelectionEventImplCopyWithImpl<$Res>
     Object? latitude = null,
     Object? longitude = null,
     Object? locationAccuracy = null,
-    Object? fixedPostType = freezed,
-    Object? fixedPostName = freezed,
+    Object? transitPostType = freezed,
+    Object? transitPostName = freezed,
   }) {
-    return _then(_$FixedPostSelectionEventImpl(
+    return _then(_$CustomTransitPostSelectionEventImpl(
       latitude: null == latitude
           ? _value.latitude
           : latitude // ignore: cast_nullable_to_non_nullable
@@ -168,13 +174,13 @@ class __$$FixedPostSelectionEventImplCopyWithImpl<$Res>
           ? _value.locationAccuracy
           : locationAccuracy // ignore: cast_nullable_to_non_nullable
               as double,
-      fixedPostType: freezed == fixedPostType
-          ? _value.fixedPostType
-          : fixedPostType // ignore: cast_nullable_to_non_nullable
+      transitPostType: freezed == transitPostType
+          ? _value.transitPostType
+          : transitPostType // ignore: cast_nullable_to_non_nullable
               as String?,
-      fixedPostName: freezed == fixedPostName
-          ? _value.fixedPostName
-          : fixedPostName // ignore: cast_nullable_to_non_nullable
+      transitPostName: freezed == transitPostName
+          ? _value.transitPostName
+          : transitPostName // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }
@@ -182,13 +188,14 @@ class __$$FixedPostSelectionEventImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$FixedPostSelectionEventImpl implements FixedPostSelectionEvent {
-  const _$FixedPostSelectionEventImpl(
+class _$CustomTransitPostSelectionEventImpl
+    implements CustomTransitPostSelectionEvent {
+  const _$CustomTransitPostSelectionEventImpl(
       {this.latitude = 0,
       this.longitude = 0,
       this.locationAccuracy = 0,
-      this.fixedPostType,
-      this.fixedPostName});
+      this.transitPostType,
+      this.transitPostName});
 
   @override
   @JsonKey()
@@ -200,42 +207,43 @@ class _$FixedPostSelectionEventImpl implements FixedPostSelectionEvent {
   @JsonKey()
   final double locationAccuracy;
   @override
-  final String? fixedPostType;
+  final String? transitPostType;
   @override
-  final String? fixedPostName;
+  final String? transitPostName;
 
   @override
   String toString() {
-    return 'FixedPostEvent.handleSelection(latitude: $latitude, longitude: $longitude, locationAccuracy: $locationAccuracy, fixedPostType: $fixedPostType, fixedPostName: $fixedPostName)';
+    return 'CustomTransitPostEvent.handleSelection(latitude: $latitude, longitude: $longitude, locationAccuracy: $locationAccuracy, transitPostType: $transitPostType, transitPostName: $transitPostName)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$FixedPostSelectionEventImpl &&
+            other is _$CustomTransitPostSelectionEventImpl &&
             (identical(other.latitude, latitude) ||
                 other.latitude == latitude) &&
             (identical(other.longitude, longitude) ||
                 other.longitude == longitude) &&
             (identical(other.locationAccuracy, locationAccuracy) ||
                 other.locationAccuracy == locationAccuracy) &&
-            (identical(other.fixedPostType, fixedPostType) ||
-                other.fixedPostType == fixedPostType) &&
-            (identical(other.fixedPostName, fixedPostName) ||
-                other.fixedPostName == fixedPostName));
+            (identical(other.transitPostType, transitPostType) ||
+                other.transitPostType == transitPostType) &&
+            (identical(other.transitPostName, transitPostName) ||
+                other.transitPostName == transitPostName));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, latitude, longitude,
-      locationAccuracy, fixedPostType, fixedPostName);
+      locationAccuracy, transitPostType, transitPostName);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$FixedPostSelectionEventImplCopyWith<_$FixedPostSelectionEventImpl>
-      get copyWith => __$$FixedPostSelectionEventImplCopyWithImpl<
-          _$FixedPostSelectionEventImpl>(this, _$identity);
+  _$$CustomTransitPostSelectionEventImplCopyWith<
+          _$CustomTransitPostSelectionEventImpl>
+      get copyWith => __$$CustomTransitPostSelectionEventImplCopyWithImpl<
+          _$CustomTransitPostSelectionEventImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -244,8 +252,8 @@ class _$FixedPostSelectionEventImpl implements FixedPostSelectionEvent {
             double latitude,
             double longitude,
             double locationAccuracy,
-            String? fixedPostType,
-            String? fixedPostName)
+            String? transitPostType,
+            String? transitPostName)
         handleSelection,
     required TResult Function(
             double latitude,
@@ -259,8 +267,8 @@ class _$FixedPostSelectionEventImpl implements FixedPostSelectionEvent {
     required TResult Function(int curCount, int totalCount, String? action)
         handleDeliveryCount,
   }) {
-    return handleSelection(
-        latitude, longitude, locationAccuracy, fixedPostType, fixedPostName);
+    return handleSelection(latitude, longitude, locationAccuracy,
+        transitPostType, transitPostName);
   }
 
   @override
@@ -270,8 +278,8 @@ class _$FixedPostSelectionEventImpl implements FixedPostSelectionEvent {
             double latitude,
             double longitude,
             double locationAccuracy,
-            String? fixedPostType,
-            String? fixedPostName)?
+            String? transitPostType,
+            String? transitPostName)?
         handleSelection,
     TResult? Function(
             double latitude,
@@ -285,15 +293,15 @@ class _$FixedPostSelectionEventImpl implements FixedPostSelectionEvent {
     TResult? Function(int curCount, int totalCount, String? action)?
         handleDeliveryCount,
   }) {
-    return handleSelection?.call(
-        latitude, longitude, locationAccuracy, fixedPostType, fixedPostName);
+    return handleSelection?.call(latitude, longitude, locationAccuracy,
+        transitPostType, transitPostName);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(double latitude, double longitude, double locationAccuracy,
-            String? fixedPostType, String? fixedPostName)?
+            String? transitPostType, String? transitPostName)?
         handleSelection,
     TResult Function(
             double latitude,
@@ -309,8 +317,8 @@ class _$FixedPostSelectionEventImpl implements FixedPostSelectionEvent {
     required TResult orElse(),
   }) {
     if (handleSelection != null) {
-      return handleSelection(
-          latitude, longitude, locationAccuracy, fixedPostType, fixedPostName);
+      return handleSelection(latitude, longitude, locationAccuracy,
+          transitPostType, transitPostName);
     }
     return orElse();
   }
@@ -318,9 +326,11 @@ class _$FixedPostSelectionEventImpl implements FixedPostSelectionEvent {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(FixedPostSelectionEvent value) handleSelection,
-    required TResult Function(FixedPostDeliveryEvent value) handleDelivery,
-    required TResult Function(FixedPostDeliveryCountEvent value)
+    required TResult Function(CustomTransitPostSelectionEvent value)
+        handleSelection,
+    required TResult Function(CustomTransitPostDeliveryEvent value)
+        handleDelivery,
+    required TResult Function(CustomTransitPostDeliveryCountEvent value)
         handleDeliveryCount,
   }) {
     return handleSelection(this);
@@ -329,9 +339,10 @@ class _$FixedPostSelectionEventImpl implements FixedPostSelectionEvent {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(FixedPostSelectionEvent value)? handleSelection,
-    TResult? Function(FixedPostDeliveryEvent value)? handleDelivery,
-    TResult? Function(FixedPostDeliveryCountEvent value)? handleDeliveryCount,
+    TResult? Function(CustomTransitPostSelectionEvent value)? handleSelection,
+    TResult? Function(CustomTransitPostDeliveryEvent value)? handleDelivery,
+    TResult? Function(CustomTransitPostDeliveryCountEvent value)?
+        handleDeliveryCount,
   }) {
     return handleSelection?.call(this);
   }
@@ -339,9 +350,10 @@ class _$FixedPostSelectionEventImpl implements FixedPostSelectionEvent {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(FixedPostSelectionEvent value)? handleSelection,
-    TResult Function(FixedPostDeliveryEvent value)? handleDelivery,
-    TResult Function(FixedPostDeliveryCountEvent value)? handleDeliveryCount,
+    TResult Function(CustomTransitPostSelectionEvent value)? handleSelection,
+    TResult Function(CustomTransitPostDeliveryEvent value)? handleDelivery,
+    TResult Function(CustomTransitPostDeliveryCountEvent value)?
+        handleDeliveryCount,
     required TResult orElse(),
   }) {
     if (handleSelection != null) {
@@ -351,30 +363,32 @@ class _$FixedPostSelectionEventImpl implements FixedPostSelectionEvent {
   }
 }
 
-abstract class FixedPostSelectionEvent implements FixedPostEvent {
-  const factory FixedPostSelectionEvent(
+abstract class CustomTransitPostSelectionEvent
+    implements CustomTransitPostEvent {
+  const factory CustomTransitPostSelectionEvent(
       {final double latitude,
       final double longitude,
       final double locationAccuracy,
-      final String? fixedPostType,
-      final String? fixedPostName}) = _$FixedPostSelectionEventImpl;
+      final String? transitPostType,
+      final String? transitPostName}) = _$CustomTransitPostSelectionEventImpl;
 
   double get latitude;
   double get longitude;
   double get locationAccuracy;
-  String? get fixedPostType;
-  String? get fixedPostName;
+  String? get transitPostType;
+  String? get transitPostName;
   @JsonKey(ignore: true)
-  _$$FixedPostSelectionEventImplCopyWith<_$FixedPostSelectionEventImpl>
+  _$$CustomTransitPostSelectionEventImplCopyWith<
+          _$CustomTransitPostSelectionEventImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$FixedPostDeliveryEventImplCopyWith<$Res> {
-  factory _$$FixedPostDeliveryEventImplCopyWith(
-          _$FixedPostDeliveryEventImpl value,
-          $Res Function(_$FixedPostDeliveryEventImpl) then) =
-      __$$FixedPostDeliveryEventImplCopyWithImpl<$Res>;
+abstract class _$$CustomTransitPostDeliveryEventImplCopyWith<$Res> {
+  factory _$$CustomTransitPostDeliveryEventImplCopyWith(
+          _$CustomTransitPostDeliveryEventImpl value,
+          $Res Function(_$CustomTransitPostDeliveryEventImpl) then) =
+      __$$CustomTransitPostDeliveryEventImplCopyWithImpl<$Res>;
   @useResult
   $Res call(
       {double latitude,
@@ -387,12 +401,13 @@ abstract class _$$FixedPostDeliveryEventImplCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$FixedPostDeliveryEventImplCopyWithImpl<$Res>
-    extends _$FixedPostEventCopyWithImpl<$Res, _$FixedPostDeliveryEventImpl>
-    implements _$$FixedPostDeliveryEventImplCopyWith<$Res> {
-  __$$FixedPostDeliveryEventImplCopyWithImpl(
-      _$FixedPostDeliveryEventImpl _value,
-      $Res Function(_$FixedPostDeliveryEventImpl) _then)
+class __$$CustomTransitPostDeliveryEventImplCopyWithImpl<$Res>
+    extends _$CustomTransitPostEventCopyWithImpl<$Res,
+        _$CustomTransitPostDeliveryEventImpl>
+    implements _$$CustomTransitPostDeliveryEventImplCopyWith<$Res> {
+  __$$CustomTransitPostDeliveryEventImplCopyWithImpl(
+      _$CustomTransitPostDeliveryEventImpl _value,
+      $Res Function(_$CustomTransitPostDeliveryEventImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -406,7 +421,7 @@ class __$$FixedPostDeliveryEventImplCopyWithImpl<$Res>
     Object? curCount = freezed,
     Object? totalCount = freezed,
   }) {
-    return _then(_$FixedPostDeliveryEventImpl(
+    return _then(_$CustomTransitPostDeliveryEventImpl(
       latitude: null == latitude
           ? _value.latitude
           : latitude // ignore: cast_nullable_to_non_nullable
@@ -441,8 +456,9 @@ class __$$FixedPostDeliveryEventImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$FixedPostDeliveryEventImpl implements FixedPostDeliveryEvent {
-  const _$FixedPostDeliveryEventImpl(
+class _$CustomTransitPostDeliveryEventImpl
+    implements CustomTransitPostDeliveryEvent {
+  const _$CustomTransitPostDeliveryEventImpl(
       {this.latitude = 0,
       this.longitude = 0,
       this.locationAccuracy = 0,
@@ -471,14 +487,14 @@ class _$FixedPostDeliveryEventImpl implements FixedPostDeliveryEvent {
 
   @override
   String toString() {
-    return 'FixedPostEvent.handleDelivery(latitude: $latitude, longitude: $longitude, locationAccuracy: $locationAccuracy, scannedResource: $scannedResource, action: $action, curCount: $curCount, totalCount: $totalCount)';
+    return 'CustomTransitPostEvent.handleDelivery(latitude: $latitude, longitude: $longitude, locationAccuracy: $locationAccuracy, scannedResource: $scannedResource, action: $action, curCount: $curCount, totalCount: $totalCount)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$FixedPostDeliveryEventImpl &&
+            other is _$CustomTransitPostDeliveryEventImpl &&
             (identical(other.latitude, latitude) ||
                 other.latitude == latitude) &&
             (identical(other.longitude, longitude) ||
@@ -501,9 +517,10 @@ class _$FixedPostDeliveryEventImpl implements FixedPostDeliveryEvent {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$FixedPostDeliveryEventImplCopyWith<_$FixedPostDeliveryEventImpl>
-      get copyWith => __$$FixedPostDeliveryEventImplCopyWithImpl<
-          _$FixedPostDeliveryEventImpl>(this, _$identity);
+  _$$CustomTransitPostDeliveryEventImplCopyWith<
+          _$CustomTransitPostDeliveryEventImpl>
+      get copyWith => __$$CustomTransitPostDeliveryEventImplCopyWithImpl<
+          _$CustomTransitPostDeliveryEventImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -512,8 +529,8 @@ class _$FixedPostDeliveryEventImpl implements FixedPostDeliveryEvent {
             double latitude,
             double longitude,
             double locationAccuracy,
-            String? fixedPostType,
-            String? fixedPostName)
+            String? transitPostType,
+            String? transitPostName)
         handleSelection,
     required TResult Function(
             double latitude,
@@ -538,8 +555,8 @@ class _$FixedPostDeliveryEventImpl implements FixedPostDeliveryEvent {
             double latitude,
             double longitude,
             double locationAccuracy,
-            String? fixedPostType,
-            String? fixedPostName)?
+            String? transitPostType,
+            String? transitPostName)?
         handleSelection,
     TResult? Function(
             double latitude,
@@ -561,7 +578,7 @@ class _$FixedPostDeliveryEventImpl implements FixedPostDeliveryEvent {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(double latitude, double longitude, double locationAccuracy,
-            String? fixedPostType, String? fixedPostName)?
+            String? transitPostType, String? transitPostName)?
         handleSelection,
     TResult Function(
             double latitude,
@@ -586,9 +603,11 @@ class _$FixedPostDeliveryEventImpl implements FixedPostDeliveryEvent {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(FixedPostSelectionEvent value) handleSelection,
-    required TResult Function(FixedPostDeliveryEvent value) handleDelivery,
-    required TResult Function(FixedPostDeliveryCountEvent value)
+    required TResult Function(CustomTransitPostSelectionEvent value)
+        handleSelection,
+    required TResult Function(CustomTransitPostDeliveryEvent value)
+        handleDelivery,
+    required TResult Function(CustomTransitPostDeliveryCountEvent value)
         handleDeliveryCount,
   }) {
     return handleDelivery(this);
@@ -597,9 +616,10 @@ class _$FixedPostDeliveryEventImpl implements FixedPostDeliveryEvent {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(FixedPostSelectionEvent value)? handleSelection,
-    TResult? Function(FixedPostDeliveryEvent value)? handleDelivery,
-    TResult? Function(FixedPostDeliveryCountEvent value)? handleDeliveryCount,
+    TResult? Function(CustomTransitPostSelectionEvent value)? handleSelection,
+    TResult? Function(CustomTransitPostDeliveryEvent value)? handleDelivery,
+    TResult? Function(CustomTransitPostDeliveryCountEvent value)?
+        handleDeliveryCount,
   }) {
     return handleDelivery?.call(this);
   }
@@ -607,9 +627,10 @@ class _$FixedPostDeliveryEventImpl implements FixedPostDeliveryEvent {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(FixedPostSelectionEvent value)? handleSelection,
-    TResult Function(FixedPostDeliveryEvent value)? handleDelivery,
-    TResult Function(FixedPostDeliveryCountEvent value)? handleDeliveryCount,
+    TResult Function(CustomTransitPostSelectionEvent value)? handleSelection,
+    TResult Function(CustomTransitPostDeliveryEvent value)? handleDelivery,
+    TResult Function(CustomTransitPostDeliveryCountEvent value)?
+        handleDeliveryCount,
     required TResult orElse(),
   }) {
     if (handleDelivery != null) {
@@ -619,15 +640,16 @@ class _$FixedPostDeliveryEventImpl implements FixedPostDeliveryEvent {
   }
 }
 
-abstract class FixedPostDeliveryEvent implements FixedPostEvent {
-  const factory FixedPostDeliveryEvent(
+abstract class CustomTransitPostDeliveryEvent
+    implements CustomTransitPostEvent {
+  const factory CustomTransitPostDeliveryEvent(
       {final double latitude,
       final double longitude,
       final double locationAccuracy,
       final String? scannedResource,
       final String? action,
       final int? curCount,
-      final int? totalCount}) = _$FixedPostDeliveryEventImpl;
+      final int? totalCount}) = _$CustomTransitPostDeliveryEventImpl;
 
   double get latitude;
   double get longitude;
@@ -637,28 +659,29 @@ abstract class FixedPostDeliveryEvent implements FixedPostEvent {
   int? get curCount;
   int? get totalCount;
   @JsonKey(ignore: true)
-  _$$FixedPostDeliveryEventImplCopyWith<_$FixedPostDeliveryEventImpl>
+  _$$CustomTransitPostDeliveryEventImplCopyWith<
+          _$CustomTransitPostDeliveryEventImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$FixedPostDeliveryCountEventImplCopyWith<$Res> {
-  factory _$$FixedPostDeliveryCountEventImplCopyWith(
-          _$FixedPostDeliveryCountEventImpl value,
-          $Res Function(_$FixedPostDeliveryCountEventImpl) then) =
-      __$$FixedPostDeliveryCountEventImplCopyWithImpl<$Res>;
+abstract class _$$CustomTransitPostDeliveryCountEventImplCopyWith<$Res> {
+  factory _$$CustomTransitPostDeliveryCountEventImplCopyWith(
+          _$CustomTransitPostDeliveryCountEventImpl value,
+          $Res Function(_$CustomTransitPostDeliveryCountEventImpl) then) =
+      __$$CustomTransitPostDeliveryCountEventImplCopyWithImpl<$Res>;
   @useResult
   $Res call({int curCount, int totalCount, String? action});
 }
 
 /// @nodoc
-class __$$FixedPostDeliveryCountEventImplCopyWithImpl<$Res>
-    extends _$FixedPostEventCopyWithImpl<$Res,
-        _$FixedPostDeliveryCountEventImpl>
-    implements _$$FixedPostDeliveryCountEventImplCopyWith<$Res> {
-  __$$FixedPostDeliveryCountEventImplCopyWithImpl(
-      _$FixedPostDeliveryCountEventImpl _value,
-      $Res Function(_$FixedPostDeliveryCountEventImpl) _then)
+class __$$CustomTransitPostDeliveryCountEventImplCopyWithImpl<$Res>
+    extends _$CustomTransitPostEventCopyWithImpl<$Res,
+        _$CustomTransitPostDeliveryCountEventImpl>
+    implements _$$CustomTransitPostDeliveryCountEventImplCopyWith<$Res> {
+  __$$CustomTransitPostDeliveryCountEventImplCopyWithImpl(
+      _$CustomTransitPostDeliveryCountEventImpl _value,
+      $Res Function(_$CustomTransitPostDeliveryCountEventImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -668,7 +691,7 @@ class __$$FixedPostDeliveryCountEventImplCopyWithImpl<$Res>
     Object? totalCount = null,
     Object? action = freezed,
   }) {
-    return _then(_$FixedPostDeliveryCountEventImpl(
+    return _then(_$CustomTransitPostDeliveryCountEventImpl(
       curCount: null == curCount
           ? _value.curCount
           : curCount // ignore: cast_nullable_to_non_nullable
@@ -687,8 +710,9 @@ class __$$FixedPostDeliveryCountEventImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$FixedPostDeliveryCountEventImpl implements FixedPostDeliveryCountEvent {
-  const _$FixedPostDeliveryCountEventImpl(
+class _$CustomTransitPostDeliveryCountEventImpl
+    implements CustomTransitPostDeliveryCountEvent {
+  const _$CustomTransitPostDeliveryCountEventImpl(
       {this.curCount = 0, this.totalCount = 0, this.action});
 
   @override
@@ -702,14 +726,14 @@ class _$FixedPostDeliveryCountEventImpl implements FixedPostDeliveryCountEvent {
 
   @override
   String toString() {
-    return 'FixedPostEvent.handleDeliveryCount(curCount: $curCount, totalCount: $totalCount, action: $action)';
+    return 'CustomTransitPostEvent.handleDeliveryCount(curCount: $curCount, totalCount: $totalCount, action: $action)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$FixedPostDeliveryCountEventImpl &&
+            other is _$CustomTransitPostDeliveryCountEventImpl &&
             (identical(other.curCount, curCount) ||
                 other.curCount == curCount) &&
             (identical(other.totalCount, totalCount) ||
@@ -723,9 +747,10 @@ class _$FixedPostDeliveryCountEventImpl implements FixedPostDeliveryCountEvent {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$FixedPostDeliveryCountEventImplCopyWith<_$FixedPostDeliveryCountEventImpl>
-      get copyWith => __$$FixedPostDeliveryCountEventImplCopyWithImpl<
-          _$FixedPostDeliveryCountEventImpl>(this, _$identity);
+  _$$CustomTransitPostDeliveryCountEventImplCopyWith<
+          _$CustomTransitPostDeliveryCountEventImpl>
+      get copyWith => __$$CustomTransitPostDeliveryCountEventImplCopyWithImpl<
+          _$CustomTransitPostDeliveryCountEventImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -734,8 +759,8 @@ class _$FixedPostDeliveryCountEventImpl implements FixedPostDeliveryCountEvent {
             double latitude,
             double longitude,
             double locationAccuracy,
-            String? fixedPostType,
-            String? fixedPostName)
+            String? transitPostType,
+            String? transitPostName)
         handleSelection,
     required TResult Function(
             double latitude,
@@ -759,8 +784,8 @@ class _$FixedPostDeliveryCountEventImpl implements FixedPostDeliveryCountEvent {
             double latitude,
             double longitude,
             double locationAccuracy,
-            String? fixedPostType,
-            String? fixedPostName)?
+            String? transitPostType,
+            String? transitPostName)?
         handleSelection,
     TResult? Function(
             double latitude,
@@ -781,7 +806,7 @@ class _$FixedPostDeliveryCountEventImpl implements FixedPostDeliveryCountEvent {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(double latitude, double longitude, double locationAccuracy,
-            String? fixedPostType, String? fixedPostName)?
+            String? transitPostType, String? transitPostName)?
         handleSelection,
     TResult Function(
             double latitude,
@@ -805,9 +830,11 @@ class _$FixedPostDeliveryCountEventImpl implements FixedPostDeliveryCountEvent {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(FixedPostSelectionEvent value) handleSelection,
-    required TResult Function(FixedPostDeliveryEvent value) handleDelivery,
-    required TResult Function(FixedPostDeliveryCountEvent value)
+    required TResult Function(CustomTransitPostSelectionEvent value)
+        handleSelection,
+    required TResult Function(CustomTransitPostDeliveryEvent value)
+        handleDelivery,
+    required TResult Function(CustomTransitPostDeliveryCountEvent value)
         handleDeliveryCount,
   }) {
     return handleDeliveryCount(this);
@@ -816,9 +843,10 @@ class _$FixedPostDeliveryCountEventImpl implements FixedPostDeliveryCountEvent {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(FixedPostSelectionEvent value)? handleSelection,
-    TResult? Function(FixedPostDeliveryEvent value)? handleDelivery,
-    TResult? Function(FixedPostDeliveryCountEvent value)? handleDeliveryCount,
+    TResult? Function(CustomTransitPostSelectionEvent value)? handleSelection,
+    TResult? Function(CustomTransitPostDeliveryEvent value)? handleDelivery,
+    TResult? Function(CustomTransitPostDeliveryCountEvent value)?
+        handleDeliveryCount,
   }) {
     return handleDeliveryCount?.call(this);
   }
@@ -826,9 +854,10 @@ class _$FixedPostDeliveryCountEventImpl implements FixedPostDeliveryCountEvent {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(FixedPostSelectionEvent value)? handleSelection,
-    TResult Function(FixedPostDeliveryEvent value)? handleDelivery,
-    TResult Function(FixedPostDeliveryCountEvent value)? handleDeliveryCount,
+    TResult Function(CustomTransitPostSelectionEvent value)? handleSelection,
+    TResult Function(CustomTransitPostDeliveryEvent value)? handleDelivery,
+    TResult Function(CustomTransitPostDeliveryCountEvent value)?
+        handleDeliveryCount,
     required TResult orElse(),
   }) {
     if (handleDeliveryCount != null) {
@@ -838,57 +867,60 @@ class _$FixedPostDeliveryCountEventImpl implements FixedPostDeliveryCountEvent {
   }
 }
 
-abstract class FixedPostDeliveryCountEvent implements FixedPostEvent {
-  const factory FixedPostDeliveryCountEvent(
+abstract class CustomTransitPostDeliveryCountEvent
+    implements CustomTransitPostEvent {
+  const factory CustomTransitPostDeliveryCountEvent(
       {final int curCount,
       final int totalCount,
-      final String? action}) = _$FixedPostDeliveryCountEventImpl;
+      final String? action}) = _$CustomTransitPostDeliveryCountEventImpl;
 
   int get curCount;
   int get totalCount;
   String? get action;
   @JsonKey(ignore: true)
-  _$$FixedPostDeliveryCountEventImplCopyWith<_$FixedPostDeliveryCountEventImpl>
+  _$$CustomTransitPostDeliveryCountEventImplCopyWith<
+          _$CustomTransitPostDeliveryCountEventImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-mixin _$FixedPostState {
+mixin _$CustomTransitPostState {
   dynamic get loading => throw _privateConstructorUsedError;
   double get latitude => throw _privateConstructorUsedError;
   double get longitude => throw _privateConstructorUsedError;
   double get locationAccuracy => throw _privateConstructorUsedError;
-  String? get fixedPostType => throw _privateConstructorUsedError;
-  String? get fixedPostName => throw _privateConstructorUsedError;
+  String? get transitPostType => throw _privateConstructorUsedError;
+  String? get transitPostName => throw _privateConstructorUsedError;
   int? get curCount => throw _privateConstructorUsedError;
   int? get totalCount => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $FixedPostStateCopyWith<FixedPostState> get copyWith =>
+  $CustomTransitPostStateCopyWith<CustomTransitPostState> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $FixedPostStateCopyWith<$Res> {
-  factory $FixedPostStateCopyWith(
-          FixedPostState value, $Res Function(FixedPostState) then) =
-      _$FixedPostStateCopyWithImpl<$Res, FixedPostState>;
+abstract class $CustomTransitPostStateCopyWith<$Res> {
+  factory $CustomTransitPostStateCopyWith(CustomTransitPostState value,
+          $Res Function(CustomTransitPostState) then) =
+      _$CustomTransitPostStateCopyWithImpl<$Res, CustomTransitPostState>;
   @useResult
   $Res call(
       {dynamic loading,
       double latitude,
       double longitude,
       double locationAccuracy,
-      String? fixedPostType,
-      String? fixedPostName,
+      String? transitPostType,
+      String? transitPostName,
       int? curCount,
       int? totalCount});
 }
 
 /// @nodoc
-class _$FixedPostStateCopyWithImpl<$Res, $Val extends FixedPostState>
-    implements $FixedPostStateCopyWith<$Res> {
-  _$FixedPostStateCopyWithImpl(this._value, this._then);
+class _$CustomTransitPostStateCopyWithImpl<$Res,
+        $Val extends CustomTransitPostState>
+    implements $CustomTransitPostStateCopyWith<$Res> {
+  _$CustomTransitPostStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -902,8 +934,8 @@ class _$FixedPostStateCopyWithImpl<$Res, $Val extends FixedPostState>
     Object? latitude = null,
     Object? longitude = null,
     Object? locationAccuracy = null,
-    Object? fixedPostType = freezed,
-    Object? fixedPostName = freezed,
+    Object? transitPostType = freezed,
+    Object? transitPostName = freezed,
     Object? curCount = freezed,
     Object? totalCount = freezed,
   }) {
@@ -924,13 +956,13 @@ class _$FixedPostStateCopyWithImpl<$Res, $Val extends FixedPostState>
           ? _value.locationAccuracy
           : locationAccuracy // ignore: cast_nullable_to_non_nullable
               as double,
-      fixedPostType: freezed == fixedPostType
-          ? _value.fixedPostType
-          : fixedPostType // ignore: cast_nullable_to_non_nullable
+      transitPostType: freezed == transitPostType
+          ? _value.transitPostType
+          : transitPostType // ignore: cast_nullable_to_non_nullable
               as String?,
-      fixedPostName: freezed == fixedPostName
-          ? _value.fixedPostName
-          : fixedPostName // ignore: cast_nullable_to_non_nullable
+      transitPostName: freezed == transitPostName
+          ? _value.transitPostName
+          : transitPostName // ignore: cast_nullable_to_non_nullable
               as String?,
       curCount: freezed == curCount
           ? _value.curCount
@@ -945,11 +977,12 @@ class _$FixedPostStateCopyWithImpl<$Res, $Val extends FixedPostState>
 }
 
 /// @nodoc
-abstract class _$$FixedPostStateImplCopyWith<$Res>
-    implements $FixedPostStateCopyWith<$Res> {
-  factory _$$FixedPostStateImplCopyWith(_$FixedPostStateImpl value,
-          $Res Function(_$FixedPostStateImpl) then) =
-      __$$FixedPostStateImplCopyWithImpl<$Res>;
+abstract class _$$CustomTransitPostStateImplCopyWith<$Res>
+    implements $CustomTransitPostStateCopyWith<$Res> {
+  factory _$$CustomTransitPostStateImplCopyWith(
+          _$CustomTransitPostStateImpl value,
+          $Res Function(_$CustomTransitPostStateImpl) then) =
+      __$$CustomTransitPostStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -957,18 +990,20 @@ abstract class _$$FixedPostStateImplCopyWith<$Res>
       double latitude,
       double longitude,
       double locationAccuracy,
-      String? fixedPostType,
-      String? fixedPostName,
+      String? transitPostType,
+      String? transitPostName,
       int? curCount,
       int? totalCount});
 }
 
 /// @nodoc
-class __$$FixedPostStateImplCopyWithImpl<$Res>
-    extends _$FixedPostStateCopyWithImpl<$Res, _$FixedPostStateImpl>
-    implements _$$FixedPostStateImplCopyWith<$Res> {
-  __$$FixedPostStateImplCopyWithImpl(
-      _$FixedPostStateImpl _value, $Res Function(_$FixedPostStateImpl) _then)
+class __$$CustomTransitPostStateImplCopyWithImpl<$Res>
+    extends _$CustomTransitPostStateCopyWithImpl<$Res,
+        _$CustomTransitPostStateImpl>
+    implements _$$CustomTransitPostStateImplCopyWith<$Res> {
+  __$$CustomTransitPostStateImplCopyWithImpl(
+      _$CustomTransitPostStateImpl _value,
+      $Res Function(_$CustomTransitPostStateImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -978,12 +1013,12 @@ class __$$FixedPostStateImplCopyWithImpl<$Res>
     Object? latitude = null,
     Object? longitude = null,
     Object? locationAccuracy = null,
-    Object? fixedPostType = freezed,
-    Object? fixedPostName = freezed,
+    Object? transitPostType = freezed,
+    Object? transitPostName = freezed,
     Object? curCount = freezed,
     Object? totalCount = freezed,
   }) {
-    return _then(_$FixedPostStateImpl(
+    return _then(_$CustomTransitPostStateImpl(
       loading: freezed == loading ? _value.loading! : loading,
       latitude: null == latitude
           ? _value.latitude
@@ -997,13 +1032,13 @@ class __$$FixedPostStateImplCopyWithImpl<$Res>
           ? _value.locationAccuracy
           : locationAccuracy // ignore: cast_nullable_to_non_nullable
               as double,
-      fixedPostType: freezed == fixedPostType
-          ? _value.fixedPostType
-          : fixedPostType // ignore: cast_nullable_to_non_nullable
+      transitPostType: freezed == transitPostType
+          ? _value.transitPostType
+          : transitPostType // ignore: cast_nullable_to_non_nullable
               as String?,
-      fixedPostName: freezed == fixedPostName
-          ? _value.fixedPostName
-          : fixedPostName // ignore: cast_nullable_to_non_nullable
+      transitPostName: freezed == transitPostName
+          ? _value.transitPostName
+          : transitPostName // ignore: cast_nullable_to_non_nullable
               as String?,
       curCount: freezed == curCount
           ? _value.curCount
@@ -1019,14 +1054,14 @@ class __$$FixedPostStateImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$FixedPostStateImpl implements _FixedPostState {
-  const _$FixedPostStateImpl(
+class _$CustomTransitPostStateImpl implements _CustomTransitPostState {
+  const _$CustomTransitPostStateImpl(
       {this.loading = false,
       this.latitude = 0,
       this.longitude = 0,
       this.locationAccuracy = 0,
-      this.fixedPostType,
-      this.fixedPostName,
+      this.transitPostType,
+      this.transitPostName,
       this.curCount,
       this.totalCount});
 
@@ -1043,9 +1078,9 @@ class _$FixedPostStateImpl implements _FixedPostState {
   @JsonKey()
   final double locationAccuracy;
   @override
-  final String? fixedPostType;
+  final String? transitPostType;
   @override
-  final String? fixedPostName;
+  final String? transitPostName;
   @override
   final int? curCount;
   @override
@@ -1053,14 +1088,14 @@ class _$FixedPostStateImpl implements _FixedPostState {
 
   @override
   String toString() {
-    return 'FixedPostState(loading: $loading, latitude: $latitude, longitude: $longitude, locationAccuracy: $locationAccuracy, fixedPostType: $fixedPostType, fixedPostName: $fixedPostName, curCount: $curCount, totalCount: $totalCount)';
+    return 'CustomTransitPostState(loading: $loading, latitude: $latitude, longitude: $longitude, locationAccuracy: $locationAccuracy, transitPostType: $transitPostType, transitPostName: $transitPostName, curCount: $curCount, totalCount: $totalCount)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$FixedPostStateImpl &&
+            other is _$CustomTransitPostStateImpl &&
             const DeepCollectionEquality().equals(other.loading, loading) &&
             (identical(other.latitude, latitude) ||
                 other.latitude == latitude) &&
@@ -1068,10 +1103,10 @@ class _$FixedPostStateImpl implements _FixedPostState {
                 other.longitude == longitude) &&
             (identical(other.locationAccuracy, locationAccuracy) ||
                 other.locationAccuracy == locationAccuracy) &&
-            (identical(other.fixedPostType, fixedPostType) ||
-                other.fixedPostType == fixedPostType) &&
-            (identical(other.fixedPostName, fixedPostName) ||
-                other.fixedPostName == fixedPostName) &&
+            (identical(other.transitPostType, transitPostType) ||
+                other.transitPostType == transitPostType) &&
+            (identical(other.transitPostName, transitPostName) ||
+                other.transitPostName == transitPostName) &&
             (identical(other.curCount, curCount) ||
                 other.curCount == curCount) &&
             (identical(other.totalCount, totalCount) ||
@@ -1085,29 +1120,29 @@ class _$FixedPostStateImpl implements _FixedPostState {
       latitude,
       longitude,
       locationAccuracy,
-      fixedPostType,
-      fixedPostName,
+      transitPostType,
+      transitPostName,
       curCount,
       totalCount);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$FixedPostStateImplCopyWith<_$FixedPostStateImpl> get copyWith =>
-      __$$FixedPostStateImplCopyWithImpl<_$FixedPostStateImpl>(
-          this, _$identity);
+  _$$CustomTransitPostStateImplCopyWith<_$CustomTransitPostStateImpl>
+      get copyWith => __$$CustomTransitPostStateImplCopyWithImpl<
+          _$CustomTransitPostStateImpl>(this, _$identity);
 }
 
-abstract class _FixedPostState implements FixedPostState {
-  const factory _FixedPostState(
+abstract class _CustomTransitPostState implements CustomTransitPostState {
+  const factory _CustomTransitPostState(
       {final dynamic loading,
       final double latitude,
       final double longitude,
       final double locationAccuracy,
-      final String? fixedPostType,
-      final String? fixedPostName,
+      final String? transitPostType,
+      final String? transitPostName,
       final int? curCount,
-      final int? totalCount}) = _$FixedPostStateImpl;
+      final int? totalCount}) = _$CustomTransitPostStateImpl;
 
   @override
   dynamic get loading;
@@ -1118,15 +1153,15 @@ abstract class _FixedPostState implements FixedPostState {
   @override
   double get locationAccuracy;
   @override
-  String? get fixedPostType;
+  String? get transitPostType;
   @override
-  String? get fixedPostName;
+  String? get transitPostName;
   @override
   int? get curCount;
   @override
   int? get totalCount;
   @override
   @JsonKey(ignore: true)
-  _$$FixedPostStateImplCopyWith<_$FixedPostStateImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$CustomTransitPostStateImplCopyWith<_$CustomTransitPostStateImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }

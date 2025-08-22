@@ -37,22 +37,22 @@ import '../../widgets/showcase/showcase_wrappers.dart';
 import '../campaign_delivery_select.dart';
 
 @RoutePage()
-class CustomTransitPostRecordVaccinationPage extends LocalizedStatefulWidget {
+class CustomFixedPostRecordVaccinationPage extends LocalizedStatefulWidget {
   final String postType;
-  const CustomTransitPostRecordVaccinationPage({
+  const CustomFixedPostRecordVaccinationPage({
     super.key,
     required this.postType,
   });
 
   @override
-  State<CustomTransitPostRecordVaccinationPage> createState() =>
-      CustomTransitPostRecordVaccinationPageState();
+  State<CustomFixedPostRecordVaccinationPage> createState() =>
+      CustomFixedPostRecordVaccinationPageState();
 }
 
 enum AgeRange { nineToEleven, twelveToFiftyNine }
 
-class CustomTransitPostRecordVaccinationPageState
-    extends LocalizedState<CustomTransitPostRecordVaccinationPage> {
+class CustomFixedPostRecordVaccinationPageState
+    extends LocalizedState<CustomFixedPostRecordVaccinationPage> {
   String? ageRangeSelected;
 
   int polioBeneficiaryCount = 0;
@@ -70,8 +70,8 @@ class CustomTransitPostRecordVaccinationPageState
     final List<DigitTableRow> tableRow = buildTableData();
 
     return Scaffold(
-      body: BlocBuilder<CustomTransitPostBloc, CustomTransitPostState>(
-        builder: (context, transitPostState) {
+      body: BlocBuilder<FixedPostBloc, FixedPostState>(
+        builder: (context, fixedPostState) {
           return BlocListener<LocationBloc, LocationState>(
               listener: (context, locationState) {
                 if (locationState.accuracy != null) {
@@ -157,50 +157,8 @@ class CustomTransitPostRecordVaccinationPageState
 
                         if (submit ?? false) {
                           if (context.mounted) {
-                            // // submit polio event
-                            // context.read<CustomTransitPostBloc>().add(
-                            //     CustomTransitPostEvent.submitDelivery(
-                            //         latitude: latKey.text.isNotEmpty
-                            //             ? double.parse(latKey.text)
-                            //             : transitPostState.latitude,
-                            //         longitude: lngKey.text.isNotEmpty
-                            //             ? double.parse(lngKey.text)
-                            //             : transitPostState.longitude,
-                            //         locationAccuracy:
-                            //             accuracyKey.text.isNotEmpty
-                            //                 ? double.parse(accuracyKey.text)
-                            //                 : transitPostState.locationAccuracy,
-                            //         scannedResource: "",
-                            //         drugType: "POLIO",
-                            //         beneficiaryDelivered:
-                            //             polioBeneficiaryCount));
-
-                            // // submit measles event
-
-                            // context
-                            //     .read<CustomTransitPostBloc>()
-                            //     .add(CustomTransitPostEvent.submitDelivery(
-                            //       latitude: latKey.text.isNotEmpty
-                            //           ? double.parse(latKey.text)
-                            //           : transitPostState.latitude,
-                            //       longitude: lngKey.text.isNotEmpty
-                            //           ? double.parse(lngKey.text)
-                            //           : transitPostState.longitude,
-                            //       locationAccuracy: accuracyKey.text.isNotEmpty
-                            //           ? double.parse(accuracyKey.text)
-                            //           : transitPostState.locationAccuracy,
-                            //       scannedResource: "",
-                            //       drugType: drugType,
-                            //       beneficiaryDelivered: measlesBeneficiaryCount,
-                            //     ));
-
-                            if (widget.postType == PostType.fixed.name) {
-                              context.router.replaceAll(
-                                  [const CustomFixedPostSelectionRoute()]);
-                            } else {
-                              context.router.replaceAll(
-                                  [const CustomTransitPostSelectionRoute()]);
-                            }
+                            context.router.replaceAll(
+                                [const CustomFixedPostSelectionRoute()]);
                           }
                         }
                       },
@@ -212,12 +170,12 @@ class CustomTransitPostRecordVaccinationPageState
                 ),
                 children: [
                   DeliveryWidget(
-                      count: transitPostState.curCount ?? 0,
+                      count: fixedPostState.curCount ?? 0,
                       description: localizations.translate(
                         i18.transitPost.todayDeliveriesDescription,
                       )),
-                  BlocBuilder<CustomTransitPostBloc, CustomTransitPostState>(
-                    builder: (context, transitPostState) => DigitCard(
+                  BlocBuilder<FixedPostBloc, FixedPostState>(
+                    builder: (context, fixedPostState) => DigitCard(
                         margin: const EdgeInsets.all(spacer2),
                         children: [
                           LabelValueSummary(
@@ -238,8 +196,7 @@ class CustomTransitPostRecordVaccinationPageState
                                       label: localizations.translate(
                                           i18.transitPost.transitPostTypeLabel),
                                       value: localizations.translate(
-                                          transitPostState.transitPostType ??
-                                              '')),
+                                          fixedPostState.fixedPostType ?? '')),
                                 LabelValueItem(
                                     labelFlex: 5,
                                     label: localizations.translate(
@@ -248,7 +205,7 @@ class CustomTransitPostRecordVaccinationPageState
                                           : i18_local.transitFixedPost
                                               .fixedPostnameLabel,
                                     ),
-                                    value: transitPostState.transitPostName)
+                                    value: fixedPostState.fixedPostName)
                               ])
                         ]),
                   ),
@@ -261,21 +218,6 @@ class CustomTransitPostRecordVaccinationPageState
                         color: theme.colorTheme.text.primary,
                       ),
                     ),
-                    // if (TransitPostSingleton().minAge != null &&
-                    //     TransitPostSingleton().maxAge != null)
-                    //   LabelValueSummary(items: [
-                    //     LabelValueItem(
-                    //       labelFlex: 5,
-                    //       maxLines: 4,
-                    //       label: localizations.translate(
-                    //         i18.transitPost.beneficiaryAgeLabel,
-                    //       ),
-                    //       value:
-                    //           "${localizations.translate(i18.transitPost.beneficiaryAgeDescription)} ${TransitPostSingleton().minAge!.toString()} ${"-"} ${TransitPostSingleton().maxAge!.toString()} ${localizations.translate(
-                    //         i18_local.individualDetails.monthsHintText,
-                    //       )}",
-                    //     )
-                    //   ]),
                     SizedBox(
                       height: (tableRow.length * 70.0).toDouble().clamp(
                               100, MediaQuery.of(context).size.height * 0.5) +
@@ -342,24 +284,24 @@ class CustomTransitPostRecordVaccinationPageState
                             });
                             // setting the resource type in scanned resource
                             context
-                                .read<CustomTransitPostBloc>()
-                                .add(CustomTransitPostDeliveryEvent(
+                                .read<FixedPostBloc>()
+                                .add(FixedPostDeliveryEvent(
                                   latitude: latKey.text.isNotEmpty
                                       ? double.parse(latKey.text)
-                                      : transitPostState.latitude,
+                                      : fixedPostState.latitude,
                                   longitude: lngKey.text.isNotEmpty
                                       ? double.parse(lngKey.text)
-                                      : transitPostState.longitude,
+                                      : fixedPostState.longitude,
                                   locationAccuracy: accuracyKey.text.isNotEmpty
                                       ? double.parse(accuracyKey.text)
-                                      : transitPostState.locationAccuracy,
-                                  curCount: (transitPostState.curCount == null)
+                                      : fixedPostState.locationAccuracy,
+                                  curCount: (fixedPostState.curCount == null)
                                       ? 1
-                                      : transitPostState.curCount! + 1,
+                                      : fixedPostState.curCount! + 1,
                                   totalCount:
-                                      (transitPostState.totalCount == null)
+                                      (fixedPostState.totalCount == null)
                                           ? 1
-                                          : transitPostState.totalCount! + 1,
+                                          : fixedPostState.totalCount! + 1,
                                   scannedResource: "POLIO",
                                   action: widget.postType,
                                 ));
@@ -428,26 +370,25 @@ class CustomTransitPostRecordVaccinationPageState
 
                             // setting the resource type in scanned resource
 
-                            context.read<CustomTransitPostBloc>().add(
-                                  CustomTransitPostDeliveryEvent(
+                            context.read<FixedPostBloc>().add(
+                                  FixedPostDeliveryEvent(
                                     latitude: latKey.text.isNotEmpty
                                         ? double.parse(latKey.text)
-                                        : transitPostState.latitude,
+                                        : fixedPostState.latitude,
                                     longitude: lngKey.text.isNotEmpty
                                         ? double.parse(lngKey.text)
-                                        : transitPostState.longitude,
+                                        : fixedPostState.longitude,
                                     locationAccuracy:
                                         accuracyKey.text.isNotEmpty
                                             ? double.parse(accuracyKey.text)
-                                            : transitPostState.locationAccuracy,
-                                    curCount:
-                                        (transitPostState.curCount == null)
-                                            ? 1
-                                            : transitPostState.curCount! + 1,
+                                            : fixedPostState.locationAccuracy,
+                                    curCount: (fixedPostState.curCount == null)
+                                        ? 1
+                                        : fixedPostState.curCount! + 1,
                                     totalCount:
-                                        (transitPostState.totalCount == null)
+                                        (fixedPostState.totalCount == null)
                                             ? 1
-                                            : transitPostState.totalCount! + 1,
+                                            : fixedPostState.totalCount! + 1,
                                     scannedResource:
                                         ageRange == null || ageRange.isEmpty
                                             ? "MEASLES"

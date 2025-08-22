@@ -36,6 +36,7 @@ import '../data/network_manager.dart';
 import '../data/repositories/custom_task.dart';
 import '../data/repositories/local/inventory_management/custom_stock.dart';
 import '../data/repositories/local/registration_delivery/custom_registration_delivery.dart';
+import '../data/repositories/local/transit_post/custom_user_action.dart';
 import '../data/repositories/oplog.dart';
 import '../data/repositories/remote/auth.dart';
 import '../data/repositories/remote/downsync.dart';
@@ -204,6 +205,13 @@ class NetworkManagerProviderWrapper extends StatelessWidget {
       // INFO Need to add packages here
       RepositoryProvider<UserActionLocalRepository>(
         create: (_) => UserActionLocalRepository(
+          sql,
+          UserActionOpLogManager(isar),
+        ),
+      ),
+      RepositoryProvider<
+          LocalRepository<UserActionModel, UserActionSearchModel>>(
+        create: (_) => CustomUserActionLocalRepository(
           sql,
           UserActionOpLogManager(isar),
         ),

@@ -219,6 +219,17 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    CustomFixedPostRecordVaccinationRoute.name: (routeData) {
+      final args =
+          routeData.argsAs<CustomFixedPostRecordVaccinationRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CustomFixedPostRecordVaccinationPage(
+          key: args.key,
+          postType: args.postType,
+        ),
+      );
+    },
     CustomFixedPostSelectionRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -1622,6 +1633,45 @@ class CustomFacilitySelectionSMCRouteArgs {
   @override
   String toString() {
     return 'CustomFacilitySelectionSMCRouteArgs{key: $key, appLocalizations: $appLocalizations, facilities: $facilities}';
+  }
+}
+
+/// generated route for
+/// [CustomFixedPostRecordVaccinationPage]
+class CustomFixedPostRecordVaccinationRoute
+    extends PageRouteInfo<CustomFixedPostRecordVaccinationRouteArgs> {
+  CustomFixedPostRecordVaccinationRoute({
+    Key? key,
+    required String postType,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CustomFixedPostRecordVaccinationRoute.name,
+          args: CustomFixedPostRecordVaccinationRouteArgs(
+            key: key,
+            postType: postType,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CustomFixedPostRecordVaccinationRoute';
+
+  static const PageInfo<CustomFixedPostRecordVaccinationRouteArgs> page =
+      PageInfo<CustomFixedPostRecordVaccinationRouteArgs>(name);
+}
+
+class CustomFixedPostRecordVaccinationRouteArgs {
+  const CustomFixedPostRecordVaccinationRouteArgs({
+    this.key,
+    required this.postType,
+  });
+
+  final Key? key;
+
+  final String postType;
+
+  @override
+  String toString() {
+    return 'CustomFixedPostRecordVaccinationRouteArgs{key: $key, postType: $postType}';
   }
 }
 
