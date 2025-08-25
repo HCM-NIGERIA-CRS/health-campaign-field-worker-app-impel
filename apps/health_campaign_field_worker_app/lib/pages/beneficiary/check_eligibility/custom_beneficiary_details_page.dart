@@ -44,9 +44,11 @@ import 'custom_record_delivery_cycle.dart';
 class CustomBeneficiaryDetailsPage extends LocalizedStatefulWidget {
   final EligibilityAssessmentType eligibilityAssessmentType;
   final IndividualModel? individualSelected;
+  final bool? isRevisit;
   const CustomBeneficiaryDetailsPage({
     required this.eligibilityAssessmentType,
     this.individualSelected,
+    this.isRevisit,
     super.key,
     super.appLocalizations,
   });

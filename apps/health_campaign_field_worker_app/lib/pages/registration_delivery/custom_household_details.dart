@@ -38,9 +38,11 @@ import '../../utils/constants.dart' as local_constants;
 
 @RoutePage()
 class CustomHouseHoldDetailsPage extends LocalizedStatefulWidget {
+  final bool? isConsent;
   const CustomHouseHoldDetailsPage({
     super.key,
     super.appLocalizations,
+    this.isConsent,
   });
 
   @override

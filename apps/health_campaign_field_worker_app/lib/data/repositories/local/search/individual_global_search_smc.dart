@@ -188,6 +188,65 @@ class IndividualGlobalSearchSMCRepository extends LocalRepository {
 
         return _returnIndividualModel(results, count);
       }
+    } else if (params.isHouseNonCompliant != null) {
+      if (params.isHouseNonCompliant!) {
+        var nonCompliantHouseSearchQuery =
+            await nonCompliantHouseSearch(selectQuery, params, super.sql);
+
+        // Return empty list if no results found
+        if (nonCompliantHouseSearchQuery == null) {
+          return [];
+        } else {
+          // Get total count if offset is zero and filters are applied
+          if (params.offset == 0) {
+            count = await _getTotalCount(
+                nonCompliantHouseSearchQuery, params, super.sql);
+          }
+          await nonCompliantHouseSearchQuery.limit(params.limit ?? 50,
+              offset: params.offset ?? 0);
+
+          final results = await nonCompliantHouseSearchQuery.get();
+          var data;
+          data = results
+              .map((e) {
+                final task = e.readTableOrNull(sql.task);
+                final resources = e.readTableOrNull(sql.taskResource);
+
+                return TaskModel(
+                  id: task.id,
+                  createdBy: task.createdBy,
+                  clientReferenceId: task.clientReferenceId,
+                  rowVersion: task.rowVersion,
+                  tenantId: task.tenantId,
+                  isDeleted: task.isDeleted,
+                  projectId: task.projectId,
+                  projectBeneficiaryId: task.projectBeneficiaryId,
+                  projectBeneficiaryClientReferenceId:
+                      task.projectBeneficiaryClientReferenceId,
+                  createdDate: task.createdDate,
+                  status: task.status,
+                  resources: resources == null
+                      ? null
+                      : [
+                          TaskResourceModel(
+                            taskclientReferenceId:
+                                resources.taskclientReferenceId,
+                            clientReferenceId: resources.clientReferenceId,
+                            id: resources.id,
+                            productVariantId: resources.productVariantId,
+                            taskId: resources.taskId,
+                            deliveryComment: resources.deliveryComment,
+                            quantity: resources.quantity,
+                            rowVersion: resources.rowVersion,
+                          ),
+                        ],
+                );
+              })
+              .where((element) => element.isDeleted != true)
+              .toList();
+          return {"data": data, "total_count": count};
+        }
+      }
     } else {
       if (params.isChildAbsentEnabled != null) {
         if (params.isChildAbsentEnabled!) {
@@ -386,6 +445,18 @@ class IndividualGlobalSearchSMCRepository extends LocalRepository {
     return selectQuery;
   }
 
+  nonCompliantHouseSearch(selectQuery, GlobalSearchParametersSMC params,
+      LocalSqlDataStore sql) async {
+    var sql = super.sql;
+
+    var nonCompliantHouseSearchQuery =
+        await filterFailedTasks(selectQuery, sql, params);
+
+    selectQuery = nonCompliantHouseSearchQuery;
+
+    return selectQuery;
+  }
+
   absentSearch(selectQuery, GlobalSearchParametersSMC params,
       LocalSqlDataStore sql) async {
     var sql = super.sql;
@@ -393,6 +464,25 @@ class IndividualGlobalSearchSMCRepository extends LocalRepository {
     var absentSearchQuery = await filterAbsentTasks(selectQuery, sql, params);
 
     selectQuery = absentSearchQuery;
+
+    return selectQuery;
+  }
+
+  filterFailedTasks(
+      selectQuery, LocalSqlDataStore sql, GlobalSearchParametersSMC params) {
+    selectQuery = sql.select(sql.task).join([
+      leftOuterJoin(
+          sql.projectBeneficiary,
+          sql.projectBeneficiary.clientReferenceId
+              .equalsExp(sql.task.projectBeneficiaryClientReferenceId)),
+      leftOuterJoin(
+          sql.individual,
+          sql.individual.clientReferenceId
+              .equalsExp(sql.projectBeneficiary.beneficiaryClientReferenceId)),
+    ])
+      ..where(sql.task.status.equals(
+        Status.administeredFailed.toValue(),
+      ));
 
     return selectQuery;
   }

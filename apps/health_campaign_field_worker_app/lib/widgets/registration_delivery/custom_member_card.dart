@@ -205,8 +205,9 @@ class CustomMemberCard extends StatelessWidget {
     bool isBeneficiaryInEligibleSMC =
         checkBeneficiaryInEligibleSMC(tasks, context.selectedCycle);
 
-    if ((isNotEligibleSMC || isBeneficiaryIneligible || isBeneficiaryAbsent) &&
-        !doseStatus) return const Offstage();
+    if ((isNotEligibleSMC || isBeneficiaryIneligible) && !doseStatus) {
+      return const Offstage();
+    }
     if (isNotEligibleSMC) {
       return const Offstage();
     }
@@ -214,14 +215,16 @@ class CustomMemberCard extends StatelessWidget {
       children: [
         if (smcAssessmentPendingStatus &&
             !isBeneficiaryReferredSMC &&
-            !isBeneficiaryInEligibleSMC &&
-            !isBeneficiaryAbsent)
+            !isBeneficiaryInEligibleSMC)
           DigitElevatedButton(
             child: Center(
               child: Text(
                 localizations.translate(
-                  i18_local.householdOverView
-                      .householdOverViewSMCAssessmentActionText,
+                  isBeneficiaryAbsent
+                      ? i18_local
+                          .householdOverView.householdOverViewRevisitAbsentText
+                      : i18_local.householdOverView
+                          .householdOverViewSMCAssessmentActionText,
                 ),
                 style: textTheme.headingM.copyWith(color: Colors.white),
               ),
