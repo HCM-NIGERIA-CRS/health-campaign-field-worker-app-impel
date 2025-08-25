@@ -194,13 +194,8 @@ class CustomTransitPostRecordVaccinationPageState
                             //       beneficiaryDelivered: measlesBeneficiaryCount,
                             //     ));
 
-                            if (widget.postType == PostType.fixed.name) {
-                              context.router.replaceAll(
-                                  [const CustomFixedPostSelectionRoute()]);
-                            } else {
-                              context.router.replaceAll(
-                                  [const CustomTransitPostSelectionRoute()]);
-                            }
+                            context.router.replaceAll(
+                                [const CustomTransitPostSelectionRoute()]);
                           }
                         }
                       },
@@ -360,7 +355,6 @@ class CustomTransitPostRecordVaccinationPageState
                                       (transitPostState.totalCount == null)
                                           ? 1
                                           : transitPostState.totalCount! + 1,
-                                  scannedResource: "POLIO",
                                   action: widget.postType,
                                 ));
 
@@ -448,10 +442,6 @@ class CustomTransitPostRecordVaccinationPageState
                                         (transitPostState.totalCount == null)
                                             ? 1
                                             : transitPostState.totalCount! + 1,
-                                    scannedResource:
-                                        ageRange == null || ageRange.isEmpty
-                                            ? "MEASLES"
-                                            : "MEASLES||$ageRange",
                                     action: widget.postType,
                                   ),
                                 );

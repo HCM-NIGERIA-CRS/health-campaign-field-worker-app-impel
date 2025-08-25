@@ -73,8 +73,7 @@ Widget buildTableContentSMC(
               localizations.translate(
                 i18.beneficiaryDetails.beneficiaryAge,
               ): getProductVariant(item, individualModel, householdModel,
-                              context)['criteria']
-                          .condition !=
+                          context)['criteria'] !=
                       null
                   ? localizations.translate(customFormatAgeRange(
                       getProductVariant(item, individualModel, householdModel,
@@ -89,10 +88,13 @@ Widget buildTableContentSMC(
           height: spacer4,
         ),
         // Build the DigitTable with the data
-        if (getProductVariant(
-                    item, individualModel, householdModel, context)['criteria']
-                .productVariants !=
-            null)
+        if (getProductVariant(item, individualModel, householdModel, context)[
+                    'criteria'] !=
+                null &&
+            getProductVariant(item, individualModel, householdModel, context)[
+                        'criteria']
+                    .productVariants !=
+                null)
           DigitTable(
             enableBorder: false,
             withRowDividers: false,

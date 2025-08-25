@@ -83,7 +83,7 @@ class FixedPostBloc extends Bloc<FixedPostEvent, FixedPostState> {
           timestamp: DateTime.now().millisecondsSinceEpoch,
           projectId: TransitPostSingleton().projectId!,
           boundaryCode: TransitPostSingleton().boundary!.code!,
-          action: 'OTHER',
+          action: event.action ?? 'OTHER',
           rowVersion: 1,
           clientAuditDetails: ClientAuditDetails(
             createdBy: TransitPostSingleton().loggedInUserUuid!,

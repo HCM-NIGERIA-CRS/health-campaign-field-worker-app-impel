@@ -302,7 +302,6 @@ class CustomFixedPostRecordVaccinationPageState
                                       (fixedPostState.totalCount == null)
                                           ? 1
                                           : fixedPostState.totalCount! + 1,
-                                  scannedResource: "POLIO",
                                   action: widget.postType,
                                 ));
 
@@ -389,10 +388,6 @@ class CustomFixedPostRecordVaccinationPageState
                                         (fixedPostState.totalCount == null)
                                             ? 1
                                             : fixedPostState.totalCount! + 1,
-                                    scannedResource:
-                                        ageRange == null || ageRange.isEmpty
-                                            ? "MEASLES"
-                                            : "MEASLES||$ageRange",
                                     action: widget.postType,
                                   ),
                                 );
