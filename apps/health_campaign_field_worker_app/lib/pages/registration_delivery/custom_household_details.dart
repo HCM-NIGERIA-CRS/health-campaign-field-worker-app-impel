@@ -35,6 +35,7 @@ import '../../router/app_router.dart';
 import '../../utils/registration_delivery/registration_delivery_utils.dart';
 import 'custom_beneficiary_acknowledgement.dart';
 import '../../utils/constants.dart' as local_constants;
+import '../../models/entities/status.dart';
 
 @RoutePage()
 class CustomHouseHoldDetailsPage extends LocalizedStatefulWidget {
@@ -228,7 +229,8 @@ class CustomHouseHoldDetailsPageState
               BeneficiaryRegistrationState>(
             listener: (context, state) {
               if (state is BeneficiaryRegistrationPersistedState &&
-                  state.isEdit) {
+                  state.isEdit &&
+                  !isNoConsent) {
                 final overviewBloc = context.read<HouseholdOverviewBloc>();
 
                 overviewBloc.add(
@@ -446,6 +448,18 @@ class CustomHouseHoldDetailsPageState
                               loading,
                               isHeadOfHousehold,
                             ) async {
+                              final isNoConsentAdditionalField = householdModel
+                                  .additionalFields?.fields
+                                  .where((e) =>
+                                      e.key ==
+                                      local_constants.Constants.consentsKey)
+                                  .firstOrNull;
+                              isNoConsent = isNoConsentAdditionalField != null
+                                  ? isNoConsentAdditionalField.value
+                                      ? false
+                                      : true
+                                  : false;
+
                               var household = householdModel.copyWith(
                                   memberCount: memberCount,
                                   address: addressModel,
@@ -477,21 +491,38 @@ class CustomHouseHoldDetailsPageState
                                         //[TODO: Use pregnant women form value based on project config
                                         ...?householdModel
                                             .additionalFields?.fields
-                                            .where((e) =>
-                                                e
-                                                        .key !=
-                                                    AdditionalFieldsType
-                                                        .children
-                                                        .toValue() &&
-                                                e.key !=
-                                                    local_constants.Constants
-                                                        .childrenAFP &&
-                                                e.key !=
-                                                    local_constants.Constants
-                                                        .childrenAbsent &&
-                                                e.key !=
-                                                    local_constants
-                                                        .Constants.guineaWorm),
+                                            .where(
+                                                (e) =>
+                                                    e
+                                                            .key !=
+                                                        AdditionalFieldsType
+                                                            .children
+                                                            .toValue() &&
+                                                    e
+                                                            .key !=
+                                                        local_constants
+                                                            .Constants
+                                                            .childrenAFP &&
+                                                    e
+                                                            .key !=
+                                                        local_constants
+                                                            .Constants
+                                                            .childrenAbsent &&
+                                                    e
+                                                            .key !=
+                                                        local_constants
+                                                            .Constants
+                                                            .guineaWorm &&
+                                                    e
+                                                            .key !=
+                                                        local_constants
+                                                            .Constants
+                                                            .isNoConsentEdit),
+                                        if (isNoConsent)
+                                          const AdditionalField(
+                                              local_constants
+                                                  .Constants.isNoConsentEdit,
+                                              true),
 
                                         AdditionalField(
                                           AdditionalFieldsType.children
@@ -561,22 +592,28 @@ class CustomHouseHoldDetailsPageState
                                   ),
                                 ),
                               );
-                              await context.router.root.push(
-                                CustomBeneficiaryRegistrationWrapperRoute(
-                                  initialState:
-                                      BeneficiaryRegistrationEditIndividualState(
-                                          individualModel: individuals.first,
-                                          householdModel: household,
-                                          addressModel: addressModel,
-                                          projectBeneficiaryModel:
-                                              projectBeneficiaryModel),
-                                  children: [
-                                    CustomIndividualDetailsRoute(
-                                      isHeadOfHousehold: true,
-                                    ),
-                                  ],
-                                ),
-                              );
+                              if (isNoConsent && individuals.isNotEmpty) {
+                                await context.router.root.push(
+                                  CustomBeneficiaryRegistrationWrapperRoute(
+                                    initialState:
+                                        BeneficiaryRegistrationEditIndividualState(
+                                            individualModel: individuals.first,
+                                            householdModel: household,
+                                            addressModel: addressModel,
+                                            projectBeneficiaryModel:
+                                                projectBeneficiaryModel),
+                                    children: [
+                                      CustomIndividualDetailsRoute(
+                                        isHeadOfHousehold: true,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              } else {
+                                context.router.push(
+                                  CustomHouseholdOverviewRoute(),
+                                );
+                              }
                             },
                           );
                         },
