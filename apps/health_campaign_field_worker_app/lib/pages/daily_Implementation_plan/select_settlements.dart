@@ -5,7 +5,7 @@ import 'package:digit_ui_components/widgets/atoms/text_block.dart';
 import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../blocs/daily_implementation_plan/register_daily_plan.dart';
+import '../../blocs/daily_implementation_plan/daily_implementation_plan.dart';
 import '../../router/app_router.dart';
 import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -43,7 +43,7 @@ class SelectBoundaryPageState extends LocalizedState<SelectSettlementsPage> {
     'Settlement 5',
   ];
 
-  List<DropdownItem> initialOptions = [];
+  List<DropdownItem> selectedOptions = [];
 
   FormGroup buildForm(bool isDistributor) => fb.group(<String, Object>{
         _dateOfEntryKey: FormControl<DateTime>(value: DateTime.now()),
@@ -66,14 +66,14 @@ class SelectBoundaryPageState extends LocalizedState<SelectSettlementsPage> {
     final textTheme = theme.digitTextTheme(context);
 
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: BlocBuilder<RegisterDailyPlanBloc, RegisterDailyPlanState>(
-                builder: (context, registrationState) {
-              return ReactiveFormBuilder(
-                form: () => buildForm(true),
-                builder: (_, form, __) => ScrollableContent(
+      body: BlocBuilder<DailyImplementationPlanBloc,
+          DailyImplementationPlanState>(builder: (context, registrationState) {
+        return ReactiveFormBuilder(
+          form: () => buildForm(true),
+          builder: (_, form, __) => Column(
+            children: [
+              Expanded(
+                child: ScrollableContent(
                   // enableFixedDigitButton: true,
                   header: const Column(
                     children: [
@@ -155,8 +155,8 @@ class SelectBoundaryPageState extends LocalizedState<SelectSettlementsPage> {
                                   ),
                                   isRequired: true,
                                   child: MultiSelectDropDown(
-                                    // initialOptions: initialOptions,
-                                    selectionType: SelectionType.nestedSelect,
+                                    initialOptions: selectedOptions,
+                                    selectionType: SelectionType.defaultSelect,
                                     errorMessage: field.errorText,
                                     emptyItemText: localizations.translate(
                                       i18.common.noMatchFound,
@@ -169,7 +169,7 @@ class SelectBoundaryPageState extends LocalizedState<SelectSettlementsPage> {
                                         .toList(),
                                     onOptionSelected: (value) {
                                       setState(() {
-                                        initialOptions.addAll(value);
+                                        selectedOptions = value;
                                       });
                                     },
                                   ),
@@ -180,23 +180,38 @@ class SelectBoundaryPageState extends LocalizedState<SelectSettlementsPage> {
                     ),
                   ],
                 ),
-              );
-            }),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: DigitButton(
+                  type: DigitButtonType.primary,
+                  size: DigitButtonSize.large,
+                  mainAxisSize: MainAxisSize.max,
+                  onPressed: () {
+                    DateTime date = form.control(_dateOfEntryKey).value;
+                    String administrativeUnit =
+                        form.control(_administrativeUnitKey).value;
+                    String wfpSupervisor =
+                        form.control(_wfpSupervisorKey).value;
+                    context.read<DailyImplementationPlanBloc>().add(
+                          DailyImplementationPlanEvent.handleSelectSettlements(
+                            date: date.millisecondsSinceEpoch,
+                            administrativeUnit: administrativeUnit,
+                            wfpSupervisor: wfpSupervisor,
+                            selectedSettlements: selectedOptions
+                                .map((e) => e.name ?? '')
+                                .toList(),
+                          ),
+                        );
+                    context.router.push(const SelectSettlementsDateRoute());
+                  },
+                  label: localizations.translate(i18.common.coreCommonNext),
+                ),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: DigitButton(
-              type: DigitButtonType.primary,
-              size: DigitButtonSize.large,
-              mainAxisSize: MainAxisSize.max,
-              onPressed: () {
-                context.router.push(const SelectSettlementsDateRoute());
-              },
-              label: localizations.translate(i18.common.coreCommonNext),
-            ),
-          ),
-        ],
-      ),
+        );
+      }),
     );
   }
 }

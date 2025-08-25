@@ -1,19 +1,21 @@
-import 'dart:math';
-
+import 'package:digit_data_model/data/local_store/sql_store/tables/user.dart';
+import 'package:digit_data_model/data_model.dart';
+import 'package:digit_data_model/models/entities/user_action.dart';
+import 'package:digit_data_model/utils/utils.dart';
 import 'package:digit_ui_components/digit_components.dart';
+import 'package:digit_ui_components/services/location_bloc.dart';
 import 'package:digit_ui_components/theme/digit_extended_theme.dart';
-import 'package:digit_ui_components/theme/spacers.dart';
+import 'package:digit_ui_components/utils/component_utils.dart';
 import 'package:digit_ui_components/widgets/atoms/text_block.dart';
-import 'package:digit_ui_components/widgets/scrollable_content.dart';
 import 'package:flutter/material.dart';
-import 'package:pluto_grid/pluto_grid.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:registration_delivery/utils/utils.dart';
 
-import '../../blocs/localization/app_localization.dart';
+import '../../blocs/daily_implementation_plan/daily_implementation_plan.dart';
 import '../../router/app_router.dart';
 import '../../widgets/custom_back_navigation.dart';
 import '../../widgets/localized.dart';
 import '../../utils/i18_key_constants.dart' as i18;
-import '../../widgets/reports/editable_pluto_grid.dart';
 
 @RoutePage()
 class SelectSettlementsDatePage extends LocalizedStatefulWidget {
@@ -40,37 +42,130 @@ class _SelectSettlementsPageState
       Expanded(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              DigitTextBlock(
-                padding: EdgeInsets.zero,
-                heading: localizations
-                    .translate(i18.dailyImplementationFlow.selectBoundaryLabel),
-                headingStyle: textTheme.headingXl
-                    .copyWith(color: theme.colorTheme.text.primary),
-              ),
-              const SizedBox(height: spacer2),
-              SettlementGridView(
-                title: localizations
-                    .translate(i18.dailyImplementationFlow.selectBoundaryLabel),
-                settlements: [
-                  'Settlement 1',
-                  'Settlement 2',
-                  'Settlement 3',
-                  'Settlement 4',
-                  'Settlement 5',
-                  'Settlement 6'
-                ],
-                allDates: {
-                  'day1': 'Day 1',
-                  'day2': 'Day 2',
-                  'day3': 'Day 3',
-                  'day4': 'Day 4',
-                  'day5': 'Day 5',
-                  'day6': 'Day 6',
+          child: BlocBuilder<LocationBloc, LocationState>(
+            builder: (context, locationState) {
+              double? latitude = locationState.latitude;
+              double? longitude = locationState.longitude;
+              double? locationAccuracy = locationState.accuracy;
+              return BlocBuilder<DailyImplementationPlanBloc,
+                  DailyImplementationPlanState>(
+                builder: (context, state) {
+                  if (state is DailyImplementationPlanSelectSettlementsState) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        DigitTextBlock(
+                          padding: EdgeInsets.zero,
+                          heading:
+                              "Team 1 ${localizations.translate(i18.dailyImplementationFlow.dip)}",
+                          headingStyle: textTheme.headingXl
+                              .copyWith(color: theme.colorTheme.text.primary),
+                        ),
+                        DigitTextBlock(
+                          padding: EdgeInsets.zero,
+                          heading:
+                              "May 2024 ${localizations.translate(i18.dailyImplementationFlow.obrRound)}",
+                          headingStyle: textTheme.headingXS
+                              .copyWith(color: theme.colorTheme.text.primary),
+                        ),
+                        const SizedBox(height: spacer2),
+                        SettlementGridView(
+                          title: localizations.translate(
+                              i18.dailyImplementationFlow.selectBoundaryLabel),
+                          settlements: state.selectedSettlements ?? [],
+                        ),
+                        Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: DigitButton(
+                            type: DigitButtonType.primary,
+                            size: DigitButtonSize.large,
+                            mainAxisSize: MainAxisSize.max,
+                            onPressed: () {
+                              for (var element
+                                  in state.selectedSettlements ?? []) {
+                                if ((state.selectedSettlementsDate ??
+                                        {})[element] ==
+                                    null) {
+                                  DigitComponentsUtils.showDialog(
+                                    context,
+                                    localizations.translate(i18
+                                        .dailyImplementationFlow
+                                        .selectDateForAllSettlements),
+                                    DialogType.failed,
+                                  );
+                                  return;
+                                }
+                              }
+                              var clientReferenceId = IdGen.i.identifier;
+                              var startTime =
+                                  DateTime.now().millisecondsSinceEpoch;
+                              if (latitude == null ||
+                                  longitude == null ||
+                                  locationAccuracy == null) {
+                                if (context.mounted) {
+                                  DigitComponentsUtils.showDialog(
+                                    context,
+                                    localizations.translate(
+                                        i18.common.locationCapturing),
+                                    DialogType.inProgress,
+                                  );
+                                }
+                                return;
+                              }
+                              UserActionModel tripBookAction = UserActionModel(
+                                  latitude: latitude,
+                                  longitude: longitude,
+                                  locationAccuracy: locationAccuracy,
+                                  clientReferenceId: clientReferenceId,
+                                  isSync: true,
+                                  timestamp: startTime,
+                                  tenantId:
+                                      RegistrationDeliverySingleton().tenantId,
+                                  projectId: RegistrationDeliverySingleton()
+                                      .projectId!,
+                                  boundaryCode: RegistrationDeliverySingleton()
+                                          .boundary
+                                          ?.code! ??
+                                      "",
+                                  action: "dailyPlan",
+                                  additionalFields: UserActionAdditionalFields(
+                                      version: 1,
+                                      fields: [
+                                        if (state.administrativeUnit != null)
+                                          AdditionalField('administrativeUnit',
+                                              state.administrativeUnit),
+                                        if (state.wfpSupervisor != null)
+                                          AdditionalField('wfpSupervisor',
+                                              state.wfpSupervisor),
+                                        if (state.selectedSettlementsDate !=
+                                            null)
+                                          AdditionalField('settlements',
+                                              state.selectedSettlementsDate),
+                                      ]));
+                              context.read<DailyImplementationPlanBloc>().add(
+                                    DailyImplementationPlanEvent.handleCreate(
+                                      dipUserAction: tripBookAction,
+                                    ),
+                                  );
+                              context.router.pushAndPopUntil(
+                                  SelectSettlementsDateViewRoute(
+                                      clientReferenceId: clientReferenceId),
+                                  predicate: (route) =>
+                                      route.settings.name == HomeRoute.name);
+                            },
+                            label: localizations
+                                .translate(i18.common.coreCommonSubmit),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                  return const SizedBox.shrink();
                 },
-              ),
-            ],
+              );
+            },
           ),
         ),
       ),
@@ -81,13 +176,11 @@ class _SelectSettlementsPageState
 class SettlementGridView extends LocalizedStatefulWidget {
   final String title;
   final List<String> settlements;
-  final Map<String, String> allDates;
 
   const SettlementGridView({
     super.key,
     required this.title,
     required this.settlements,
-    required this.allDates,
   });
 
   @override
@@ -98,6 +191,14 @@ class _ReportDetailsContentState extends LocalizedState<SettlementGridView> {
   static const _settlementKey = 'settlement';
   static const _dateOfVisitKey = 'dateOfVisit';
 
+  Map<String, String> allDates = {
+    'day1': 'Day 1',
+    'day2': 'Day 2',
+    'day3': 'Day 3',
+    'day4': 'Day 4',
+    'day5': 'Day 5',
+    'day6': 'Day 6',
+  };
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -111,10 +212,19 @@ class _ReportDetailsContentState extends LocalizedState<SettlementGridView> {
               itemCount: widget.settlements.length,
               itemBuilder: (context, index) {
                 return SettlementRow(
-                  key: ValueKey(widget.settlements[index]),
+                  key: ValueKey(index),
                   settlement: widget.settlements[index],
-                  selectedDate: 'day${index + 1}',
-                  allDates: widget.allDates,
+                  onSelectDate: (value) {
+                    context.read<DailyImplementationPlanBloc>().add(
+                          DailyImplementationPlanEvent
+                              .handleSelectSettlementsDate(
+                            selectedSettlementsDate: {
+                              widget.settlements[index]: value,
+                            },
+                          ),
+                        );
+                  },
+                  allDates: allDates,
                 );
               },
               separatorBuilder: (BuildContext context, int index) {
@@ -161,16 +271,22 @@ class SettlementTitleRow extends StatelessWidget {
   }
 }
 
-class SettlementRow extends StatelessWidget {
+class SettlementRow extends StatefulWidget {
   final String settlement;
-  final String selectedDate;
+  final Function(String) onSelectDate;
   final Map<String, String> allDates;
   const SettlementRow(
       {super.key,
       required this.settlement,
-      required this.selectedDate,
+      required this.onSelectDate,
       required this.allDates});
 
+  @override
+  State<SettlementRow> createState() => _SettlementRowState();
+}
+
+class _SettlementRowState extends State<SettlementRow> {
+  DropdownItem? selectedOption;
   @override
   Widget build(BuildContext context) {
     var cellDecoration = const BoxDecoration(
@@ -184,7 +300,7 @@ class SettlementRow extends StatelessWidget {
             child: Container(
           decoration: cellDecoration,
           height: 40,
-          child: Center(child: Text(settlement)),
+          child: Center(child: Text(widget.settlement)),
         )),
         const SizedBox(width: 1),
         Expanded(
@@ -193,13 +309,15 @@ class SettlementRow extends StatelessWidget {
           height: 40,
           child: Center(
               child: DigitDropdown(
-            selectedOption: DropdownItem(
-                code: selectedDate, name: allDates[selectedDate] ?? ""),
+            selectedOption: selectedOption,
             items: [
-              for (var date in allDates.keys)
-                DropdownItem(code: date, name: allDates[date]!),
+              for (var date in widget.allDates.keys)
+                DropdownItem(code: date, name: widget.allDates[date]!),
             ],
-            onSelect: (value) {},
+            onSelect: (value) {
+              selectedOption = value;
+              widget.onSelectDate(value.code);
+            },
           )),
         )),
       ],

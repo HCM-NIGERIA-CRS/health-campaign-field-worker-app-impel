@@ -22,7 +22,7 @@ import 'package:transit_post/data/repositories/oplog/oplog.dart';
 import 'blocs/app_initialization/app_initialization.dart';
 import 'blocs/auth/auth.dart';
 import 'blocs/compliance/consent_household.dart';
-import 'blocs/daily_implementation_plan/register_daily_plan.dart';
+import 'blocs/daily_implementation_plan/daily_implementation_plan.dart';
 import 'blocs/inventory_management/stock_bloc.dart';
 import 'blocs/localization/localization.dart';
 import 'blocs/project/project.dart';
@@ -32,6 +32,7 @@ import 'blocs/summary_report/custom_distribution_summary_report.dart';
 import 'data/local_store/app_shared_preferences.dart';
 import 'data/network_manager.dart';
 import 'data/remote_client.dart';
+import 'data/repositories/local/custom_user_action.dart';
 import 'data/repositories/local/search/individual_global_search_smc.dart';
 import 'data/repositories/remote/bandwidth_check.dart';
 import 'data/repositories/remote/localization.dart';
@@ -452,10 +453,10 @@ class MainApplicationState extends State<MainApplication>
                           ),
                         ),
                         BlocProvider(
-                          create: (ctx) => RegisterDailyPlanBloc(
-                            const RegisterDailyPlanCreateState(),
+                          create: (ctx) => DailyImplementationPlanBloc(
+                            const DailyImplementationPlanState.init(),
                             userActionLocalRepository:
-                                UserActionLocalRepository(widget.sql,
+                                CustomUserActionLocalRepository(widget.sql,
                                     UserActionOpLogManager(widget.isar)),
                           ),
                         ),

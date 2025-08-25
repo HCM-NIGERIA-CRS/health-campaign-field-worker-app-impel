@@ -38,6 +38,7 @@ import '../pages/beneficiary/check_eligibility/refer_beneficiary_vas.dart';
 import '../pages/complaints/custom_complaints_inbox.dart';
 import '../pages/custom_household_summary.dart';
 import '../pages/daily_Implementation_plan/select_settlements_date.dart';
+import '../pages/daily_Implementation_plan/select_settlements_date_view.dart';
 import '../pages/inventory_management/custom_inventory_facility_selection.dart';
 import '../pages/inventory_management/qr_scanner.dart';
 import '../pages/inventory_management/view_record_lga.dart';
@@ -193,6 +194,10 @@ class AppRouter extends _$AppRouter {
         ),
         AutoRoute(
           page: SelectSettlementsDateRoute.page,
+          path: 'select-settlements',
+        ),
+        AutoRoute(
+          page: SelectSettlementsDateViewRoute.page,
           path: 'select-settlements',
         ),
 

@@ -770,6 +770,8 @@ class CaregiverConsent {
 class DailyImplementationFlow {
   const DailyImplementationFlow();
 
+  String get dip => 'DIP_LABEL';
+  String get obrRound => 'OBR_ROUND_LABEL';
   String get selectBoundaryLabel => 'SELECT_BOUNDARY_HEADING_LABEL';
   String get dateOfEntry => 'SELECT_DATE_OF_ENTRY';
   String get administrativeUnitLabel => 'SELECT_ADMINISTRATIVE_UNIT_LABEL';
@@ -777,6 +779,10 @@ class DailyImplementationFlow {
   String get boundaryLabel => 'SELECT_BOUNDARY_LABEL';
   String get createDIPLabel => 'CREATE_DIP_LABEL';
   String get viewDIPLabel => 'VIEW_DIP_LABEL';
+
+  String get selectDateForAllSettlements => 'SELECT_DATE_FOR_ALL_SETTLEMENTS';
+  String get settlements => 'SETTLEMENTS_LABEL';
+  String get dateOfVisit => 'DATE_OF_VISIT_LABEL';
 }
 
 class ComplaintsDetailsShowcase {
