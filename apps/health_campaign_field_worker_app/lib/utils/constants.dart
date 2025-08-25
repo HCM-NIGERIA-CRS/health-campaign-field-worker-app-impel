@@ -88,6 +88,9 @@ class Constants {
     }
   }
 
+  static const String consentsKey = 'consent';
+  static const String isNoConsentEdit = 'isNoConsentEdit';
+
   static const String localizationApiPath = 'localization/messages/v1/_search';
   static const String surveyFormPreviewDateFormat = 'dd MMMM yyyy';
   static const String defaultDateFormat = 'dd/MM/yyyy';
