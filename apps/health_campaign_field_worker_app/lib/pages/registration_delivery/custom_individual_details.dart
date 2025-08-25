@@ -516,7 +516,7 @@ class CustomIndividualDetailsPageState
                                               addressModel,
                                               projectBeneficiaryModel,
                                               loading,
-                                            ) {
+                                            ) async {
                                               isEditIndividual = true;
                                               final scannerBloc = context
                                                   .read<DigitScannerBloc>();

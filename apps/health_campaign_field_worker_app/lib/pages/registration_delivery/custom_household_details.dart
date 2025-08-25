@@ -58,6 +58,7 @@ class CustomHouseHoldDetailsPageState
   static const _childrenCountKey = 'childrenCount';
   static const _childrenAFPCountKey = 'childrenAFPCount';
   static const _guineaWormDiseaseCountKey = 'guineaWormDiseaseCount';
+  bool isNoConsent = false;
 
   // Define controllers
   final TextEditingController _pregnantWomenController =
@@ -444,7 +445,7 @@ class CustomHouseHoldDetailsPageState
                               projectBeneficiaryModel,
                               loading,
                               isHeadOfHousehold,
-                            ) {
+                            ) async {
                               var household = householdModel.copyWith(
                                   memberCount: memberCount,
                                   address: addressModel,
@@ -558,6 +559,22 @@ class CustomHouseHoldDetailsPageState
                                           )
                                         : null,
                                   ),
+                                ),
+                              );
+                              await context.router.root.push(
+                                CustomBeneficiaryRegistrationWrapperRoute(
+                                  initialState:
+                                      BeneficiaryRegistrationEditIndividualState(
+                                          individualModel: individuals.first,
+                                          householdModel: household,
+                                          addressModel: addressModel,
+                                          projectBeneficiaryModel:
+                                              projectBeneficiaryModel),
+                                  children: [
+                                    CustomIndividualDetailsRoute(
+                                      isHeadOfHousehold: true,
+                                    ),
+                                  ],
                                 ),
                               );
                             },
