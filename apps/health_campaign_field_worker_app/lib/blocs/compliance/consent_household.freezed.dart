@@ -24,11 +24,11 @@ mixin _$ConsentHouseholdEvent {
   String? get householdId => throw _privateConstructorUsedError;
   String? get householdNumber => throw _privateConstructorUsedError;
   String? get beneficiaryType => throw _privateConstructorUsedError;
+  String? get householdHeadName => throw _privateConstructorUsedError;
   bool get isConsent => throw _privateConstructorUsedError;
   double get latitude => throw _privateConstructorUsedError;
   double get longitude => throw _privateConstructorUsedError;
   double get locationAccuracy => throw _privateConstructorUsedError;
-  String? get householdHeadName => throw _privateConstructorUsedError;
   String? get tag => throw _privateConstructorUsedError;
   BuildContext? get context => throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -42,11 +42,11 @@ mixin _$ConsentHouseholdEvent {
             String? householdId,
             String? householdNumber,
             String? beneficiaryType,
+            String? householdHeadName,
             bool isConsent,
             double latitude,
             double longitude,
             double locationAccuracy,
-            String? householdHeadName,
             String? tag,
             BuildContext? context)
         handleSubmit,
@@ -63,11 +63,11 @@ mixin _$ConsentHouseholdEvent {
             String? householdId,
             String? householdNumber,
             String? beneficiaryType,
+            String? householdHeadName,
             bool isConsent,
             double latitude,
             double longitude,
             double locationAccuracy,
-            String? householdHeadName,
             String? tag,
             BuildContext? context)?
         handleSubmit,
@@ -84,11 +84,11 @@ mixin _$ConsentHouseholdEvent {
             String? householdId,
             String? householdNumber,
             String? beneficiaryType,
+            String? householdHeadName,
             bool isConsent,
             double latitude,
             double longitude,
             double locationAccuracy,
-            String? householdHeadName,
             String? tag,
             BuildContext? context)?
         handleSubmit,
@@ -132,11 +132,11 @@ abstract class $ConsentHouseholdEventCopyWith<$Res> {
       String? householdId,
       String? householdNumber,
       String? beneficiaryType,
+      String? householdHeadName,
       bool isConsent,
       double latitude,
       double longitude,
       double locationAccuracy,
-      String? householdHeadName,
       String? tag,
       BuildContext? context});
 }
@@ -163,11 +163,11 @@ class _$ConsentHouseholdEventCopyWithImpl<$Res,
     Object? householdId = freezed,
     Object? householdNumber = freezed,
     Object? beneficiaryType = freezed,
+    Object? householdHeadName = freezed,
     Object? isConsent = null,
     Object? latitude = null,
     Object? longitude = null,
     Object? locationAccuracy = null,
-    Object? householdHeadName = freezed,
     Object? tag = freezed,
     Object? context = freezed,
   }) {
@@ -204,6 +204,10 @@ class _$ConsentHouseholdEventCopyWithImpl<$Res,
           ? _value.beneficiaryType
           : beneficiaryType // ignore: cast_nullable_to_non_nullable
               as String?,
+      householdHeadName: freezed == householdHeadName
+          ? _value.householdHeadName
+          : householdHeadName // ignore: cast_nullable_to_non_nullable
+              as String?,
       isConsent: null == isConsent
           ? _value.isConsent
           : isConsent // ignore: cast_nullable_to_non_nullable
@@ -220,10 +224,6 @@ class _$ConsentHouseholdEventCopyWithImpl<$Res,
           ? _value.locationAccuracy
           : locationAccuracy // ignore: cast_nullable_to_non_nullable
               as double,
-      householdHeadName: freezed == householdHeadName
-          ? _value.householdHeadName
-          : householdHeadName // ignore: cast_nullable_to_non_nullable
-              as String?,
       tag: freezed == tag
           ? _value.tag
           : tag // ignore: cast_nullable_to_non_nullable
@@ -254,11 +254,11 @@ abstract class _$$ConsentHouseholdSubmitEventImplCopyWith<$Res>
       String? householdId,
       String? householdNumber,
       String? beneficiaryType,
+      String? householdHeadName,
       bool isConsent,
       double latitude,
       double longitude,
       double locationAccuracy,
-      String? householdHeadName,
       String? tag,
       BuildContext? context});
 }
@@ -284,11 +284,11 @@ class __$$ConsentHouseholdSubmitEventImplCopyWithImpl<$Res>
     Object? householdId = freezed,
     Object? householdNumber = freezed,
     Object? beneficiaryType = freezed,
+    Object? householdHeadName = freezed,
     Object? isConsent = null,
     Object? latitude = null,
     Object? longitude = null,
     Object? locationAccuracy = null,
-    Object? householdHeadName = freezed,
     Object? tag = freezed,
     Object? context = freezed,
   }) {
@@ -325,6 +325,10 @@ class __$$ConsentHouseholdSubmitEventImplCopyWithImpl<$Res>
           ? _value.beneficiaryType
           : beneficiaryType // ignore: cast_nullable_to_non_nullable
               as String?,
+      freezed == householdHeadName
+          ? _value.householdHeadName
+          : householdHeadName // ignore: cast_nullable_to_non_nullable
+              as String?,
       null == isConsent
           ? _value.isConsent
           : isConsent // ignore: cast_nullable_to_non_nullable
@@ -341,10 +345,6 @@ class __$$ConsentHouseholdSubmitEventImplCopyWithImpl<$Res>
           ? _value.locationAccuracy
           : locationAccuracy // ignore: cast_nullable_to_non_nullable
               as double,
-      householdHeadName: freezed == householdHeadName
-          ? _value.householdHeadName
-          : householdHeadName // ignore: cast_nullable_to_non_nullable
-              as String?,
       tag: freezed == tag
           ? _value.tag
           : tag // ignore: cast_nullable_to_non_nullable
@@ -369,11 +369,11 @@ class _$ConsentHouseholdSubmitEventImpl implements ConsentHouseholdSubmitEvent {
       this.householdId,
       this.householdNumber,
       this.beneficiaryType,
+      this.householdHeadName,
       this.isConsent,
       {this.latitude = 0,
       this.longitude = 0,
       this.locationAccuracy = 0,
-      this.householdHeadName,
       this.tag,
       this.context});
 
@@ -394,6 +394,8 @@ class _$ConsentHouseholdSubmitEventImpl implements ConsentHouseholdSubmitEvent {
   @override
   final String? beneficiaryType;
   @override
+  final String? householdHeadName;
+  @override
   final bool isConsent;
   @override
   @JsonKey()
@@ -405,15 +407,13 @@ class _$ConsentHouseholdSubmitEventImpl implements ConsentHouseholdSubmitEvent {
   @JsonKey()
   final double locationAccuracy;
   @override
-  final String? householdHeadName;
-  @override
   final String? tag;
   @override
   final BuildContext? context;
 
   @override
   String toString() {
-    return 'ConsentHouseholdEvent.handleSubmit(boundaryCode: $boundaryCode, boundaryName: $boundaryName, loggedInUserUuid: $loggedInUserUuid, tenantId: $tenantId, projectId: $projectId, householdId: $householdId, householdNumber: $householdNumber, beneficiaryType: $beneficiaryType, isConsent: $isConsent, latitude: $latitude, longitude: $longitude, locationAccuracy: $locationAccuracy, householdHeadName: $householdHeadName, tag: $tag, context: $context)';
+    return 'ConsentHouseholdEvent.handleSubmit(boundaryCode: $boundaryCode, boundaryName: $boundaryName, loggedInUserUuid: $loggedInUserUuid, tenantId: $tenantId, projectId: $projectId, householdId: $householdId, householdNumber: $householdNumber, beneficiaryType: $beneficiaryType, householdHeadName: $householdHeadName, isConsent: $isConsent, latitude: $latitude, longitude: $longitude, locationAccuracy: $locationAccuracy, tag: $tag, context: $context)';
   }
 
   @override
@@ -437,6 +437,8 @@ class _$ConsentHouseholdSubmitEventImpl implements ConsentHouseholdSubmitEvent {
                 other.householdNumber == householdNumber) &&
             (identical(other.beneficiaryType, beneficiaryType) ||
                 other.beneficiaryType == beneficiaryType) &&
+            (identical(other.householdHeadName, householdHeadName) ||
+                other.householdHeadName == householdHeadName) &&
             (identical(other.isConsent, isConsent) ||
                 other.isConsent == isConsent) &&
             (identical(other.latitude, latitude) ||
@@ -445,8 +447,6 @@ class _$ConsentHouseholdSubmitEventImpl implements ConsentHouseholdSubmitEvent {
                 other.longitude == longitude) &&
             (identical(other.locationAccuracy, locationAccuracy) ||
                 other.locationAccuracy == locationAccuracy) &&
-            (identical(other.householdHeadName, householdHeadName) ||
-                other.householdHeadName == householdHeadName) &&
             (identical(other.tag, tag) || other.tag == tag) &&
             (identical(other.context, context) || other.context == context));
   }
@@ -462,11 +462,11 @@ class _$ConsentHouseholdSubmitEventImpl implements ConsentHouseholdSubmitEvent {
       householdId,
       householdNumber,
       beneficiaryType,
+      householdHeadName,
       isConsent,
       latitude,
       longitude,
       locationAccuracy,
-      householdHeadName,
       tag,
       context);
 
@@ -489,11 +489,11 @@ class _$ConsentHouseholdSubmitEventImpl implements ConsentHouseholdSubmitEvent {
             String? householdId,
             String? householdNumber,
             String? beneficiaryType,
+            String? householdHeadName,
             bool isConsent,
             double latitude,
             double longitude,
             double locationAccuracy,
-            String? householdHeadName,
             String? tag,
             BuildContext? context)
         handleSubmit,
@@ -507,11 +507,11 @@ class _$ConsentHouseholdSubmitEventImpl implements ConsentHouseholdSubmitEvent {
         householdId,
         householdNumber,
         beneficiaryType,
+        householdHeadName,
         isConsent,
         latitude,
         longitude,
         locationAccuracy,
-        householdHeadName,
         tag,
         context);
   }
@@ -528,11 +528,11 @@ class _$ConsentHouseholdSubmitEventImpl implements ConsentHouseholdSubmitEvent {
             String? householdId,
             String? householdNumber,
             String? beneficiaryType,
+            String? householdHeadName,
             bool isConsent,
             double latitude,
             double longitude,
             double locationAccuracy,
-            String? householdHeadName,
             String? tag,
             BuildContext? context)?
         handleSubmit,
@@ -546,11 +546,11 @@ class _$ConsentHouseholdSubmitEventImpl implements ConsentHouseholdSubmitEvent {
         householdId,
         householdNumber,
         beneficiaryType,
+        householdHeadName,
         isConsent,
         latitude,
         longitude,
         locationAccuracy,
-        householdHeadName,
         tag,
         context);
   }
@@ -567,11 +567,11 @@ class _$ConsentHouseholdSubmitEventImpl implements ConsentHouseholdSubmitEvent {
             String? householdId,
             String? householdNumber,
             String? beneficiaryType,
+            String? householdHeadName,
             bool isConsent,
             double latitude,
             double longitude,
             double locationAccuracy,
-            String? householdHeadName,
             String? tag,
             BuildContext? context)?
         handleSubmit,
@@ -587,11 +587,11 @@ class _$ConsentHouseholdSubmitEventImpl implements ConsentHouseholdSubmitEvent {
           householdId,
           householdNumber,
           beneficiaryType,
+          householdHeadName,
           isConsent,
           latitude,
           longitude,
           locationAccuracy,
-          householdHeadName,
           tag,
           context);
     }
@@ -637,11 +637,11 @@ abstract class ConsentHouseholdSubmitEvent implements ConsentHouseholdEvent {
       final String? householdId,
       final String? householdNumber,
       final String? beneficiaryType,
+      final String? householdHeadName,
       final bool isConsent,
       {final double latitude,
       final double longitude,
       final double locationAccuracy,
-      final String? householdHeadName,
       final String? tag,
       final BuildContext? context}) = _$ConsentHouseholdSubmitEventImpl;
 
@@ -662,6 +662,8 @@ abstract class ConsentHouseholdSubmitEvent implements ConsentHouseholdEvent {
   @override
   String? get beneficiaryType;
   @override
+  String? get householdHeadName;
+  @override
   bool get isConsent;
   @override
   double get latitude;
@@ -669,8 +671,6 @@ abstract class ConsentHouseholdSubmitEvent implements ConsentHouseholdEvent {
   double get longitude;
   @override
   double get locationAccuracy;
-  @override
-  String? get householdHeadName;
   @override
   String? get tag;
   @override

@@ -193,6 +193,8 @@ class ConsentHouseholdBloc
         auditDetails: AuditDetails(
           createdBy: event.loggedInUserUuid!,
           createdTime: DateTime.now().millisecondsSinceEpoch,
+          lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
+          lastModifiedBy: event.loggedInUserUuid!,
         ),
       );
 
@@ -236,11 +238,14 @@ class ConsentHouseholdBloc
         clientAuditDetails: ClientAuditDetails(
           createdTime: DateTime.now().millisecondsSinceEpoch,
           lastModifiedBy: event.loggedInUserUuid!,
+          lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
           createdBy: event.loggedInUserUuid!,
         ),
         auditDetails: AuditDetails(
           createdBy: event.loggedInUserUuid!,
           createdTime: DateTime.now().millisecondsSinceEpoch,
+          lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
+          lastModifiedBy: event.loggedInUserUuid!,
         ),
       );
 
@@ -256,10 +261,14 @@ class ConsentHouseholdBloc
         auditDetails: AuditDetails(
           createdBy: event.loggedInUserUuid!,
           createdTime: DateTime.now().millisecondsSinceEpoch,
+          lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
+          lastModifiedBy: event.loggedInUserUuid!,
         ),
         clientAuditDetails: ClientAuditDetails(
           createdBy: event.loggedInUserUuid!,
           createdTime: DateTime.now().millisecondsSinceEpoch,
+          lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
+          lastModifiedBy: event.loggedInUserUuid!,
         ),
       );
 
@@ -327,11 +336,11 @@ class ConsentHouseholdEvent with _$ConsentHouseholdEvent {
     String? householdId,
     String? householdNumber,
     String? beneficiaryType,
+    String? householdHeadName,
     bool isConsent, {
     @Default(0) double latitude,
     @Default(0) double longitude,
     @Default(0) double locationAccuracy,
-    String? householdHeadName,
     String? tag,
     BuildContext? context,
   }) = ConsentHouseholdSubmitEvent;
