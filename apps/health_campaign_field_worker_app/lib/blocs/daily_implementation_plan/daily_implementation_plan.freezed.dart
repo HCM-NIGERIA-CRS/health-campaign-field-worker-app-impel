@@ -24,7 +24,8 @@ mixin _$DailyImplementationPlanEvent {
     required TResult Function(Map<String, String> selectedSettlementsDate)
         handleSelectSettlementsDate,
     required TResult Function(UserActionModel dipUserAction) handleCreate,
-    required TResult Function(String clientReferenceId) handleSearch,
+    required TResult Function(String? clientReferenceId, String? userAction)
+        handleSearch,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -35,7 +36,8 @@ mixin _$DailyImplementationPlanEvent {
     TResult? Function(Map<String, String> selectedSettlementsDate)?
         handleSelectSettlementsDate,
     TResult? Function(UserActionModel dipUserAction)? handleCreate,
-    TResult? Function(String clientReferenceId)? handleSearch,
+    TResult? Function(String? clientReferenceId, String? userAction)?
+        handleSearch,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -46,7 +48,8 @@ mixin _$DailyImplementationPlanEvent {
     TResult Function(Map<String, String> selectedSettlementsDate)?
         handleSelectSettlementsDate,
     TResult Function(UserActionModel dipUserAction)? handleCreate,
-    TResult Function(String clientReferenceId)? handleSearch,
+    TResult Function(String? clientReferenceId, String? userAction)?
+        handleSearch,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -232,7 +235,8 @@ class _$DailyImplementationPlanSelectSettlementsEventImpl
     required TResult Function(Map<String, String> selectedSettlementsDate)
         handleSelectSettlementsDate,
     required TResult Function(UserActionModel dipUserAction) handleCreate,
-    required TResult Function(String clientReferenceId) handleSearch,
+    required TResult Function(String? clientReferenceId, String? userAction)
+        handleSearch,
   }) {
     return handleSelectSettlements(
         date, administrativeUnit, wfpSupervisor, selectedSettlements);
@@ -247,7 +251,8 @@ class _$DailyImplementationPlanSelectSettlementsEventImpl
     TResult? Function(Map<String, String> selectedSettlementsDate)?
         handleSelectSettlementsDate,
     TResult? Function(UserActionModel dipUserAction)? handleCreate,
-    TResult? Function(String clientReferenceId)? handleSearch,
+    TResult? Function(String? clientReferenceId, String? userAction)?
+        handleSearch,
   }) {
     return handleSelectSettlements?.call(
         date, administrativeUnit, wfpSupervisor, selectedSettlements);
@@ -262,7 +267,8 @@ class _$DailyImplementationPlanSelectSettlementsEventImpl
     TResult Function(Map<String, String> selectedSettlementsDate)?
         handleSelectSettlementsDate,
     TResult Function(UserActionModel dipUserAction)? handleCreate,
-    TResult Function(String clientReferenceId)? handleSearch,
+    TResult Function(String? clientReferenceId, String? userAction)?
+        handleSearch,
     required TResult orElse(),
   }) {
     if (handleSelectSettlements != null) {
@@ -433,7 +439,8 @@ class _$DailyImplementationPlanSelectSettlementsDateEventImpl
     required TResult Function(Map<String, String> selectedSettlementsDate)
         handleSelectSettlementsDate,
     required TResult Function(UserActionModel dipUserAction) handleCreate,
-    required TResult Function(String clientReferenceId) handleSearch,
+    required TResult Function(String? clientReferenceId, String? userAction)
+        handleSearch,
   }) {
     return handleSelectSettlementsDate(selectedSettlementsDate);
   }
@@ -447,7 +454,8 @@ class _$DailyImplementationPlanSelectSettlementsDateEventImpl
     TResult? Function(Map<String, String> selectedSettlementsDate)?
         handleSelectSettlementsDate,
     TResult? Function(UserActionModel dipUserAction)? handleCreate,
-    TResult? Function(String clientReferenceId)? handleSearch,
+    TResult? Function(String? clientReferenceId, String? userAction)?
+        handleSearch,
   }) {
     return handleSelectSettlementsDate?.call(selectedSettlementsDate);
   }
@@ -461,7 +469,8 @@ class _$DailyImplementationPlanSelectSettlementsDateEventImpl
     TResult Function(Map<String, String> selectedSettlementsDate)?
         handleSelectSettlementsDate,
     TResult Function(UserActionModel dipUserAction)? handleCreate,
-    TResult Function(String clientReferenceId)? handleSearch,
+    TResult Function(String? clientReferenceId, String? userAction)?
+        handleSearch,
     required TResult orElse(),
   }) {
     if (handleSelectSettlementsDate != null) {
@@ -608,7 +617,8 @@ class _$DailyImplementationPlanCreateEventImpl
     required TResult Function(Map<String, String> selectedSettlementsDate)
         handleSelectSettlementsDate,
     required TResult Function(UserActionModel dipUserAction) handleCreate,
-    required TResult Function(String clientReferenceId) handleSearch,
+    required TResult Function(String? clientReferenceId, String? userAction)
+        handleSearch,
   }) {
     return handleCreate(dipUserAction);
   }
@@ -622,7 +632,8 @@ class _$DailyImplementationPlanCreateEventImpl
     TResult? Function(Map<String, String> selectedSettlementsDate)?
         handleSelectSettlementsDate,
     TResult? Function(UserActionModel dipUserAction)? handleCreate,
-    TResult? Function(String clientReferenceId)? handleSearch,
+    TResult? Function(String? clientReferenceId, String? userAction)?
+        handleSearch,
   }) {
     return handleCreate?.call(dipUserAction);
   }
@@ -636,7 +647,8 @@ class _$DailyImplementationPlanCreateEventImpl
     TResult Function(Map<String, String> selectedSettlementsDate)?
         handleSelectSettlementsDate,
     TResult Function(UserActionModel dipUserAction)? handleCreate,
-    TResult Function(String clientReferenceId)? handleSearch,
+    TResult Function(String? clientReferenceId, String? userAction)?
+        handleSearch,
     required TResult orElse(),
   }) {
     if (handleCreate != null) {
@@ -713,7 +725,7 @@ abstract class _$$DailyImplementationPlanSearchEventImplCopyWith<$Res> {
           $Res Function(_$DailyImplementationPlanSearchEventImpl) then) =
       __$$DailyImplementationPlanSearchEventImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String clientReferenceId});
+  $Res call({String? clientReferenceId, String? userAction});
 }
 
 /// @nodoc
@@ -729,13 +741,18 @@ class __$$DailyImplementationPlanSearchEventImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? clientReferenceId = null,
+    Object? clientReferenceId = freezed,
+    Object? userAction = freezed,
   }) {
     return _then(_$DailyImplementationPlanSearchEventImpl(
-      clientReferenceId: null == clientReferenceId
+      clientReferenceId: freezed == clientReferenceId
           ? _value.clientReferenceId
           : clientReferenceId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
+      userAction: freezed == userAction
+          ? _value.userAction
+          : userAction // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -745,14 +762,16 @@ class __$$DailyImplementationPlanSearchEventImplCopyWithImpl<$Res>
 class _$DailyImplementationPlanSearchEventImpl
     implements DailyImplementationPlanSearchEvent {
   const _$DailyImplementationPlanSearchEventImpl(
-      {required this.clientReferenceId});
+      {this.clientReferenceId, this.userAction});
 
   @override
-  final String clientReferenceId;
+  final String? clientReferenceId;
+  @override
+  final String? userAction;
 
   @override
   String toString() {
-    return 'DailyImplementationPlanEvent.handleSearch(clientReferenceId: $clientReferenceId)';
+    return 'DailyImplementationPlanEvent.handleSearch(clientReferenceId: $clientReferenceId, userAction: $userAction)';
   }
 
   @override
@@ -761,11 +780,13 @@ class _$DailyImplementationPlanSearchEventImpl
         (other.runtimeType == runtimeType &&
             other is _$DailyImplementationPlanSearchEventImpl &&
             (identical(other.clientReferenceId, clientReferenceId) ||
-                other.clientReferenceId == clientReferenceId));
+                other.clientReferenceId == clientReferenceId) &&
+            (identical(other.userAction, userAction) ||
+                other.userAction == userAction));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, clientReferenceId);
+  int get hashCode => Object.hash(runtimeType, clientReferenceId, userAction);
 
   @JsonKey(ignore: true)
   @override
@@ -784,9 +805,10 @@ class _$DailyImplementationPlanSearchEventImpl
     required TResult Function(Map<String, String> selectedSettlementsDate)
         handleSelectSettlementsDate,
     required TResult Function(UserActionModel dipUserAction) handleCreate,
-    required TResult Function(String clientReferenceId) handleSearch,
+    required TResult Function(String? clientReferenceId, String? userAction)
+        handleSearch,
   }) {
-    return handleSearch(clientReferenceId);
+    return handleSearch(clientReferenceId, userAction);
   }
 
   @override
@@ -798,9 +820,10 @@ class _$DailyImplementationPlanSearchEventImpl
     TResult? Function(Map<String, String> selectedSettlementsDate)?
         handleSelectSettlementsDate,
     TResult? Function(UserActionModel dipUserAction)? handleCreate,
-    TResult? Function(String clientReferenceId)? handleSearch,
+    TResult? Function(String? clientReferenceId, String? userAction)?
+        handleSearch,
   }) {
-    return handleSearch?.call(clientReferenceId);
+    return handleSearch?.call(clientReferenceId, userAction);
   }
 
   @override
@@ -812,11 +835,12 @@ class _$DailyImplementationPlanSearchEventImpl
     TResult Function(Map<String, String> selectedSettlementsDate)?
         handleSelectSettlementsDate,
     TResult Function(UserActionModel dipUserAction)? handleCreate,
-    TResult Function(String clientReferenceId)? handleSearch,
+    TResult Function(String? clientReferenceId, String? userAction)?
+        handleSearch,
     required TResult orElse(),
   }) {
     if (handleSearch != null) {
-      return handleSearch(clientReferenceId);
+      return handleSearch(clientReferenceId, userAction);
     }
     return orElse();
   }
@@ -872,10 +896,11 @@ class _$DailyImplementationPlanSearchEventImpl
 abstract class DailyImplementationPlanSearchEvent
     implements DailyImplementationPlanEvent {
   const factory DailyImplementationPlanSearchEvent(
-          {required final String clientReferenceId}) =
-      _$DailyImplementationPlanSearchEventImpl;
+      {final String? clientReferenceId,
+      final String? userAction}) = _$DailyImplementationPlanSearchEventImpl;
 
-  String get clientReferenceId;
+  String? get clientReferenceId;
+  String? get userAction;
   @JsonKey(ignore: true)
   _$$DailyImplementationPlanSearchEventImplCopyWith<
           _$DailyImplementationPlanSearchEventImpl>
@@ -896,7 +921,8 @@ mixin _$DailyImplementationPlanState {
         selectSettlements,
     required TResult Function(bool loading, UserActionModel? dipUserAction)
         create,
-    required TResult Function(bool loading, UserActionModel? dipUserAction)
+    required TResult Function(
+            bool loading, List<UserActionModel>? dipUserAction)
         search,
   }) =>
       throw _privateConstructorUsedError;
@@ -911,7 +937,8 @@ mixin _$DailyImplementationPlanState {
             Map<String, String>? selectedSettlementsDate)?
         selectSettlements,
     TResult? Function(bool loading, UserActionModel? dipUserAction)? create,
-    TResult? Function(bool loading, UserActionModel? dipUserAction)? search,
+    TResult? Function(bool loading, List<UserActionModel>? dipUserAction)?
+        search,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -925,7 +952,8 @@ mixin _$DailyImplementationPlanState {
             Map<String, String>? selectedSettlementsDate)?
         selectSettlements,
     TResult Function(bool loading, UserActionModel? dipUserAction)? create,
-    TResult Function(bool loading, UserActionModel? dipUserAction)? search,
+    TResult Function(bool loading, List<UserActionModel>? dipUserAction)?
+        search,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -1034,7 +1062,8 @@ class _$DailyImplementationPlanInitStateImpl
         selectSettlements,
     required TResult Function(bool loading, UserActionModel? dipUserAction)
         create,
-    required TResult Function(bool loading, UserActionModel? dipUserAction)
+    required TResult Function(
+            bool loading, List<UserActionModel>? dipUserAction)
         search,
   }) {
     return init();
@@ -1052,7 +1081,8 @@ class _$DailyImplementationPlanInitStateImpl
             Map<String, String>? selectedSettlementsDate)?
         selectSettlements,
     TResult? Function(bool loading, UserActionModel? dipUserAction)? create,
-    TResult? Function(bool loading, UserActionModel? dipUserAction)? search,
+    TResult? Function(bool loading, List<UserActionModel>? dipUserAction)?
+        search,
   }) {
     return init?.call();
   }
@@ -1069,7 +1099,8 @@ class _$DailyImplementationPlanInitStateImpl
             Map<String, String>? selectedSettlementsDate)?
         selectSettlements,
     TResult Function(bool loading, UserActionModel? dipUserAction)? create,
-    TResult Function(bool loading, UserActionModel? dipUserAction)? search,
+    TResult Function(bool loading, List<UserActionModel>? dipUserAction)?
+        search,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -1287,7 +1318,8 @@ class _$DailyImplementationPlanSelectSettlementsStateImpl
         selectSettlements,
     required TResult Function(bool loading, UserActionModel? dipUserAction)
         create,
-    required TResult Function(bool loading, UserActionModel? dipUserAction)
+    required TResult Function(
+            bool loading, List<UserActionModel>? dipUserAction)
         search,
   }) {
     return selectSettlements(date, administrativeUnit, wfpSupervisor,
@@ -1306,7 +1338,8 @@ class _$DailyImplementationPlanSelectSettlementsStateImpl
             Map<String, String>? selectedSettlementsDate)?
         selectSettlements,
     TResult? Function(bool loading, UserActionModel? dipUserAction)? create,
-    TResult? Function(bool loading, UserActionModel? dipUserAction)? search,
+    TResult? Function(bool loading, List<UserActionModel>? dipUserAction)?
+        search,
   }) {
     return selectSettlements?.call(date, administrativeUnit, wfpSupervisor,
         selectedSettlements, selectedSettlementsDate);
@@ -1324,7 +1357,8 @@ class _$DailyImplementationPlanSelectSettlementsStateImpl
             Map<String, String>? selectedSettlementsDate)?
         selectSettlements,
     TResult Function(bool loading, UserActionModel? dipUserAction)? create,
-    TResult Function(bool loading, UserActionModel? dipUserAction)? search,
+    TResult Function(bool loading, List<UserActionModel>? dipUserAction)?
+        search,
     required TResult orElse(),
   }) {
     if (selectSettlements != null) {
@@ -1489,7 +1523,8 @@ class _$DailyImplementationPlanCreateStateImpl
         selectSettlements,
     required TResult Function(bool loading, UserActionModel? dipUserAction)
         create,
-    required TResult Function(bool loading, UserActionModel? dipUserAction)
+    required TResult Function(
+            bool loading, List<UserActionModel>? dipUserAction)
         search,
   }) {
     return create(loading, dipUserAction);
@@ -1507,7 +1542,8 @@ class _$DailyImplementationPlanCreateStateImpl
             Map<String, String>? selectedSettlementsDate)?
         selectSettlements,
     TResult? Function(bool loading, UserActionModel? dipUserAction)? create,
-    TResult? Function(bool loading, UserActionModel? dipUserAction)? search,
+    TResult? Function(bool loading, List<UserActionModel>? dipUserAction)?
+        search,
   }) {
     return create?.call(loading, dipUserAction);
   }
@@ -1524,7 +1560,8 @@ class _$DailyImplementationPlanCreateStateImpl
             Map<String, String>? selectedSettlementsDate)?
         selectSettlements,
     TResult Function(bool loading, UserActionModel? dipUserAction)? create,
-    TResult Function(bool loading, UserActionModel? dipUserAction)? search,
+    TResult Function(bool loading, List<UserActionModel>? dipUserAction)?
+        search,
     required TResult orElse(),
   }) {
     if (create != null) {
@@ -1596,7 +1633,7 @@ abstract class _$$DailyImplementationPlanSearchStateImplCopyWith<$Res> {
           $Res Function(_$DailyImplementationPlanSearchStateImpl) then) =
       __$$DailyImplementationPlanSearchStateImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({bool loading, UserActionModel? dipUserAction});
+  $Res call({bool loading, List<UserActionModel>? dipUserAction});
 }
 
 /// @nodoc
@@ -1621,9 +1658,9 @@ class __$$DailyImplementationPlanSearchStateImplCopyWithImpl<$Res>
           : loading // ignore: cast_nullable_to_non_nullable
               as bool,
       dipUserAction: freezed == dipUserAction
-          ? _value.dipUserAction
+          ? _value._dipUserAction
           : dipUserAction // ignore: cast_nullable_to_non_nullable
-              as UserActionModel?,
+              as List<UserActionModel>?,
     ));
   }
 }
@@ -1633,14 +1670,22 @@ class __$$DailyImplementationPlanSearchStateImplCopyWithImpl<$Res>
 class _$DailyImplementationPlanSearchStateImpl
     implements DailyImplementationPlanSearchState {
   const _$DailyImplementationPlanSearchStateImpl(
-      {this.loading = false, this.dipUserAction = null});
+      {this.loading = false, final List<UserActionModel>? dipUserAction = null})
+      : _dipUserAction = dipUserAction;
 
   @override
   @JsonKey()
   final bool loading;
+  final List<UserActionModel>? _dipUserAction;
   @override
   @JsonKey()
-  final UserActionModel? dipUserAction;
+  List<UserActionModel>? get dipUserAction {
+    final value = _dipUserAction;
+    if (value == null) return null;
+    if (_dipUserAction is EqualUnmodifiableListView) return _dipUserAction;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   @override
   String toString() {
@@ -1653,12 +1698,13 @@ class _$DailyImplementationPlanSearchStateImpl
         (other.runtimeType == runtimeType &&
             other is _$DailyImplementationPlanSearchStateImpl &&
             (identical(other.loading, loading) || other.loading == loading) &&
-            (identical(other.dipUserAction, dipUserAction) ||
-                other.dipUserAction == dipUserAction));
+            const DeepCollectionEquality()
+                .equals(other._dipUserAction, _dipUserAction));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, loading, dipUserAction);
+  int get hashCode => Object.hash(runtimeType, loading,
+      const DeepCollectionEquality().hash(_dipUserAction));
 
   @JsonKey(ignore: true)
   @override
@@ -1681,7 +1727,8 @@ class _$DailyImplementationPlanSearchStateImpl
         selectSettlements,
     required TResult Function(bool loading, UserActionModel? dipUserAction)
         create,
-    required TResult Function(bool loading, UserActionModel? dipUserAction)
+    required TResult Function(
+            bool loading, List<UserActionModel>? dipUserAction)
         search,
   }) {
     return search(loading, dipUserAction);
@@ -1699,7 +1746,8 @@ class _$DailyImplementationPlanSearchStateImpl
             Map<String, String>? selectedSettlementsDate)?
         selectSettlements,
     TResult? Function(bool loading, UserActionModel? dipUserAction)? create,
-    TResult? Function(bool loading, UserActionModel? dipUserAction)? search,
+    TResult? Function(bool loading, List<UserActionModel>? dipUserAction)?
+        search,
   }) {
     return search?.call(loading, dipUserAction);
   }
@@ -1716,7 +1764,8 @@ class _$DailyImplementationPlanSearchStateImpl
             Map<String, String>? selectedSettlementsDate)?
         selectSettlements,
     TResult Function(bool loading, UserActionModel? dipUserAction)? create,
-    TResult Function(bool loading, UserActionModel? dipUserAction)? search,
+    TResult Function(bool loading, List<UserActionModel>? dipUserAction)?
+        search,
     required TResult orElse(),
   }) {
     if (search != null) {
@@ -1770,11 +1819,11 @@ class _$DailyImplementationPlanSearchStateImpl
 abstract class DailyImplementationPlanSearchState
     implements DailyImplementationPlanState {
   const factory DailyImplementationPlanSearchState(
-          {final bool loading, final UserActionModel? dipUserAction}) =
+          {final bool loading, final List<UserActionModel>? dipUserAction}) =
       _$DailyImplementationPlanSearchStateImpl;
 
   bool get loading;
-  UserActionModel? get dipUserAction;
+  List<UserActionModel>? get dipUserAction;
   @JsonKey(ignore: true)
   _$$DailyImplementationPlanSearchStateImplCopyWith<
           _$DailyImplementationPlanSearchStateImpl>

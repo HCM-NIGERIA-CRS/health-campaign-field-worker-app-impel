@@ -71,9 +71,9 @@ class DailyImplementationPlanBloc
     DailyImplementationPlanEmitter emit,
   ) async {
     emit(const DailyImplementationPlanState.create(loading: true));
-    UserActionModel tripBookActionModel = event.dipUserAction;
+    UserActionModel dipActionModel = event.dipUserAction;
     try {
-      tripBookActionModel = tripBookActionModel.copyWith(
+      dipActionModel = dipActionModel.copyWith(
         clientAuditDetails: ClientAuditDetails(
             createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
             createdTime: DateTime.now().millisecondsSinceEpoch,
@@ -86,10 +86,10 @@ class DailyImplementationPlanBloc
             lastModifiedTime: DateTime.now().millisecondsSinceEpoch),
       );
       // create the userAction model with trip action as start
-      await userActionLocalRepository.createUserAction(tripBookActionModel);
+      await userActionLocalRepository.createUserAction(dipActionModel);
       emit(DailyImplementationPlanState.create(
         loading: false,
-        dipUserAction: tripBookActionModel,
+        dipUserAction: dipActionModel,
       ));
     } catch (e) {}
   }
@@ -101,11 +101,13 @@ class DailyImplementationPlanBloc
     emit(const DailyImplementationPlanState.search(
       loading: true,
     ));
-    List<UserActionModel> vehicleUserActions = await userActionLocalRepository
-        .searchClientReferenceId(clientReferenceId: event.clientReferenceId);
+    List<UserActionModel> vehicleUserActions =
+        await userActionLocalRepository.searchUserAction(
+            action: event.userAction,
+            clientReferenceId: event.clientReferenceId);
     emit(DailyImplementationPlanState.search(
       loading: false,
-      dipUserAction: vehicleUserActions.firstOrNull,
+      dipUserAction: vehicleUserActions,
     ));
   }
 }
@@ -128,7 +130,8 @@ class DailyImplementationPlanEvent with _$DailyImplementationPlanEvent {
   }) = DailyImplementationPlanCreateEvent;
 
   const factory DailyImplementationPlanEvent.handleSearch({
-    required String clientReferenceId,
+    String? clientReferenceId,
+    String? userAction,
   }) = DailyImplementationPlanSearchEvent;
 }
 
@@ -152,6 +155,6 @@ class DailyImplementationPlanState with _$DailyImplementationPlanState {
 
   const factory DailyImplementationPlanState.search({
     @Default(false) bool loading,
-    @Default(null) UserActionModel? dipUserAction,
+    @Default(null) List<UserActionModel>? dipUserAction,
   }) = DailyImplementationPlanSearchState;
 }

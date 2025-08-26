@@ -61,13 +61,14 @@ class _SelectSettlementsDateViewState
                 DailyImplementationPlanState>(
               builder: (context, state) {
                 if (state is DailyImplementationPlanSearchState) {
-                  UserActionModel? dipUserActionModel = state.dipUserAction;
+                  UserActionModel? dipUserActionModel =
+                      state.dipUserAction?.firstOrNull;
                   List<AdditionalField>?
                       selectedSettlementsDateAdditionalField =
                       dipUserActionModel?.additionalFields?.fields
                           .where((e) => e.key == 'settlements')
                           .toList();
-                  Map<String, String> selectedSettlementsDate =
+                  Map<String, dynamic> selectedSettlementsDate =
                       selectedSettlementsDateAdditionalField == null
                           ? {}
                           : selectedSettlementsDateAdditionalField.first.value;
@@ -89,9 +90,9 @@ class _SelectSettlementsDateViewState
                         headingStyle: textTheme.headingXS
                             .copyWith(color: theme.colorTheme.text.primary),
                       ),
+                      const SizedBox(height: kPadding),
                       Expanded(
-                        child: _ReportDetailsContent(
-                          title: "",
+                        child: ReadonlyDigitGrid(
                           data: DigitGridData(columns: [
                             DigitGridColumn(
                                 key: 'settlements',
@@ -106,10 +107,13 @@ class _SelectSettlementsDateViewState
                           ], rows: [
                             for (var key in selectedSettlementsDate.keys)
                               DigitGridRow([
-                                DigitGridCell(key: 'settlements', value: key),
+                                DigitGridCell(
+                                    key: 'settlements',
+                                    value: localizations.translate(key)),
                                 DigitGridCell(
                                     key: 'dateOfVisit',
-                                    value: selectedSettlementsDate[key] ?? '')
+                                    value: localizations.translate(
+                                        selectedSettlementsDate[key] ?? ''))
                               ]),
                           ]),
                         ),
@@ -123,35 +127,6 @@ class _SelectSettlementsDateViewState
           ),
         ),
       ],
-    );
-  }
-}
-
-class _ReportDetailsContent extends StatelessWidget {
-  final String title;
-  final DigitGridData data;
-
-  const _ReportDetailsContent({
-    required this.title,
-    required this.data,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(kPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: kPadding * 2),
-          Flexible(
-            child: ReadonlyDigitGrid(
-              data: data,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

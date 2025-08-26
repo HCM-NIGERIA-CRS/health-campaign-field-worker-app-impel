@@ -55,7 +55,7 @@ class CustomUserActionLocalRepository extends UserActionLocalRepository {
   DataModelType get type => DataModelType.userAction;
 
   FutureOr<List<UserActionModel>> searchUserAction(
-      {String? action, String? vehicleNo}) {
+      {String? action, String? vehicleNo, String? clientReferenceId}) {
     return retryLocalCallOperation<List<UserActionModel>>(() async {
       final selectQuery = sql.select(sql.userAction).join(
         [
@@ -78,67 +78,6 @@ class CustomUserActionLocalRepository extends UserActionLocalRepository {
                     sql.userAction.beneficiaryTag.isIn([vehicleNo])
                   else
                     const Constant(true),
-                  // if (query.isPermanent != null)
-                  //   sql.facility.isPermanent.equals(
-                  //     query.isPermanent!,
-                  //   ),
-                ],
-              ),
-            ))
-          .get();
-
-      return results.map((e) {
-        final userActionModel = e.readTable(sql.userAction);
-        String? additionalFieldString = userActionModel.additionalFields;
-        Map<String, dynamic>? additionalFieldsMap =
-            additionalFieldString == null
-                ? null
-                : json.decode(additionalFieldString);
-        List<dynamic>? additionalField = additionalFieldsMap?["fields"];
-        return UserActionModel(
-            latitude: double.parse(userActionModel.latitude),
-            longitude: double.parse(userActionModel.longitude),
-            locationAccuracy: double.parse(userActionModel.locationAccuracy),
-            clientReferenceId: userActionModel.clientReferenceId,
-            isSync: userActionModel.isSync,
-            timestamp: userActionModel.timestamp,
-            nonRecoverableError: userActionModel.nonRecoverableError,
-            tenantId: userActionModel.tenantId,
-            id: userActionModel.id,
-            rowVersion: userActionModel.rowVersion,
-            projectId: userActionModel.projectId,
-            boundaryCode: userActionModel.boundaryCode,
-            action: userActionModel.action,
-            beneficiaryTag: userActionModel.beneficiaryTag,
-            resourceTag: userActionModel.resourceTag,
-            additionalFields: additionalField == null
-                ? null
-                : UserActionAdditionalFields(
-                    version: 1,
-                    fields: additionalField
-                        .map((e) => AdditionalField(e["key"], e["value"]))
-                        .toList(),
-                  ));
-      }).toList();
-    });
-  }
-
-  FutureOr<List<UserActionModel>> searchClientReferenceId(
-      {String? clientReferenceId}) {
-    return retryLocalCallOperation<List<UserActionModel>>(() async {
-      final selectQuery = sql.select(sql.userAction).join(
-        [
-          leftOuterJoin(
-            sql.address,
-            sql.address.relatedClientReferenceId.equalsExp(sql.userAction.id),
-          ),
-        ],
-      );
-
-      final results = await (selectQuery
-            ..where(
-              buildAnd(
-                [
                   if (clientReferenceId != null)
                     sql.userAction.clientReferenceId.isIn([clientReferenceId])
                   else

@@ -120,7 +120,7 @@ class _SelectSettlementsPageState
                                   locationAccuracy: locationAccuracy,
                                   clientReferenceId: clientReferenceId,
                                   isSync: true,
-                                  timestamp: startTime,
+                                  timestamp: state.date ?? startTime,
                                   tenantId:
                                       RegistrationDeliverySingleton().tenantId,
                                   projectId: RegistrationDeliverySingleton()
@@ -129,7 +129,7 @@ class _SelectSettlementsPageState
                                           .boundary
                                           ?.code! ??
                                       "",
-                                  action: "dailyPlan",
+                                  action: "DIP",
                                   additionalFields: UserActionAdditionalFields(
                                       version: 1,
                                       fields: [

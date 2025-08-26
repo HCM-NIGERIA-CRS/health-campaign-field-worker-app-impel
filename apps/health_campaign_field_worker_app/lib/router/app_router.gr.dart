@@ -796,6 +796,12 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const SelectSettlementsDatePage(),
       );
     },
+    SelectSettlementsDateViewListRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const SelectSettlementsDateViewListPage(),
+      );
+    },
     SelectSettlementsDateViewRoute.name: (routeData) {
       final args = routeData.argsAs<SelectSettlementsDateViewRouteArgs>();
       return AutoRoutePage<dynamic>(
@@ -3736,6 +3742,20 @@ class SelectSettlementsDateRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'SelectSettlementsDateRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [SelectSettlementsDateViewListPage]
+class SelectSettlementsDateViewListRoute extends PageRouteInfo<void> {
+  const SelectSettlementsDateViewListRoute({List<PageRouteInfo>? children})
+      : super(
+          SelectSettlementsDateViewListRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'SelectSettlementsDateViewListRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

@@ -783,6 +783,9 @@ class DailyImplementationFlow {
   String get selectDateForAllSettlements => 'SELECT_DATE_FOR_ALL_SETTLEMENTS';
   String get settlements => 'SETTLEMENTS_LABEL';
   String get dateOfVisit => 'DATE_OF_VISIT_LABEL';
+
+  String get no_daily_implementation_plan_found =>
+      'NO_DAILY_IMPLEMENTATION_PLAN_FOUND';
 }
 
 class ComplaintsDetailsShowcase {
