@@ -381,6 +381,8 @@ class CustomHouseHoldDetailsPageState
                                         context.millisecondsSinceEpoch(),
                                   ),
                                   address: addressModel,
+                                  householdType: RegistrationDeliverySingleton()
+                                      .householdType,
                                   additionalFields: HouseholdAdditionalFields(
                                       version: 1,
                                       fields: [
