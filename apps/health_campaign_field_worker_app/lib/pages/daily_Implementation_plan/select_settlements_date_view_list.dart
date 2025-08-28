@@ -29,7 +29,7 @@ class _SelectSettlementsDateViewListPageState
   @override
   void initState() {
     context.read<DailyImplementationPlanBloc>().add(
-          const DailyImplementationPlanEvent.handleSearch(
+          const DailyImplementationPlanEvent.handleAllSearch(
             userAction: 'DIP',
           ),
         );
@@ -59,7 +59,7 @@ class _SelectSettlementsDateViewListPageState
               builder: (context, state) {
                 if (state is DailyImplementationPlanSearchState) {
                   List<UserActionModel>? dipUserActionModelList =
-                      state.dipUserAction;
+                      state.allDipUserAction;
                   if (dipUserActionModelList != null &&
                       dipUserActionModelList.isNotEmpty) {
                     return ListView.builder(
@@ -92,9 +92,15 @@ class _SelectSettlementsDateViewListPageState
                               margin:
                                   const EdgeInsets.symmetric(vertical: spacer1),
                               children: [
-                                Text(date.toString()),
+                                Text(
+                                  date.toString(),
+                                  style: textTheme.bodyL,
+                                ),
+                                Text(
+                                  wfpSupervisor,
+                                  style: textTheme.bodyL,
+                                ),
                                 Text(dipUserActionModel.clientReferenceId),
-                                Text(wfpSupervisor),
                               ],
                             ),
                           );

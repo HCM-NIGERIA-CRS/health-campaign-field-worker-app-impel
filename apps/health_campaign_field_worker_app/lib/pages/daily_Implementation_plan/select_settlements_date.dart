@@ -212,7 +212,7 @@ class _ReportDetailsContentState extends LocalizedState<SettlementGridView> {
               itemCount: widget.settlements.length,
               itemBuilder: (context, index) {
                 return SettlementRow(
-                  key: ValueKey(index),
+                  index: index,
                   settlement: widget.settlements[index],
                   onSelectDate: (value) {
                     context.read<DailyImplementationPlanBloc>().add(
@@ -272,6 +272,7 @@ class SettlementTitleRow extends StatelessWidget {
 }
 
 class SettlementRow extends StatefulWidget {
+  final int index;
   final String settlement;
   final Function(String) onSelectDate;
   final Map<String, String> allDates;
@@ -279,19 +280,21 @@ class SettlementRow extends StatefulWidget {
       {super.key,
       required this.settlement,
       required this.onSelectDate,
-      required this.allDates});
+      required this.allDates,
+      required this.index});
 
   @override
   State<SettlementRow> createState() => _SettlementRowState();
 }
 
 class _SettlementRowState extends State<SettlementRow> {
-  DropdownItem? selectedOption;
+  Map<int, DropdownItem> selectedOption = {};
   @override
   Widget build(BuildContext context) {
     var cellDecoration = const BoxDecoration(
       color: Colors.white,
     );
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -309,13 +312,14 @@ class _SettlementRowState extends State<SettlementRow> {
           height: 40,
           child: Center(
               child: DigitDropdown(
-            selectedOption: selectedOption,
+            key: ValueKey(widget.settlement),
+            selectedOption: selectedOption[widget.index],
             items: [
               for (var date in widget.allDates.keys)
                 DropdownItem(code: date, name: widget.allDates[date]!),
             ],
             onSelect: (value) {
-              selectedOption = value;
+              selectedOption[widget.index] = value;
               widget.onSelectDate(value.code);
             },
           )),

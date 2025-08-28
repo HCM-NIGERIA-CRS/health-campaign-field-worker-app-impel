@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/user_action.dart';
@@ -24,7 +25,8 @@ class DailyImplementationPlanBloc
     on(_selectSettlement);
     on(_selectSettlementDate);
     on(_handleCreate);
-    on(_handleSearch);
+    on(_handleAllSettlementSearch);
+    on(_handleSettlementSearch);
   }
 
   FutureOr<void> _selectSettlement(
@@ -43,27 +45,27 @@ class DailyImplementationPlanBloc
     DailyImplementationPlanSelectSettlementsDateEvent event,
     DailyImplementationPlanEmitter emit,
   ) async {
-    if (state is DailyImplementationPlanSelectSettlementsState) {
-      DailyImplementationPlanSelectSettlementsState currentState =
-          state as DailyImplementationPlanSelectSettlementsState;
-      Map<String, String> selectedSettlements = {};
-      for (var settlement
-          in (currentState.selectedSettlementsDate ?? {}).keys) {
-        selectedSettlements[settlement] =
-            currentState.selectedSettlementsDate![settlement]!;
-      }
-      for (var settlement in event.selectedSettlementsDate.keys) {
-        selectedSettlements[settlement] =
-            event.selectedSettlementsDate[settlement]!;
-      }
-      emit(DailyImplementationPlanState.selectSettlements(
-        date: currentState.date,
-        administrativeUnit: currentState.administrativeUnit,
-        wfpSupervisor: currentState.wfpSupervisor,
-        selectedSettlements: currentState.selectedSettlements,
-        selectedSettlementsDate: selectedSettlements,
-      ));
+    DailyImplementationPlanSelectSettlementsState? currentState;
+    try {
+      currentState = state as DailyImplementationPlanSelectSettlementsState;
+    } catch (e) {}
+
+    Map<String, String> selectedSettlements = {};
+    for (var settlement in (currentState?.selectedSettlementsDate ?? {}).keys) {
+      selectedSettlements[settlement] =
+          currentState!.selectedSettlementsDate![settlement]!;
     }
+    for (var settlement in event.selectedSettlementsDate.keys) {
+      selectedSettlements[settlement] =
+          event.selectedSettlementsDate[settlement]!;
+    }
+    emit(DailyImplementationPlanState.selectSettlements(
+      date: currentState?.date,
+      administrativeUnit: currentState?.administrativeUnit,
+      wfpSupervisor: currentState?.wfpSupervisor,
+      selectedSettlements: currentState?.selectedSettlements,
+      selectedSettlementsDate: selectedSettlements,
+    ));
   }
 
   FutureOr<void> _handleCreate(
@@ -94,20 +96,50 @@ class DailyImplementationPlanBloc
     } catch (e) {}
   }
 
-  FutureOr<void> _handleSearch(
+  FutureOr<void> _handleAllSettlementSearch(
+    DailyImplementationPlanAllSearchEvent event,
+    DailyImplementationPlanEmitter emit,
+  ) async {
+    DailyImplementationPlanSearchState? currentState;
+    try {
+      currentState = state as DailyImplementationPlanSearchState;
+    } catch (e) {}
+
+    emit(DailyImplementationPlanState.search(
+      loading: true,
+      selectedDipUserAction: currentState?.selectedDipUserAction,
+      allDipUserAction: currentState?.allDipUserAction,
+    ));
+    List<UserActionModel>? vehicleUserActions =
+        await userActionLocalRepository.searchUserAction(
+      action: event.userAction,
+    );
+    emit(DailyImplementationPlanState.search(
+      loading: false,
+      selectedDipUserAction: currentState?.selectedDipUserAction,
+      allDipUserAction: vehicleUserActions,
+    ));
+  }
+
+  FutureOr<void> _handleSettlementSearch(
     DailyImplementationPlanSearchEvent event,
     DailyImplementationPlanEmitter emit,
   ) async {
-    emit(const DailyImplementationPlanState.search(
+    DailyImplementationPlanSearchState? currentState;
+    try {
+      currentState = state as DailyImplementationPlanSearchState;
+    } catch (e) {}
+    emit(DailyImplementationPlanState.search(
       loading: true,
+      selectedDipUserAction: currentState?.selectedDipUserAction,
+      allDipUserAction: currentState?.allDipUserAction,
     ));
-    List<UserActionModel> vehicleUserActions =
-        await userActionLocalRepository.searchUserAction(
-            action: event.userAction,
-            clientReferenceId: event.clientReferenceId);
+    List<UserActionModel> vehicleUserActions = await userActionLocalRepository
+        .searchUserAction(clientReferenceId: event.clientReferenceId);
     emit(DailyImplementationPlanState.search(
       loading: false,
-      dipUserAction: vehicleUserActions,
+      selectedDipUserAction: vehicleUserActions.firstOrNull,
+      allDipUserAction: currentState?.allDipUserAction,
     ));
   }
 }
@@ -129,9 +161,12 @@ class DailyImplementationPlanEvent with _$DailyImplementationPlanEvent {
     required UserActionModel dipUserAction,
   }) = DailyImplementationPlanCreateEvent;
 
+  const factory DailyImplementationPlanEvent.handleAllSearch({
+    String? userAction,
+  }) = DailyImplementationPlanAllSearchEvent;
+
   const factory DailyImplementationPlanEvent.handleSearch({
     String? clientReferenceId,
-    String? userAction,
   }) = DailyImplementationPlanSearchEvent;
 }
 
@@ -155,6 +190,7 @@ class DailyImplementationPlanState with _$DailyImplementationPlanState {
 
   const factory DailyImplementationPlanState.search({
     @Default(false) bool loading,
-    @Default(null) List<UserActionModel>? dipUserAction,
+    @Default(null) UserActionModel? selectedDipUserAction,
+    @Default(null) List<UserActionModel>? allDipUserAction,
   }) = DailyImplementationPlanSearchState;
 }

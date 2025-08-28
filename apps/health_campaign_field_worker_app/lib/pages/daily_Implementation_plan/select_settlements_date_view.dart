@@ -62,7 +62,7 @@ class _SelectSettlementsDateViewState
               builder: (context, state) {
                 if (state is DailyImplementationPlanSearchState) {
                   UserActionModel? dipUserActionModel =
-                      state.dipUserAction?.firstOrNull;
+                      state.selectedDipUserAction;
                   List<AdditionalField>?
                       selectedSettlementsDateAdditionalField =
                       dipUserActionModel?.additionalFields?.fields
