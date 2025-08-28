@@ -199,6 +199,7 @@ class _ReportDetailsContentState extends LocalizedState<SettlementGridView> {
     'day5': 'Day 5',
     'day6': 'Day 6',
   };
+  Map<int, DropdownItem> selectedOption = {};
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -212,9 +213,15 @@ class _ReportDetailsContentState extends LocalizedState<SettlementGridView> {
               itemCount: widget.settlements.length,
               itemBuilder: (context, index) {
                 return SettlementRow(
-                  index: index,
+                  key: ValueKey(index),
+                  initialValue: selectedOption[index],
                   settlement: widget.settlements[index],
                   onSelectDate: (value) {
+                    setState(() {
+                      selectedOption[index] =
+                          DropdownItem(name: value, code: value);
+                    });
+
                     context.read<DailyImplementationPlanBloc>().add(
                           DailyImplementationPlanEvent
                               .handleSelectSettlementsDate(
@@ -272,8 +279,8 @@ class SettlementTitleRow extends StatelessWidget {
 }
 
 class SettlementRow extends StatefulWidget {
-  final int index;
   final String settlement;
+  final DropdownItem? initialValue;
   final Function(String) onSelectDate;
   final Map<String, String> allDates;
   const SettlementRow(
@@ -281,14 +288,13 @@ class SettlementRow extends StatefulWidget {
       required this.settlement,
       required this.onSelectDate,
       required this.allDates,
-      required this.index});
+      required this.initialValue});
 
   @override
   State<SettlementRow> createState() => _SettlementRowState();
 }
 
 class _SettlementRowState extends State<SettlementRow> {
-  Map<int, DropdownItem> selectedOption = {};
   @override
   Widget build(BuildContext context) {
     var cellDecoration = const BoxDecoration(
@@ -311,18 +317,20 @@ class _SettlementRowState extends State<SettlementRow> {
           decoration: cellDecoration,
           height: 40,
           child: Center(
-              child: DigitDropdown(
-            key: ValueKey(widget.settlement),
-            selectedOption: selectedOption[widget.index],
-            items: [
-              for (var date in widget.allDates.keys)
-                DropdownItem(code: date, name: widget.allDates[date]!),
-            ],
-            onSelect: (value) {
-              selectedOption[widget.index] = value;
-              widget.onSelectDate(value.code);
-            },
-          )),
+            child: DigitDropdown(
+              selectedOption: widget.initialValue,
+              items: [
+                for (var date in widget.allDates.keys)
+                  DropdownItem(code: date, name: widget.allDates[date]!),
+              ],
+              onSelect: (value) {
+                widget.onSelectDate(value.code);
+              },
+              onChange: (value) {
+                widget.onSelectDate(value);
+              },
+            ),
+          ),
         )),
       ],
     );
