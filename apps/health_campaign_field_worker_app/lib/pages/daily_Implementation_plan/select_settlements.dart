@@ -9,6 +9,7 @@ import '../../blocs/daily_implementation_plan/daily_implementation_plan.dart';
 import '../../router/app_router.dart';
 import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import '../../utils/extensions/extensions.dart';
 import '../../utils/i18_key_constants.dart' as i18;
 import 'package:inventory_management/widgets/localized.dart';
 import 'package:inventory_management/utils/utils.dart';
@@ -48,12 +49,11 @@ class SelectBoundaryPageState extends LocalizedState<SelectSettlementsPage> {
   FormGroup buildForm(bool isDistributor) => fb.group(<String, Object>{
         _dateOfEntryKey: FormControl<DateTime>(value: DateTime.now()),
         _administrativeUnitKey: FormControl<String>(
-          value: localizations
-              .translate(InventorySingleton().boundary!.code ?? ''),
+          value: localizations.translate(InventorySingleton().boundary!.code!),
         ),
         _wfpSupervisorKey: FormControl<String>(
           validators: isDistributor ? [] : [Validators.required],
-          value: "Test Supervisor",
+          value: context.loggedInUser.name!,
         ),
         _settlementKey: FormControl<String>(
           validators: isDistributor ? [] : [Validators.required],
