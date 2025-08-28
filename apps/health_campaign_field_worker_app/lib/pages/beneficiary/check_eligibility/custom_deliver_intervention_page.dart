@@ -47,6 +47,7 @@ import '../../../models/entities/status.dart' as local_status;
 class CustomDeliverInterventionPage extends LocalizedStatefulWidget {
   final EligibilityAssessmentType eligibilityAssessmentType;
   final bool isEditing;
+  final bool? isRevisit;
   final IndividualModel? selectedIndividual;
 
   const CustomDeliverInterventionPage({
@@ -54,6 +55,7 @@ class CustomDeliverInterventionPage extends LocalizedStatefulWidget {
     super.appLocalizations,
     required this.eligibilityAssessmentType,
     this.selectedIndividual,
+    this.isRevisit,
     this.isEditing = false,
   });
 

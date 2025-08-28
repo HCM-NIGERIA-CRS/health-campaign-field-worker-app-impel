@@ -22,6 +22,7 @@ import 'package:transit_post/widgets/localized.dart';
 import 'package:transit_post/widgets/total_delivery.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart'
     as i18_registration_delivery;
+import '../../blocs/transit_post/fixed_post.dart';
 import '../../utils/i18_key_constants.dart' as i18_local;
 
 import '../../router/app_router.dart';
@@ -47,7 +48,9 @@ class CustomFixedPostSelectionPageState
   @override
   void initState() {
     super.initState();
-    context.read<TransitPostBloc>().add(const TransitPostDeliveryCountEvent());
+    context
+        .read<FixedPostBloc>()
+        .add(FixedPostDeliveryCountEvent(action: PostType.fixed.name));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Show the dialog after the first frame is built
       DigitComponentsUtils.showDialog(
@@ -60,10 +63,10 @@ class CustomFixedPostSelectionPageState
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TransitPostBloc, TransitPostState>(
-        builder: (context, transitPostState) {
+    return BlocBuilder<FixedPostBloc, FixedPostState>(
+        builder: (context, fixedPostState) {
       return Scaffold(
-        body: transitPostState.loading
+        body: fixedPostState.loading
             ? const Center(
                 child: CircularProgressIndicator(),
               )
@@ -118,19 +121,19 @@ class CustomFixedPostSelectionPageState
                               final accuracy = form.control(_accuracyKey).value;
 
                               context
-                                  .read<TransitPostBloc>()
-                                  .add(TransitPostSelectionEvent(
+                                  .read<FixedPostBloc>()
+                                  .add(FixedPostSelectionEvent(
                                     longitude: lng,
                                     latitude: lat,
                                     locationAccuracy: accuracy,
-                                    transitPostName: transitPostName,
-                                    transitPostType: "",
+                                    fixedPostName: transitPostName,
+                                    fixedPostType: "",
                                   ));
 
                               if (context.mounted) {
                                 context.router.push(
-                                    CustomTransitPostRecordVaccinationRoute(
-                                        postType: PostType.fixed.toString()));
+                                    CustomFixedPostRecordVaccinationRoute(
+                                        postType: PostType.fixed.name));
                               }
                             },
                             type: DigitButtonType.primary,
@@ -144,13 +147,13 @@ class CustomFixedPostSelectionPageState
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             DeliveryWidget(
-                              count: transitPostState.totalCount ?? 0,
+                              count: fixedPostState.totalCount ?? 0,
                               description: localizations.translate(
                                   i18.transitPost.totalDeliveriesDescription),
                               width: MediaQuery.of(context).size.width * 0.5,
                             ),
                             DeliveryWidget(
-                              count: transitPostState.curCount ?? 0,
+                              count: fixedPostState.curCount ?? 0,
                               description: localizations.translate(
                                   i18.transitPost.todayDeliveriesDescription),
                               width: MediaQuery.of(context).size.width * 0.5,
@@ -228,19 +231,36 @@ class CustomFixedPostSelectionPageState
                                         .transitFixedPost.fixedPostnameLabel,
                                   ),
                                   isRequired: true,
-                                  child: DigitTextFormInput(
-                                    onChange: (value) {
+                                  child: DigitDropdown(
+                                    selectedOption: DropdownItem(
+                                        name: localizations.translate(form
+                                                .control(_transitPostName)
+                                                .value ??
+                                            ''),
+                                        code: form
+                                                .control(_transitPostName)
+                                                .value ??
+                                            ''),
+                                    items: TransitPostSingleton()
+                                            .transitPostType
+                                            ?.map((transitPostType) =>
+                                                DropdownItem(
+                                                    name:
+                                                        localizations.translate(
+                                                            transitPostType),
+                                                    code: transitPostType))
+                                            .toList() ??
+                                        [],
+                                    onSelect: (value) {
                                       setState(() {
                                         form.control(_transitPostName).value =
-                                            value;
+                                            value.code;
                                       });
                                     },
                                     errorMessage: field.errorText,
-                                    initialValue:
-                                        form.control(_transitPostName).value,
                                   ),
                                 ),
-                              )
+                              ),
                             ]),
                       ],
                     )),

@@ -9,36 +9,36 @@ import 'package:transit_post/utils/utils.dart';
 
 import '../../data/repositories/local/transit_post/custom_user_action.dart';
 
-part 'fixed_post.freezed.dart';
+part 'custom_transit_post.freezed.dart';
 
-typedef FixedPostEmitter = Emitter<FixedPostState>;
+typedef CustomTransitPostEmitter = Emitter<CustomTransitPostState>;
 typedef UserActionRemoteRepository
     = DataRepository<UserActionModel, UserActionSearchModel>;
 
-class FixedPostBloc extends Bloc<FixedPostEvent, FixedPostState> {
-  final UserActionLocalRepository userActionLocalRepository;
+class CustomTransitPostBloc
+    extends Bloc<CustomTransitPostEvent, CustomTransitPostState> {
   final CustomUserActionLocalRepository customUserActionLocalRepository;
-
+  final UserActionLocalRepository userActionLocalRepository;
   final UserActionRemoteRepository userActionRemoteRepository;
 
-  FixedPostBloc(
+  CustomTransitPostBloc(
     super.initialState, {
-    required this.userActionLocalRepository,
     required this.customUserActionLocalRepository,
+    required this.userActionLocalRepository,
     required this.userActionRemoteRepository,
   }) {
-    on(_handleFixedPostSelection);
+    on(_handleTransitPostSelection);
     on(_handleDeliveryCount);
     on(_handleRecordDelivery);
   }
 
-  FutureOr<void> _handleFixedPostSelection(
-    FixedPostSelectionEvent event,
-    FixedPostEmitter emit,
+  FutureOr<void> _handleTransitPostSelection(
+    CustomTransitPostSelectionEvent event,
+    CustomTransitPostEmitter emit,
   ) async {
     emit(state.copyWith(
-      fixedPostType: event.fixedPostType,
-      fixedPostName: event.fixedPostName,
+      transitPostType: event.transitPostType,
+      transitPostName: event.transitPostName,
       locationAccuracy: event.locationAccuracy,
       latitude: event.latitude,
       longitude: event.longitude,
@@ -46,8 +46,8 @@ class FixedPostBloc extends Bloc<FixedPostEvent, FixedPostState> {
   }
 
   FutureOr<void> _handleDeliveryCount(
-    FixedPostDeliveryCountEvent event,
-    FixedPostEmitter emit,
+    CustomTransitPostDeliveryCountEvent event,
+    CustomTransitPostEmitter emit,
   ) async {
     emit(state.copyWith(loading: true));
     final totalCount =
@@ -69,8 +69,8 @@ class FixedPostBloc extends Bloc<FixedPostEvent, FixedPostState> {
   }
 
   FutureOr<void> _handleRecordDelivery(
-    FixedPostDeliveryEvent event,
-    FixedPostEmitter emit,
+    CustomTransitPostDeliveryEvent event,
+    CustomTransitPostEmitter emit,
   ) async {
     try {
       await userActionLocalRepository.create(UserActionModel(
@@ -99,12 +99,12 @@ class FixedPostBloc extends Bloc<FixedPostEvent, FixedPostState> {
           ),
           additionalFields: UserActionAdditionalFields(version: 1, fields: [
             AdditionalField(
-              'FixedPostType',
-              state.fixedPostType,
+              'transitPostType',
+              state.transitPostType,
             ),
             AdditionalField(
-              'FixedPostName',
-              state.fixedPostName,
+              'transitPostName',
+              state.transitPostName,
             ),
             AdditionalField(
               'scannedResource',
@@ -119,29 +119,19 @@ class FixedPostBloc extends Bloc<FixedPostEvent, FixedPostState> {
       rethrow;
     }
   }
-
-  // FutureOr<int> fetchCount(
-  //   String? userId, {
-  //   UserActionSearchModel? query,
-  // }) async {
-  //   return retryLocalCallOperation<int>(() async {
-  //     final totalCount =
-  //         userActionLocalRepository.search(UserActionSearchModel(),);
-  //   });
-  // }
 }
 
 @freezed
-class FixedPostEvent with _$FixedPostEvent {
-  const factory FixedPostEvent.handleSelection({
+class CustomTransitPostEvent with _$CustomTransitPostEvent {
+  const factory CustomTransitPostEvent.handleSelection({
     @Default(0) double latitude,
     @Default(0) double longitude,
     @Default(0) double locationAccuracy,
-    String? fixedPostType,
-    String? fixedPostName,
-  }) = FixedPostSelectionEvent;
+    String? transitPostType,
+    String? transitPostName,
+  }) = CustomTransitPostSelectionEvent;
 
-  const factory FixedPostEvent.handleDelivery({
+  const factory CustomTransitPostEvent.handleDelivery({
     @Default(0) double latitude,
     @Default(0) double longitude,
     @Default(0) double locationAccuracy,
@@ -149,25 +139,25 @@ class FixedPostEvent with _$FixedPostEvent {
     String? action,
     int? curCount,
     int? totalCount,
-  }) = FixedPostDeliveryEvent;
+  }) = CustomTransitPostDeliveryEvent;
 
-  const factory FixedPostEvent.handleDeliveryCount({
+  const factory CustomTransitPostEvent.handleDeliveryCount({
     @Default(0) int curCount,
     @Default(0) int totalCount,
     String? action,
-  }) = FixedPostDeliveryCountEvent;
+  }) = CustomTransitPostDeliveryCountEvent;
 }
 
 @freezed
-class FixedPostState with _$FixedPostState {
-  const factory FixedPostState({
+class CustomTransitPostState with _$CustomTransitPostState {
+  const factory CustomTransitPostState({
     @Default(false) loading,
     @Default(0) double latitude,
     @Default(0) double longitude,
     @Default(0) double locationAccuracy,
-    String? fixedPostType,
-    String? fixedPostName,
+    String? transitPostType,
+    String? transitPostName,
     int? curCount,
     int? totalCount,
-  }) = _FixedPostState;
+  }) = _CustomTransitPostState;
 }

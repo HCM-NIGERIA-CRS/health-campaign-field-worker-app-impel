@@ -24,6 +24,7 @@ import 'package:registration_delivery/utils/i18_key_constants.dart'
     as i18_registration_delivery;
 import '../../../utils/i18_key_constants.dart' as i18_local;
 
+import '../../blocs/transit_post/custom_transit_post.dart';
 import '../../router/app_router.dart';
 import '../campaign_delivery_select.dart';
 
@@ -48,7 +49,8 @@ class CustomTransitPostSelectionPageState
   @override
   void initState() {
     super.initState();
-    context.read<TransitPostBloc>().add(const TransitPostDeliveryCountEvent());
+    context.read<CustomTransitPostBloc>().add(
+        CustomTransitPostDeliveryCountEvent(action: PostType.transit.name));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Show the dialog after the first frame is built
       DigitComponentsUtils.showDialog(
@@ -61,7 +63,7 @@ class CustomTransitPostSelectionPageState
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TransitPostBloc, TransitPostState>(
+    return BlocBuilder<CustomTransitPostBloc, CustomTransitPostState>(
         builder: (context, transitPostState) {
       return Scaffold(
         body: transitPostState.loading
@@ -121,8 +123,8 @@ class CustomTransitPostSelectionPageState
                               final accuracy = form.control(_accuracyKey).value;
 
                               context
-                                  .read<TransitPostBloc>()
-                                  .add(TransitPostSelectionEvent(
+                                  .read<CustomTransitPostBloc>()
+                                  .add(CustomTransitPostSelectionEvent(
                                     longitude: lng,
                                     latitude: lat,
                                     locationAccuracy: accuracy,
@@ -133,7 +135,7 @@ class CustomTransitPostSelectionPageState
                               if (context.mounted) {
                                 context.router.push(
                                     CustomTransitPostRecordVaccinationRoute(
-                                        postType: PostType.transit.toString()));
+                                        postType: PostType.transit.name));
                               }
                             },
                             type: DigitButtonType.primary,

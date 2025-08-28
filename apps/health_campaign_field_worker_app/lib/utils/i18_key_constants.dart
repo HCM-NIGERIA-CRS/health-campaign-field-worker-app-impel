@@ -166,6 +166,9 @@ class HouseholdOverView {
   String get householdOverViewSMCAssessmentActionText =>
       'HOUSEHOLD_OVER_VIEW_SMC_ASSESSMENT_ACTION_TEXT';
 
+  String get householdOverViewRevisitAbsentText =>
+      'HOUSEHOLD_OVER_VIEW_REVISIT_ABSENT_TEXT';
+
   String get householdOverViewVASAssessmentActionText =>
       'HOUSEHOLD_OVER_VIEW_VAS_ASSESSMENT_ACTION_TEXT';
 
@@ -1394,6 +1397,8 @@ class IndividualDetails {
   String get linkVoucherToIndividual => 'LINK_VOUCHER_TO_INDIVIDUAL';
   String get beneficiarySearchTextLabel => 'SEARCH_BY_BENEFICIARY_ID';
   String get absentSearchTextLabel => 'SEARCH_CHILD_ABSENT';
+  String get nonCompliantHouseSearchTextLabel =>
+      'SEARCH_NON_COMPLIANT_HOUSE_SEARCH';
 }
 
 class BeneficiaryDetails {

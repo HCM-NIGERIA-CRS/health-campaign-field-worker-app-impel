@@ -110,6 +110,7 @@ abstract class _$AppRouter extends RootStackRouter {
         child: CustomBeneficiaryDetailsPage(
           eligibilityAssessmentType: args.eligibilityAssessmentType,
           individualSelected: args.individualSelected,
+          isRevisit: args.isRevisit,
           key: args.key,
           appLocalizations: args.appLocalizations,
         ),
@@ -169,6 +170,7 @@ abstract class _$AppRouter extends RootStackRouter {
           appLocalizations: args.appLocalizations,
           eligibilityAssessmentType: args.eligibilityAssessmentType,
           selectedIndividual: args.selectedIndividual,
+          isRevisit: args.isRevisit,
           isEditing: args.isEditing,
         ),
       );
@@ -219,6 +221,17 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    CustomFixedPostRecordVaccinationRoute.name: (routeData) {
+      final args =
+          routeData.argsAs<CustomFixedPostRecordVaccinationRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CustomFixedPostRecordVaccinationPage(
+          key: args.key,
+          postType: args.postType,
+        ),
+      );
+    },
     CustomFixedPostSelectionRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -246,6 +259,7 @@ abstract class _$AppRouter extends RootStackRouter {
         child: CustomHouseHoldDetailsPage(
           key: args.key,
           appLocalizations: args.appLocalizations,
+          isConsent: args.isConsent,
         ),
       );
     },
@@ -1229,6 +1243,7 @@ class CustomBeneficiaryDetailsRoute
   CustomBeneficiaryDetailsRoute({
     required EligibilityAssessmentType eligibilityAssessmentType,
     IndividualModel? individualSelected,
+    bool? isRevisit,
     Key? key,
     RegistrationDeliveryLocalization? appLocalizations,
     List<PageRouteInfo>? children,
@@ -1237,6 +1252,7 @@ class CustomBeneficiaryDetailsRoute
           args: CustomBeneficiaryDetailsRouteArgs(
             eligibilityAssessmentType: eligibilityAssessmentType,
             individualSelected: individualSelected,
+            isRevisit: isRevisit,
             key: key,
             appLocalizations: appLocalizations,
           ),
@@ -1253,6 +1269,7 @@ class CustomBeneficiaryDetailsRouteArgs {
   const CustomBeneficiaryDetailsRouteArgs({
     required this.eligibilityAssessmentType,
     this.individualSelected,
+    this.isRevisit,
     this.key,
     this.appLocalizations,
   });
@@ -1261,13 +1278,15 @@ class CustomBeneficiaryDetailsRouteArgs {
 
   final IndividualModel? individualSelected;
 
+  final bool? isRevisit;
+
   final Key? key;
 
   final RegistrationDeliveryLocalization? appLocalizations;
 
   @override
   String toString() {
-    return 'CustomBeneficiaryDetailsRouteArgs{eligibilityAssessmentType: $eligibilityAssessmentType, individualSelected: $individualSelected, key: $key, appLocalizations: $appLocalizations}';
+    return 'CustomBeneficiaryDetailsRouteArgs{eligibilityAssessmentType: $eligibilityAssessmentType, individualSelected: $individualSelected, isRevisit: $isRevisit, key: $key, appLocalizations: $appLocalizations}';
   }
 }
 
@@ -1436,6 +1455,7 @@ class CustomDeliverInterventionRoute
     RegistrationDeliveryLocalization? appLocalizations,
     required EligibilityAssessmentType eligibilityAssessmentType,
     IndividualModel? selectedIndividual,
+    bool? isRevisit,
     bool isEditing = false,
     List<PageRouteInfo>? children,
   }) : super(
@@ -1445,6 +1465,7 @@ class CustomDeliverInterventionRoute
             appLocalizations: appLocalizations,
             eligibilityAssessmentType: eligibilityAssessmentType,
             selectedIndividual: selectedIndividual,
+            isRevisit: isRevisit,
             isEditing: isEditing,
           ),
           initialChildren: children,
@@ -1462,6 +1483,7 @@ class CustomDeliverInterventionRouteArgs {
     this.appLocalizations,
     required this.eligibilityAssessmentType,
     this.selectedIndividual,
+    this.isRevisit,
     this.isEditing = false,
   });
 
@@ -1473,11 +1495,13 @@ class CustomDeliverInterventionRouteArgs {
 
   final IndividualModel? selectedIndividual;
 
+  final bool? isRevisit;
+
   final bool isEditing;
 
   @override
   String toString() {
-    return 'CustomDeliverInterventionRouteArgs{key: $key, appLocalizations: $appLocalizations, eligibilityAssessmentType: $eligibilityAssessmentType, selectedIndividual: $selectedIndividual, isEditing: $isEditing}';
+    return 'CustomDeliverInterventionRouteArgs{key: $key, appLocalizations: $appLocalizations, eligibilityAssessmentType: $eligibilityAssessmentType, selectedIndividual: $selectedIndividual, isRevisit: $isRevisit, isEditing: $isEditing}';
   }
 }
 
@@ -1648,6 +1672,45 @@ class CustomFacilitySelectionSMCRouteArgs {
 }
 
 /// generated route for
+/// [CustomFixedPostRecordVaccinationPage]
+class CustomFixedPostRecordVaccinationRoute
+    extends PageRouteInfo<CustomFixedPostRecordVaccinationRouteArgs> {
+  CustomFixedPostRecordVaccinationRoute({
+    Key? key,
+    required String postType,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CustomFixedPostRecordVaccinationRoute.name,
+          args: CustomFixedPostRecordVaccinationRouteArgs(
+            key: key,
+            postType: postType,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CustomFixedPostRecordVaccinationRoute';
+
+  static const PageInfo<CustomFixedPostRecordVaccinationRouteArgs> page =
+      PageInfo<CustomFixedPostRecordVaccinationRouteArgs>(name);
+}
+
+class CustomFixedPostRecordVaccinationRouteArgs {
+  const CustomFixedPostRecordVaccinationRouteArgs({
+    this.key,
+    required this.postType,
+  });
+
+  final Key? key;
+
+  final String postType;
+
+  @override
+  String toString() {
+    return 'CustomFixedPostRecordVaccinationRouteArgs{key: $key, postType: $postType}';
+  }
+}
+
+/// generated route for
 /// [CustomFixedPostSelectionPage]
 class CustomFixedPostSelectionRoute extends PageRouteInfo<void> {
   const CustomFixedPostSelectionRoute({List<PageRouteInfo>? children})
@@ -1722,12 +1785,14 @@ class CustomHouseHoldDetailsRoute
   CustomHouseHoldDetailsRoute({
     Key? key,
     RegistrationDeliveryLocalization? appLocalizations,
+    bool? isConsent,
     List<PageRouteInfo>? children,
   }) : super(
           CustomHouseHoldDetailsRoute.name,
           args: CustomHouseHoldDetailsRouteArgs(
             key: key,
             appLocalizations: appLocalizations,
+            isConsent: isConsent,
           ),
           initialChildren: children,
         );
@@ -1742,15 +1807,18 @@ class CustomHouseHoldDetailsRouteArgs {
   const CustomHouseHoldDetailsRouteArgs({
     this.key,
     this.appLocalizations,
+    this.isConsent,
   });
 
   final Key? key;
 
   final RegistrationDeliveryLocalization? appLocalizations;
 
+  final bool? isConsent;
+
   @override
   String toString() {
-    return 'CustomHouseHoldDetailsRouteArgs{key: $key, appLocalizations: $appLocalizations}';
+    return 'CustomHouseHoldDetailsRouteArgs{key: $key, appLocalizations: $appLocalizations, isConsent: $isConsent}';
   }
 }
 

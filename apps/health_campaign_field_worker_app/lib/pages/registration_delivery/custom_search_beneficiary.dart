@@ -62,6 +62,7 @@ class _CustomSearchBeneficiaryPageState
   bool isSearchByBeneficiaryIdEnabled = false;
 
   bool isChildAbsentEnabled = false;
+  bool isHouseNonCompliant = false;
 
   int offset = 0;
   int limit = 10;
@@ -288,6 +289,8 @@ class _CustomSearchBeneficiaryPageState
                                                           false;
                                                       isChildAbsentEnabled =
                                                           false;
+                                                      isHouseNonCompliant =
+                                                          false;
                                                       lat = locationState
                                                           .latitude!;
                                                       long = locationState
@@ -339,6 +342,7 @@ class _CustomSearchBeneficiaryPageState
                                                       value;
                                                   isProximityEnabled = false;
                                                   isChildAbsentEnabled = false;
+                                                  isHouseNonCompliant = false;
                                                   searchController.clear();
                                                   blocWrapper.clearEvent();
                                                 });
@@ -388,6 +392,46 @@ class _CustomSearchBeneficiaryPageState
                                             localizations.translate(i18_local
                                                 .individualDetails
                                                 .absentSearchTextLabel),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.all(spacer2),
+                                            child: DigitSwitch(
+                                              value: isHouseNonCompliant,
+                                              onChanged: (value) {
+                                                customSearchHouseholdsBloc.add(
+                                                  const SearchHouseholdsClearEvent(),
+                                                );
+                                                searchController.clear();
+                                                context
+                                                    .read<
+                                                        IndividualGlobalSearchSMCBloc>()
+                                                    .add(const searchHouseholdSMCBloc
+                                                        .SearchHouseholdsSMCEvent.clear());
+                                                setState(() {
+                                                  isHouseNonCompliant = value;
+                                                  isChildAbsentEnabled = false;
+                                                  isProximityEnabled = false;
+                                                  isSearchByBeneficiaryIdEnabled =
+                                                      false;
+                                                  searchController.clear();
+                                                  blocWrapper.clearEvent();
+                                                });
+
+                                                if (isHouseNonCompliant) {
+                                                  searchNonCompliantHouse();
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                          Text(
+                                            localizations.translate(i18_local
+                                                .individualDetails
+                                                .nonCompliantHouseSearchTextLabel),
                                           ),
                                         ],
                                       )
@@ -798,6 +842,118 @@ class _CustomSearchBeneficiaryPageState
                         }
                       },
                     ),
+                  if (isHouseNonCompliant)
+                    BlocConsumer<IndividualGlobalSearchSMCBloc,
+                        searchHouseholdSMCBloc.SearchHouseholdsSMCState>(
+                      listener: (context, searchSMCstate) {},
+                      builder: (context, searchSMCstate) {
+                        if (searchSMCstate.loading) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else {
+                          if (isHouseNonCompliant &&
+                              searchSMCstate.householdMembers.isEmpty) {
+                            return SliverList(
+                                delegate:
+                                    SliverChildBuilderDelegate((ctx, index) {
+                              return DigitInfoCard(
+                                description: localizations.translate(
+                                  i18_local.searchBeneficiary
+                                      .beneficiaryInfoDescription,
+                                ),
+                                title: localizations.translate(
+                                  i18.searchBeneficiary.beneficiaryInfoTitle,
+                                ),
+                              );
+                            }, childCount: 1));
+                          }
+                          return SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (ctx, index) {
+                                final i =
+                                    searchSMCstate.householdMembers[index];
+                                return Container(
+                                  margin:
+                                      const EdgeInsets.only(bottom: kPadding),
+                                  child: CustomViewBeneficiaryCard(
+                                    householdMember: i,
+                                    onOpenPressed: () async {
+                                      final scannerBloc =
+                                          context.read<DigitScannerBloc>();
+
+                                      scannerBloc.add(
+                                        const DigitScannerEvent.handleScanner(),
+                                      );
+
+                                      if ((i.tasks != null &&
+                                              i.tasks?.last.status ==
+                                                  Status.closeHousehold
+                                                      .toValue() &&
+                                              (i.tasks ?? []).isNotEmpty) ||
+                                          (i.tasks != null &&
+                                              i.tasks?.last.status ==
+                                                  Status.administeredFailed
+                                                      .toValue() &&
+                                              (i.tasks ?? []).isNotEmpty) ||
+                                          (i.projectBeneficiaries ?? [])
+                                              .isEmpty) {
+                                        setState(() {
+                                          selectedFilters = [];
+                                        });
+                                        blocWrapper.clearEvent();
+                                        await context.router.push(
+                                          CustomBeneficiaryRegistrationWrapperRoute(
+                                            initialState: BeneficiaryRegistrationState.editHousehold(
+                                                householdModel: i.household!,
+                                                individualModel: i.members!,
+                                                registrationDate:
+                                                    DateTime.now(),
+                                                projectBeneficiaryModel:
+                                                    (i.projectBeneficiaries ??
+                                                                [])
+                                                            .isNotEmpty
+                                                        ? i.projectBeneficiaries
+                                                            ?.lastOrNull
+                                                        : null,
+                                                addressModel:
+                                                    (RegistrationDeliverySingleton()
+                                                                .householdType ==
+                                                            HouseholdType
+                                                                .community)
+                                                        ? i.household!.address!
+                                                        : i
+                                                            .headOfHousehold!
+                                                            .address!
+                                                            .lastOrNull!,
+                                                headOfHousehold:
+                                                    i.headOfHousehold),
+                                          ),
+                                        );
+                                      } else {
+                                        await context.router.push(
+                                            BeneficiaryWrapperRoute(
+                                                wrapper: i));
+                                      }
+                                      setState(() {
+                                        isProximityEnabled = false;
+                                        isSearchByBeneficiaryIdEnabled = false;
+                                        isHouseNonCompliant = false;
+                                        isChildAbsentEnabled = false;
+                                      });
+                                      searchController.clear();
+                                      selectedFilters.clear();
+                                      blocWrapper.clearEvent();
+                                    },
+                                  ),
+                                );
+                              },
+                              childCount:
+                                  searchSMCstate.householdMembers.length,
+                            ),
+                          );
+                        }
+                      },
+                    ),
                 ],
               );
             },
@@ -1138,6 +1294,7 @@ class _CustomSearchBeneficiaryPageState
       nameSearch: "",
       beneficiaryId: beneficiaryId,
       isChildAbsentEnabled: false,
+      isHouseNonCompliant: isHouseNonCompliant,
       filter: selectedFilters,
       offset: isPagination
           ? blocWrapper.individualGlobalSearchBloc.state.offset
@@ -1233,6 +1390,34 @@ class _CustomSearchBeneficiaryPageState
       nameSearch: "",
       beneficiaryId: "",
       isChildAbsentEnabled: isChildAbsentEnabled,
+      isHouseNonCompliant: isHouseNonCompliant,
+      filter: selectedFilters,
+      offset: isPagination
+          ? blocWrapper.individualGlobalSearchBloc.state.offset
+          : offset,
+      limit: isPagination
+          ? blocWrapper.individualGlobalSearchBloc.state.limit
+          : limit,
+      projectId: RegistrationDeliverySingleton().projectId!,
+    )));
+  }
+
+  void searchNonCompliantHouse({
+    bool isPagination = false,
+  }) {
+    final individualglobalsearchSMC =
+        context.read<IndividualGlobalSearchSMCBloc>();
+    individualglobalsearchSMC
+        .add(searchHouseholdSMCBloc.IndividualGlobalSearchSMCEvent(
+            globalSearchParams: GlobalSearchParametersSMC(
+      isProximityEnabled: isProximityEnabled,
+      latitude: lat,
+      longitude: long,
+      maxRadius: RegistrationDeliverySingleton().maxRadius,
+      nameSearch: "",
+      beneficiaryId: "",
+      isChildAbsentEnabled: isChildAbsentEnabled,
+      isHouseNonCompliant: isHouseNonCompliant,
       filter: selectedFilters,
       offset: isPagination
           ? blocWrapper.individualGlobalSearchBloc.state.offset

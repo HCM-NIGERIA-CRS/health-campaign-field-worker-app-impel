@@ -297,7 +297,41 @@ class CustomIndividualDetailsPageState
                   builder: (context, searchHouseholdsState) {
                     return BlocConsumer<CustomBeneficiaryRegistrationBloc,
                         BeneficiaryRegistrationState>(
-                      listener: (context, state) {},
+                      listener: (context, state) {
+                        state.mapOrNull(
+                          persisted: (value) async {
+                            if (value.navigateToRoot) {
+                              final overviewBloc =
+                                  context.read<HouseholdOverviewBloc>();
+
+                              overviewBloc.add(
+                                HouseholdOverviewReloadEvent(
+                                  projectId: RegistrationDeliverySingleton()
+                                      .projectId
+                                      .toString(),
+                                  projectBeneficiaryType:
+                                      RegistrationDeliverySingleton()
+                                              .beneficiaryType ??
+                                          BeneficiaryType.household,
+                                ),
+                              );
+
+                              await overviewBloc.stream.firstWhere((element) =>
+                                  element.loading == false &&
+                                  element.householdMemberWrapper.household !=
+                                      null);
+                              registration_delivery.HouseholdMemberWrapper
+                                  memberWrapper =
+                                  overviewBloc.state.householdMemberWrapper;
+                              final route = router.parent() as StackRouter;
+                              route.popUntilRouteWithName(
+                                  SearchBeneficiaryRoute.name);
+                              route.push(BeneficiaryWrapperRoute(
+                                  wrapper: memberWrapper));
+                            }
+                          },
+                        );
+                      },
                       builder: (context, state) {
                         return ScrollableContent(
                           enableFixedDigitButton: true,
@@ -516,7 +550,7 @@ class CustomIndividualDetailsPageState
                                               addressModel,
                                               projectBeneficiaryModel,
                                               loading,
-                                            ) {
+                                            ) async {
                                               isEditIndividual = true;
                                               final scannerBloc = context
                                                   .read<DigitScannerBloc>();

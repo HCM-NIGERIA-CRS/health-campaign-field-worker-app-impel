@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:registration_delivery/models/entities/status.dart';
 import 'package:registration_delivery/registration_delivery.dart';
+import '../../../../models/entities/status.dart' as local_status;
 
 import '../../utils/constants.dart';
 import '../../utils/typedefs.dart';
@@ -115,6 +116,7 @@ class ConsentHouseholdBloc
               isConsent,
             ),
           ]));
+
       var individual = IndividualModel(
         clientReferenceId: IdGen.i.identifier,
         tenantId: event.tenantId,
@@ -132,6 +134,7 @@ class ConsentHouseholdBloc
           lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
         ),
       );
+
       var name = NameModel(
         givenName: event.householdHeadName,
         individualClientReferenceId: individual.clientReferenceId,
@@ -150,7 +153,9 @@ class ConsentHouseholdBloc
           lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
         ),
       );
+
       var identifier = IdentifierModel(
+        individualClientReferenceId: individual.clientReferenceId,
         clientReferenceId: individual.clientReferenceId,
         individualClientReferenceId: individual.clientReferenceId,
         tenantId: event.tenantId,
@@ -177,7 +182,7 @@ class ConsentHouseholdBloc
         dateOfRegistration: DateTime.now().millisecondsSinceEpoch,
         projectId: event.projectId,
         beneficiaryClientReferenceId:
-            event.beneficiaryType == BeneficiaryType.individual.toString()
+            event.beneficiaryType == BeneficiaryType.individual.toValue()
                 ? individual.clientReferenceId
                 : household.clientReferenceId,
         clientAuditDetails: ClientAuditDetails(
@@ -189,6 +194,8 @@ class ConsentHouseholdBloc
         auditDetails: AuditDetails(
           createdBy: event.loggedInUserUuid!,
           createdTime: DateTime.now().millisecondsSinceEpoch,
+          lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
+          lastModifiedBy: event.loggedInUserUuid!,
         ),
       );
 
@@ -221,6 +228,7 @@ class ConsentHouseholdBloc
           lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
         ),
       );
+
       var householdMember = HouseholdMemberModel(
         householdClientReferenceId: household.clientReferenceId,
         individualClientReferenceId: individual.clientReferenceId,
@@ -231,11 +239,14 @@ class ConsentHouseholdBloc
         clientAuditDetails: ClientAuditDetails(
           createdTime: DateTime.now().millisecondsSinceEpoch,
           lastModifiedBy: event.loggedInUserUuid!,
+          lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
           createdBy: event.loggedInUserUuid!,
         ),
         auditDetails: AuditDetails(
           createdBy: event.loggedInUserUuid!,
           createdTime: DateTime.now().millisecondsSinceEpoch,
+          lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
+          lastModifiedBy: event.loggedInUserUuid!,
         ),
       );
 
@@ -251,10 +262,14 @@ class ConsentHouseholdBloc
         auditDetails: AuditDetails(
           createdBy: event.loggedInUserUuid!,
           createdTime: DateTime.now().millisecondsSinceEpoch,
+          lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
+          lastModifiedBy: event.loggedInUserUuid!,
         ),
         clientAuditDetails: ClientAuditDetails(
           createdBy: event.loggedInUserUuid!,
           createdTime: DateTime.now().millisecondsSinceEpoch,
+          lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
+          lastModifiedBy: event.loggedInUserUuid!,
         ),
       );
 
@@ -322,11 +337,11 @@ class ConsentHouseholdEvent with _$ConsentHouseholdEvent {
     String? householdId,
     String? householdNumber,
     String? beneficiaryType,
+    String? householdHeadName,
     bool isConsent, {
     @Default(0) double latitude,
     @Default(0) double longitude,
     @Default(0) double locationAccuracy,
-    String? householdHeadName,
     String? tag,
     BuildContext? context,
   }) = ConsentHouseholdSubmitEvent;

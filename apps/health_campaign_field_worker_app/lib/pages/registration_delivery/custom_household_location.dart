@@ -624,7 +624,7 @@ class CustomHouseholdLocationPageState
                                 ),
                                 form: form,
                                 enabled: true,
-                                isRequired: false,
+                                isRequired: !isConsent,
                                 menuItems: nonComplianceReasons.map((e) {
                                   return e.code;
                                 }).toList(),
