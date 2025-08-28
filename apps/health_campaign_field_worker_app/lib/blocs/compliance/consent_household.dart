@@ -152,6 +152,7 @@ class ConsentHouseholdBloc
       );
       var identifier = IdentifierModel(
         clientReferenceId: individual.clientReferenceId,
+        individualClientReferenceId: individual.clientReferenceId,
         tenantId: event.tenantId,
         rowVersion: 1,
         clientAuditDetails: ClientAuditDetails(
