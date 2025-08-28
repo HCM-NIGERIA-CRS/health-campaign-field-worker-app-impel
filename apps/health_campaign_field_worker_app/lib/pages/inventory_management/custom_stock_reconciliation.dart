@@ -134,7 +134,7 @@ class CustomStockReconciliationPageState
                           fetched: (productVariants) {
                             final filteredProductVariants = productVariants
                                 .where((product) =>
-                                    product.sku != Constants.polioVariant)
+                                    product.sku == Constants.polioVariant)
                                 .toList();
 
                             return ReactiveFormBuilder(
