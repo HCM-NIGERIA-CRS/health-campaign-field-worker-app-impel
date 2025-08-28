@@ -196,8 +196,6 @@ class _ReportDetailsContentState extends LocalizedState<SettlementGridView> {
     'day2': 'Day 2',
     'day3': 'Day 3',
     'day4': 'Day 4',
-    'day5': 'Day 5',
-    'day6': 'Day 6',
   };
   Map<int, DropdownItem> selectedOption = {};
   @override
