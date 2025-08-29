@@ -124,7 +124,9 @@ class CustomIndividualDetailsPageState
         fetchUniqueBeneficiaryId();
       },
       editHousehold: (value) {},
-      editIndividual: (value) {},
+      editIndividual: (value) {
+        fetchUniqueBeneficiaryId();
+      },
       orElse: () {},
     );
     customSearchHouseholdsBloc = context.read<CustomSearchHouseholdsBloc>();
@@ -563,6 +565,8 @@ class CustomIndividualDetailsPageState
                                                 context,
                                                 form: form,
                                                 oldIndividual: individualModel,
+                                                generatedUniqueId:
+                                                    generatedUniqueId,
                                               );
                                               final tag = scannerBloc
                                                       .state.qrCodes.isNotEmpty
@@ -1110,7 +1114,78 @@ class CustomIndividualDetailsPageState
               ),
             ],
     );
+    //Info add uniqueBeneficiaryId as identifier in individualModel
+    individual =
+        setUniqueIdAsIdentifier(individual, context, generatedUniqueId);
 
+    return individual;
+  }
+
+  IndividualModel setUniqueIdAsIdentifier(IndividualModel individual,
+      BuildContext context, String? generatedUniqueId) {
+    final updatedIdentifiers = individual?.identifiers;
+    final uniqueId = generatedUniqueId;
+
+    if (updatedIdentifiers != null &&
+        updatedIdentifiers.isNotEmpty &&
+        uniqueId!.isNotEmpty) {
+      final uniqueIdIdentifierPresent = updatedIdentifiers.any((identifier) =>
+          identifier.identifierType ==
+          IdentifierTypes.uniqueBeneficiaryID.toValue());
+
+      if (!uniqueIdIdentifierPresent) {
+        updatedIdentifiers.add(IdentifierModel(
+          clientReferenceId: individual.clientReferenceId,
+          tenantId: RegistrationDeliverySingleton().tenantId,
+          rowVersion: 1,
+          auditDetails: AuditDetails(
+            createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
+            createdTime:
+                ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+            lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid,
+            lastModifiedTime:
+                ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+          ),
+          clientAuditDetails: ClientAuditDetails(
+            createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
+            createdTime:
+                ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+            lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid,
+            lastModifiedTime:
+                ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+          ),
+          identifierId: uniqueId,
+          identifierType: IdentifierTypes.uniqueBeneficiaryID.toValue(),
+        ));
+        individual = individual.copyWith(identifiers: updatedIdentifiers);
+      }
+    } else if (updatedIdentifiers == null && uniqueId!.isNotEmpty) {
+      individual = individual.copyWith(identifiers: [
+        IdentifierModel(
+          clientReferenceId: individual.clientReferenceId,
+          tenantId: RegistrationDeliverySingleton().tenantId,
+          rowVersion: 1,
+          auditDetails: AuditDetails(
+            createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
+            createdTime:
+                ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+            lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid,
+            lastModifiedTime:
+                ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+          ),
+          clientAuditDetails: ClientAuditDetails(
+            createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
+            createdTime:
+                ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+            lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid,
+            lastModifiedTime:
+                ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+          ),
+          identifierId: uniqueId,
+          identifierType: IdentifierTypes.uniqueBeneficiaryID.toValue(),
+        ),
+      ]);
+    }
     return individual;
   }
 

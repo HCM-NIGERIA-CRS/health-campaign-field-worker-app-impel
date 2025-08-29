@@ -450,14 +450,14 @@ class CustomHouseHoldDetailsPageState
                               loading,
                               isHeadOfHousehold,
                             ) async {
-                              final isNoConsentAdditionalField = householdModel
+                              final isConsentAdditionalField = householdModel
                                   .additionalFields?.fields
                                   .where((e) =>
                                       e.key ==
                                       local_constants.Constants.consentsKey)
                                   .firstOrNull;
                               isNoConsent =
-                                  isNoConsentAdditionalField?.value == false;
+                                  isConsentAdditionalField?.value == false;
 
                               var household = householdModel.copyWith(
                                   memberCount: memberCount,
@@ -610,7 +610,9 @@ class CustomHouseHoldDetailsPageState
                                 );
                               } else {
                                 context.router.push(
-                                  CustomHouseholdOverviewRoute(),
+                                  CustomBeneficiaryAcknowledgementRoute(
+                                      acknowledgementType:
+                                          AcknowledgementType.addMember),
                                 );
                               }
                             },

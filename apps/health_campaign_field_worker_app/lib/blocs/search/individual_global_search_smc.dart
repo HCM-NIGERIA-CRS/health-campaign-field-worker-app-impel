@@ -70,8 +70,9 @@ class IndividualGlobalSearchSMCBloc extends SearchHouseholdsSMCBloc {
       ),
     );
 
-    var totalCount = results['total_count'];
-    var finalResults = results['data'].map((e) => e).toList();
+    var totalCount = results == null ? 0 : results['total_count'];
+    var finalResults =
+        results == null ? [] : results['data'].map((e) => e).toList();
 
     if (event.globalSearchParams.filter!.contains(Status.registered.name) ||
         event.globalSearchParams.filter!.contains(Status.notRegistered.name)) {
