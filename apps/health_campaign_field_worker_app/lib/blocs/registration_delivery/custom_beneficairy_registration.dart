@@ -537,9 +537,9 @@ class CustomBeneficiaryRegistrationBloc
             ));
 
             if (task.isNotEmpty) {
-              if (task.last.status == Status.closeHousehold.toValue()) {
-                await taskDataRepository.update(task.last
-                    .copyWith(status: Status.notAdministered.toValue()));
+              if (task.last.status == Status.administeredFailed.toValue()) {
+                await taskDataRepository.update(
+                    task.last.copyWith(status: Status.visited.toValue()));
               }
             }
           } else {
