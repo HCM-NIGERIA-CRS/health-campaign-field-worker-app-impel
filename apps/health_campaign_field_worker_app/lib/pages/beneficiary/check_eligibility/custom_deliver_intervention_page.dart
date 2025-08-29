@@ -75,6 +75,9 @@ class CustomDeliverInterventionPageState
   final clickedStatus = ValueNotifier<bool>(false);
   bool? shouldSubmit = false;
 
+  bool isTaskUpdate = false;
+  TaskModel? oldTaskCaptured;
+
   // Variable to track dose administration status
   bool doseAdministered = false;
 
@@ -116,18 +119,33 @@ class CustomDeliverInterventionPageState
       longitude: long,
       selectedIndividual: selectedIndividual,
     );
-    context.read<DeliverInterventionBloc>().add(
-          DeliverInterventionSubmitEvent(
-              task: taskModel,
-              isEditing: (deliverInterventionState.tasks ?? []).isNotEmpty &&
-                      RegistrationDeliverySingleton().beneficiaryType ==
-                          BeneficiaryType.household
-                  ? true
-                  : false,
-              boundaryModel: RegistrationDeliverySingleton().boundary!,
-              navigateToSummary: true,
-              householdMemberWrapper: householdMember),
-        );
+
+// update the old task if needed
+    if (isTaskUpdate && oldTaskCaptured != null) {
+      TaskModel updatedTask =
+          _updateTaskModel(context, oldTaskCaptured!, taskModel);
+      context.read<DeliverInterventionBloc>().add(
+            DeliverInterventionSubmitEvent(
+                task: updatedTask,
+                isEditing: true,
+                boundaryModel: RegistrationDeliverySingleton().boundary!,
+                navigateToSummary: false,
+                householdMemberWrapper: householdMember),
+          );
+    } else {
+      context.read<DeliverInterventionBloc>().add(
+            DeliverInterventionSubmitEvent(
+                task: taskModel,
+                isEditing: (deliverInterventionState.tasks ?? []).isNotEmpty &&
+                        RegistrationDeliverySingleton().beneficiaryType ==
+                            BeneficiaryType.household
+                    ? true
+                    : false,
+                boundaryModel: RegistrationDeliverySingleton().boundary!,
+                navigateToSummary: true,
+                householdMemberWrapper: householdMember),
+          );
+    }
 
     final productvariantList =
         ((form.control(_resourceDeliveredKey) as FormArray).value
@@ -515,6 +533,27 @@ class CustomDeliverInterventionPageState
                                                                 .mounted) {
                                                               // vas
 
+                                                              final deliveryState =
+                                                                  deliveryInterventionState;
+
+                                                              oldTaskCaptured =
+                                                                  deliveryInterventionState
+                                                                      ?.tasks
+                                                                      ?.where(
+                                                                          (element) {
+                                                                return element
+                                                                        ?.projectBeneficiaryClientReferenceId ==
+                                                                    projectBeneficiary
+                                                                        ?.first
+                                                                        .clientReferenceId;
+                                                              }).firstOrNull;
+
+                                                              setState(() {
+                                                                isTaskUpdate =
+                                                                    checkIfTaskUpdate(
+                                                                        oldTaskCaptured);
+                                                              });
+
                                                               context
                                                                   .read<
                                                                       LocationBloc>()
@@ -880,50 +919,6 @@ class CustomDeliverInterventionPageState
       ),
     );
 
-    int getIndividualAge(IndividualModel individualModel) {
-      DateTime dateOfBirth =
-          DateFormat("dd/MM/yyyy").parse(individualModel.dateOfBirth ?? '');
-      DigitDOBAge age = DigitDateUtils.calculateAge(dateOfBirth);
-      return getAgeMonths(age);
-    }
-
-    String? getBeneficiaryId(IndividualModel individualModel) {
-      IdentifierTypes.uniqueBeneficiaryID.toValue();
-      return individualModel.identifiers
-              ?.firstWhereOrNull((e) =>
-                  e.identifierType ==
-                  IdentifierTypes.uniqueBeneficiaryID.toValue())
-              ?.identifierId ??
-          '';
-    }
-
-    List<AdditionalField> getIndividualAdditionalFields(
-        IndividualModel? individualModel) {
-      return [
-        if (individualModel != null)
-          AdditionalField(
-            additional_fields_local.AdditionalFieldsType.age.toValue(),
-            getIndividualAge(individualModel),
-          ),
-        if (individualModel?.gender != null)
-          AdditionalField(
-            additional_fields_local.AdditionalFieldsType.gender.toValue(),
-            individualModel?.gender,
-          ),
-        if (individualModel?.clientReferenceId != null)
-          AdditionalField(
-            'individualClientReferenceId',
-            individualModel?.clientReferenceId,
-          ),
-        if (individualModel != null &&
-            getBeneficiaryId(individualModel) != null)
-          AdditionalField(
-            'uniqueBeneficiaryId',
-            getBeneficiaryId(individualModel),
-          ),
-      ];
-    }
-
     // Extract productvariantList from the form
     final productvariantList =
         ((form.control(_resourceDeliveredKey) as FormArray).value
@@ -1025,6 +1020,82 @@ class CustomDeliverInterventionPageState
     );
 
     return task;
+  }
+
+  int getIndividualAge(IndividualModel individualModel) {
+    DateTime dateOfBirth =
+        DateFormat("dd/MM/yyyy").parse(individualModel.dateOfBirth ?? '');
+    DigitDOBAge age = DigitDateUtils.calculateAge(dateOfBirth);
+    return getAgeMonths(age);
+  }
+
+  String? getBeneficiaryId(IndividualModel individualModel) {
+    IdentifierTypes.uniqueBeneficiaryID.toValue();
+    return individualModel.identifiers
+            ?.firstWhereOrNull((e) =>
+                e.identifierType ==
+                IdentifierTypes.uniqueBeneficiaryID.toValue())
+            ?.identifierId ??
+        '';
+  }
+
+  List<AdditionalField> getIndividualAdditionalFields(
+      IndividualModel? individualModel) {
+    return [
+      if (individualModel != null)
+        AdditionalField(
+          additional_fields_local.AdditionalFieldsType.age.toValue(),
+          getIndividualAge(individualModel),
+        ),
+      if (individualModel?.gender != null)
+        AdditionalField(
+          additional_fields_local.AdditionalFieldsType.gender.toValue(),
+          individualModel?.gender,
+        ),
+      if (individualModel?.clientReferenceId != null)
+        AdditionalField(
+          'individualClientReferenceId',
+          individualModel?.clientReferenceId,
+        ),
+      if (individualModel != null && getBeneficiaryId(individualModel) != null)
+        AdditionalField(
+          'uniqueBeneficiaryId',
+          getBeneficiaryId(individualModel),
+        ),
+    ];
+  }
+
+  // ignore: long-parameter-list
+  TaskModel _updateTaskModel(
+      BuildContext context, TaskModel oldTask, TaskModel newTask) {
+    oldTask = oldTask.copyWith(
+        tenantId: RegistrationDeliverySingleton().tenantId,
+        auditDetails: oldTask.auditDetails!.copyWith(
+            lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid!,
+            lastModifiedTime: context.millisecondsSinceEpoch()),
+        clientAuditDetails: oldTask.clientAuditDetails!.copyWith(
+            lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid!,
+            lastModifiedTime: context.millisecondsSinceEpoch()),
+        status: newTask.status,
+        additionalFields: oldTask.additionalFields == null
+            ? TaskAdditionalFields(
+                version: 1, fields: [...newTask.additionalFields?.fields ?? []])
+            : oldTask.additionalFields!
+                .copyWith(fields: [...newTask.additionalFields?.fields ?? []]));
+
+    return oldTask;
+  }
+
+  bool checkIfTaskUpdate(TaskModel? oldTask) {
+    if (oldTask == null) {
+      return false;
+    }
+
+    bool ifUpdate = (oldTask.status?.isEmpty ?? true)
+        ? false
+        : oldTask.status == local_status.Status.beneficiaryAbsent.toValue();
+
+    return ifUpdate;
   }
 
 // This method builds a form used for delivering interventions.
