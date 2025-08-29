@@ -192,19 +192,19 @@ class AppRouter extends _$AppRouter {
 
         AutoRoute(
           page: SelectSettlementsRoute.page,
-          path: 'select-boundary',
+          path: 'select-settlements',
         ),
         AutoRoute(
           page: SelectSettlementsDateRoute.page,
-          path: 'select-settlements',
+          path: 'select-settlements-date',
         ),
         AutoRoute(
           page: SelectSettlementsDateViewRoute.page,
-          path: 'select-settlements',
+          path: 'select-settlements-date-view',
         ),
         AutoRoute(
           page: SelectSettlementsDateViewListRoute.page,
-          path: 'select-settlements',
+          path: 'select-settlements-date-view-list',
         ),
 
         // Attendance Route
@@ -399,7 +399,7 @@ class AppRouter extends _$AppRouter {
                   // ),
                   AutoRoute(
                     page: CustomBeneficiaryAcknowledgementRoute.page,
-                    path: 'beneficiary-acknowledgement',
+                    path: 'custom-beneficiary-acknowledgement',
                   ),
                 ],
               ),

@@ -129,19 +129,19 @@ class _SelectSettlementsPageState
                                           .boundary
                                           ?.code! ??
                                       "",
-                                  action: "DIP",
+                                  action: "DAILY_PLAN",
                                   additionalFields: UserActionAdditionalFields(
                                       version: 1,
                                       fields: [
                                         if (state.administrativeUnit != null)
-                                          AdditionalField('administrativeUnit',
+                                          AdditionalField('BoundaryCode',
                                               state.administrativeUnit),
                                         if (state.wfpSupervisor != null)
-                                          AdditionalField('wfpSupervisor',
+                                          AdditionalField('SupervisorName',
                                               state.wfpSupervisor),
                                         if (state.selectedSettlementsDate !=
                                             null)
-                                          AdditionalField('settlements',
+                                          AdditionalField('Data',
                                               state.selectedSettlementsDate),
                                       ]));
                               context.read<DailyImplementationPlanBloc>().add(
