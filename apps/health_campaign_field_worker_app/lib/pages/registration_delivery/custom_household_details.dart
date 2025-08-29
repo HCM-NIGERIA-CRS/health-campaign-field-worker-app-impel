@@ -456,11 +456,8 @@ class CustomHouseHoldDetailsPageState
                                       e.key ==
                                       local_constants.Constants.consentsKey)
                                   .firstOrNull;
-                              isNoConsent = isNoConsentAdditionalField != null
-                                  ? isNoConsentAdditionalField.value
-                                      ? false
-                                      : true
-                                  : false;
+                              isNoConsent =
+                                  isNoConsentAdditionalField?.value == false;
 
                               var household = householdModel.copyWith(
                                   memberCount: memberCount,
