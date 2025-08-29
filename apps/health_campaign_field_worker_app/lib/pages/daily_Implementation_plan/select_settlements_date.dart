@@ -216,15 +216,14 @@ class _ReportDetailsContentState extends LocalizedState<SettlementGridView> {
                   settlement: widget.settlements[index],
                   onSelectDate: (value) {
                     setState(() {
-                      selectedOption[index] =
-                          DropdownItem(name: value, code: value);
+                      selectedOption[index] = value;
                     });
 
                     context.read<DailyImplementationPlanBloc>().add(
                           DailyImplementationPlanEvent
                               .handleSelectSettlementsDate(
                             selectedSettlementsDate: {
-                              widget.settlements[index]: value,
+                              widget.settlements[index]: value.name,
                             },
                           ),
                         );
@@ -279,7 +278,7 @@ class SettlementTitleRow extends StatelessWidget {
 class SettlementRow extends StatefulWidget {
   final String settlement;
   final DropdownItem? initialValue;
-  final Function(String) onSelectDate;
+  final Function(DropdownItem) onSelectDate;
   final Map<String, String> allDates;
   const SettlementRow(
       {super.key,
@@ -322,9 +321,6 @@ class _SettlementRowState extends State<SettlementRow> {
                   DropdownItem(code: date, name: widget.allDates[date]!),
               ],
               onSelect: (value) {
-                widget.onSelectDate(value.code);
-              },
-              onChange: (value) {
                 widget.onSelectDate(value);
               },
             ),
