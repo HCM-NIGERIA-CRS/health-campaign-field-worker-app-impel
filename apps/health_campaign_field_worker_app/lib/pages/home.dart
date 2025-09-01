@@ -944,7 +944,7 @@ void showDIPFLowDialog(
             children: [
               GestureDetector(
                 onTap: () {
-                  context.router.push(SelectBoundaryRoute());
+                  context.router.push(SelectSettlementsRoute());
 
                   Navigator.of(context).pop();
                 },
@@ -985,9 +985,8 @@ void showDIPFLowDialog(
               const SizedBox(height: 16), // Add spacing between buttons
               GestureDetector(
                 onTap: () {
-                  // context.router.push(
-
-                  // );
+                  context.router
+                      .push(const SelectSettlementsDateViewListRoute());
                   Navigator.of(context).pop();
                 },
                 child: Container(

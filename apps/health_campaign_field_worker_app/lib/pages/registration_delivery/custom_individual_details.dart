@@ -134,9 +134,8 @@ class CustomIndividualDetailsPageState
     super.initState();
   }
 
-  onSubmit(name, bool isCreate, bool isAddIndividual) {
+  onSubmit(bool isCreate, bool isAddIndividual) {
     final bloc = context.read<CustomBeneficiaryRegistrationBloc>();
-    final router = context.router;
 
     if (context.mounted) {
       if (isCreate) {
@@ -147,36 +146,6 @@ class CustomIndividualDetailsPageState
               boundary: RegistrationDeliverySingleton().boundary!,
               tag: null,
               navigateToSummary: false),
-        );
-      }
-
-      customSearchHouseholdsBloc.add(const CustomSearchHouseholdsEvent.clear());
-      customSearchHouseholdsBloc.add(
-        CustomSearchHouseholdsEvent.searchByHouseholdHead(
-          searchText: name.trim(),
-          projectId: RegistrationDeliverySingleton().projectId!,
-          isProximityEnabled: false,
-          maxRadius: RegistrationDeliverySingleton().maxRadius,
-          limit: customSearchHouseholdsBloc.state.limit,
-          offset: 0,
-        ),
-      );
-
-      final reloadState = context.read<HouseholdOverviewBloc>();
-
-      reloadState.add(
-        HouseholdOverviewReloadEvent(
-          projectId: RegistrationDeliverySingleton().projectId!,
-          projectBeneficiaryType:
-              RegistrationDeliverySingleton().beneficiaryType!,
-        ),
-      );
-
-      if (individualCaptured != null) {
-        reloadState.add(
-          HouseholdOverviewEvent.selectedIndividual(
-            individualModel: individualCaptured!,
-          ),
         );
       }
     }
@@ -300,39 +269,78 @@ class CustomIndividualDetailsPageState
                     return BlocConsumer<CustomBeneficiaryRegistrationBloc,
                         BeneficiaryRegistrationState>(
                       listener: (context, state) {
-                        state.mapOrNull(
-                          persisted: (value) async {
-                            if (value.navigateToRoot) {
-                              final overviewBloc =
-                                  context.read<HouseholdOverviewBloc>();
+                        state.mapOrNull(persisted: (value) async {
+                          final bloc =
+                              context.read<CustomBeneficiaryRegistrationBloc>();
+                          final router = context.router;
+                          if (value.navigateToRoot) {
+                            final overviewBloc =
+                                context.read<HouseholdOverviewBloc>();
 
-                              overviewBloc.add(
-                                HouseholdOverviewReloadEvent(
+                            overviewBloc.add(
+                              HouseholdOverviewReloadEvent(
+                                projectId: RegistrationDeliverySingleton()
+                                    .projectId
+                                    .toString(),
+                                projectBeneficiaryType:
+                                    RegistrationDeliverySingleton()
+                                            .beneficiaryType ??
+                                        BeneficiaryType.household,
+                              ),
+                            );
+
+                            await overviewBloc.stream.firstWhere((element) =>
+                                element.loading == false &&
+                                element.householdMemberWrapper.household !=
+                                    null);
+                            registration_delivery.HouseholdMemberWrapper
+                                memberWrapper =
+                                overviewBloc.state.householdMemberWrapper;
+                            final route = router.parent() as StackRouter;
+                            route.popUntilRouteWithName(
+                                SearchBeneficiaryRoute.name);
+                            route.push(BeneficiaryWrapperRoute(
+                                wrapper: memberWrapper));
+                          }
+
+                          if (context.mounted) {
+                            if (isCreate) {
+                              customSearchHouseholdsBloc.add(
+                                  const CustomSearchHouseholdsEvent.clear());
+                              customSearchHouseholdsBloc.add(
+                                CustomSearchHouseholdsEvent.searchByHousehold(
+                                  householdModel: value.householdModel,
                                   projectId: RegistrationDeliverySingleton()
-                                      .projectId
-                                      .toString(),
-                                  projectBeneficiaryType:
-                                      RegistrationDeliverySingleton()
-                                              .beneficiaryType ??
-                                          BeneficiaryType.household,
+                                      .projectId!,
+                                  isProximityEnabled: false,
+                                  maxRadius:
+                                      RegistrationDeliverySingleton().maxRadius,
                                 ),
                               );
 
-                              await overviewBloc.stream.firstWhere((element) =>
-                                  element.loading == false &&
-                                  element.householdMemberWrapper.household !=
-                                      null);
-                              registration_delivery.HouseholdMemberWrapper
-                                  memberWrapper =
-                                  overviewBloc.state.householdMemberWrapper;
-                              final route = router.parent() as StackRouter;
-                              route.popUntilRouteWithName(
-                                  SearchBeneficiaryRoute.name);
-                              route.push(BeneficiaryWrapperRoute(
-                                  wrapper: memberWrapper));
+                              final reloadState =
+                                  context.read<HouseholdOverviewBloc>();
+
+                              reloadState.add(
+                                HouseholdOverviewReloadEvent(
+                                  projectId: RegistrationDeliverySingleton()
+                                      .projectId!,
+                                  projectBeneficiaryType:
+                                      RegistrationDeliverySingleton()
+                                          .beneficiaryType!,
+                                ),
+                              );
+
+                              if (individualCaptured != null) {
+                                reloadState.add(
+                                  HouseholdOverviewEvent.selectedIndividual(
+                                    individualModel: individualCaptured!,
+                                  ),
+                                );
+                              }
                             }
-                          },
-                        );
+                          }
+                        });
                       },
                       builder: (context, state) {
                         return ScrollableContent(
@@ -539,10 +547,8 @@ class CustomIndividualDetailsPageState
                                                   ),
                                                 );
                                                 onSubmit(
-                                                  individual.name?.givenName ??
-                                                      "",
-                                                  true,
-                                                  false,
+                                                  isCreate,
+                                                  isAddIndividual,
                                                 );
                                               }
                                             },
@@ -625,12 +631,6 @@ class CustomIndividualDetailsPageState
                                                         : null,
                                                   ),
                                                 );
-                                                onSubmit(
-                                                    individual
-                                                            .name?.givenName ??
-                                                        "",
-                                                    false,
-                                                    false);
                                                 context.router.maybePop();
                                               }
                                             },
@@ -694,13 +694,6 @@ class CustomIndividualDetailsPageState
                                                               .qrCodes.first
                                                           : null,
                                                     ),
-                                                  );
-                                                  onSubmit(
-                                                    individual
-                                                            .name?.givenName ??
-                                                        "",
-                                                    false,
-                                                    true,
                                                   );
                                                 }
                                               }

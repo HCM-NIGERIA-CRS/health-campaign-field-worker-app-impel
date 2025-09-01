@@ -14,20 +14,11 @@ import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:inventory_management/data/repositories/local/stock.dart';
-import 'package:inventory_management/data/repositories/oplog/oplog.dart';
-import 'package:inventory_management/models/entities/stock.dart';
 import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
 import 'package:registration_delivery/data/repositories/local/unique_id_pool.dart';
 import 'package:registration_delivery/data/repositories/remote/unique_id_pool.dart';
 import 'package:registration_delivery/models/entities/unique_id_pool.dart';
-import 'package:survey_form/data/repositories/local/service.dart';
-import 'package:survey_form/data/repositories/local/service_definition.dart';
-import 'package:survey_form/data/repositories/remote/service.dart';
-import 'package:survey_form/data/repositories/remote/service_definition.dart';
-import 'package:survey_form/models/entities/service.dart';
-import 'package:survey_form/models/entities/service_definition.dart';
 import 'package:transit_post/data/repositories/local/user_action.dart';
 import 'package:transit_post/data/repositories/oplog/oplog.dart';
 
@@ -206,7 +197,8 @@ class NetworkManagerProviderWrapper extends StatelessWidget {
       ),
 
       // INFO Need to add packages here
-      RepositoryProvider<UserActionLocalRepository>(
+      RepositoryProvider<
+          LocalRepository<UserActionModel, UserActionSearchModel>>(
         create: (_) => UserActionLocalRepository(
           sql,
           UserActionOpLogManager(isar),
