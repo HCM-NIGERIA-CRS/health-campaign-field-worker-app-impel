@@ -55,7 +55,9 @@ class CustomUserActionLocalRepository extends UserActionLocalRepository {
   DataModelType get type => DataModelType.userAction;
 
   FutureOr<List<UserActionModel>> searchUserAction(
-      String? action, String? additionalFieldfilterParam) {
+      {String? action,
+      String? additionalFieldfilterParam,
+      String? clientReferenceId}) {
     return retryLocalCallOperation<List<UserActionModel>>(() async {
       final selectQuery = sql.select(sql.userAction).join(
         [
@@ -70,8 +72,9 @@ class CustomUserActionLocalRepository extends UserActionLocalRepository {
             ..where(
               buildAnd(
                 [
-                  if (action != null)
-                    sql.userAction.action.isIn([action])
+                  if (action != null) sql.userAction.action.isIn([action]),
+                  if (clientReferenceId != null)
+                    sql.userAction.clientReferenceId.isIn([clientReferenceId])
                   else
                     const Constant(true),
                   // if (query.isPermanent != null)

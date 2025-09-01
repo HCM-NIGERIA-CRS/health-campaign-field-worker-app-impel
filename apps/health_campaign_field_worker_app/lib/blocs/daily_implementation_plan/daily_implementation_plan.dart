@@ -8,7 +8,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:registration_delivery/utils/utils.dart';
 import 'package:transit_post/data/repositories/local/user_action.dart';
 
-import '../../data/repositories/local/custom_user_action.dart';
+import '../../data/repositories/local/transit_post/custom_user_action.dart';
 
 part 'daily_implementation_plan.freezed.dart';
 
@@ -16,10 +16,12 @@ typedef DailyImplementationPlanEmitter = Emitter<DailyImplementationPlanState>;
 
 class DailyImplementationPlanBloc
     extends Bloc<DailyImplementationPlanEvent, DailyImplementationPlanState> {
-  final CustomUserActionLocalRepository userActionLocalRepository;
+  final CustomUserActionLocalRepository customUserActionLocalRepository;
+  final UserActionLocalRepository userActionLocalRepository;
 
   DailyImplementationPlanBloc(
     super.initialState, {
+    required this.customUserActionLocalRepository,
     required this.userActionLocalRepository,
   }) {
     on(_selectSettlement);
@@ -88,7 +90,7 @@ class DailyImplementationPlanBloc
             lastModifiedTime: DateTime.now().millisecondsSinceEpoch),
       );
       // create the userAction model with trip action as start
-      await userActionLocalRepository.createUserAction(dipActionModel);
+      await userActionLocalRepository.create(dipActionModel);
       emit(DailyImplementationPlanState.create(
         loading: false,
         dipUserAction: dipActionModel,
@@ -111,9 +113,8 @@ class DailyImplementationPlanBloc
       allDipUserAction: currentState?.allDipUserAction,
     ));
     List<UserActionModel>? vehicleUserActions =
-        await userActionLocalRepository.searchUserAction(
-      action: event.userAction,
-    );
+        await customUserActionLocalRepository.searchUserAction(
+            action: event.userAction);
     emit(DailyImplementationPlanState.search(
       loading: false,
       selectedDipUserAction: currentState?.selectedDipUserAction,
@@ -134,8 +135,9 @@ class DailyImplementationPlanBloc
       selectedDipUserAction: currentState?.selectedDipUserAction,
       allDipUserAction: currentState?.allDipUserAction,
     ));
-    List<UserActionModel> vehicleUserActions = await userActionLocalRepository
-        .searchUserAction(clientReferenceId: event.clientReferenceId);
+    List<UserActionModel> vehicleUserActions =
+        await customUserActionLocalRepository.searchUserAction(
+            clientReferenceId: event.clientReferenceId);
     emit(DailyImplementationPlanState.search(
       loading: false,
       selectedDipUserAction: vehicleUserActions.firstOrNull,

@@ -55,6 +55,9 @@ class AppConfiguration {
   @Name('DELIVERY_COMMENT_OPTIONS_POPULATOR')
   late List<DeliveryCommentOptions>? deliveryCommentOptions;
 
+  @Name('USER_ACTION_DAILY_PLAN')
+  late List<DailyActionPlanConfig>? dailyPlanConfigs;
+
   @Name('TRANSPORT_TYPES')
   late List<TransportTypes>? transportTypes;
 
@@ -120,6 +123,12 @@ class IdTypeOptions {
 class DeliveryCommentOptions {
   late String name;
   late String code;
+}
+
+@embedded
+class DailyActionPlanConfig {
+  late String key;
+  late String value;
 }
 
 @embedded

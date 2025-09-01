@@ -53,6 +53,8 @@ class MasterEnumsMapper extends EnumMapper<MasterEnums> {
         return MasterEnums.idTypes;
       case "DELIVERY_COMMENT_OPTIONS_POPULATOR":
         return MasterEnums.deliveryComments;
+      case "USER_ACTION_DAILY_PLAN":
+        return MasterEnums.dipConfig;
       case "BACKEND_INTERFACE":
         return MasterEnums.backendInterface;
       case "CALL_SUPPORT":
@@ -117,6 +119,8 @@ class MasterEnumsMapper extends EnumMapper<MasterEnums> {
         return "ID_TYPE_OPTIONS_POPULATOR";
       case MasterEnums.deliveryComments:
         return "DELIVERY_COMMENT_OPTIONS_POPULATOR";
+      case MasterEnums.dipConfig:
+        return "USER_ACTION_DAILY_PLAN";
       case MasterEnums.backendInterface:
         return "BACKEND_INTERFACE";
       case MasterEnums.callSupport:

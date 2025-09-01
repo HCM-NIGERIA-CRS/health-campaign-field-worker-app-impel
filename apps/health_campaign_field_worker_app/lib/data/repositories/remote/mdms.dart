@@ -305,6 +305,15 @@ class MdmsRepository {
       return deliveryCommentOption;
     }).toList();
 
+    final List<DailyActionPlanConfig>? dailyPlanConfigs =
+        element?.dailyPlanConfigs.map((element) {
+      final dailyPlanConfig = DailyActionPlanConfig()
+        ..key = element.key
+        ..value = element.value;
+
+      return dailyPlanConfig;
+    }).toList();
+
     final List<NonComplianceReasons>? nonComplianceReasons =
         element?.nonComplianceReasons.map((element) {
       final nonComplianceReasons = NonComplianceReasons()
@@ -341,6 +350,7 @@ class MdmsRepository {
     appConfiguration.idTypeOptions = idTypeOptions;
     appConfiguration.privacyPolicyConfig = privacyPolicy;
     appConfiguration.deliveryCommentOptions = deliveryCommentOptions;
+    appConfiguration.dailyPlanConfigs = dailyPlanConfigs;
     appConfiguration.nonComplianceReasons = nonComplianceReasons;
     appConfiguration.beneficiaryIdConfig = beneficiaryIdConfig;
     appConfiguration.householdDeletionReasonOptions =

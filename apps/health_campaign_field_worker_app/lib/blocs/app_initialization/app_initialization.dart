@@ -110,6 +110,7 @@ class AppInitializationBloc
                     MasterEnums.beneficiaryIdConfig.toValue(),
                     MasterEnums.transitPostType.toValue(),
                     MasterEnums.nonComplianceReasons.toValue(),
+                    MasterEnums.dipConfig.toValue(),
                   ]),
                 ),
                 MdmsModuleDetailModel(

@@ -189,7 +189,7 @@ class IndividualGlobalSearchSMCRepository extends LocalRepository {
         return _returnIndividualModel(results, count);
       }
     } else if (params.isHouseNonCompliant != null &&
-        params.isHouseNonCompliant == true) {
+        params.isHouseNonCompliant!) {
       var nonCompliantHouseSearchQuery =
           await nonCompliantHouseSearch(selectQuery, params, super.sql);
 
@@ -204,8 +204,75 @@ class IndividualGlobalSearchSMCRepository extends LocalRepository {
         }
         await nonCompliantHouseSearchQuery.limit(params.limit ?? 50,
             offset: params.offset ?? 0);
+        // Return empty list if no results found
+        if (nonCompliantHouseSearchQuery == null) {
+          return [];
+        } else {
+          // Get total count if offset is zero and filters are applied
+          if (params.offset == 0) {
+            count = await _getTotalCount(
+                nonCompliantHouseSearchQuery, params, super.sql);
+          }
+          await nonCompliantHouseSearchQuery.limit(params.limit ?? 50,
+              offset: params.offset ?? 0);
 
-        final results = await nonCompliantHouseSearchQuery.get();
+          final results = await nonCompliantHouseSearchQuery.get();
+          var data = results
+              .map((e) {
+                final task = e.readTableOrNull(sql.task);
+                final resources = e.readTableOrNull(sql.taskResource);
+
+                return TaskModel(
+                  id: task.id,
+                  createdBy: task.createdBy,
+                  clientReferenceId: task.clientReferenceId,
+                  rowVersion: task.rowVersion,
+                  tenantId: task.tenantId,
+                  isDeleted: task.isDeleted,
+                  projectId: task.projectId,
+                  projectBeneficiaryId: task.projectBeneficiaryId,
+                  projectBeneficiaryClientReferenceId:
+                      task.projectBeneficiaryClientReferenceId,
+                  createdDate: task.createdDate,
+                  status: task.status,
+                  resources: resources == null
+                      ? null
+                      : [
+                          TaskResourceModel(
+                            taskclientReferenceId:
+                                resources.taskclientReferenceId,
+                            clientReferenceId: resources.clientReferenceId,
+                            id: resources.id,
+                            productVariantId: resources.productVariantId,
+                            taskId: resources.taskId,
+                            deliveryComment: resources.deliveryComment,
+                            quantity: resources.quantity,
+                            rowVersion: resources.rowVersion,
+                          ),
+                        ],
+                );
+              })
+              .where((element) => element.isDeleted != true)
+              .toList();
+          return {"data": data, "total_count": count};
+        }
+      }
+    } else if (params.isChildAbsentEnabled != null &&
+        params.isChildAbsentEnabled!) {
+      var childAbsentQuery = await absentSearch(selectQuery, params, super.sql);
+
+      // Return empty list if no results found
+      if (childAbsentQuery == null) {
+        return [];
+      } else {
+        // Get total count if offset is zero and filters are applied
+        if (params.offset == 0) {
+          count = await _getTotalCount(childAbsentQuery, params, super.sql);
+        }
+        await childAbsentQuery.limit(params.limit ?? 50,
+            offset: params.offset ?? 0);
+
+        final results = await childAbsentQuery.get();
         var data = results
             .map((e) {
               final task = e.readTableOrNull(sql.task);
@@ -244,88 +311,6 @@ class IndividualGlobalSearchSMCRepository extends LocalRepository {
             .where((element) => element.isDeleted != true)
             .toList();
         return {"data": data, "total_count": count};
-      }
-    } else {
-      if (params.isChildAbsentEnabled != null) {
-        if (params.isChildAbsentEnabled!) {
-          var childAbsentQuery =
-              await absentSearch(selectQuery, params, super.sql);
-
-          // Return empty list if no results found
-          if (childAbsentQuery == null) {
-            return [];
-          } else {
-            // Get total count if offset is zero and filters are applied
-            if (params.offset == 0) {
-              count = await _getTotalCount(childAbsentQuery, params, super.sql);
-            }
-            await childAbsentQuery.limit(params.limit ?? 50,
-                offset: params.offset ?? 0);
-
-            final results = await childAbsentQuery.get();
-            var data;
-            data = results
-                .map((e) {
-                  final task = e.readTableOrNull(sql.task);
-                  final resources = e.readTableOrNull(sql.taskResource);
-
-                  return TaskModel(
-                    id: task.id,
-                    createdBy: task.createdBy,
-                    clientReferenceId: task.clientReferenceId,
-                    rowVersion: task.rowVersion,
-                    tenantId: task.tenantId,
-                    isDeleted: task.isDeleted,
-                    projectId: task.projectId,
-                    projectBeneficiaryId: task.projectBeneficiaryId,
-                    projectBeneficiaryClientReferenceId:
-                        task.projectBeneficiaryClientReferenceId,
-                    createdDate: task.createdDate,
-                    status: task.status,
-                    resources: resources == null
-                        ? null
-                        : [
-                            TaskResourceModel(
-                              taskclientReferenceId:
-                                  resources.taskclientReferenceId,
-                              clientReferenceId: resources.clientReferenceId,
-                              id: resources.id,
-                              productVariantId: resources.productVariantId,
-                              taskId: resources.taskId,
-                              deliveryComment: resources.deliveryComment,
-                              quantity: resources.quantity,
-                              rowVersion: resources.rowVersion,
-                            ),
-                          ],
-                  );
-                })
-                .where((element) => element.isDeleted != true)
-                .toList();
-            return {"data": data, "total_count": count};
-          }
-        }
-      } else {
-        var beneficiarySelectQuery =
-            await beneficiaryIdSearch(selectQuery, params, super.sql);
-
-        // Return empty list if no results found
-        if (beneficiarySelectQuery == null) {
-          return [];
-        } else {
-          // Get total count if offset is zero and filters are applied
-          if (params.offset == 0 &&
-              params.filter != null &&
-              params.filter!.isNotEmpty) {
-            count =
-                await _getTotalCount(beneficiarySelectQuery, params, super.sql);
-          }
-          await beneficiarySelectQuery.limit(params.limit ?? 50,
-              offset: params.offset ?? 0);
-
-          final results = await beneficiarySelectQuery.get();
-
-          return _returnIndividualModel(results, count);
-        }
       }
     }
   }

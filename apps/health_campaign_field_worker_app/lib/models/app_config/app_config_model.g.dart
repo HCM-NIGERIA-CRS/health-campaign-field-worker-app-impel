@@ -127,6 +127,9 @@ _$HCMWrapperModelImpl _$$HCMWrapperModelImplFromJson(
           .map(
               (e) => DeliveryCommentOptions.fromJson(e as Map<String, dynamic>))
           .toList(),
+      dailyPlanConfigs: (json['USER_ACTION_DAILY_PLAN'] as List<dynamic>)
+          .map((e) => DailyActionPlanConfig.fromJson(e as Map<String, dynamic>))
+          .toList(),
       nonComplianceReasons: (json['NON_COMPLIANCE_REASONS'] as List<dynamic>)
           .map((e) => NonComplianceReasons.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -182,6 +185,7 @@ Map<String, dynamic> _$$HCMWrapperModelImplToJson(
       'CHECKLIST_TYPES': instance.checklistTypes,
       'ID_TYPE_OPTIONS_POPULATOR': instance.idTypeOptions,
       'DELIVERY_COMMENT_OPTIONS_POPULATOR': instance.deliveryCommentOptions,
+      'USER_ACTION_DAILY_PLAN': instance.dailyPlanConfigs,
       'NON_COMPLIANCE_REASONS': instance.nonComplianceReasons,
       'BACKEND_INTERFACE': instance.backendInterface,
       'CALL_SUPPORT': instance.callSupportOptions,
@@ -355,6 +359,20 @@ Map<String, dynamic> _$$DeliveryCommentOptionsImplToJson(
     <String, dynamic>{
       'name': instance.name,
       'code': instance.code,
+    };
+
+_$DailyActionPlanConfigImpl _$$DailyActionPlanConfigImplFromJson(
+        Map<String, dynamic> json) =>
+    _$DailyActionPlanConfigImpl(
+      key: json['key'] as String,
+      value: json['value'] as String,
+    );
+
+Map<String, dynamic> _$$DailyActionPlanConfigImplToJson(
+        _$DailyActionPlanConfigImpl instance) =>
+    <String, dynamic>{
+      'key': instance.key,
+      'value': instance.value,
     };
 
 _$NonComplianceReasonsImpl _$$NonComplianceReasonsImplFromJson(
