@@ -9,6 +9,7 @@ import 'package:registration_delivery/utils/utils.dart';
 import 'package:transit_post/data/repositories/local/user_action.dart';
 
 import '../../data/repositories/local/transit_post/custom_user_action.dart';
+import '../../models/settlement/settlement_model.dart';
 
 part 'daily_implementation_plan.freezed.dart';
 
@@ -29,6 +30,7 @@ class DailyImplementationPlanBloc
     on(_handleCreate);
     on(_handleAllSettlementSearch);
     on(_handleSettlementSearch);
+    on(_handleClearSelectedSearch);
   }
 
   FutureOr<void> _selectSettlement(
@@ -52,21 +54,22 @@ class DailyImplementationPlanBloc
       currentState = state as DailyImplementationPlanSelectSettlementsState;
     } catch (e) {}
 
-    Map<String, String> selectedSettlements = {};
-    for (var settlement in (currentState?.selectedSettlementsDate ?? {}).keys) {
-      selectedSettlements[settlement] =
-          currentState!.selectedSettlementsDate![settlement]!;
-    }
-    for (var settlement in event.selectedSettlementsDate.keys) {
-      selectedSettlements[settlement] =
-          event.selectedSettlementsDate[settlement]!;
+    List<SettlementModel> settlementData =
+        currentState?.settlementData?.map((e) => e).toList() ?? [];
+
+    for (SettlementModel settlement in event.settlementData) {
+      int index = settlementData
+          .indexWhere((e) => e.boundaryCode == settlement.boundaryCode);
+      index == -1
+          ? settlementData.add(settlement)
+          : settlementData[index] = settlement;
     }
     emit(DailyImplementationPlanState.selectSettlements(
       date: currentState?.date,
       administrativeUnit: currentState?.administrativeUnit,
       wfpSupervisor: currentState?.wfpSupervisor,
       selectedSettlements: currentState?.selectedSettlements,
-      selectedSettlementsDate: selectedSettlements,
+      settlementData: settlementData,
     ));
   }
 
@@ -129,20 +132,35 @@ class DailyImplementationPlanBloc
     DailyImplementationPlanSearchState? currentState;
     try {
       currentState = state as DailyImplementationPlanSearchState;
+      emit(DailyImplementationPlanState.search(
+        loading: true,
+        selectedDipUserAction: null,
+        allDipUserAction: currentState.allDipUserAction,
+      ));
+      List<UserActionModel> vehicleUserActions =
+          await customUserActionLocalRepository.searchUserAction(
+              clientReferenceId: event.clientReferenceId);
+      emit(DailyImplementationPlanState.search(
+        loading: false,
+        selectedDipUserAction: vehicleUserActions.firstOrNull,
+        allDipUserAction: currentState.allDipUserAction,
+      ));
     } catch (e) {}
-    emit(DailyImplementationPlanState.search(
-      loading: true,
-      selectedDipUserAction: currentState?.selectedDipUserAction,
-      allDipUserAction: currentState?.allDipUserAction,
-    ));
-    List<UserActionModel> vehicleUserActions =
-        await customUserActionLocalRepository.searchUserAction(
-            clientReferenceId: event.clientReferenceId);
-    emit(DailyImplementationPlanState.search(
-      loading: false,
-      selectedDipUserAction: vehicleUserActions.firstOrNull,
-      allDipUserAction: currentState?.allDipUserAction,
-    ));
+  }
+
+  FutureOr<void> _handleClearSelectedSearch(
+    DailyImplementationPlanClearSelectedSearchEvent event,
+    DailyImplementationPlanEmitter emit,
+  ) {
+    DailyImplementationPlanSearchState? currentState;
+    try {
+      currentState = state as DailyImplementationPlanSearchState;
+      emit(DailyImplementationPlanState.search(
+        loading: true,
+        selectedDipUserAction: null,
+        allDipUserAction: currentState.allDipUserAction,
+      ));
+    } catch (e) {}
   }
 }
 
@@ -156,7 +174,7 @@ class DailyImplementationPlanEvent with _$DailyImplementationPlanEvent {
   }) = DailyImplementationPlanSelectSettlementsEvent;
 
   const factory DailyImplementationPlanEvent.handleSelectSettlementsDate({
-    required Map<String, String> selectedSettlementsDate,
+    required List<SettlementModel> settlementData,
   }) = DailyImplementationPlanSelectSettlementsDateEvent;
 
   const factory DailyImplementationPlanEvent.handleCreate({
@@ -170,6 +188,9 @@ class DailyImplementationPlanEvent with _$DailyImplementationPlanEvent {
   const factory DailyImplementationPlanEvent.handleSearch({
     String? clientReferenceId,
   }) = DailyImplementationPlanSearchEvent;
+
+  const factory DailyImplementationPlanEvent.clearSelectedSearch() =
+      DailyImplementationPlanClearSelectedSearchEvent;
 }
 
 @freezed
@@ -182,7 +203,7 @@ class DailyImplementationPlanState with _$DailyImplementationPlanState {
     @Default(null) String? administrativeUnit,
     @Default(null) String? wfpSupervisor,
     @Default(null) List<String>? selectedSettlements,
-    @Default(null) Map<String, String>? selectedSettlementsDate,
+    @Default(null) List<SettlementModel>? settlementData,
   }) = DailyImplementationPlanSelectSettlementsState;
 
   const factory DailyImplementationPlanState.create(

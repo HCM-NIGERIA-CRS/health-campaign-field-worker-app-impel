@@ -21,11 +21,12 @@ mixin _$DailyImplementationPlanEvent {
     required TResult Function(int date, String administrativeUnit,
             String wfpSupervisor, List<String> selectedSettlements)
         handleSelectSettlements,
-    required TResult Function(Map<String, String> selectedSettlementsDate)
+    required TResult Function(List<SettlementModel> settlementData)
         handleSelectSettlementsDate,
     required TResult Function(UserActionModel dipUserAction) handleCreate,
     required TResult Function(String? userAction) handleAllSearch,
     required TResult Function(String? clientReferenceId) handleSearch,
+    required TResult Function() clearSelectedSearch,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -33,11 +34,12 @@ mixin _$DailyImplementationPlanEvent {
     TResult? Function(int date, String administrativeUnit, String wfpSupervisor,
             List<String> selectedSettlements)?
         handleSelectSettlements,
-    TResult? Function(Map<String, String> selectedSettlementsDate)?
+    TResult? Function(List<SettlementModel> settlementData)?
         handleSelectSettlementsDate,
     TResult? Function(UserActionModel dipUserAction)? handleCreate,
     TResult? Function(String? userAction)? handleAllSearch,
     TResult? Function(String? clientReferenceId)? handleSearch,
+    TResult? Function()? clearSelectedSearch,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -45,11 +47,12 @@ mixin _$DailyImplementationPlanEvent {
     TResult Function(int date, String administrativeUnit, String wfpSupervisor,
             List<String> selectedSettlements)?
         handleSelectSettlements,
-    TResult Function(Map<String, String> selectedSettlementsDate)?
+    TResult Function(List<SettlementModel> settlementData)?
         handleSelectSettlementsDate,
     TResult Function(UserActionModel dipUserAction)? handleCreate,
     TResult Function(String? userAction)? handleAllSearch,
     TResult Function(String? clientReferenceId)? handleSearch,
+    TResult Function()? clearSelectedSearch,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -67,6 +70,9 @@ mixin _$DailyImplementationPlanEvent {
         handleAllSearch,
     required TResult Function(DailyImplementationPlanSearchEvent value)
         handleSearch,
+    required TResult Function(
+            DailyImplementationPlanClearSelectedSearchEvent value)
+        clearSelectedSearch,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -79,6 +85,8 @@ mixin _$DailyImplementationPlanEvent {
     TResult? Function(DailyImplementationPlanAllSearchEvent value)?
         handleAllSearch,
     TResult? Function(DailyImplementationPlanSearchEvent value)? handleSearch,
+    TResult? Function(DailyImplementationPlanClearSelectedSearchEvent value)?
+        clearSelectedSearch,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -91,6 +99,8 @@ mixin _$DailyImplementationPlanEvent {
     TResult Function(DailyImplementationPlanAllSearchEvent value)?
         handleAllSearch,
     TResult Function(DailyImplementationPlanSearchEvent value)? handleSearch,
+    TResult Function(DailyImplementationPlanClearSelectedSearchEvent value)?
+        clearSelectedSearch,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -238,11 +248,12 @@ class _$DailyImplementationPlanSelectSettlementsEventImpl
     required TResult Function(int date, String administrativeUnit,
             String wfpSupervisor, List<String> selectedSettlements)
         handleSelectSettlements,
-    required TResult Function(Map<String, String> selectedSettlementsDate)
+    required TResult Function(List<SettlementModel> settlementData)
         handleSelectSettlementsDate,
     required TResult Function(UserActionModel dipUserAction) handleCreate,
     required TResult Function(String? userAction) handleAllSearch,
     required TResult Function(String? clientReferenceId) handleSearch,
+    required TResult Function() clearSelectedSearch,
   }) {
     return handleSelectSettlements(
         date, administrativeUnit, wfpSupervisor, selectedSettlements);
@@ -254,11 +265,12 @@ class _$DailyImplementationPlanSelectSettlementsEventImpl
     TResult? Function(int date, String administrativeUnit, String wfpSupervisor,
             List<String> selectedSettlements)?
         handleSelectSettlements,
-    TResult? Function(Map<String, String> selectedSettlementsDate)?
+    TResult? Function(List<SettlementModel> settlementData)?
         handleSelectSettlementsDate,
     TResult? Function(UserActionModel dipUserAction)? handleCreate,
     TResult? Function(String? userAction)? handleAllSearch,
     TResult? Function(String? clientReferenceId)? handleSearch,
+    TResult? Function()? clearSelectedSearch,
   }) {
     return handleSelectSettlements?.call(
         date, administrativeUnit, wfpSupervisor, selectedSettlements);
@@ -270,11 +282,12 @@ class _$DailyImplementationPlanSelectSettlementsEventImpl
     TResult Function(int date, String administrativeUnit, String wfpSupervisor,
             List<String> selectedSettlements)?
         handleSelectSettlements,
-    TResult Function(Map<String, String> selectedSettlementsDate)?
+    TResult Function(List<SettlementModel> settlementData)?
         handleSelectSettlementsDate,
     TResult Function(UserActionModel dipUserAction)? handleCreate,
     TResult Function(String? userAction)? handleAllSearch,
     TResult Function(String? clientReferenceId)? handleSearch,
+    TResult Function()? clearSelectedSearch,
     required TResult orElse(),
   }) {
     if (handleSelectSettlements != null) {
@@ -299,6 +312,9 @@ class _$DailyImplementationPlanSelectSettlementsEventImpl
         handleAllSearch,
     required TResult Function(DailyImplementationPlanSearchEvent value)
         handleSearch,
+    required TResult Function(
+            DailyImplementationPlanClearSelectedSearchEvent value)
+        clearSelectedSearch,
   }) {
     return handleSelectSettlements(this);
   }
@@ -314,6 +330,8 @@ class _$DailyImplementationPlanSelectSettlementsEventImpl
     TResult? Function(DailyImplementationPlanAllSearchEvent value)?
         handleAllSearch,
     TResult? Function(DailyImplementationPlanSearchEvent value)? handleSearch,
+    TResult? Function(DailyImplementationPlanClearSelectedSearchEvent value)?
+        clearSelectedSearch,
   }) {
     return handleSelectSettlements?.call(this);
   }
@@ -329,6 +347,8 @@ class _$DailyImplementationPlanSelectSettlementsEventImpl
     TResult Function(DailyImplementationPlanAllSearchEvent value)?
         handleAllSearch,
     TResult Function(DailyImplementationPlanSearchEvent value)? handleSearch,
+    TResult Function(DailyImplementationPlanClearSelectedSearchEvent value)?
+        clearSelectedSearch,
     required TResult orElse(),
   }) {
     if (handleSelectSettlements != null) {
@@ -367,7 +387,7 @@ abstract class _$$DailyImplementationPlanSelectSettlementsDateEventImplCopyWith<
       __$$DailyImplementationPlanSelectSettlementsDateEventImplCopyWithImpl<
           $Res>;
   @useResult
-  $Res call({Map<String, String> selectedSettlementsDate});
+  $Res call({List<SettlementModel> settlementData});
 }
 
 /// @nodoc
@@ -386,13 +406,13 @@ class __$$DailyImplementationPlanSelectSettlementsDateEventImplCopyWithImpl<
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? selectedSettlementsDate = null,
+    Object? settlementData = null,
   }) {
     return _then(_$DailyImplementationPlanSelectSettlementsDateEventImpl(
-      selectedSettlementsDate: null == selectedSettlementsDate
-          ? _value._selectedSettlementsDate
-          : selectedSettlementsDate // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>,
+      settlementData: null == settlementData
+          ? _value._settlementData
+          : settlementData // ignore: cast_nullable_to_non_nullable
+              as List<SettlementModel>,
     ));
   }
 }
@@ -402,21 +422,20 @@ class __$$DailyImplementationPlanSelectSettlementsDateEventImplCopyWithImpl<
 class _$DailyImplementationPlanSelectSettlementsDateEventImpl
     implements DailyImplementationPlanSelectSettlementsDateEvent {
   const _$DailyImplementationPlanSelectSettlementsDateEventImpl(
-      {required final Map<String, String> selectedSettlementsDate})
-      : _selectedSettlementsDate = selectedSettlementsDate;
+      {required final List<SettlementModel> settlementData})
+      : _settlementData = settlementData;
 
-  final Map<String, String> _selectedSettlementsDate;
+  final List<SettlementModel> _settlementData;
   @override
-  Map<String, String> get selectedSettlementsDate {
-    if (_selectedSettlementsDate is EqualUnmodifiableMapView)
-      return _selectedSettlementsDate;
+  List<SettlementModel> get settlementData {
+    if (_settlementData is EqualUnmodifiableListView) return _settlementData;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_selectedSettlementsDate);
+    return EqualUnmodifiableListView(_settlementData);
   }
 
   @override
   String toString() {
-    return 'DailyImplementationPlanEvent.handleSelectSettlementsDate(selectedSettlementsDate: $selectedSettlementsDate)';
+    return 'DailyImplementationPlanEvent.handleSelectSettlementsDate(settlementData: $settlementData)';
   }
 
   @override
@@ -424,13 +443,13 @@ class _$DailyImplementationPlanSelectSettlementsDateEventImpl
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$DailyImplementationPlanSelectSettlementsDateEventImpl &&
-            const DeepCollectionEquality().equals(
-                other._selectedSettlementsDate, _selectedSettlementsDate));
+            const DeepCollectionEquality()
+                .equals(other._settlementData, _settlementData));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType,
-      const DeepCollectionEquality().hash(_selectedSettlementsDate));
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(_settlementData));
 
   @JsonKey(ignore: true)
   @override
@@ -448,13 +467,14 @@ class _$DailyImplementationPlanSelectSettlementsDateEventImpl
     required TResult Function(int date, String administrativeUnit,
             String wfpSupervisor, List<String> selectedSettlements)
         handleSelectSettlements,
-    required TResult Function(Map<String, String> selectedSettlementsDate)
+    required TResult Function(List<SettlementModel> settlementData)
         handleSelectSettlementsDate,
     required TResult Function(UserActionModel dipUserAction) handleCreate,
     required TResult Function(String? userAction) handleAllSearch,
     required TResult Function(String? clientReferenceId) handleSearch,
+    required TResult Function() clearSelectedSearch,
   }) {
-    return handleSelectSettlementsDate(selectedSettlementsDate);
+    return handleSelectSettlementsDate(settlementData);
   }
 
   @override
@@ -463,13 +483,14 @@ class _$DailyImplementationPlanSelectSettlementsDateEventImpl
     TResult? Function(int date, String administrativeUnit, String wfpSupervisor,
             List<String> selectedSettlements)?
         handleSelectSettlements,
-    TResult? Function(Map<String, String> selectedSettlementsDate)?
+    TResult? Function(List<SettlementModel> settlementData)?
         handleSelectSettlementsDate,
     TResult? Function(UserActionModel dipUserAction)? handleCreate,
     TResult? Function(String? userAction)? handleAllSearch,
     TResult? Function(String? clientReferenceId)? handleSearch,
+    TResult? Function()? clearSelectedSearch,
   }) {
-    return handleSelectSettlementsDate?.call(selectedSettlementsDate);
+    return handleSelectSettlementsDate?.call(settlementData);
   }
 
   @override
@@ -478,15 +499,16 @@ class _$DailyImplementationPlanSelectSettlementsDateEventImpl
     TResult Function(int date, String administrativeUnit, String wfpSupervisor,
             List<String> selectedSettlements)?
         handleSelectSettlements,
-    TResult Function(Map<String, String> selectedSettlementsDate)?
+    TResult Function(List<SettlementModel> settlementData)?
         handleSelectSettlementsDate,
     TResult Function(UserActionModel dipUserAction)? handleCreate,
     TResult Function(String? userAction)? handleAllSearch,
     TResult Function(String? clientReferenceId)? handleSearch,
+    TResult Function()? clearSelectedSearch,
     required TResult orElse(),
   }) {
     if (handleSelectSettlementsDate != null) {
-      return handleSelectSettlementsDate(selectedSettlementsDate);
+      return handleSelectSettlementsDate(settlementData);
     }
     return orElse();
   }
@@ -506,6 +528,9 @@ class _$DailyImplementationPlanSelectSettlementsDateEventImpl
         handleAllSearch,
     required TResult Function(DailyImplementationPlanSearchEvent value)
         handleSearch,
+    required TResult Function(
+            DailyImplementationPlanClearSelectedSearchEvent value)
+        clearSelectedSearch,
   }) {
     return handleSelectSettlementsDate(this);
   }
@@ -521,6 +546,8 @@ class _$DailyImplementationPlanSelectSettlementsDateEventImpl
     TResult? Function(DailyImplementationPlanAllSearchEvent value)?
         handleAllSearch,
     TResult? Function(DailyImplementationPlanSearchEvent value)? handleSearch,
+    TResult? Function(DailyImplementationPlanClearSelectedSearchEvent value)?
+        clearSelectedSearch,
   }) {
     return handleSelectSettlementsDate?.call(this);
   }
@@ -536,6 +563,8 @@ class _$DailyImplementationPlanSelectSettlementsDateEventImpl
     TResult Function(DailyImplementationPlanAllSearchEvent value)?
         handleAllSearch,
     TResult Function(DailyImplementationPlanSearchEvent value)? handleSearch,
+    TResult Function(DailyImplementationPlanClearSelectedSearchEvent value)?
+        clearSelectedSearch,
     required TResult orElse(),
   }) {
     if (handleSelectSettlementsDate != null) {
@@ -548,10 +577,10 @@ class _$DailyImplementationPlanSelectSettlementsDateEventImpl
 abstract class DailyImplementationPlanSelectSettlementsDateEvent
     implements DailyImplementationPlanEvent {
   const factory DailyImplementationPlanSelectSettlementsDateEvent(
-          {required final Map<String, String> selectedSettlementsDate}) =
+          {required final List<SettlementModel> settlementData}) =
       _$DailyImplementationPlanSelectSettlementsDateEventImpl;
 
-  Map<String, String> get selectedSettlementsDate;
+  List<SettlementModel> get settlementData;
   @JsonKey(ignore: true)
   _$$DailyImplementationPlanSelectSettlementsDateEventImplCopyWith<
           _$DailyImplementationPlanSelectSettlementsDateEventImpl>
@@ -632,11 +661,12 @@ class _$DailyImplementationPlanCreateEventImpl
     required TResult Function(int date, String administrativeUnit,
             String wfpSupervisor, List<String> selectedSettlements)
         handleSelectSettlements,
-    required TResult Function(Map<String, String> selectedSettlementsDate)
+    required TResult Function(List<SettlementModel> settlementData)
         handleSelectSettlementsDate,
     required TResult Function(UserActionModel dipUserAction) handleCreate,
     required TResult Function(String? userAction) handleAllSearch,
     required TResult Function(String? clientReferenceId) handleSearch,
+    required TResult Function() clearSelectedSearch,
   }) {
     return handleCreate(dipUserAction);
   }
@@ -647,11 +677,12 @@ class _$DailyImplementationPlanCreateEventImpl
     TResult? Function(int date, String administrativeUnit, String wfpSupervisor,
             List<String> selectedSettlements)?
         handleSelectSettlements,
-    TResult? Function(Map<String, String> selectedSettlementsDate)?
+    TResult? Function(List<SettlementModel> settlementData)?
         handleSelectSettlementsDate,
     TResult? Function(UserActionModel dipUserAction)? handleCreate,
     TResult? Function(String? userAction)? handleAllSearch,
     TResult? Function(String? clientReferenceId)? handleSearch,
+    TResult? Function()? clearSelectedSearch,
   }) {
     return handleCreate?.call(dipUserAction);
   }
@@ -662,11 +693,12 @@ class _$DailyImplementationPlanCreateEventImpl
     TResult Function(int date, String administrativeUnit, String wfpSupervisor,
             List<String> selectedSettlements)?
         handleSelectSettlements,
-    TResult Function(Map<String, String> selectedSettlementsDate)?
+    TResult Function(List<SettlementModel> settlementData)?
         handleSelectSettlementsDate,
     TResult Function(UserActionModel dipUserAction)? handleCreate,
     TResult Function(String? userAction)? handleAllSearch,
     TResult Function(String? clientReferenceId)? handleSearch,
+    TResult Function()? clearSelectedSearch,
     required TResult orElse(),
   }) {
     if (handleCreate != null) {
@@ -690,6 +722,9 @@ class _$DailyImplementationPlanCreateEventImpl
         handleAllSearch,
     required TResult Function(DailyImplementationPlanSearchEvent value)
         handleSearch,
+    required TResult Function(
+            DailyImplementationPlanClearSelectedSearchEvent value)
+        clearSelectedSearch,
   }) {
     return handleCreate(this);
   }
@@ -705,6 +740,8 @@ class _$DailyImplementationPlanCreateEventImpl
     TResult? Function(DailyImplementationPlanAllSearchEvent value)?
         handleAllSearch,
     TResult? Function(DailyImplementationPlanSearchEvent value)? handleSearch,
+    TResult? Function(DailyImplementationPlanClearSelectedSearchEvent value)?
+        clearSelectedSearch,
   }) {
     return handleCreate?.call(this);
   }
@@ -720,6 +757,8 @@ class _$DailyImplementationPlanCreateEventImpl
     TResult Function(DailyImplementationPlanAllSearchEvent value)?
         handleAllSearch,
     TResult Function(DailyImplementationPlanSearchEvent value)? handleSearch,
+    TResult Function(DailyImplementationPlanClearSelectedSearchEvent value)?
+        clearSelectedSearch,
     required TResult orElse(),
   }) {
     if (handleCreate != null) {
@@ -816,11 +855,12 @@ class _$DailyImplementationPlanAllSearchEventImpl
     required TResult Function(int date, String administrativeUnit,
             String wfpSupervisor, List<String> selectedSettlements)
         handleSelectSettlements,
-    required TResult Function(Map<String, String> selectedSettlementsDate)
+    required TResult Function(List<SettlementModel> settlementData)
         handleSelectSettlementsDate,
     required TResult Function(UserActionModel dipUserAction) handleCreate,
     required TResult Function(String? userAction) handleAllSearch,
     required TResult Function(String? clientReferenceId) handleSearch,
+    required TResult Function() clearSelectedSearch,
   }) {
     return handleAllSearch(userAction);
   }
@@ -831,11 +871,12 @@ class _$DailyImplementationPlanAllSearchEventImpl
     TResult? Function(int date, String administrativeUnit, String wfpSupervisor,
             List<String> selectedSettlements)?
         handleSelectSettlements,
-    TResult? Function(Map<String, String> selectedSettlementsDate)?
+    TResult? Function(List<SettlementModel> settlementData)?
         handleSelectSettlementsDate,
     TResult? Function(UserActionModel dipUserAction)? handleCreate,
     TResult? Function(String? userAction)? handleAllSearch,
     TResult? Function(String? clientReferenceId)? handleSearch,
+    TResult? Function()? clearSelectedSearch,
   }) {
     return handleAllSearch?.call(userAction);
   }
@@ -846,11 +887,12 @@ class _$DailyImplementationPlanAllSearchEventImpl
     TResult Function(int date, String administrativeUnit, String wfpSupervisor,
             List<String> selectedSettlements)?
         handleSelectSettlements,
-    TResult Function(Map<String, String> selectedSettlementsDate)?
+    TResult Function(List<SettlementModel> settlementData)?
         handleSelectSettlementsDate,
     TResult Function(UserActionModel dipUserAction)? handleCreate,
     TResult Function(String? userAction)? handleAllSearch,
     TResult Function(String? clientReferenceId)? handleSearch,
+    TResult Function()? clearSelectedSearch,
     required TResult orElse(),
   }) {
     if (handleAllSearch != null) {
@@ -874,6 +916,9 @@ class _$DailyImplementationPlanAllSearchEventImpl
         handleAllSearch,
     required TResult Function(DailyImplementationPlanSearchEvent value)
         handleSearch,
+    required TResult Function(
+            DailyImplementationPlanClearSelectedSearchEvent value)
+        clearSelectedSearch,
   }) {
     return handleAllSearch(this);
   }
@@ -889,6 +934,8 @@ class _$DailyImplementationPlanAllSearchEventImpl
     TResult? Function(DailyImplementationPlanAllSearchEvent value)?
         handleAllSearch,
     TResult? Function(DailyImplementationPlanSearchEvent value)? handleSearch,
+    TResult? Function(DailyImplementationPlanClearSelectedSearchEvent value)?
+        clearSelectedSearch,
   }) {
     return handleAllSearch?.call(this);
   }
@@ -904,6 +951,8 @@ class _$DailyImplementationPlanAllSearchEventImpl
     TResult Function(DailyImplementationPlanAllSearchEvent value)?
         handleAllSearch,
     TResult Function(DailyImplementationPlanSearchEvent value)? handleSearch,
+    TResult Function(DailyImplementationPlanClearSelectedSearchEvent value)?
+        clearSelectedSearch,
     required TResult orElse(),
   }) {
     if (handleAllSearch != null) {
@@ -999,11 +1048,12 @@ class _$DailyImplementationPlanSearchEventImpl
     required TResult Function(int date, String administrativeUnit,
             String wfpSupervisor, List<String> selectedSettlements)
         handleSelectSettlements,
-    required TResult Function(Map<String, String> selectedSettlementsDate)
+    required TResult Function(List<SettlementModel> settlementData)
         handleSelectSettlementsDate,
     required TResult Function(UserActionModel dipUserAction) handleCreate,
     required TResult Function(String? userAction) handleAllSearch,
     required TResult Function(String? clientReferenceId) handleSearch,
+    required TResult Function() clearSelectedSearch,
   }) {
     return handleSearch(clientReferenceId);
   }
@@ -1014,11 +1064,12 @@ class _$DailyImplementationPlanSearchEventImpl
     TResult? Function(int date, String administrativeUnit, String wfpSupervisor,
             List<String> selectedSettlements)?
         handleSelectSettlements,
-    TResult? Function(Map<String, String> selectedSettlementsDate)?
+    TResult? Function(List<SettlementModel> settlementData)?
         handleSelectSettlementsDate,
     TResult? Function(UserActionModel dipUserAction)? handleCreate,
     TResult? Function(String? userAction)? handleAllSearch,
     TResult? Function(String? clientReferenceId)? handleSearch,
+    TResult? Function()? clearSelectedSearch,
   }) {
     return handleSearch?.call(clientReferenceId);
   }
@@ -1029,11 +1080,12 @@ class _$DailyImplementationPlanSearchEventImpl
     TResult Function(int date, String administrativeUnit, String wfpSupervisor,
             List<String> selectedSettlements)?
         handleSelectSettlements,
-    TResult Function(Map<String, String> selectedSettlementsDate)?
+    TResult Function(List<SettlementModel> settlementData)?
         handleSelectSettlementsDate,
     TResult Function(UserActionModel dipUserAction)? handleCreate,
     TResult Function(String? userAction)? handleAllSearch,
     TResult Function(String? clientReferenceId)? handleSearch,
+    TResult Function()? clearSelectedSearch,
     required TResult orElse(),
   }) {
     if (handleSearch != null) {
@@ -1057,6 +1109,9 @@ class _$DailyImplementationPlanSearchEventImpl
         handleAllSearch,
     required TResult Function(DailyImplementationPlanSearchEvent value)
         handleSearch,
+    required TResult Function(
+            DailyImplementationPlanClearSelectedSearchEvent value)
+        clearSelectedSearch,
   }) {
     return handleSearch(this);
   }
@@ -1072,6 +1127,8 @@ class _$DailyImplementationPlanSearchEventImpl
     TResult? Function(DailyImplementationPlanAllSearchEvent value)?
         handleAllSearch,
     TResult? Function(DailyImplementationPlanSearchEvent value)? handleSearch,
+    TResult? Function(DailyImplementationPlanClearSelectedSearchEvent value)?
+        clearSelectedSearch,
   }) {
     return handleSearch?.call(this);
   }
@@ -1087,6 +1144,8 @@ class _$DailyImplementationPlanSearchEventImpl
     TResult Function(DailyImplementationPlanAllSearchEvent value)?
         handleAllSearch,
     TResult Function(DailyImplementationPlanSearchEvent value)? handleSearch,
+    TResult Function(DailyImplementationPlanClearSelectedSearchEvent value)?
+        clearSelectedSearch,
     required TResult orElse(),
   }) {
     if (handleSearch != null) {
@@ -1110,6 +1169,169 @@ abstract class DailyImplementationPlanSearchEvent
 }
 
 /// @nodoc
+abstract class _$$DailyImplementationPlanClearSelectedSearchEventImplCopyWith<
+    $Res> {
+  factory _$$DailyImplementationPlanClearSelectedSearchEventImplCopyWith(
+          _$DailyImplementationPlanClearSelectedSearchEventImpl value,
+          $Res Function(_$DailyImplementationPlanClearSelectedSearchEventImpl)
+              then) =
+      __$$DailyImplementationPlanClearSelectedSearchEventImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$DailyImplementationPlanClearSelectedSearchEventImplCopyWithImpl<$Res>
+    extends _$DailyImplementationPlanEventCopyWithImpl<$Res,
+        _$DailyImplementationPlanClearSelectedSearchEventImpl>
+    implements
+        _$$DailyImplementationPlanClearSelectedSearchEventImplCopyWith<$Res> {
+  __$$DailyImplementationPlanClearSelectedSearchEventImplCopyWithImpl(
+      _$DailyImplementationPlanClearSelectedSearchEventImpl _value,
+      $Res Function(_$DailyImplementationPlanClearSelectedSearchEventImpl)
+          _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$DailyImplementationPlanClearSelectedSearchEventImpl
+    implements DailyImplementationPlanClearSelectedSearchEvent {
+  const _$DailyImplementationPlanClearSelectedSearchEventImpl();
+
+  @override
+  String toString() {
+    return 'DailyImplementationPlanEvent.clearSelectedSearch()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DailyImplementationPlanClearSelectedSearchEventImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(int date, String administrativeUnit,
+            String wfpSupervisor, List<String> selectedSettlements)
+        handleSelectSettlements,
+    required TResult Function(List<SettlementModel> settlementData)
+        handleSelectSettlementsDate,
+    required TResult Function(UserActionModel dipUserAction) handleCreate,
+    required TResult Function(String? userAction) handleAllSearch,
+    required TResult Function(String? clientReferenceId) handleSearch,
+    required TResult Function() clearSelectedSearch,
+  }) {
+    return clearSelectedSearch();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(int date, String administrativeUnit, String wfpSupervisor,
+            List<String> selectedSettlements)?
+        handleSelectSettlements,
+    TResult? Function(List<SettlementModel> settlementData)?
+        handleSelectSettlementsDate,
+    TResult? Function(UserActionModel dipUserAction)? handleCreate,
+    TResult? Function(String? userAction)? handleAllSearch,
+    TResult? Function(String? clientReferenceId)? handleSearch,
+    TResult? Function()? clearSelectedSearch,
+  }) {
+    return clearSelectedSearch?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(int date, String administrativeUnit, String wfpSupervisor,
+            List<String> selectedSettlements)?
+        handleSelectSettlements,
+    TResult Function(List<SettlementModel> settlementData)?
+        handleSelectSettlementsDate,
+    TResult Function(UserActionModel dipUserAction)? handleCreate,
+    TResult Function(String? userAction)? handleAllSearch,
+    TResult Function(String? clientReferenceId)? handleSearch,
+    TResult Function()? clearSelectedSearch,
+    required TResult orElse(),
+  }) {
+    if (clearSelectedSearch != null) {
+      return clearSelectedSearch();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(
+            DailyImplementationPlanSelectSettlementsEvent value)
+        handleSelectSettlements,
+    required TResult Function(
+            DailyImplementationPlanSelectSettlementsDateEvent value)
+        handleSelectSettlementsDate,
+    required TResult Function(DailyImplementationPlanCreateEvent value)
+        handleCreate,
+    required TResult Function(DailyImplementationPlanAllSearchEvent value)
+        handleAllSearch,
+    required TResult Function(DailyImplementationPlanSearchEvent value)
+        handleSearch,
+    required TResult Function(
+            DailyImplementationPlanClearSelectedSearchEvent value)
+        clearSelectedSearch,
+  }) {
+    return clearSelectedSearch(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(DailyImplementationPlanSelectSettlementsEvent value)?
+        handleSelectSettlements,
+    TResult? Function(DailyImplementationPlanSelectSettlementsDateEvent value)?
+        handleSelectSettlementsDate,
+    TResult? Function(DailyImplementationPlanCreateEvent value)? handleCreate,
+    TResult? Function(DailyImplementationPlanAllSearchEvent value)?
+        handleAllSearch,
+    TResult? Function(DailyImplementationPlanSearchEvent value)? handleSearch,
+    TResult? Function(DailyImplementationPlanClearSelectedSearchEvent value)?
+        clearSelectedSearch,
+  }) {
+    return clearSelectedSearch?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(DailyImplementationPlanSelectSettlementsEvent value)?
+        handleSelectSettlements,
+    TResult Function(DailyImplementationPlanSelectSettlementsDateEvent value)?
+        handleSelectSettlementsDate,
+    TResult Function(DailyImplementationPlanCreateEvent value)? handleCreate,
+    TResult Function(DailyImplementationPlanAllSearchEvent value)?
+        handleAllSearch,
+    TResult Function(DailyImplementationPlanSearchEvent value)? handleSearch,
+    TResult Function(DailyImplementationPlanClearSelectedSearchEvent value)?
+        clearSelectedSearch,
+    required TResult orElse(),
+  }) {
+    if (clearSelectedSearch != null) {
+      return clearSelectedSearch(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class DailyImplementationPlanClearSelectedSearchEvent
+    implements DailyImplementationPlanEvent {
+  const factory DailyImplementationPlanClearSelectedSearchEvent() =
+      _$DailyImplementationPlanClearSelectedSearchEventImpl;
+}
+
+/// @nodoc
 mixin _$DailyImplementationPlanState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
@@ -1119,7 +1341,7 @@ mixin _$DailyImplementationPlanState {
             String? administrativeUnit,
             String? wfpSupervisor,
             List<String>? selectedSettlements,
-            Map<String, String>? selectedSettlementsDate)
+            List<SettlementModel>? settlementData)
         selectSettlements,
     required TResult Function(bool loading, UserActionModel? dipUserAction)
         create,
@@ -1138,7 +1360,7 @@ mixin _$DailyImplementationPlanState {
             String? administrativeUnit,
             String? wfpSupervisor,
             List<String>? selectedSettlements,
-            Map<String, String>? selectedSettlementsDate)?
+            List<SettlementModel>? settlementData)?
         selectSettlements,
     TResult? Function(bool loading, UserActionModel? dipUserAction)? create,
     TResult? Function(bool loading, UserActionModel? selectedDipUserAction,
@@ -1154,7 +1376,7 @@ mixin _$DailyImplementationPlanState {
             String? administrativeUnit,
             String? wfpSupervisor,
             List<String>? selectedSettlements,
-            Map<String, String>? selectedSettlementsDate)?
+            List<SettlementModel>? settlementData)?
         selectSettlements,
     TResult Function(bool loading, UserActionModel? dipUserAction)? create,
     TResult Function(bool loading, UserActionModel? selectedDipUserAction,
@@ -1264,7 +1486,7 @@ class _$DailyImplementationPlanInitStateImpl
             String? administrativeUnit,
             String? wfpSupervisor,
             List<String>? selectedSettlements,
-            Map<String, String>? selectedSettlementsDate)
+            List<SettlementModel>? settlementData)
         selectSettlements,
     required TResult Function(bool loading, UserActionModel? dipUserAction)
         create,
@@ -1286,7 +1508,7 @@ class _$DailyImplementationPlanInitStateImpl
             String? administrativeUnit,
             String? wfpSupervisor,
             List<String>? selectedSettlements,
-            Map<String, String>? selectedSettlementsDate)?
+            List<SettlementModel>? settlementData)?
         selectSettlements,
     TResult? Function(bool loading, UserActionModel? dipUserAction)? create,
     TResult? Function(bool loading, UserActionModel? selectedDipUserAction,
@@ -1305,7 +1527,7 @@ class _$DailyImplementationPlanInitStateImpl
             String? administrativeUnit,
             String? wfpSupervisor,
             List<String>? selectedSettlements,
-            Map<String, String>? selectedSettlementsDate)?
+            List<SettlementModel>? settlementData)?
         selectSettlements,
     TResult Function(bool loading, UserActionModel? dipUserAction)? create,
     TResult Function(bool loading, UserActionModel? selectedDipUserAction,
@@ -1381,7 +1603,7 @@ abstract class _$$DailyImplementationPlanSelectSettlementsStateImplCopyWith<
       String? administrativeUnit,
       String? wfpSupervisor,
       List<String>? selectedSettlements,
-      Map<String, String>? selectedSettlementsDate});
+      List<SettlementModel>? settlementData});
 }
 
 /// @nodoc
@@ -1402,7 +1624,7 @@ class __$$DailyImplementationPlanSelectSettlementsStateImplCopyWithImpl<$Res>
     Object? administrativeUnit = freezed,
     Object? wfpSupervisor = freezed,
     Object? selectedSettlements = freezed,
-    Object? selectedSettlementsDate = freezed,
+    Object? settlementData = freezed,
   }) {
     return _then(_$DailyImplementationPlanSelectSettlementsStateImpl(
       date: freezed == date
@@ -1421,10 +1643,10 @@ class __$$DailyImplementationPlanSelectSettlementsStateImplCopyWithImpl<$Res>
           ? _value._selectedSettlements
           : selectedSettlements // ignore: cast_nullable_to_non_nullable
               as List<String>?,
-      selectedSettlementsDate: freezed == selectedSettlementsDate
-          ? _value._selectedSettlementsDate
-          : selectedSettlementsDate // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>?,
+      settlementData: freezed == settlementData
+          ? _value._settlementData
+          : settlementData // ignore: cast_nullable_to_non_nullable
+              as List<SettlementModel>?,
     ));
   }
 }
@@ -1438,9 +1660,9 @@ class _$DailyImplementationPlanSelectSettlementsStateImpl
       this.administrativeUnit = null,
       this.wfpSupervisor = null,
       final List<String>? selectedSettlements = null,
-      final Map<String, String>? selectedSettlementsDate = null})
+      final List<SettlementModel>? settlementData = null})
       : _selectedSettlements = selectedSettlements,
-        _selectedSettlementsDate = selectedSettlementsDate;
+        _settlementData = settlementData;
 
   @override
   @JsonKey()
@@ -1463,21 +1685,20 @@ class _$DailyImplementationPlanSelectSettlementsStateImpl
     return EqualUnmodifiableListView(value);
   }
 
-  final Map<String, String>? _selectedSettlementsDate;
+  final List<SettlementModel>? _settlementData;
   @override
   @JsonKey()
-  Map<String, String>? get selectedSettlementsDate {
-    final value = _selectedSettlementsDate;
+  List<SettlementModel>? get settlementData {
+    final value = _settlementData;
     if (value == null) return null;
-    if (_selectedSettlementsDate is EqualUnmodifiableMapView)
-      return _selectedSettlementsDate;
+    if (_settlementData is EqualUnmodifiableListView) return _settlementData;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(value);
+    return EqualUnmodifiableListView(value);
   }
 
   @override
   String toString() {
-    return 'DailyImplementationPlanState.selectSettlements(date: $date, administrativeUnit: $administrativeUnit, wfpSupervisor: $wfpSupervisor, selectedSettlements: $selectedSettlements, selectedSettlementsDate: $selectedSettlementsDate)';
+    return 'DailyImplementationPlanState.selectSettlements(date: $date, administrativeUnit: $administrativeUnit, wfpSupervisor: $wfpSupervisor, selectedSettlements: $selectedSettlements, settlementData: $settlementData)';
   }
 
   @override
@@ -1492,8 +1713,8 @@ class _$DailyImplementationPlanSelectSettlementsStateImpl
                 other.wfpSupervisor == wfpSupervisor) &&
             const DeepCollectionEquality()
                 .equals(other._selectedSettlements, _selectedSettlements) &&
-            const DeepCollectionEquality().equals(
-                other._selectedSettlementsDate, _selectedSettlementsDate));
+            const DeepCollectionEquality()
+                .equals(other._settlementData, _settlementData));
   }
 
   @override
@@ -1503,7 +1724,7 @@ class _$DailyImplementationPlanSelectSettlementsStateImpl
       administrativeUnit,
       wfpSupervisor,
       const DeepCollectionEquality().hash(_selectedSettlements),
-      const DeepCollectionEquality().hash(_selectedSettlementsDate));
+      const DeepCollectionEquality().hash(_settlementData));
 
   @JsonKey(ignore: true)
   @override
@@ -1524,7 +1745,7 @@ class _$DailyImplementationPlanSelectSettlementsStateImpl
             String? administrativeUnit,
             String? wfpSupervisor,
             List<String>? selectedSettlements,
-            Map<String, String>? selectedSettlementsDate)
+            List<SettlementModel>? settlementData)
         selectSettlements,
     required TResult Function(bool loading, UserActionModel? dipUserAction)
         create,
@@ -1535,7 +1756,7 @@ class _$DailyImplementationPlanSelectSettlementsStateImpl
         search,
   }) {
     return selectSettlements(date, administrativeUnit, wfpSupervisor,
-        selectedSettlements, selectedSettlementsDate);
+        selectedSettlements, settlementData);
   }
 
   @override
@@ -1547,7 +1768,7 @@ class _$DailyImplementationPlanSelectSettlementsStateImpl
             String? administrativeUnit,
             String? wfpSupervisor,
             List<String>? selectedSettlements,
-            Map<String, String>? selectedSettlementsDate)?
+            List<SettlementModel>? settlementData)?
         selectSettlements,
     TResult? Function(bool loading, UserActionModel? dipUserAction)? create,
     TResult? Function(bool loading, UserActionModel? selectedDipUserAction,
@@ -1555,7 +1776,7 @@ class _$DailyImplementationPlanSelectSettlementsStateImpl
         search,
   }) {
     return selectSettlements?.call(date, administrativeUnit, wfpSupervisor,
-        selectedSettlements, selectedSettlementsDate);
+        selectedSettlements, settlementData);
   }
 
   @override
@@ -1567,7 +1788,7 @@ class _$DailyImplementationPlanSelectSettlementsStateImpl
             String? administrativeUnit,
             String? wfpSupervisor,
             List<String>? selectedSettlements,
-            Map<String, String>? selectedSettlementsDate)?
+            List<SettlementModel>? settlementData)?
         selectSettlements,
     TResult Function(bool loading, UserActionModel? dipUserAction)? create,
     TResult Function(bool loading, UserActionModel? selectedDipUserAction,
@@ -1577,7 +1798,7 @@ class _$DailyImplementationPlanSelectSettlementsStateImpl
   }) {
     if (selectSettlements != null) {
       return selectSettlements(date, administrativeUnit, wfpSupervisor,
-          selectedSettlements, selectedSettlementsDate);
+          selectedSettlements, settlementData);
     }
     return orElse();
   }
@@ -1631,14 +1852,14 @@ abstract class DailyImplementationPlanSelectSettlementsState
           final String? administrativeUnit,
           final String? wfpSupervisor,
           final List<String>? selectedSettlements,
-          final Map<String, String>? selectedSettlementsDate}) =
+          final List<SettlementModel>? settlementData}) =
       _$DailyImplementationPlanSelectSettlementsStateImpl;
 
   int? get date;
   String? get administrativeUnit;
   String? get wfpSupervisor;
   List<String>? get selectedSettlements;
-  Map<String, String>? get selectedSettlementsDate;
+  List<SettlementModel>? get settlementData;
   @JsonKey(ignore: true)
   _$$DailyImplementationPlanSelectSettlementsStateImplCopyWith<
           _$DailyImplementationPlanSelectSettlementsStateImpl>
@@ -1733,7 +1954,7 @@ class _$DailyImplementationPlanCreateStateImpl
             String? administrativeUnit,
             String? wfpSupervisor,
             List<String>? selectedSettlements,
-            Map<String, String>? selectedSettlementsDate)
+            List<SettlementModel>? settlementData)
         selectSettlements,
     required TResult Function(bool loading, UserActionModel? dipUserAction)
         create,
@@ -1755,7 +1976,7 @@ class _$DailyImplementationPlanCreateStateImpl
             String? administrativeUnit,
             String? wfpSupervisor,
             List<String>? selectedSettlements,
-            Map<String, String>? selectedSettlementsDate)?
+            List<SettlementModel>? settlementData)?
         selectSettlements,
     TResult? Function(bool loading, UserActionModel? dipUserAction)? create,
     TResult? Function(bool loading, UserActionModel? selectedDipUserAction,
@@ -1774,7 +1995,7 @@ class _$DailyImplementationPlanCreateStateImpl
             String? administrativeUnit,
             String? wfpSupervisor,
             List<String>? selectedSettlements,
-            Map<String, String>? selectedSettlementsDate)?
+            List<SettlementModel>? settlementData)?
         selectSettlements,
     TResult Function(bool loading, UserActionModel? dipUserAction)? create,
     TResult Function(bool loading, UserActionModel? selectedDipUserAction,
@@ -1957,7 +2178,7 @@ class _$DailyImplementationPlanSearchStateImpl
             String? administrativeUnit,
             String? wfpSupervisor,
             List<String>? selectedSettlements,
-            Map<String, String>? selectedSettlementsDate)
+            List<SettlementModel>? settlementData)
         selectSettlements,
     required TResult Function(bool loading, UserActionModel? dipUserAction)
         create,
@@ -1979,7 +2200,7 @@ class _$DailyImplementationPlanSearchStateImpl
             String? administrativeUnit,
             String? wfpSupervisor,
             List<String>? selectedSettlements,
-            Map<String, String>? selectedSettlementsDate)?
+            List<SettlementModel>? settlementData)?
         selectSettlements,
     TResult? Function(bool loading, UserActionModel? dipUserAction)? create,
     TResult? Function(bool loading, UserActionModel? selectedDipUserAction,
@@ -1998,7 +2219,7 @@ class _$DailyImplementationPlanSearchStateImpl
             String? administrativeUnit,
             String? wfpSupervisor,
             List<String>? selectedSettlements,
-            Map<String, String>? selectedSettlementsDate)?
+            List<SettlementModel>? settlementData)?
         selectSettlements,
     TResult Function(bool loading, UserActionModel? dipUserAction)? create,
     TResult Function(bool loading, UserActionModel? selectedDipUserAction,

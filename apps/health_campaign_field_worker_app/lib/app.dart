@@ -100,6 +100,12 @@ class MainApplicationState extends State<MainApplication>
             IndividualOpLogManager(widget.isar),
           ),
         ),
+        RepositoryProvider<UserActionLocalRepository>(
+          create: (context) => UserActionLocalRepository(
+            widget.sql,
+            UserActionOpLogManager(widget.isar),
+          ),
+        ),
         RepositoryProvider<CustomUserActionLocalRepository>(
           create: (context) => CustomUserActionLocalRepository(
             widget.sql,

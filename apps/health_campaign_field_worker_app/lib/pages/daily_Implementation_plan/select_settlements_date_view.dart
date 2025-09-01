@@ -11,6 +11,7 @@ import 'package:inventory_management/widgets/localized.dart';
 import 'package:registration_delivery/widgets/showcase/showcase_wrappers.dart';
 
 import '../../blocs/daily_implementation_plan/daily_implementation_plan.dart';
+import '../../models/settlement/settlement_model.dart';
 import '../../router/app_router.dart';
 import '../../widgets/custom_back_navigation.dart';
 import '../../utils/i18_key_constants.dart' as i18;
@@ -66,12 +67,21 @@ class _SelectSettlementsDateViewState
                   List<AdditionalField>?
                       selectedSettlementsDateAdditionalField =
                       dipUserActionModel?.additionalFields?.fields
-                          .where((e) => e.key == 'settlements')
+                          .where((e) => e.key == 'Data')
                           .toList();
-                  Map<String, dynamic> selectedSettlementsDate =
+                  List<dynamic> settlementsData =
                       selectedSettlementsDateAdditionalField == null
-                          ? {}
-                          : selectedSettlementsDateAdditionalField.first.value;
+                          ? []
+                          : selectedSettlementsDateAdditionalField.first.value
+                                  .map((e) {
+                                return SettlementModel.fromJson(e);
+                              }).toList() ??
+                              [];
+
+                  if (state.loading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,15 +115,16 @@ class _SelectSettlementsDateViewState
                                     i18.dailyImplementationFlow.dateOfVisit),
                                 width: screenWidth / 2),
                           ], rows: [
-                            for (var key in selectedSettlementsDate.keys)
+                            for (var settlement in settlementsData)
                               DigitGridRow([
                                 DigitGridCell(
                                     key: 'settlements',
-                                    value: localizations.translate(key)),
+                                    value: localizations
+                                        .translate(settlement.boundaryCode)),
                                 DigitGridCell(
                                     key: 'dateOfVisit',
-                                    value: localizations.translate(
-                                        selectedSettlementsDate[key] ?? ''))
+                                    value: localizations
+                                        .translate(settlement.dayOfVisit))
                               ]),
                           ]),
                         ),
