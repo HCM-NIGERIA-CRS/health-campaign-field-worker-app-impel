@@ -167,32 +167,38 @@ const AppConfigurationSchema = CollectionSchema(
       type: IsarType.objectList,
       target: r'TransportTypes',
     ),
-    r'houseStructureTypes': PropertySchema(
+    r'USER_ACTION_DAILY_PLAN': PropertySchema(
       id: 26,
+      name: r'USER_ACTION_DAILY_PLAN',
+      type: IsarType.objectList,
+      target: r'DailyActionPlanConfig',
+    ),
+    r'houseStructureTypes': PropertySchema(
+      id: 27,
       name: r'houseStructureTypes',
       type: IsarType.objectList,
       target: r'HouseStructureTypes',
     ),
     r'privacyPolicyConfig': PropertySchema(
-      id: 27,
+      id: 28,
       name: r'privacyPolicyConfig',
       type: IsarType.object,
       target: r'PrivacyPolicy',
     ),
     r'referralReasons': PropertySchema(
-      id: 28,
+      id: 29,
       name: r'referralReasons',
       type: IsarType.objectList,
       target: r'ReferralReasons',
     ),
     r'refusalReasons': PropertySchema(
-      id: 29,
+      id: 30,
       name: r'refusalReasons',
       type: IsarType.objectList,
       target: r'RefusalReasons',
     ),
     r'symptomsTypes': PropertySchema(
-      id: 30,
+      id: 31,
       name: r'symptomsTypes',
       type: IsarType.objectList,
       target: r'SymptomsTypes',
@@ -219,6 +225,7 @@ const AppConfigurationSchema = CollectionSchema(
     r'BandwidthBatchSize': BandwidthBatchSizeSchema,
     r'IdTypeOptions': IdTypeOptionsSchema,
     r'DeliveryCommentOptions': DeliveryCommentOptionsSchema,
+    r'DailyActionPlanConfig': DailyActionPlanConfigSchema,
     r'TransportTypes': TransportTypesSchema,
     r'ComplaintTypes': ComplaintTypesSchema,
     r'CallSupportList': CallSupportListSchema,
@@ -542,6 +549,20 @@ int _appConfigurationEstimateSize(
     }
   }
   {
+    final list = object.dailyPlanConfigs;
+    if (list != null) {
+      bytesCount += 3 + list.length * 3;
+      {
+        final offsets = allOffsets[DailyActionPlanConfig]!;
+        for (var i = 0; i < list.length; i++) {
+          final value = list[i];
+          bytesCount += DailyActionPlanConfigSchema.estimateSize(
+              value, offsets, allOffsets);
+        }
+      }
+    }
+  }
+  {
     final list = object.houseStructureTypes;
     if (list != null) {
       bytesCount += 3 + list.length * 3;
@@ -740,32 +761,38 @@ void _appConfigurationSerialize(
     TransportTypesSchema.serialize,
     object.transportTypes,
   );
-  writer.writeObjectList<HouseStructureTypes>(
+  writer.writeObjectList<DailyActionPlanConfig>(
     offsets[26],
+    allOffsets,
+    DailyActionPlanConfigSchema.serialize,
+    object.dailyPlanConfigs,
+  );
+  writer.writeObjectList<HouseStructureTypes>(
+    offsets[27],
     allOffsets,
     HouseStructureTypesSchema.serialize,
     object.houseStructureTypes,
   );
   writer.writeObject<PrivacyPolicy>(
-    offsets[27],
+    offsets[28],
     allOffsets,
     PrivacyPolicySchema.serialize,
     object.privacyPolicyConfig,
   );
   writer.writeObjectList<ReferralReasons>(
-    offsets[28],
+    offsets[29],
     allOffsets,
     ReferralReasonsSchema.serialize,
     object.referralReasons,
   );
   writer.writeObjectList<RefusalReasons>(
-    offsets[29],
+    offsets[30],
     allOffsets,
     RefusalReasonsSchema.serialize,
     object.refusalReasons,
   );
   writer.writeObjectList<SymptomsTypes>(
-    offsets[30],
+    offsets[31],
     allOffsets,
     SymptomsTypesSchema.serialize,
     object.symptomsTypes,
@@ -905,32 +932,38 @@ AppConfiguration _appConfigurationDeserialize(
     allOffsets,
     TransportTypes(),
   );
-  object.houseStructureTypes = reader.readObjectList<HouseStructureTypes>(
+  object.dailyPlanConfigs = reader.readObjectList<DailyActionPlanConfig>(
     offsets[26],
+    DailyActionPlanConfigSchema.deserialize,
+    allOffsets,
+    DailyActionPlanConfig(),
+  );
+  object.houseStructureTypes = reader.readObjectList<HouseStructureTypes>(
+    offsets[27],
     HouseStructureTypesSchema.deserialize,
     allOffsets,
     HouseStructureTypes(),
   );
   object.id = id;
   object.privacyPolicyConfig = reader.readObjectOrNull<PrivacyPolicy>(
-    offsets[27],
+    offsets[28],
     PrivacyPolicySchema.deserialize,
     allOffsets,
   );
   object.referralReasons = reader.readObjectList<ReferralReasons>(
-    offsets[28],
+    offsets[29],
     ReferralReasonsSchema.deserialize,
     allOffsets,
     ReferralReasons(),
   );
   object.refusalReasons = reader.readObjectList<RefusalReasons>(
-    offsets[29],
+    offsets[30],
     RefusalReasonsSchema.deserialize,
     allOffsets,
     RefusalReasons(),
   );
   object.symptomsTypes = reader.readObjectList<SymptomsTypes>(
-    offsets[30],
+    offsets[31],
     SymptomsTypesSchema.deserialize,
     allOffsets,
     SymptomsTypes(),
@@ -1095,33 +1128,40 @@ P _appConfigurationDeserializeProp<P>(
         TransportTypes(),
       )) as P;
     case 26:
+      return (reader.readObjectList<DailyActionPlanConfig>(
+        offset,
+        DailyActionPlanConfigSchema.deserialize,
+        allOffsets,
+        DailyActionPlanConfig(),
+      )) as P;
+    case 27:
       return (reader.readObjectList<HouseStructureTypes>(
         offset,
         HouseStructureTypesSchema.deserialize,
         allOffsets,
         HouseStructureTypes(),
       )) as P;
-    case 27:
+    case 28:
       return (reader.readObjectOrNull<PrivacyPolicy>(
         offset,
         PrivacyPolicySchema.deserialize,
         allOffsets,
       )) as P;
-    case 28:
+    case 29:
       return (reader.readObjectList<ReferralReasons>(
         offset,
         ReferralReasonsSchema.deserialize,
         allOffsets,
         ReferralReasons(),
       )) as P;
-    case 29:
+    case 30:
       return (reader.readObjectList<RefusalReasons>(
         offset,
         RefusalReasonsSchema.deserialize,
         allOffsets,
         RefusalReasons(),
       )) as P;
-    case 30:
+    case 31:
       return (reader.readObjectList<SymptomsTypes>(
         offset,
         SymptomsTypesSchema.deserialize,
@@ -3955,6 +3995,113 @@ extension AppConfigurationQueryFilter
   }
 
   QueryBuilder<AppConfiguration, AppConfiguration, QAfterFilterCondition>
+      dailyPlanConfigsIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'USER_ACTION_DAILY_PLAN',
+      ));
+    });
+  }
+
+  QueryBuilder<AppConfiguration, AppConfiguration, QAfterFilterCondition>
+      dailyPlanConfigsIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'USER_ACTION_DAILY_PLAN',
+      ));
+    });
+  }
+
+  QueryBuilder<AppConfiguration, AppConfiguration, QAfterFilterCondition>
+      dailyPlanConfigsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'USER_ACTION_DAILY_PLAN',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<AppConfiguration, AppConfiguration, QAfterFilterCondition>
+      dailyPlanConfigsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'USER_ACTION_DAILY_PLAN',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<AppConfiguration, AppConfiguration, QAfterFilterCondition>
+      dailyPlanConfigsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'USER_ACTION_DAILY_PLAN',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<AppConfiguration, AppConfiguration, QAfterFilterCondition>
+      dailyPlanConfigsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'USER_ACTION_DAILY_PLAN',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<AppConfiguration, AppConfiguration, QAfterFilterCondition>
+      dailyPlanConfigsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'USER_ACTION_DAILY_PLAN',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<AppConfiguration, AppConfiguration, QAfterFilterCondition>
+      dailyPlanConfigsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'USER_ACTION_DAILY_PLAN',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
+  QueryBuilder<AppConfiguration, AppConfiguration, QAfterFilterCondition>
       houseStructureTypesIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -4602,6 +4749,13 @@ extension AppConfigurationQueryObject
   }
 
   QueryBuilder<AppConfiguration, AppConfiguration, QAfterFilterCondition>
+      dailyPlanConfigsElement(FilterQuery<DailyActionPlanConfig> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'USER_ACTION_DAILY_PLAN');
+    });
+  }
+
+  QueryBuilder<AppConfiguration, AppConfiguration, QAfterFilterCondition>
       houseStructureTypesElement(FilterQuery<HouseStructureTypes> q) {
     return QueryBuilder.apply(this, (query) {
       return query.object(q, r'houseStructureTypes');
@@ -5060,6 +5214,13 @@ extension AppConfigurationQueryProperty
       transportTypesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'TRANSPORT_TYPES');
+    });
+  }
+
+  QueryBuilder<AppConfiguration, List<DailyActionPlanConfig>?, QQueryOperations>
+      dailyPlanConfigsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'USER_ACTION_DAILY_PLAN');
     });
   }
 
@@ -6684,6 +6845,361 @@ extension DeliveryCommentOptionsQueryFilter on QueryBuilder<
 
 extension DeliveryCommentOptionsQueryObject on QueryBuilder<
     DeliveryCommentOptions, DeliveryCommentOptions, QFilterCondition> {}
+
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
+
+const DailyActionPlanConfigSchema = Schema(
+  name: r'DailyActionPlanConfig',
+  id: -3554957879061074995,
+  properties: {
+    r'key': PropertySchema(
+      id: 0,
+      name: r'key',
+      type: IsarType.string,
+    ),
+    r'value': PropertySchema(
+      id: 1,
+      name: r'value',
+      type: IsarType.string,
+    )
+  },
+  estimateSize: _dailyActionPlanConfigEstimateSize,
+  serialize: _dailyActionPlanConfigSerialize,
+  deserialize: _dailyActionPlanConfigDeserialize,
+  deserializeProp: _dailyActionPlanConfigDeserializeProp,
+);
+
+int _dailyActionPlanConfigEstimateSize(
+  DailyActionPlanConfig object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  bytesCount += 3 + object.key.length * 3;
+  bytesCount += 3 + object.value.length * 3;
+  return bytesCount;
+}
+
+void _dailyActionPlanConfigSerialize(
+  DailyActionPlanConfig object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeString(offsets[0], object.key);
+  writer.writeString(offsets[1], object.value);
+}
+
+DailyActionPlanConfig _dailyActionPlanConfigDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  final object = DailyActionPlanConfig();
+  object.key = reader.readString(offsets[0]);
+  object.value = reader.readString(offsets[1]);
+  return object;
+}
+
+P _dailyActionPlanConfigDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
+    case 0:
+      return (reader.readString(offset)) as P;
+    case 1:
+      return (reader.readString(offset)) as P;
+    default:
+      throw IsarError('Unknown property with id $propertyId');
+  }
+}
+
+extension DailyActionPlanConfigQueryFilter on QueryBuilder<
+    DailyActionPlanConfig, DailyActionPlanConfig, QFilterCondition> {
+  QueryBuilder<DailyActionPlanConfig, DailyActionPlanConfig,
+      QAfterFilterCondition> keyEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'key',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DailyActionPlanConfig, DailyActionPlanConfig,
+      QAfterFilterCondition> keyGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'key',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DailyActionPlanConfig, DailyActionPlanConfig,
+      QAfterFilterCondition> keyLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'key',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DailyActionPlanConfig, DailyActionPlanConfig,
+      QAfterFilterCondition> keyBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'key',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DailyActionPlanConfig, DailyActionPlanConfig,
+      QAfterFilterCondition> keyStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'key',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DailyActionPlanConfig, DailyActionPlanConfig,
+      QAfterFilterCondition> keyEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'key',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DailyActionPlanConfig, DailyActionPlanConfig,
+          QAfterFilterCondition>
+      keyContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'key',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DailyActionPlanConfig, DailyActionPlanConfig,
+          QAfterFilterCondition>
+      keyMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'key',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DailyActionPlanConfig, DailyActionPlanConfig,
+      QAfterFilterCondition> keyIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'key',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DailyActionPlanConfig, DailyActionPlanConfig,
+      QAfterFilterCondition> keyIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'key',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DailyActionPlanConfig, DailyActionPlanConfig,
+      QAfterFilterCondition> valueEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'value',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DailyActionPlanConfig, DailyActionPlanConfig,
+      QAfterFilterCondition> valueGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'value',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DailyActionPlanConfig, DailyActionPlanConfig,
+      QAfterFilterCondition> valueLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'value',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DailyActionPlanConfig, DailyActionPlanConfig,
+      QAfterFilterCondition> valueBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'value',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DailyActionPlanConfig, DailyActionPlanConfig,
+      QAfterFilterCondition> valueStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'value',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DailyActionPlanConfig, DailyActionPlanConfig,
+      QAfterFilterCondition> valueEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'value',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DailyActionPlanConfig, DailyActionPlanConfig,
+          QAfterFilterCondition>
+      valueContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'value',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DailyActionPlanConfig, DailyActionPlanConfig,
+          QAfterFilterCondition>
+      valueMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'value',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DailyActionPlanConfig, DailyActionPlanConfig,
+      QAfterFilterCondition> valueIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'value',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DailyActionPlanConfig, DailyActionPlanConfig,
+      QAfterFilterCondition> valueIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'value',
+        value: '',
+      ));
+    });
+  }
+}
+
+extension DailyActionPlanConfigQueryObject on QueryBuilder<
+    DailyActionPlanConfig, DailyActionPlanConfig, QFilterCondition> {}
 
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
