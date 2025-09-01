@@ -34,7 +34,7 @@ import 'data/local_store/app_shared_preferences.dart';
 import 'data/network_manager.dart';
 import 'data/remote_client.dart';
 import 'data/repositories/local/search/individual_global_search_smc.dart';
-import 'data/repositories/local/custom_user_action.dart';
+import 'data/repositories/local/transit_post/custom_user_action.dart';
 import 'data/repositories/remote/bandwidth_check.dart';
 import 'data/repositories/remote/localization.dart';
 import 'data/repositories/remote/mdms.dart';
@@ -490,8 +490,11 @@ class MainApplicationState extends State<MainApplication>
                         BlocProvider(
                           create: (ctx) => DailyImplementationPlanBloc(
                             const DailyImplementationPlanState.init(),
-                            userActionLocalRepository:
+                            customUserActionLocalRepository:
                                 CustomUserActionLocalRepository(widget.sql,
+                                    UserActionOpLogManager(widget.isar)),
+                            userActionLocalRepository:
+                                UserActionLocalRepository(widget.sql,
                                     UserActionOpLogManager(widget.isar)),
                           ),
                         ),
