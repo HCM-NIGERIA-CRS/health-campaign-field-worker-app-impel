@@ -72,7 +72,10 @@ class CustomUserActionLocalRepository extends UserActionLocalRepository {
             ..where(
               buildAnd(
                 [
-                  if (action != null) sql.userAction.action.isIn([action]),
+                  if (action != null)
+                    sql.userAction.action.isIn([action])
+                  else
+                    const Constant(true),
                   if (clientReferenceId != null)
                     sql.userAction.clientReferenceId.isIn([clientReferenceId])
                   else
@@ -117,6 +120,10 @@ class CustomUserActionLocalRepository extends UserActionLocalRepository {
                         .toList(),
                   ));
       }).toList();
+
+      if (additionalFieldfilterParam == null) {
+        return mappedResults;
+      }
 
       return mappedResults.where((result) {
         final fields = result?.additionalFields?.fields;

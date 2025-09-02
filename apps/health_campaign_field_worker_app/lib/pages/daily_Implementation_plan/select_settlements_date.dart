@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:digit_data_model/data/local_store/sql_store/tables/user.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/user_action.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:registration_delivery/utils/utils.dart';
 
 import '../../blocs/daily_implementation_plan/daily_implementation_plan.dart';
+import '../../models/settlement/settlement_model.dart';
 import '../../router/app_router.dart';
 import '../../widgets/custom_back_navigation.dart';
 import '../../widgets/localized.dart';
@@ -74,6 +76,7 @@ class _SelectSettlementsPageState
                           title: localizations.translate(
                               i18.dailyImplementationFlow.selectBoundaryLabel),
                           settlements: state.selectedSettlements ?? [],
+                          settlementData: state.settlementData ?? [],
                         ),
                         Spacer(),
                         Padding(
@@ -85,8 +88,8 @@ class _SelectSettlementsPageState
                             onPressed: () {
                               for (var element
                                   in state.selectedSettlements ?? []) {
-                                if ((state.selectedSettlementsDate ??
-                                        {})[element] ==
+                                if (state.settlementData?.firstWhereOrNull(
+                                        (e) => e.boundaryCode == element) ==
                                     null) {
                                   DigitComponentsUtils.showDialog(
                                     context,
@@ -139,10 +142,12 @@ class _SelectSettlementsPageState
                                         if (state.wfpSupervisor != null)
                                           AdditionalField('SupervisorName',
                                               state.wfpSupervisor),
-                                        if (state.selectedSettlementsDate !=
-                                            null)
-                                          AdditionalField('Data',
-                                              state.selectedSettlementsDate),
+                                        if (state.settlementData != null)
+                                          AdditionalField(
+                                              'Data',
+                                              state.settlementData!
+                                                  .map((e) => e.toJson())
+                                                  .toList()),
                                       ]));
                               context.read<DailyImplementationPlanBloc>().add(
                                     DailyImplementationPlanEvent.handleCreate(
@@ -176,11 +181,13 @@ class _SelectSettlementsPageState
 class SettlementGridView extends LocalizedStatefulWidget {
   final String title;
   final List<String> settlements;
+  final List<SettlementModel> settlementData;
 
   const SettlementGridView({
     super.key,
     required this.title,
     required this.settlements,
+    required this.settlementData,
   });
 
   @override
@@ -191,13 +198,6 @@ class _ReportDetailsContentState extends LocalizedState<SettlementGridView> {
   static const _settlementKey = 'settlement';
   static const _dateOfVisitKey = 'dateOfVisit';
 
-  Map<String, String> allDates = {
-    'day1': 'Day 1',
-    'day2': 'Day 2',
-    'day3': 'Day 3',
-    'day4': 'Day 4',
-  };
-  Map<int, DropdownItem> selectedOption = {};
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -212,23 +212,18 @@ class _ReportDetailsContentState extends LocalizedState<SettlementGridView> {
               itemBuilder: (context, index) {
                 return SettlementRow(
                   key: ValueKey(index),
-                  initialValue: selectedOption[index],
-                  settlement: widget.settlements[index],
+                  settlementCode: widget.settlements[index],
+                  settlementData: widget.settlementData.firstWhereOrNull(
+                      (e) => e.boundaryCode == widget.settlements[index]),
                   onSelectDate: (value) {
-                    setState(() {
-                      selectedOption[index] = value;
-                    });
-
                     context.read<DailyImplementationPlanBloc>().add(
-                          DailyImplementationPlanEvent
-                              .handleSelectSettlementsDate(
-                            selectedSettlementsDate: {
-                              widget.settlements[index]: value.name,
-                            },
-                          ),
-                        );
+                            DailyImplementationPlanEvent
+                                .handleSelectSettlementsDate(settlementData: [
+                          SettlementModel(
+                              boundaryCode: widget.settlements[index],
+                              dayOfVisit: value.name)
+                        ]));
                   },
-                  allDates: allDates,
                 );
               },
               separatorBuilder: (BuildContext context, int index) {
@@ -276,27 +271,40 @@ class SettlementTitleRow extends StatelessWidget {
 }
 
 class SettlementRow extends StatefulWidget {
-  final String settlement;
-  final DropdownItem? initialValue;
+  final String settlementCode;
+  final SettlementModel? settlementData;
   final Function(DropdownItem) onSelectDate;
-  final Map<String, String> allDates;
-  const SettlementRow(
-      {super.key,
-      required this.settlement,
-      required this.onSelectDate,
-      required this.allDates,
-      required this.initialValue});
+  const SettlementRow({
+    super.key,
+    required this.onSelectDate,
+    required this.settlementCode,
+    required this.settlementData,
+  });
 
   @override
   State<SettlementRow> createState() => _SettlementRowState();
 }
 
 class _SettlementRowState extends State<SettlementRow> {
+  Map<String, String> allDates = {
+    'day1': 'Day 1',
+    'day2': 'Day 2',
+    'day3': 'Day 3',
+    'day4': 'Day 4',
+  };
+  DropdownItem? selectedOption;
+
   @override
   Widget build(BuildContext context) {
     var cellDecoration = const BoxDecoration(
       color: Colors.white,
     );
+
+    selectedOption = widget.settlementData == null
+        ? null
+        : DropdownItem(
+            code: widget.settlementData!.dayOfVisit,
+            name: widget.settlementData!.dayOfVisit);
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -306,7 +314,7 @@ class _SettlementRowState extends State<SettlementRow> {
             child: Container(
           decoration: cellDecoration,
           height: 40,
-          child: Center(child: Text(widget.settlement)),
+          child: Center(child: Text(widget.settlementCode)),
         )),
         const SizedBox(width: 1),
         Expanded(
@@ -315,10 +323,10 @@ class _SettlementRowState extends State<SettlementRow> {
           height: 40,
           child: Center(
             child: DigitDropdown(
-              selectedOption: widget.initialValue,
+              selectedOption: selectedOption,
               items: [
-                for (var date in widget.allDates.keys)
-                  DropdownItem(code: date, name: widget.allDates[date]!),
+                for (var date in allDates.keys)
+                  DropdownItem(code: date, name: allDates[date]!),
               ],
               onSelect: (value) {
                 widget.onSelectDate(value);

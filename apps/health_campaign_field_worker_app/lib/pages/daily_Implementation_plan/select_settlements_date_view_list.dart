@@ -30,7 +30,7 @@ class _SelectSettlementsDateViewListPageState
   void initState() {
     context.read<DailyImplementationPlanBloc>().add(
           const DailyImplementationPlanEvent.handleAllSearch(
-            userAction: 'DIP',
+            userAction: 'DAILY_PLAN',
           ),
         );
     super.initState();
@@ -74,9 +74,9 @@ class _SelectSettlementsDateViewListPageState
                               dipUserActionModel.timestamp);
                           String wfpSupervisor = dipUserActionAdditionalField
                                   ?.firstWhere(
-                                    (e) => e.key == 'wfpSupervisor',
+                                    (e) => e.key == 'SupervisorName',
                                     orElse: () =>
-                                        AdditionalField('wfpSupervisor', ''),
+                                        AdditionalField('SupervisorName', ''),
                                   )
                                   .value ??
                               '';
