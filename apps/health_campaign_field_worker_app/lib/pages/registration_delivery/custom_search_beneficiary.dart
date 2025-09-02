@@ -378,6 +378,7 @@ class _CustomSearchBeneficiaryPageState
                                                   isProximityEnabled = false;
                                                   isSearchByBeneficiaryIdEnabled =
                                                       false;
+                                                  isHouseNonCompliant = false;
                                                   searchController.clear();
                                                   blocWrapper.clearEvent();
                                                 });

@@ -135,15 +135,14 @@ class CustomDeliverInterventionPageState
     } else {
       context.read<DeliverInterventionBloc>().add(
             DeliverInterventionSubmitEvent(
-                task: taskModel,
-                isEditing: (deliverInterventionState.tasks ?? []).isNotEmpty &&
-                        RegistrationDeliverySingleton().beneficiaryType ==
-                            BeneficiaryType.household
-                    ? true
-                    : false,
-                boundaryModel: RegistrationDeliverySingleton().boundary!,
-                navigateToSummary: true,
-                householdMemberWrapper: householdMember),
+              task: deliverInterventionState.oldTask ?? taskModel,
+              isEditing: (deliverInterventionState.tasks ?? []).isNotEmpty &&
+                      RegistrationDeliverySingleton().beneficiaryType ==
+                          BeneficiaryType.household
+                  ? true
+                  : false,
+              boundaryModel: RegistrationDeliverySingleton().boundary!,
+            ),
           );
     }
 
@@ -217,18 +216,6 @@ class CustomDeliverInterventionPageState
     TaskModel taskModel,
     DeliverInterventionState deliverState,
   ) async {
-    context.read<DeliverInterventionBloc>().add(
-          DeliverInterventionSubmitEvent(
-            task: deliverState.oldTask ?? taskModel,
-            isEditing: (deliverState.tasks ?? []).isNotEmpty &&
-                    RegistrationDeliverySingleton().beneficiaryType ==
-                        BeneficiaryType.household
-                ? true
-                : false,
-            boundaryModel: RegistrationDeliverySingleton().boundary!,
-          ),
-        );
-
     ProjectTypeModel? projectTypeModel = RegistrationDeliverySingleton()
         .selectedProject
         ?.additionalDetails
@@ -532,9 +519,6 @@ class CustomDeliverInterventionPageState
                                                             if (context
                                                                 .mounted) {
                                                               // vas
-
-                                                              final deliveryState =
-                                                                  deliveryInterventionState;
 
                                                               oldTaskCaptured =
                                                                   deliveryInterventionState
@@ -936,30 +920,34 @@ class CustomDeliverInterventionPageState
     task = task.copyWith(
       projectId: RegistrationDeliverySingleton().projectId,
       // set quantity as 0  in resource if childAbsent
-      resources: productvariantList
-          .map((e) => TaskResourceModel(
-                taskclientReferenceId: clientReferenceId,
-                clientReferenceId: IdGen.i.identifier,
-                productVariantId: e?.id,
-                isDelivered: true,
-                taskId: task?.id,
-                tenantId: RegistrationDeliverySingleton().tenantId,
-                rowVersion: oldTask?.rowVersion ?? 1,
-                quantity: isChildAbsent
-                    ? "0"
-                    : (((form.control(_quantityDistributedKey) as FormArray)
-                            .value)?[productvariantList.indexOf(e)])
-                        .toString(),
-                clientAuditDetails: ClientAuditDetails(
-                  createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
-                  createdTime: context.millisecondsSinceEpoch(),
-                ),
-                auditDetails: AuditDetails(
-                  createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
-                  createdTime: context.millisecondsSinceEpoch(),
-                ),
-              ))
-          .toList(),
+      resources: isChildAbsent
+          ? []
+          : productvariantList
+              .map((e) => TaskResourceModel(
+                    taskclientReferenceId: clientReferenceId,
+                    clientReferenceId: IdGen.i.identifier,
+                    productVariantId: e?.id,
+                    isDelivered: true,
+                    taskId: task?.id,
+                    tenantId: RegistrationDeliverySingleton().tenantId,
+                    rowVersion: oldTask?.rowVersion ?? 1,
+                    quantity: isChildAbsent
+                        ? "0"
+                        : (((form.control(_quantityDistributedKey) as FormArray)
+                                .value)?[productvariantList.indexOf(e)])
+                            .toString(),
+                    clientAuditDetails: ClientAuditDetails(
+                      createdBy:
+                          RegistrationDeliverySingleton().loggedInUserUuid!,
+                      createdTime: context.millisecondsSinceEpoch(),
+                    ),
+                    auditDetails: AuditDetails(
+                      createdBy:
+                          RegistrationDeliverySingleton().loggedInUserUuid!,
+                      createdTime: context.millisecondsSinceEpoch(),
+                    ),
+                  ))
+              .toList(),
       address: address?.copyWith(
         relatedClientReferenceId: clientReferenceId,
         id: null,
@@ -1067,7 +1055,10 @@ class CustomDeliverInterventionPageState
 
   // ignore: long-parameter-list
   TaskModel _updateTaskModel(
-      BuildContext context, TaskModel oldTask, TaskModel newTask) {
+    BuildContext context,
+    TaskModel oldTask,
+    TaskModel newTask,
+  ) {
     oldTask = oldTask.copyWith(
         tenantId: RegistrationDeliverySingleton().tenantId,
         auditDetails: oldTask.auditDetails!.copyWith(
@@ -1077,6 +1068,7 @@ class CustomDeliverInterventionPageState
             lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid!,
             lastModifiedTime: context.millisecondsSinceEpoch()),
         status: newTask.status,
+        resources: newTask.resources,
         additionalFields: oldTask.additionalFields == null
             ? TaskAdditionalFields(
                 version: 1, fields: [...newTask.additionalFields?.fields ?? []])

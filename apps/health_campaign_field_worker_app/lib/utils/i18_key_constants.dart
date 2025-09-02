@@ -191,6 +191,8 @@ class HouseholdOverView {
 
   String get householdOverViewBeneficiaryReferredVASLabel =>
       'HOUSEHOLD_OVER_VIEW_BENEFICIARY_REFERRED_VAS_LABEL';
+
+  String get nonCompliantHouseholdStatus => 'HOUSEHOLD_NON_COMPLIANT_STATUS';
 }
 
 class DeliverIntervention {

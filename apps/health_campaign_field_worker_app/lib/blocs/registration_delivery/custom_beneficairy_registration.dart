@@ -508,6 +508,7 @@ class CustomBeneficiaryRegistrationBloc
                 relatedClientReferenceId:
                     value.householdModel.clientReferenceId,
               ),
+              householdType: RegistrationDeliverySingleton().householdType,
               id: existingHousehold?.id,
               rowVersion: existingHousehold?.rowVersion ?? 1,
               nonRecoverableError:
@@ -538,8 +539,9 @@ class CustomBeneficiaryRegistrationBloc
 
             if (task.isNotEmpty) {
               if (task.last.status == Status.administeredFailed.toValue()) {
+                // marking household as registered when updating to compliant
                 await taskDataRepository.update(
-                    task.last.copyWith(status: Status.visited.toValue()));
+                    task.last.copyWith(status: Status.registered.toValue()));
               }
             }
           } else {
@@ -682,6 +684,12 @@ class CustomBeneficiaryRegistrationBloc
               if (task.last.status == Status.closeHousehold.toValue()) {
                 await taskDataRepository.update(task.last
                     .copyWith(status: Status.notAdministered.toValue()));
+              } else if (task.last.status ==
+                  Status.administeredFailed.toValue()) {
+                // marking household as registered when updating to compliant
+
+                await taskDataRepository.update(
+                    task.last.copyWith(status: Status.registered.toValue()));
               }
             }
           }
