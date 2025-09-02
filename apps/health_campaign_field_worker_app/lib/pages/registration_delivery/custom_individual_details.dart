@@ -185,57 +185,57 @@ class CustomIndividualDetailsPageState
                       if (householdMemberWrapper != null) {
                         if (individualCaptured != null) {
                           // assumption add individual here is used for creating child,
-                          //if invalid age send to overview no checklist
-                          // if (verifyIfChildAgeValid(
-                          //     context, individualCaptured!)) {
-                          //   router.push(
-                          //     BeneficiaryWrapperRoute(
-                          //       wrapper: householdMemberWrapper,
-                          //       children: [
-                          //         CustomBeneficiaryDetailsRoute(
-                          //           individualSelected: individualCaptured,
-                          //           eligibilityAssessmentType:
-                          //               EligibilityAssessmentType.smc,
-                          //         )
-                          //       ],
-                          //     ),
-                          //   );
-                          // } else {
-                          //   router.push(
-                          //     BeneficiaryWrapperRoute(
-                          //       wrapper: householdMemberWrapper,
-                          //     ),
-                          //   );
-                          // }
+                          // if invalid age send to overview no checklist
+                          if (verifyIfChildAgeValid(
+                              context, individualCaptured!)) {
+                            router.push(
+                              BeneficiaryWrapperRoute(
+                                wrapper: householdMemberWrapper,
+                                children: [
+                                  CustomBeneficiaryDetailsRoute(
+                                    individualSelected: individualCaptured,
+                                    eligibilityAssessmentType:
+                                        EligibilityAssessmentType.smc,
+                                  )
+                                ],
+                              ),
+                            );
+                          } else {
+                            router.push(
+                              BeneficiaryWrapperRoute(
+                                wrapper: householdMemberWrapper,
+                              ),
+                            );
+                          }
 
-                          final overviewBloc =
-                              context.read<HouseholdOverviewBloc>();
+                          // final overviewBloc =
+                          //     context.read<HouseholdOverviewBloc>();
 
-                          overviewBloc.add(
-                            HouseholdOverviewReloadEvent(
-                              projectId: RegistrationDeliverySingleton()
-                                  .projectId
-                                  .toString(),
-                              projectBeneficiaryType:
-                                  RegistrationDeliverySingleton()
-                                          .beneficiaryType ??
-                                      BeneficiaryType.household,
-                            ),
-                          );
-                          overviewBloc.stream
-                              .firstWhere((element) =>
-                                  element.loading == false &&
-                                  element.householdMemberWrapper.household !=
-                                      null)
-                              .then((value) {
-                            HouseholdMemberWrapper memberWrapper =
-                                overviewBloc.state.householdMemberWrapper;
-                            final route = router.parent() as StackRouter;
-                            route.popUntilRouteWithName(
-                                SearchBeneficiaryRoute.name);
-                            route.push(BeneficiaryWrapperRoute(
-                                wrapper: memberWrapper));
-                          });
+                          // overviewBloc.add(
+                          //   HouseholdOverviewReloadEvent(
+                          //     projectId: RegistrationDeliverySingleton()
+                          //         .projectId
+                          //         .toString(),
+                          //     projectBeneficiaryType:
+                          //         RegistrationDeliverySingleton()
+                          //                 .beneficiaryType ??
+                          //             BeneficiaryType.household,
+                          //   ),
+                          // );
+                          // overviewBloc.stream
+                          //     .firstWhere((element) =>
+                          //         element.loading == false &&
+                          //         element.householdMemberWrapper.household !=
+                          //             null)
+                          //     .then((value) {
+                          //   HouseholdMemberWrapper memberWrapper =
+                          //       overviewBloc.state.householdMemberWrapper;
+                          //   final route = router.parent() as StackRouter;
+                          //   route.popUntilRouteWithName(
+                          //       SearchBeneficiaryRoute.name);
+                          //   route.push(BeneficiaryWrapperRoute(
+                          //       wrapper: memberWrapper));
+                          // });
                         } else {
                           (router.parent() as StackRouter).maybePop();
                           router.popUntil((route) =>
