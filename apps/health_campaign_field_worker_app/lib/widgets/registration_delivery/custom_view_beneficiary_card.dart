@@ -355,13 +355,25 @@ class CustomViewBeneficiaryCardState
                           HouseholdType.community)
                       ? null
                       : getStatus(
-                          tasks ?? [],
-                          householdMember.projectBeneficiaries ?? [],
-                          RegistrationDeliverySingleton().beneficiaryType ==
-                                  BeneficiaryType.individual
-                              ? isNotEligible
-                              : false,
-                          isBeneficiaryRefused),
+                                  tasks ?? [],
+                                  householdMember.projectBeneficiaries ?? [],
+                                  RegistrationDeliverySingleton()
+                                              .beneficiaryType ==
+                                          BeneficiaryType.individual
+                                      ? isNotEligible
+                                      : false,
+                                  isBeneficiaryRefused) ==
+                              Status.administeredFailed.toValue()
+                          ? localizations.translate(i18_local
+                              .householdOverView.nonCompliantHouseholdStatus)
+                          : getStatus(
+                              tasks ?? [],
+                              householdMember.projectBeneficiaries ?? [],
+                              RegistrationDeliverySingleton().beneficiaryType ==
+                                      BeneficiaryType.individual
+                                  ? isNotEligible
+                                  : false,
+                              isBeneficiaryRefused),
                   title: (RegistrationDeliverySingleton().householdType ==
                           HouseholdType.community)
                       ? householdMember.household?.address?.buildingName ??

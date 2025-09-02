@@ -39,8 +39,7 @@ class CustomSyncRegistry implements SyncUpOperation {
   }
 
   @override
-  Future<void> singleUpdate(EntityModel entity,
-      LocalRepository<EntityModel, EntitySearchModel> local) async {
+  Future<void> singleUpdate(EntityModel entity, LocalRepository local) async {
     try {
       await remote.singleUpdate(entity);
     } catch (e) {
