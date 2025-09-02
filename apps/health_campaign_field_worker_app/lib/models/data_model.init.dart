@@ -17,6 +17,7 @@ import 'entities/roles.dart' as p10;
 import 'entities/roles_type.dart' as p11;
 import 'entities/scanner_type.dart' as p12;
 import 'entities/status.dart' as p13;
+import 'entities/user_action_enums.dart' as p14;
 
 void initializeMappers() {
   p0.DownsyncSearchModelMapper.ensureInitialized();
@@ -43,4 +44,5 @@ void initializeMappers() {
   p11.RolesTypeMapper.ensureInitialized();
   p12.ScannerTypeMapper.ensureInitialized();
   p13.StatusMapper.ensureInitialized();
+  p14.UserActionEnumsMapper.ensureInitialized();
 }

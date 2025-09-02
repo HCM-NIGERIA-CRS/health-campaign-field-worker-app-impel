@@ -25,6 +25,7 @@ import 'package:registration_delivery/utils/i18_key_constants.dart'
 import '../../../utils/i18_key_constants.dart' as i18_local;
 
 import '../../blocs/transit_post/custom_transit_post.dart';
+import '../../models/entities/user_action_enums.dart';
 import '../../router/app_router.dart';
 import '../campaign_delivery_select.dart';
 
@@ -50,7 +51,8 @@ class CustomTransitPostSelectionPageState
   void initState() {
     super.initState();
     context.read<CustomTransitPostBloc>().add(
-        CustomTransitPostDeliveryCountEvent(action: PostType.transit.name));
+        CustomTransitPostDeliveryCountEvent(
+            action: UserActionEnums.transit.toValue()));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Show the dialog after the first frame is built
       DigitComponentsUtils.showDialog(
@@ -135,7 +137,8 @@ class CustomTransitPostSelectionPageState
                               if (context.mounted) {
                                 context.router.push(
                                     CustomTransitPostRecordVaccinationRoute(
-                                        postType: PostType.transit.name));
+                                        postType:
+                                            UserActionEnums.transit.toValue()));
                               }
                             },
                             type: DigitButtonType.primary,

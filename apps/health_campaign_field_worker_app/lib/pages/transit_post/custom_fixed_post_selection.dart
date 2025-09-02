@@ -23,6 +23,7 @@ import 'package:transit_post/widgets/total_delivery.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart'
     as i18_registration_delivery;
 import '../../blocs/transit_post/fixed_post.dart';
+import '../../models/entities/user_action_enums.dart';
 import '../../utils/i18_key_constants.dart' as i18_local;
 
 import '../../router/app_router.dart';
@@ -48,9 +49,8 @@ class CustomFixedPostSelectionPageState
   @override
   void initState() {
     super.initState();
-    context
-        .read<FixedPostBloc>()
-        .add(FixedPostDeliveryCountEvent(action: PostType.fixed.name));
+    context.read<FixedPostBloc>().add(
+        FixedPostDeliveryCountEvent(action: UserActionEnums.fixed.toValue()));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Show the dialog after the first frame is built
       DigitComponentsUtils.showDialog(
@@ -133,7 +133,8 @@ class CustomFixedPostSelectionPageState
                               if (context.mounted) {
                                 context.router.push(
                                     CustomFixedPostRecordVaccinationRoute(
-                                        postType: PostType.fixed.name));
+                                        postType:
+                                            UserActionEnums.fixed.toValue()));
                               }
                             },
                             type: DigitButtonType.primary,

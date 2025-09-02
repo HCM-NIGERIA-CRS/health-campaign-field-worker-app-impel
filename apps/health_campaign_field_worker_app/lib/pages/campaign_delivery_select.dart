@@ -31,8 +31,6 @@ class CampaignDeliverySelectPage extends LocalizedStatefulWidget {
       CampaignDeliverySelectPageState();
 }
 
-enum PostType { fixed, transit }
-
 class CampaignDeliverySelectPageState
     extends LocalizedState<CampaignDeliverySelectPage> {
   @override

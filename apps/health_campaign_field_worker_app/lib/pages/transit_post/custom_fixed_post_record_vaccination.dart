@@ -32,6 +32,7 @@ import 'package:registration_delivery/utils/i18_key_constants.dart'
 import '../../../utils/i18_key_constants.dart' as i18_local;
 import '../../blocs/transit_post/custom_transit_post.dart';
 import '../../blocs/transit_post/fixed_post.dart';
+import '../../models/entities/user_action_enums.dart';
 import '../../router/app_router.dart';
 import '../../widgets/showcase/showcase_wrappers.dart';
 import '../campaign_delivery_select.dart';
@@ -190,7 +191,8 @@ class CustomFixedPostRecordVaccinationPageState
                                     ),
                                     value: DateFormat("d MMMM yyyy")
                                         .format(DateTime.now())),
-                                if (widget.postType == PostType.transit.name)
+                                if (widget.postType ==
+                                    UserActionEnums.transit.toValue())
                                   LabelValueItem(
                                       labelFlex: 5,
                                       label: localizations.translate(
@@ -200,7 +202,8 @@ class CustomFixedPostRecordVaccinationPageState
                                 LabelValueItem(
                                     labelFlex: 5,
                                     label: localizations.translate(
-                                      widget.postType == PostType.transit.name
+                                      widget.postType ==
+                                              UserActionEnums.transit.toValue()
                                           ? i18.transitPost.transitPostNameLabel
                                           : i18_local.transitFixedPost
                                               .fixedPostnameLabel,
