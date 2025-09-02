@@ -126,6 +126,10 @@ class Constants {
   static const String guineaWorm = 'guineaWorm';
   static const int dailyTarget = 40;
 
+  static const String boundaryCode = "BoundaryCode";
+  static const String supervisorName = "SupervisorName";
+  static const String data = "Data";
+
   // for stock validation
 
   static const String spaq1 = "SPAQ 1";

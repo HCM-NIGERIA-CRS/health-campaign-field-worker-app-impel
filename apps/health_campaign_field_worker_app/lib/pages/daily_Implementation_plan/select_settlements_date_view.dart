@@ -11,6 +11,7 @@ import 'package:inventory_management/widgets/localized.dart';
 import 'package:registration_delivery/widgets/showcase/showcase_wrappers.dart';
 
 import '../../blocs/daily_implementation_plan/daily_implementation_plan.dart';
+import '../../blocs/daily_implementation_plan/dip_search.dart';
 import '../../models/settlement/settlement_model.dart';
 import '../../router/app_router.dart';
 import '../../widgets/custom_back_navigation.dart';
@@ -33,9 +34,8 @@ class _SelectSettlementsDateViewState
     extends LocalizedState<SelectSettlementsDateViewPage> {
   @override
   void initState() {
-    context.read<DailyImplementationPlanBloc>().add(
-          DailyImplementationPlanEvent.handleSearch(
-              clientReferenceId: widget.clientReferenceId),
+    context.read<DipSearchBloc>().add(
+          DipSearchEvent.search(clientReferenceId: widget.clientReferenceId),
         );
     super.initState();
   }
@@ -58,10 +58,9 @@ class _SelectSettlementsDateViewState
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(spacer2),
-            child: BlocBuilder<DailyImplementationPlanBloc,
-                DailyImplementationPlanState>(
+            child: BlocBuilder<DipSearchBloc, DipSearchState>(
               builder: (context, state) {
-                if (state is DailyImplementationPlanSearchState) {
+                if (state is DipSearchSettlementState) {
                   UserActionModel? dipUserActionModel =
                       state.selectedDipUserAction;
                   List<AdditionalField>?
@@ -77,10 +76,6 @@ class _SelectSettlementsDateViewState
                                 return SettlementModel.fromJson(e);
                               }).toList() ??
                               [];
-
-                  if (state.loading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
 
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.start,

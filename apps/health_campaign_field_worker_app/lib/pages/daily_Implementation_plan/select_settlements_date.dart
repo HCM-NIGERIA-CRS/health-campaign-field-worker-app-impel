@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:digit_data_model/data/local_store/sql_store/tables/user.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/user_action.dart';
 import 'package:digit_data_model/utils/utils.dart';
@@ -15,6 +14,7 @@ import 'package:registration_delivery/utils/utils.dart';
 import '../../blocs/daily_implementation_plan/daily_implementation_plan.dart';
 import '../../models/settlement/settlement_model.dart';
 import '../../router/app_router.dart';
+import '../../utils/utils.dart';
 import '../../widgets/custom_back_navigation.dart';
 import '../../widgets/localized.dart';
 import '../../utils/i18_key_constants.dart' as i18;
@@ -137,14 +137,16 @@ class _SelectSettlementsPageState
                                       version: 1,
                                       fields: [
                                         if (state.administrativeUnit != null)
-                                          AdditionalField('BoundaryCode',
+                                          AdditionalField(
+                                              Constants.boundaryCode,
                                               state.administrativeUnit),
                                         if (state.wfpSupervisor != null)
-                                          AdditionalField('SupervisorName',
+                                          AdditionalField(
+                                              Constants.supervisorName,
                                               state.wfpSupervisor),
                                         if (state.settlementData != null)
                                           AdditionalField(
-                                              'Data',
+                                              Constants.data,
                                               state.settlementData!
                                                   .map((e) => e.toJson())
                                                   .toList()),

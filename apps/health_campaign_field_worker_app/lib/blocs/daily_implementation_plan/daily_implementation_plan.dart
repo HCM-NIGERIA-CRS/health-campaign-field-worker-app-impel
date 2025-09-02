@@ -28,9 +28,6 @@ class DailyImplementationPlanBloc
     on(_selectSettlement);
     on(_selectSettlementDate);
     on(_handleCreate);
-    on(_handleAllSettlementSearch);
-    on(_handleSettlementSearch);
-    on(_handleClearSelectedSearch);
   }
 
   FutureOr<void> _selectSettlement(
@@ -100,68 +97,6 @@ class DailyImplementationPlanBloc
       ));
     } catch (e) {}
   }
-
-  FutureOr<void> _handleAllSettlementSearch(
-    DailyImplementationPlanAllSearchEvent event,
-    DailyImplementationPlanEmitter emit,
-  ) async {
-    DailyImplementationPlanSearchState? currentState;
-    try {
-      currentState = state as DailyImplementationPlanSearchState;
-    } catch (e) {}
-
-    emit(DailyImplementationPlanState.search(
-      loading: true,
-      selectedDipUserAction: currentState?.selectedDipUserAction,
-      allDipUserAction: currentState?.allDipUserAction,
-    ));
-    List<UserActionModel>? vehicleUserActions =
-        await customUserActionLocalRepository.searchUserAction(
-            action: event.userAction);
-    emit(DailyImplementationPlanState.search(
-      loading: false,
-      selectedDipUserAction: currentState?.selectedDipUserAction,
-      allDipUserAction: vehicleUserActions,
-    ));
-  }
-
-  FutureOr<void> _handleSettlementSearch(
-    DailyImplementationPlanSearchEvent event,
-    DailyImplementationPlanEmitter emit,
-  ) async {
-    DailyImplementationPlanSearchState? currentState;
-    try {
-      currentState = state as DailyImplementationPlanSearchState;
-      emit(DailyImplementationPlanState.search(
-        loading: true,
-        selectedDipUserAction: null,
-        allDipUserAction: currentState.allDipUserAction,
-      ));
-      List<UserActionModel> vehicleUserActions =
-          await customUserActionLocalRepository.searchUserAction(
-              clientReferenceId: event.clientReferenceId);
-      emit(DailyImplementationPlanState.search(
-        loading: false,
-        selectedDipUserAction: vehicleUserActions.firstOrNull,
-        allDipUserAction: currentState.allDipUserAction,
-      ));
-    } catch (e) {}
-  }
-
-  FutureOr<void> _handleClearSelectedSearch(
-    DailyImplementationPlanClearSelectedSearchEvent event,
-    DailyImplementationPlanEmitter emit,
-  ) {
-    DailyImplementationPlanSearchState? currentState;
-    try {
-      currentState = state as DailyImplementationPlanSearchState;
-      emit(DailyImplementationPlanState.search(
-        loading: true,
-        selectedDipUserAction: null,
-        allDipUserAction: currentState.allDipUserAction,
-      ));
-    } catch (e) {}
-  }
 }
 
 @freezed
@@ -180,17 +115,6 @@ class DailyImplementationPlanEvent with _$DailyImplementationPlanEvent {
   const factory DailyImplementationPlanEvent.handleCreate({
     required UserActionModel dipUserAction,
   }) = DailyImplementationPlanCreateEvent;
-
-  const factory DailyImplementationPlanEvent.handleAllSearch({
-    String? userAction,
-  }) = DailyImplementationPlanAllSearchEvent;
-
-  const factory DailyImplementationPlanEvent.handleSearch({
-    String? clientReferenceId,
-  }) = DailyImplementationPlanSearchEvent;
-
-  const factory DailyImplementationPlanEvent.clearSelectedSearch() =
-      DailyImplementationPlanClearSelectedSearchEvent;
 }
 
 @freezed
@@ -210,10 +134,4 @@ class DailyImplementationPlanState with _$DailyImplementationPlanState {
           {@Default(false) bool loading,
           @Default(null) UserActionModel? dipUserAction}) =
       DailyImplementationPlanCreateState;
-
-  const factory DailyImplementationPlanState.search({
-    @Default(false) bool loading,
-    @Default(null) UserActionModel? selectedDipUserAction,
-    @Default(null) List<UserActionModel>? allDipUserAction,
-  }) = DailyImplementationPlanSearchState;
 }

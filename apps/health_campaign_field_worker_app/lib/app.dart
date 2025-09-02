@@ -24,6 +24,8 @@ import 'blocs/app_initialization/app_initialization.dart';
 import 'blocs/auth/auth.dart';
 import 'blocs/compliance/consent_household.dart';
 import 'blocs/daily_implementation_plan/daily_implementation_plan.dart';
+import 'blocs/daily_implementation_plan/dip_all_search.dart';
+import 'blocs/daily_implementation_plan/dip_search.dart';
 import 'blocs/inventory_management/stock_bloc.dart';
 import 'blocs/localization/localization.dart';
 import 'blocs/project/project.dart';
@@ -507,6 +509,23 @@ class MainApplicationState extends State<MainApplication>
                                     UserActionOpLogManager(widget.isar)),
                             userActionLocalRepository:
                                 UserActionLocalRepository(widget.sql,
+                                    UserActionOpLogManager(widget.isar)),
+                          ),
+                        ),
+                        BlocProvider(
+                          create: (ctx) => DipSearchBloc(
+                            const DipSearchState.init(),
+                            customUserActionLocalRepository:
+                                CustomUserActionLocalRepository(widget.sql,
+                                    UserActionOpLogManager(widget.isar)),
+                          ),
+                        ),
+
+                        BlocProvider(
+                          create: (ctx) => DipAllSearchBloc(
+                            const DipAllSearchState.init(),
+                            customUserActionLocalRepository:
+                                CustomUserActionLocalRepository(widget.sql,
                                     UserActionOpLogManager(widget.isar)),
                           ),
                         ),

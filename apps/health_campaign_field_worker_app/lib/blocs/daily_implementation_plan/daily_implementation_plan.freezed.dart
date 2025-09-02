@@ -24,9 +24,6 @@ mixin _$DailyImplementationPlanEvent {
     required TResult Function(List<SettlementModel> settlementData)
         handleSelectSettlementsDate,
     required TResult Function(UserActionModel dipUserAction) handleCreate,
-    required TResult Function(String? userAction) handleAllSearch,
-    required TResult Function(String? clientReferenceId) handleSearch,
-    required TResult Function() clearSelectedSearch,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -37,9 +34,6 @@ mixin _$DailyImplementationPlanEvent {
     TResult? Function(List<SettlementModel> settlementData)?
         handleSelectSettlementsDate,
     TResult? Function(UserActionModel dipUserAction)? handleCreate,
-    TResult? Function(String? userAction)? handleAllSearch,
-    TResult? Function(String? clientReferenceId)? handleSearch,
-    TResult? Function()? clearSelectedSearch,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -50,9 +44,6 @@ mixin _$DailyImplementationPlanEvent {
     TResult Function(List<SettlementModel> settlementData)?
         handleSelectSettlementsDate,
     TResult Function(UserActionModel dipUserAction)? handleCreate,
-    TResult Function(String? userAction)? handleAllSearch,
-    TResult Function(String? clientReferenceId)? handleSearch,
-    TResult Function()? clearSelectedSearch,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -66,13 +57,6 @@ mixin _$DailyImplementationPlanEvent {
         handleSelectSettlementsDate,
     required TResult Function(DailyImplementationPlanCreateEvent value)
         handleCreate,
-    required TResult Function(DailyImplementationPlanAllSearchEvent value)
-        handleAllSearch,
-    required TResult Function(DailyImplementationPlanSearchEvent value)
-        handleSearch,
-    required TResult Function(
-            DailyImplementationPlanClearSelectedSearchEvent value)
-        clearSelectedSearch,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -82,11 +66,6 @@ mixin _$DailyImplementationPlanEvent {
     TResult? Function(DailyImplementationPlanSelectSettlementsDateEvent value)?
         handleSelectSettlementsDate,
     TResult? Function(DailyImplementationPlanCreateEvent value)? handleCreate,
-    TResult? Function(DailyImplementationPlanAllSearchEvent value)?
-        handleAllSearch,
-    TResult? Function(DailyImplementationPlanSearchEvent value)? handleSearch,
-    TResult? Function(DailyImplementationPlanClearSelectedSearchEvent value)?
-        clearSelectedSearch,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -96,11 +75,6 @@ mixin _$DailyImplementationPlanEvent {
     TResult Function(DailyImplementationPlanSelectSettlementsDateEvent value)?
         handleSelectSettlementsDate,
     TResult Function(DailyImplementationPlanCreateEvent value)? handleCreate,
-    TResult Function(DailyImplementationPlanAllSearchEvent value)?
-        handleAllSearch,
-    TResult Function(DailyImplementationPlanSearchEvent value)? handleSearch,
-    TResult Function(DailyImplementationPlanClearSelectedSearchEvent value)?
-        clearSelectedSearch,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -251,9 +225,6 @@ class _$DailyImplementationPlanSelectSettlementsEventImpl
     required TResult Function(List<SettlementModel> settlementData)
         handleSelectSettlementsDate,
     required TResult Function(UserActionModel dipUserAction) handleCreate,
-    required TResult Function(String? userAction) handleAllSearch,
-    required TResult Function(String? clientReferenceId) handleSearch,
-    required TResult Function() clearSelectedSearch,
   }) {
     return handleSelectSettlements(
         date, administrativeUnit, wfpSupervisor, selectedSettlements);
@@ -268,9 +239,6 @@ class _$DailyImplementationPlanSelectSettlementsEventImpl
     TResult? Function(List<SettlementModel> settlementData)?
         handleSelectSettlementsDate,
     TResult? Function(UserActionModel dipUserAction)? handleCreate,
-    TResult? Function(String? userAction)? handleAllSearch,
-    TResult? Function(String? clientReferenceId)? handleSearch,
-    TResult? Function()? clearSelectedSearch,
   }) {
     return handleSelectSettlements?.call(
         date, administrativeUnit, wfpSupervisor, selectedSettlements);
@@ -285,9 +253,6 @@ class _$DailyImplementationPlanSelectSettlementsEventImpl
     TResult Function(List<SettlementModel> settlementData)?
         handleSelectSettlementsDate,
     TResult Function(UserActionModel dipUserAction)? handleCreate,
-    TResult Function(String? userAction)? handleAllSearch,
-    TResult Function(String? clientReferenceId)? handleSearch,
-    TResult Function()? clearSelectedSearch,
     required TResult orElse(),
   }) {
     if (handleSelectSettlements != null) {
@@ -308,13 +273,6 @@ class _$DailyImplementationPlanSelectSettlementsEventImpl
         handleSelectSettlementsDate,
     required TResult Function(DailyImplementationPlanCreateEvent value)
         handleCreate,
-    required TResult Function(DailyImplementationPlanAllSearchEvent value)
-        handleAllSearch,
-    required TResult Function(DailyImplementationPlanSearchEvent value)
-        handleSearch,
-    required TResult Function(
-            DailyImplementationPlanClearSelectedSearchEvent value)
-        clearSelectedSearch,
   }) {
     return handleSelectSettlements(this);
   }
@@ -327,11 +285,6 @@ class _$DailyImplementationPlanSelectSettlementsEventImpl
     TResult? Function(DailyImplementationPlanSelectSettlementsDateEvent value)?
         handleSelectSettlementsDate,
     TResult? Function(DailyImplementationPlanCreateEvent value)? handleCreate,
-    TResult? Function(DailyImplementationPlanAllSearchEvent value)?
-        handleAllSearch,
-    TResult? Function(DailyImplementationPlanSearchEvent value)? handleSearch,
-    TResult? Function(DailyImplementationPlanClearSelectedSearchEvent value)?
-        clearSelectedSearch,
   }) {
     return handleSelectSettlements?.call(this);
   }
@@ -344,11 +297,6 @@ class _$DailyImplementationPlanSelectSettlementsEventImpl
     TResult Function(DailyImplementationPlanSelectSettlementsDateEvent value)?
         handleSelectSettlementsDate,
     TResult Function(DailyImplementationPlanCreateEvent value)? handleCreate,
-    TResult Function(DailyImplementationPlanAllSearchEvent value)?
-        handleAllSearch,
-    TResult Function(DailyImplementationPlanSearchEvent value)? handleSearch,
-    TResult Function(DailyImplementationPlanClearSelectedSearchEvent value)?
-        clearSelectedSearch,
     required TResult orElse(),
   }) {
     if (handleSelectSettlements != null) {
@@ -470,9 +418,6 @@ class _$DailyImplementationPlanSelectSettlementsDateEventImpl
     required TResult Function(List<SettlementModel> settlementData)
         handleSelectSettlementsDate,
     required TResult Function(UserActionModel dipUserAction) handleCreate,
-    required TResult Function(String? userAction) handleAllSearch,
-    required TResult Function(String? clientReferenceId) handleSearch,
-    required TResult Function() clearSelectedSearch,
   }) {
     return handleSelectSettlementsDate(settlementData);
   }
@@ -486,9 +431,6 @@ class _$DailyImplementationPlanSelectSettlementsDateEventImpl
     TResult? Function(List<SettlementModel> settlementData)?
         handleSelectSettlementsDate,
     TResult? Function(UserActionModel dipUserAction)? handleCreate,
-    TResult? Function(String? userAction)? handleAllSearch,
-    TResult? Function(String? clientReferenceId)? handleSearch,
-    TResult? Function()? clearSelectedSearch,
   }) {
     return handleSelectSettlementsDate?.call(settlementData);
   }
@@ -502,9 +444,6 @@ class _$DailyImplementationPlanSelectSettlementsDateEventImpl
     TResult Function(List<SettlementModel> settlementData)?
         handleSelectSettlementsDate,
     TResult Function(UserActionModel dipUserAction)? handleCreate,
-    TResult Function(String? userAction)? handleAllSearch,
-    TResult Function(String? clientReferenceId)? handleSearch,
-    TResult Function()? clearSelectedSearch,
     required TResult orElse(),
   }) {
     if (handleSelectSettlementsDate != null) {
@@ -524,13 +463,6 @@ class _$DailyImplementationPlanSelectSettlementsDateEventImpl
         handleSelectSettlementsDate,
     required TResult Function(DailyImplementationPlanCreateEvent value)
         handleCreate,
-    required TResult Function(DailyImplementationPlanAllSearchEvent value)
-        handleAllSearch,
-    required TResult Function(DailyImplementationPlanSearchEvent value)
-        handleSearch,
-    required TResult Function(
-            DailyImplementationPlanClearSelectedSearchEvent value)
-        clearSelectedSearch,
   }) {
     return handleSelectSettlementsDate(this);
   }
@@ -543,11 +475,6 @@ class _$DailyImplementationPlanSelectSettlementsDateEventImpl
     TResult? Function(DailyImplementationPlanSelectSettlementsDateEvent value)?
         handleSelectSettlementsDate,
     TResult? Function(DailyImplementationPlanCreateEvent value)? handleCreate,
-    TResult? Function(DailyImplementationPlanAllSearchEvent value)?
-        handleAllSearch,
-    TResult? Function(DailyImplementationPlanSearchEvent value)? handleSearch,
-    TResult? Function(DailyImplementationPlanClearSelectedSearchEvent value)?
-        clearSelectedSearch,
   }) {
     return handleSelectSettlementsDate?.call(this);
   }
@@ -560,11 +487,6 @@ class _$DailyImplementationPlanSelectSettlementsDateEventImpl
     TResult Function(DailyImplementationPlanSelectSettlementsDateEvent value)?
         handleSelectSettlementsDate,
     TResult Function(DailyImplementationPlanCreateEvent value)? handleCreate,
-    TResult Function(DailyImplementationPlanAllSearchEvent value)?
-        handleAllSearch,
-    TResult Function(DailyImplementationPlanSearchEvent value)? handleSearch,
-    TResult Function(DailyImplementationPlanClearSelectedSearchEvent value)?
-        clearSelectedSearch,
     required TResult orElse(),
   }) {
     if (handleSelectSettlementsDate != null) {
@@ -664,9 +586,6 @@ class _$DailyImplementationPlanCreateEventImpl
     required TResult Function(List<SettlementModel> settlementData)
         handleSelectSettlementsDate,
     required TResult Function(UserActionModel dipUserAction) handleCreate,
-    required TResult Function(String? userAction) handleAllSearch,
-    required TResult Function(String? clientReferenceId) handleSearch,
-    required TResult Function() clearSelectedSearch,
   }) {
     return handleCreate(dipUserAction);
   }
@@ -680,9 +599,6 @@ class _$DailyImplementationPlanCreateEventImpl
     TResult? Function(List<SettlementModel> settlementData)?
         handleSelectSettlementsDate,
     TResult? Function(UserActionModel dipUserAction)? handleCreate,
-    TResult? Function(String? userAction)? handleAllSearch,
-    TResult? Function(String? clientReferenceId)? handleSearch,
-    TResult? Function()? clearSelectedSearch,
   }) {
     return handleCreate?.call(dipUserAction);
   }
@@ -696,9 +612,6 @@ class _$DailyImplementationPlanCreateEventImpl
     TResult Function(List<SettlementModel> settlementData)?
         handleSelectSettlementsDate,
     TResult Function(UserActionModel dipUserAction)? handleCreate,
-    TResult Function(String? userAction)? handleAllSearch,
-    TResult Function(String? clientReferenceId)? handleSearch,
-    TResult Function()? clearSelectedSearch,
     required TResult orElse(),
   }) {
     if (handleCreate != null) {
@@ -718,13 +631,6 @@ class _$DailyImplementationPlanCreateEventImpl
         handleSelectSettlementsDate,
     required TResult Function(DailyImplementationPlanCreateEvent value)
         handleCreate,
-    required TResult Function(DailyImplementationPlanAllSearchEvent value)
-        handleAllSearch,
-    required TResult Function(DailyImplementationPlanSearchEvent value)
-        handleSearch,
-    required TResult Function(
-            DailyImplementationPlanClearSelectedSearchEvent value)
-        clearSelectedSearch,
   }) {
     return handleCreate(this);
   }
@@ -737,11 +643,6 @@ class _$DailyImplementationPlanCreateEventImpl
     TResult? Function(DailyImplementationPlanSelectSettlementsDateEvent value)?
         handleSelectSettlementsDate,
     TResult? Function(DailyImplementationPlanCreateEvent value)? handleCreate,
-    TResult? Function(DailyImplementationPlanAllSearchEvent value)?
-        handleAllSearch,
-    TResult? Function(DailyImplementationPlanSearchEvent value)? handleSearch,
-    TResult? Function(DailyImplementationPlanClearSelectedSearchEvent value)?
-        clearSelectedSearch,
   }) {
     return handleCreate?.call(this);
   }
@@ -754,11 +655,6 @@ class _$DailyImplementationPlanCreateEventImpl
     TResult Function(DailyImplementationPlanSelectSettlementsDateEvent value)?
         handleSelectSettlementsDate,
     TResult Function(DailyImplementationPlanCreateEvent value)? handleCreate,
-    TResult Function(DailyImplementationPlanAllSearchEvent value)?
-        handleAllSearch,
-    TResult Function(DailyImplementationPlanSearchEvent value)? handleSearch,
-    TResult Function(DailyImplementationPlanClearSelectedSearchEvent value)?
-        clearSelectedSearch,
     required TResult orElse(),
   }) {
     if (handleCreate != null) {
@@ -782,556 +678,6 @@ abstract class DailyImplementationPlanCreateEvent
 }
 
 /// @nodoc
-abstract class _$$DailyImplementationPlanAllSearchEventImplCopyWith<$Res> {
-  factory _$$DailyImplementationPlanAllSearchEventImplCopyWith(
-          _$DailyImplementationPlanAllSearchEventImpl value,
-          $Res Function(_$DailyImplementationPlanAllSearchEventImpl) then) =
-      __$$DailyImplementationPlanAllSearchEventImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String? userAction});
-}
-
-/// @nodoc
-class __$$DailyImplementationPlanAllSearchEventImplCopyWithImpl<$Res>
-    extends _$DailyImplementationPlanEventCopyWithImpl<$Res,
-        _$DailyImplementationPlanAllSearchEventImpl>
-    implements _$$DailyImplementationPlanAllSearchEventImplCopyWith<$Res> {
-  __$$DailyImplementationPlanAllSearchEventImplCopyWithImpl(
-      _$DailyImplementationPlanAllSearchEventImpl _value,
-      $Res Function(_$DailyImplementationPlanAllSearchEventImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? userAction = freezed,
-  }) {
-    return _then(_$DailyImplementationPlanAllSearchEventImpl(
-      userAction: freezed == userAction
-          ? _value.userAction
-          : userAction // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$DailyImplementationPlanAllSearchEventImpl
-    implements DailyImplementationPlanAllSearchEvent {
-  const _$DailyImplementationPlanAllSearchEventImpl({this.userAction});
-
-  @override
-  final String? userAction;
-
-  @override
-  String toString() {
-    return 'DailyImplementationPlanEvent.handleAllSearch(userAction: $userAction)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$DailyImplementationPlanAllSearchEventImpl &&
-            (identical(other.userAction, userAction) ||
-                other.userAction == userAction));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, userAction);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$DailyImplementationPlanAllSearchEventImplCopyWith<
-          _$DailyImplementationPlanAllSearchEventImpl>
-      get copyWith => __$$DailyImplementationPlanAllSearchEventImplCopyWithImpl<
-          _$DailyImplementationPlanAllSearchEventImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(int date, String administrativeUnit,
-            String wfpSupervisor, List<String> selectedSettlements)
-        handleSelectSettlements,
-    required TResult Function(List<SettlementModel> settlementData)
-        handleSelectSettlementsDate,
-    required TResult Function(UserActionModel dipUserAction) handleCreate,
-    required TResult Function(String? userAction) handleAllSearch,
-    required TResult Function(String? clientReferenceId) handleSearch,
-    required TResult Function() clearSelectedSearch,
-  }) {
-    return handleAllSearch(userAction);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int date, String administrativeUnit, String wfpSupervisor,
-            List<String> selectedSettlements)?
-        handleSelectSettlements,
-    TResult? Function(List<SettlementModel> settlementData)?
-        handleSelectSettlementsDate,
-    TResult? Function(UserActionModel dipUserAction)? handleCreate,
-    TResult? Function(String? userAction)? handleAllSearch,
-    TResult? Function(String? clientReferenceId)? handleSearch,
-    TResult? Function()? clearSelectedSearch,
-  }) {
-    return handleAllSearch?.call(userAction);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int date, String administrativeUnit, String wfpSupervisor,
-            List<String> selectedSettlements)?
-        handleSelectSettlements,
-    TResult Function(List<SettlementModel> settlementData)?
-        handleSelectSettlementsDate,
-    TResult Function(UserActionModel dipUserAction)? handleCreate,
-    TResult Function(String? userAction)? handleAllSearch,
-    TResult Function(String? clientReferenceId)? handleSearch,
-    TResult Function()? clearSelectedSearch,
-    required TResult orElse(),
-  }) {
-    if (handleAllSearch != null) {
-      return handleAllSearch(userAction);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(
-            DailyImplementationPlanSelectSettlementsEvent value)
-        handleSelectSettlements,
-    required TResult Function(
-            DailyImplementationPlanSelectSettlementsDateEvent value)
-        handleSelectSettlementsDate,
-    required TResult Function(DailyImplementationPlanCreateEvent value)
-        handleCreate,
-    required TResult Function(DailyImplementationPlanAllSearchEvent value)
-        handleAllSearch,
-    required TResult Function(DailyImplementationPlanSearchEvent value)
-        handleSearch,
-    required TResult Function(
-            DailyImplementationPlanClearSelectedSearchEvent value)
-        clearSelectedSearch,
-  }) {
-    return handleAllSearch(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(DailyImplementationPlanSelectSettlementsEvent value)?
-        handleSelectSettlements,
-    TResult? Function(DailyImplementationPlanSelectSettlementsDateEvent value)?
-        handleSelectSettlementsDate,
-    TResult? Function(DailyImplementationPlanCreateEvent value)? handleCreate,
-    TResult? Function(DailyImplementationPlanAllSearchEvent value)?
-        handleAllSearch,
-    TResult? Function(DailyImplementationPlanSearchEvent value)? handleSearch,
-    TResult? Function(DailyImplementationPlanClearSelectedSearchEvent value)?
-        clearSelectedSearch,
-  }) {
-    return handleAllSearch?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(DailyImplementationPlanSelectSettlementsEvent value)?
-        handleSelectSettlements,
-    TResult Function(DailyImplementationPlanSelectSettlementsDateEvent value)?
-        handleSelectSettlementsDate,
-    TResult Function(DailyImplementationPlanCreateEvent value)? handleCreate,
-    TResult Function(DailyImplementationPlanAllSearchEvent value)?
-        handleAllSearch,
-    TResult Function(DailyImplementationPlanSearchEvent value)? handleSearch,
-    TResult Function(DailyImplementationPlanClearSelectedSearchEvent value)?
-        clearSelectedSearch,
-    required TResult orElse(),
-  }) {
-    if (handleAllSearch != null) {
-      return handleAllSearch(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class DailyImplementationPlanAllSearchEvent
-    implements DailyImplementationPlanEvent {
-  const factory DailyImplementationPlanAllSearchEvent(
-      {final String? userAction}) = _$DailyImplementationPlanAllSearchEventImpl;
-
-  String? get userAction;
-  @JsonKey(ignore: true)
-  _$$DailyImplementationPlanAllSearchEventImplCopyWith<
-          _$DailyImplementationPlanAllSearchEventImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$DailyImplementationPlanSearchEventImplCopyWith<$Res> {
-  factory _$$DailyImplementationPlanSearchEventImplCopyWith(
-          _$DailyImplementationPlanSearchEventImpl value,
-          $Res Function(_$DailyImplementationPlanSearchEventImpl) then) =
-      __$$DailyImplementationPlanSearchEventImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String? clientReferenceId});
-}
-
-/// @nodoc
-class __$$DailyImplementationPlanSearchEventImplCopyWithImpl<$Res>
-    extends _$DailyImplementationPlanEventCopyWithImpl<$Res,
-        _$DailyImplementationPlanSearchEventImpl>
-    implements _$$DailyImplementationPlanSearchEventImplCopyWith<$Res> {
-  __$$DailyImplementationPlanSearchEventImplCopyWithImpl(
-      _$DailyImplementationPlanSearchEventImpl _value,
-      $Res Function(_$DailyImplementationPlanSearchEventImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? clientReferenceId = freezed,
-  }) {
-    return _then(_$DailyImplementationPlanSearchEventImpl(
-      clientReferenceId: freezed == clientReferenceId
-          ? _value.clientReferenceId
-          : clientReferenceId // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$DailyImplementationPlanSearchEventImpl
-    implements DailyImplementationPlanSearchEvent {
-  const _$DailyImplementationPlanSearchEventImpl({this.clientReferenceId});
-
-  @override
-  final String? clientReferenceId;
-
-  @override
-  String toString() {
-    return 'DailyImplementationPlanEvent.handleSearch(clientReferenceId: $clientReferenceId)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$DailyImplementationPlanSearchEventImpl &&
-            (identical(other.clientReferenceId, clientReferenceId) ||
-                other.clientReferenceId == clientReferenceId));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, clientReferenceId);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$DailyImplementationPlanSearchEventImplCopyWith<
-          _$DailyImplementationPlanSearchEventImpl>
-      get copyWith => __$$DailyImplementationPlanSearchEventImplCopyWithImpl<
-          _$DailyImplementationPlanSearchEventImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(int date, String administrativeUnit,
-            String wfpSupervisor, List<String> selectedSettlements)
-        handleSelectSettlements,
-    required TResult Function(List<SettlementModel> settlementData)
-        handleSelectSettlementsDate,
-    required TResult Function(UserActionModel dipUserAction) handleCreate,
-    required TResult Function(String? userAction) handleAllSearch,
-    required TResult Function(String? clientReferenceId) handleSearch,
-    required TResult Function() clearSelectedSearch,
-  }) {
-    return handleSearch(clientReferenceId);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int date, String administrativeUnit, String wfpSupervisor,
-            List<String> selectedSettlements)?
-        handleSelectSettlements,
-    TResult? Function(List<SettlementModel> settlementData)?
-        handleSelectSettlementsDate,
-    TResult? Function(UserActionModel dipUserAction)? handleCreate,
-    TResult? Function(String? userAction)? handleAllSearch,
-    TResult? Function(String? clientReferenceId)? handleSearch,
-    TResult? Function()? clearSelectedSearch,
-  }) {
-    return handleSearch?.call(clientReferenceId);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int date, String administrativeUnit, String wfpSupervisor,
-            List<String> selectedSettlements)?
-        handleSelectSettlements,
-    TResult Function(List<SettlementModel> settlementData)?
-        handleSelectSettlementsDate,
-    TResult Function(UserActionModel dipUserAction)? handleCreate,
-    TResult Function(String? userAction)? handleAllSearch,
-    TResult Function(String? clientReferenceId)? handleSearch,
-    TResult Function()? clearSelectedSearch,
-    required TResult orElse(),
-  }) {
-    if (handleSearch != null) {
-      return handleSearch(clientReferenceId);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(
-            DailyImplementationPlanSelectSettlementsEvent value)
-        handleSelectSettlements,
-    required TResult Function(
-            DailyImplementationPlanSelectSettlementsDateEvent value)
-        handleSelectSettlementsDate,
-    required TResult Function(DailyImplementationPlanCreateEvent value)
-        handleCreate,
-    required TResult Function(DailyImplementationPlanAllSearchEvent value)
-        handleAllSearch,
-    required TResult Function(DailyImplementationPlanSearchEvent value)
-        handleSearch,
-    required TResult Function(
-            DailyImplementationPlanClearSelectedSearchEvent value)
-        clearSelectedSearch,
-  }) {
-    return handleSearch(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(DailyImplementationPlanSelectSettlementsEvent value)?
-        handleSelectSettlements,
-    TResult? Function(DailyImplementationPlanSelectSettlementsDateEvent value)?
-        handleSelectSettlementsDate,
-    TResult? Function(DailyImplementationPlanCreateEvent value)? handleCreate,
-    TResult? Function(DailyImplementationPlanAllSearchEvent value)?
-        handleAllSearch,
-    TResult? Function(DailyImplementationPlanSearchEvent value)? handleSearch,
-    TResult? Function(DailyImplementationPlanClearSelectedSearchEvent value)?
-        clearSelectedSearch,
-  }) {
-    return handleSearch?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(DailyImplementationPlanSelectSettlementsEvent value)?
-        handleSelectSettlements,
-    TResult Function(DailyImplementationPlanSelectSettlementsDateEvent value)?
-        handleSelectSettlementsDate,
-    TResult Function(DailyImplementationPlanCreateEvent value)? handleCreate,
-    TResult Function(DailyImplementationPlanAllSearchEvent value)?
-        handleAllSearch,
-    TResult Function(DailyImplementationPlanSearchEvent value)? handleSearch,
-    TResult Function(DailyImplementationPlanClearSelectedSearchEvent value)?
-        clearSelectedSearch,
-    required TResult orElse(),
-  }) {
-    if (handleSearch != null) {
-      return handleSearch(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class DailyImplementationPlanSearchEvent
-    implements DailyImplementationPlanEvent {
-  const factory DailyImplementationPlanSearchEvent(
-          {final String? clientReferenceId}) =
-      _$DailyImplementationPlanSearchEventImpl;
-
-  String? get clientReferenceId;
-  @JsonKey(ignore: true)
-  _$$DailyImplementationPlanSearchEventImplCopyWith<
-          _$DailyImplementationPlanSearchEventImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$DailyImplementationPlanClearSelectedSearchEventImplCopyWith<
-    $Res> {
-  factory _$$DailyImplementationPlanClearSelectedSearchEventImplCopyWith(
-          _$DailyImplementationPlanClearSelectedSearchEventImpl value,
-          $Res Function(_$DailyImplementationPlanClearSelectedSearchEventImpl)
-              then) =
-      __$$DailyImplementationPlanClearSelectedSearchEventImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$DailyImplementationPlanClearSelectedSearchEventImplCopyWithImpl<$Res>
-    extends _$DailyImplementationPlanEventCopyWithImpl<$Res,
-        _$DailyImplementationPlanClearSelectedSearchEventImpl>
-    implements
-        _$$DailyImplementationPlanClearSelectedSearchEventImplCopyWith<$Res> {
-  __$$DailyImplementationPlanClearSelectedSearchEventImplCopyWithImpl(
-      _$DailyImplementationPlanClearSelectedSearchEventImpl _value,
-      $Res Function(_$DailyImplementationPlanClearSelectedSearchEventImpl)
-          _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$DailyImplementationPlanClearSelectedSearchEventImpl
-    implements DailyImplementationPlanClearSelectedSearchEvent {
-  const _$DailyImplementationPlanClearSelectedSearchEventImpl();
-
-  @override
-  String toString() {
-    return 'DailyImplementationPlanEvent.clearSelectedSearch()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$DailyImplementationPlanClearSelectedSearchEventImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(int date, String administrativeUnit,
-            String wfpSupervisor, List<String> selectedSettlements)
-        handleSelectSettlements,
-    required TResult Function(List<SettlementModel> settlementData)
-        handleSelectSettlementsDate,
-    required TResult Function(UserActionModel dipUserAction) handleCreate,
-    required TResult Function(String? userAction) handleAllSearch,
-    required TResult Function(String? clientReferenceId) handleSearch,
-    required TResult Function() clearSelectedSearch,
-  }) {
-    return clearSelectedSearch();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int date, String administrativeUnit, String wfpSupervisor,
-            List<String> selectedSettlements)?
-        handleSelectSettlements,
-    TResult? Function(List<SettlementModel> settlementData)?
-        handleSelectSettlementsDate,
-    TResult? Function(UserActionModel dipUserAction)? handleCreate,
-    TResult? Function(String? userAction)? handleAllSearch,
-    TResult? Function(String? clientReferenceId)? handleSearch,
-    TResult? Function()? clearSelectedSearch,
-  }) {
-    return clearSelectedSearch?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int date, String administrativeUnit, String wfpSupervisor,
-            List<String> selectedSettlements)?
-        handleSelectSettlements,
-    TResult Function(List<SettlementModel> settlementData)?
-        handleSelectSettlementsDate,
-    TResult Function(UserActionModel dipUserAction)? handleCreate,
-    TResult Function(String? userAction)? handleAllSearch,
-    TResult Function(String? clientReferenceId)? handleSearch,
-    TResult Function()? clearSelectedSearch,
-    required TResult orElse(),
-  }) {
-    if (clearSelectedSearch != null) {
-      return clearSelectedSearch();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(
-            DailyImplementationPlanSelectSettlementsEvent value)
-        handleSelectSettlements,
-    required TResult Function(
-            DailyImplementationPlanSelectSettlementsDateEvent value)
-        handleSelectSettlementsDate,
-    required TResult Function(DailyImplementationPlanCreateEvent value)
-        handleCreate,
-    required TResult Function(DailyImplementationPlanAllSearchEvent value)
-        handleAllSearch,
-    required TResult Function(DailyImplementationPlanSearchEvent value)
-        handleSearch,
-    required TResult Function(
-            DailyImplementationPlanClearSelectedSearchEvent value)
-        clearSelectedSearch,
-  }) {
-    return clearSelectedSearch(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(DailyImplementationPlanSelectSettlementsEvent value)?
-        handleSelectSettlements,
-    TResult? Function(DailyImplementationPlanSelectSettlementsDateEvent value)?
-        handleSelectSettlementsDate,
-    TResult? Function(DailyImplementationPlanCreateEvent value)? handleCreate,
-    TResult? Function(DailyImplementationPlanAllSearchEvent value)?
-        handleAllSearch,
-    TResult? Function(DailyImplementationPlanSearchEvent value)? handleSearch,
-    TResult? Function(DailyImplementationPlanClearSelectedSearchEvent value)?
-        clearSelectedSearch,
-  }) {
-    return clearSelectedSearch?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(DailyImplementationPlanSelectSettlementsEvent value)?
-        handleSelectSettlements,
-    TResult Function(DailyImplementationPlanSelectSettlementsDateEvent value)?
-        handleSelectSettlementsDate,
-    TResult Function(DailyImplementationPlanCreateEvent value)? handleCreate,
-    TResult Function(DailyImplementationPlanAllSearchEvent value)?
-        handleAllSearch,
-    TResult Function(DailyImplementationPlanSearchEvent value)? handleSearch,
-    TResult Function(DailyImplementationPlanClearSelectedSearchEvent value)?
-        clearSelectedSearch,
-    required TResult orElse(),
-  }) {
-    if (clearSelectedSearch != null) {
-      return clearSelectedSearch(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class DailyImplementationPlanClearSelectedSearchEvent
-    implements DailyImplementationPlanEvent {
-  const factory DailyImplementationPlanClearSelectedSearchEvent() =
-      _$DailyImplementationPlanClearSelectedSearchEventImpl;
-}
-
-/// @nodoc
 mixin _$DailyImplementationPlanState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
@@ -1345,11 +691,6 @@ mixin _$DailyImplementationPlanState {
         selectSettlements,
     required TResult Function(bool loading, UserActionModel? dipUserAction)
         create,
-    required TResult Function(
-            bool loading,
-            UserActionModel? selectedDipUserAction,
-            List<UserActionModel>? allDipUserAction)
-        search,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -1363,9 +704,6 @@ mixin _$DailyImplementationPlanState {
             List<SettlementModel>? settlementData)?
         selectSettlements,
     TResult? Function(bool loading, UserActionModel? dipUserAction)? create,
-    TResult? Function(bool loading, UserActionModel? selectedDipUserAction,
-            List<UserActionModel>? allDipUserAction)?
-        search,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -1379,9 +717,6 @@ mixin _$DailyImplementationPlanState {
             List<SettlementModel>? settlementData)?
         selectSettlements,
     TResult Function(bool loading, UserActionModel? dipUserAction)? create,
-    TResult Function(bool loading, UserActionModel? selectedDipUserAction,
-            List<UserActionModel>? allDipUserAction)?
-        search,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -1392,7 +727,6 @@ mixin _$DailyImplementationPlanState {
             DailyImplementationPlanSelectSettlementsState value)
         selectSettlements,
     required TResult Function(DailyImplementationPlanCreateState value) create,
-    required TResult Function(DailyImplementationPlanSearchState value) search,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -1401,7 +735,6 @@ mixin _$DailyImplementationPlanState {
     TResult? Function(DailyImplementationPlanSelectSettlementsState value)?
         selectSettlements,
     TResult? Function(DailyImplementationPlanCreateState value)? create,
-    TResult? Function(DailyImplementationPlanSearchState value)? search,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -1410,7 +743,6 @@ mixin _$DailyImplementationPlanState {
     TResult Function(DailyImplementationPlanSelectSettlementsState value)?
         selectSettlements,
     TResult Function(DailyImplementationPlanCreateState value)? create,
-    TResult Function(DailyImplementationPlanSearchState value)? search,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -1490,11 +822,6 @@ class _$DailyImplementationPlanInitStateImpl
         selectSettlements,
     required TResult Function(bool loading, UserActionModel? dipUserAction)
         create,
-    required TResult Function(
-            bool loading,
-            UserActionModel? selectedDipUserAction,
-            List<UserActionModel>? allDipUserAction)
-        search,
   }) {
     return init();
   }
@@ -1511,9 +838,6 @@ class _$DailyImplementationPlanInitStateImpl
             List<SettlementModel>? settlementData)?
         selectSettlements,
     TResult? Function(bool loading, UserActionModel? dipUserAction)? create,
-    TResult? Function(bool loading, UserActionModel? selectedDipUserAction,
-            List<UserActionModel>? allDipUserAction)?
-        search,
   }) {
     return init?.call();
   }
@@ -1530,9 +854,6 @@ class _$DailyImplementationPlanInitStateImpl
             List<SettlementModel>? settlementData)?
         selectSettlements,
     TResult Function(bool loading, UserActionModel? dipUserAction)? create,
-    TResult Function(bool loading, UserActionModel? selectedDipUserAction,
-            List<UserActionModel>? allDipUserAction)?
-        search,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -1549,7 +870,6 @@ class _$DailyImplementationPlanInitStateImpl
             DailyImplementationPlanSelectSettlementsState value)
         selectSettlements,
     required TResult Function(DailyImplementationPlanCreateState value) create,
-    required TResult Function(DailyImplementationPlanSearchState value) search,
   }) {
     return init(this);
   }
@@ -1561,7 +881,6 @@ class _$DailyImplementationPlanInitStateImpl
     TResult? Function(DailyImplementationPlanSelectSettlementsState value)?
         selectSettlements,
     TResult? Function(DailyImplementationPlanCreateState value)? create,
-    TResult? Function(DailyImplementationPlanSearchState value)? search,
   }) {
     return init?.call(this);
   }
@@ -1573,7 +892,6 @@ class _$DailyImplementationPlanInitStateImpl
     TResult Function(DailyImplementationPlanSelectSettlementsState value)?
         selectSettlements,
     TResult Function(DailyImplementationPlanCreateState value)? create,
-    TResult Function(DailyImplementationPlanSearchState value)? search,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -1749,11 +1067,6 @@ class _$DailyImplementationPlanSelectSettlementsStateImpl
         selectSettlements,
     required TResult Function(bool loading, UserActionModel? dipUserAction)
         create,
-    required TResult Function(
-            bool loading,
-            UserActionModel? selectedDipUserAction,
-            List<UserActionModel>? allDipUserAction)
-        search,
   }) {
     return selectSettlements(date, administrativeUnit, wfpSupervisor,
         selectedSettlements, settlementData);
@@ -1771,9 +1084,6 @@ class _$DailyImplementationPlanSelectSettlementsStateImpl
             List<SettlementModel>? settlementData)?
         selectSettlements,
     TResult? Function(bool loading, UserActionModel? dipUserAction)? create,
-    TResult? Function(bool loading, UserActionModel? selectedDipUserAction,
-            List<UserActionModel>? allDipUserAction)?
-        search,
   }) {
     return selectSettlements?.call(date, administrativeUnit, wfpSupervisor,
         selectedSettlements, settlementData);
@@ -1791,9 +1101,6 @@ class _$DailyImplementationPlanSelectSettlementsStateImpl
             List<SettlementModel>? settlementData)?
         selectSettlements,
     TResult Function(bool loading, UserActionModel? dipUserAction)? create,
-    TResult Function(bool loading, UserActionModel? selectedDipUserAction,
-            List<UserActionModel>? allDipUserAction)?
-        search,
     required TResult orElse(),
   }) {
     if (selectSettlements != null) {
@@ -1811,7 +1118,6 @@ class _$DailyImplementationPlanSelectSettlementsStateImpl
             DailyImplementationPlanSelectSettlementsState value)
         selectSettlements,
     required TResult Function(DailyImplementationPlanCreateState value) create,
-    required TResult Function(DailyImplementationPlanSearchState value) search,
   }) {
     return selectSettlements(this);
   }
@@ -1823,7 +1129,6 @@ class _$DailyImplementationPlanSelectSettlementsStateImpl
     TResult? Function(DailyImplementationPlanSelectSettlementsState value)?
         selectSettlements,
     TResult? Function(DailyImplementationPlanCreateState value)? create,
-    TResult? Function(DailyImplementationPlanSearchState value)? search,
   }) {
     return selectSettlements?.call(this);
   }
@@ -1835,7 +1140,6 @@ class _$DailyImplementationPlanSelectSettlementsStateImpl
     TResult Function(DailyImplementationPlanSelectSettlementsState value)?
         selectSettlements,
     TResult Function(DailyImplementationPlanCreateState value)? create,
-    TResult Function(DailyImplementationPlanSearchState value)? search,
     required TResult orElse(),
   }) {
     if (selectSettlements != null) {
@@ -1958,11 +1262,6 @@ class _$DailyImplementationPlanCreateStateImpl
         selectSettlements,
     required TResult Function(bool loading, UserActionModel? dipUserAction)
         create,
-    required TResult Function(
-            bool loading,
-            UserActionModel? selectedDipUserAction,
-            List<UserActionModel>? allDipUserAction)
-        search,
   }) {
     return create(loading, dipUserAction);
   }
@@ -1979,9 +1278,6 @@ class _$DailyImplementationPlanCreateStateImpl
             List<SettlementModel>? settlementData)?
         selectSettlements,
     TResult? Function(bool loading, UserActionModel? dipUserAction)? create,
-    TResult? Function(bool loading, UserActionModel? selectedDipUserAction,
-            List<UserActionModel>? allDipUserAction)?
-        search,
   }) {
     return create?.call(loading, dipUserAction);
   }
@@ -1998,9 +1294,6 @@ class _$DailyImplementationPlanCreateStateImpl
             List<SettlementModel>? settlementData)?
         selectSettlements,
     TResult Function(bool loading, UserActionModel? dipUserAction)? create,
-    TResult Function(bool loading, UserActionModel? selectedDipUserAction,
-            List<UserActionModel>? allDipUserAction)?
-        search,
     required TResult orElse(),
   }) {
     if (create != null) {
@@ -2017,7 +1310,6 @@ class _$DailyImplementationPlanCreateStateImpl
             DailyImplementationPlanSelectSettlementsState value)
         selectSettlements,
     required TResult Function(DailyImplementationPlanCreateState value) create,
-    required TResult Function(DailyImplementationPlanSearchState value) search,
   }) {
     return create(this);
   }
@@ -2029,7 +1321,6 @@ class _$DailyImplementationPlanCreateStateImpl
     TResult? Function(DailyImplementationPlanSelectSettlementsState value)?
         selectSettlements,
     TResult? Function(DailyImplementationPlanCreateState value)? create,
-    TResult? Function(DailyImplementationPlanSearchState value)? search,
   }) {
     return create?.call(this);
   }
@@ -2041,7 +1332,6 @@ class _$DailyImplementationPlanCreateStateImpl
     TResult Function(DailyImplementationPlanSelectSettlementsState value)?
         selectSettlements,
     TResult Function(DailyImplementationPlanCreateState value)? create,
-    TResult Function(DailyImplementationPlanSearchState value)? search,
     required TResult orElse(),
   }) {
     if (create != null) {
@@ -2062,232 +1352,5 @@ abstract class DailyImplementationPlanCreateState
   @JsonKey(ignore: true)
   _$$DailyImplementationPlanCreateStateImplCopyWith<
           _$DailyImplementationPlanCreateStateImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$DailyImplementationPlanSearchStateImplCopyWith<$Res> {
-  factory _$$DailyImplementationPlanSearchStateImplCopyWith(
-          _$DailyImplementationPlanSearchStateImpl value,
-          $Res Function(_$DailyImplementationPlanSearchStateImpl) then) =
-      __$$DailyImplementationPlanSearchStateImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call(
-      {bool loading,
-      UserActionModel? selectedDipUserAction,
-      List<UserActionModel>? allDipUserAction});
-}
-
-/// @nodoc
-class __$$DailyImplementationPlanSearchStateImplCopyWithImpl<$Res>
-    extends _$DailyImplementationPlanStateCopyWithImpl<$Res,
-        _$DailyImplementationPlanSearchStateImpl>
-    implements _$$DailyImplementationPlanSearchStateImplCopyWith<$Res> {
-  __$$DailyImplementationPlanSearchStateImplCopyWithImpl(
-      _$DailyImplementationPlanSearchStateImpl _value,
-      $Res Function(_$DailyImplementationPlanSearchStateImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? loading = null,
-    Object? selectedDipUserAction = freezed,
-    Object? allDipUserAction = freezed,
-  }) {
-    return _then(_$DailyImplementationPlanSearchStateImpl(
-      loading: null == loading
-          ? _value.loading
-          : loading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      selectedDipUserAction: freezed == selectedDipUserAction
-          ? _value.selectedDipUserAction
-          : selectedDipUserAction // ignore: cast_nullable_to_non_nullable
-              as UserActionModel?,
-      allDipUserAction: freezed == allDipUserAction
-          ? _value._allDipUserAction
-          : allDipUserAction // ignore: cast_nullable_to_non_nullable
-              as List<UserActionModel>?,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$DailyImplementationPlanSearchStateImpl
-    implements DailyImplementationPlanSearchState {
-  const _$DailyImplementationPlanSearchStateImpl(
-      {this.loading = false,
-      this.selectedDipUserAction = null,
-      final List<UserActionModel>? allDipUserAction = null})
-      : _allDipUserAction = allDipUserAction;
-
-  @override
-  @JsonKey()
-  final bool loading;
-  @override
-  @JsonKey()
-  final UserActionModel? selectedDipUserAction;
-  final List<UserActionModel>? _allDipUserAction;
-  @override
-  @JsonKey()
-  List<UserActionModel>? get allDipUserAction {
-    final value = _allDipUserAction;
-    if (value == null) return null;
-    if (_allDipUserAction is EqualUnmodifiableListView)
-      return _allDipUserAction;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
-
-  @override
-  String toString() {
-    return 'DailyImplementationPlanState.search(loading: $loading, selectedDipUserAction: $selectedDipUserAction, allDipUserAction: $allDipUserAction)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$DailyImplementationPlanSearchStateImpl &&
-            (identical(other.loading, loading) || other.loading == loading) &&
-            (identical(other.selectedDipUserAction, selectedDipUserAction) ||
-                other.selectedDipUserAction == selectedDipUserAction) &&
-            const DeepCollectionEquality()
-                .equals(other._allDipUserAction, _allDipUserAction));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, loading, selectedDipUserAction,
-      const DeepCollectionEquality().hash(_allDipUserAction));
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$DailyImplementationPlanSearchStateImplCopyWith<
-          _$DailyImplementationPlanSearchStateImpl>
-      get copyWith => __$$DailyImplementationPlanSearchStateImplCopyWithImpl<
-          _$DailyImplementationPlanSearchStateImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() init,
-    required TResult Function(
-            int? date,
-            String? administrativeUnit,
-            String? wfpSupervisor,
-            List<String>? selectedSettlements,
-            List<SettlementModel>? settlementData)
-        selectSettlements,
-    required TResult Function(bool loading, UserActionModel? dipUserAction)
-        create,
-    required TResult Function(
-            bool loading,
-            UserActionModel? selectedDipUserAction,
-            List<UserActionModel>? allDipUserAction)
-        search,
-  }) {
-    return search(loading, selectedDipUserAction, allDipUserAction);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? init,
-    TResult? Function(
-            int? date,
-            String? administrativeUnit,
-            String? wfpSupervisor,
-            List<String>? selectedSettlements,
-            List<SettlementModel>? settlementData)?
-        selectSettlements,
-    TResult? Function(bool loading, UserActionModel? dipUserAction)? create,
-    TResult? Function(bool loading, UserActionModel? selectedDipUserAction,
-            List<UserActionModel>? allDipUserAction)?
-        search,
-  }) {
-    return search?.call(loading, selectedDipUserAction, allDipUserAction);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? init,
-    TResult Function(
-            int? date,
-            String? administrativeUnit,
-            String? wfpSupervisor,
-            List<String>? selectedSettlements,
-            List<SettlementModel>? settlementData)?
-        selectSettlements,
-    TResult Function(bool loading, UserActionModel? dipUserAction)? create,
-    TResult Function(bool loading, UserActionModel? selectedDipUserAction,
-            List<UserActionModel>? allDipUserAction)?
-        search,
-    required TResult orElse(),
-  }) {
-    if (search != null) {
-      return search(loading, selectedDipUserAction, allDipUserAction);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(DailyImplementationPlanInitState value) init,
-    required TResult Function(
-            DailyImplementationPlanSelectSettlementsState value)
-        selectSettlements,
-    required TResult Function(DailyImplementationPlanCreateState value) create,
-    required TResult Function(DailyImplementationPlanSearchState value) search,
-  }) {
-    return search(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(DailyImplementationPlanInitState value)? init,
-    TResult? Function(DailyImplementationPlanSelectSettlementsState value)?
-        selectSettlements,
-    TResult? Function(DailyImplementationPlanCreateState value)? create,
-    TResult? Function(DailyImplementationPlanSearchState value)? search,
-  }) {
-    return search?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(DailyImplementationPlanInitState value)? init,
-    TResult Function(DailyImplementationPlanSelectSettlementsState value)?
-        selectSettlements,
-    TResult Function(DailyImplementationPlanCreateState value)? create,
-    TResult Function(DailyImplementationPlanSearchState value)? search,
-    required TResult orElse(),
-  }) {
-    if (search != null) {
-      return search(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class DailyImplementationPlanSearchState
-    implements DailyImplementationPlanState {
-  const factory DailyImplementationPlanSearchState(
-          {final bool loading,
-          final UserActionModel? selectedDipUserAction,
-          final List<UserActionModel>? allDipUserAction}) =
-      _$DailyImplementationPlanSearchStateImpl;
-
-  bool get loading;
-  UserActionModel? get selectedDipUserAction;
-  List<UserActionModel>? get allDipUserAction;
-  @JsonKey(ignore: true)
-  _$$DailyImplementationPlanSearchStateImplCopyWith<
-          _$DailyImplementationPlanSearchStateImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

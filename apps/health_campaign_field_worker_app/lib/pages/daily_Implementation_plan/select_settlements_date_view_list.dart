@@ -9,7 +9,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_management/widgets/localized.dart';
 
 import '../../blocs/daily_implementation_plan/daily_implementation_plan.dart';
+import '../../blocs/daily_implementation_plan/dip_all_search.dart';
 import '../../router/app_router.dart';
+import '../../utils/constants.dart';
 import '../../widgets/custom_back_navigation.dart';
 import '../../utils/i18_key_constants.dart' as i18_local;
 
@@ -28,8 +30,8 @@ class _SelectSettlementsDateViewListPageState
     extends LocalizedState<SelectSettlementsDateViewListPage> {
   @override
   void initState() {
-    context.read<DailyImplementationPlanBloc>().add(
-          const DailyImplementationPlanEvent.handleAllSearch(
+    context.read<DipAllSearchBloc>().add(
+          const DipAllSearchEvent.search(
             userAction: 'DAILY_PLAN',
           ),
         );
@@ -54,71 +56,67 @@ class _SelectSettlementsDateViewListPageState
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(spacer2),
-            child: BlocBuilder<DailyImplementationPlanBloc,
-                DailyImplementationPlanState>(
-              builder: (context, state) {
-                if (state is DailyImplementationPlanSearchState) {
-                  List<UserActionModel>? dipUserActionModelList =
-                      state.allDipUserAction;
-                  if (dipUserActionModelList != null &&
-                      dipUserActionModelList.isNotEmpty) {
-                    return ListView.builder(
-                        itemCount: dipUserActionModelList.length,
-                        itemBuilder: (context, index) {
-                          UserActionModel dipUserActionModel =
-                              dipUserActionModelList[index];
-                          List<AdditionalField>? dipUserActionAdditionalField =
-                              dipUserActionModel.additionalFields?.fields;
+            child: BlocBuilder<DipAllSearchBloc, DipAllSearchState>(
+                builder: (context, state) {
+              if (state is DipAllSearchSettlementState) {
+                List<UserActionModel>? dipUserActionModelList =
+                    state.allDipUserAction;
+                if (dipUserActionModelList != null &&
+                    dipUserActionModelList.isNotEmpty) {
+                  return ListView.builder(
+                      itemCount: dipUserActionModelList.length,
+                      itemBuilder: (context, index) {
+                        UserActionModel dipUserActionModel =
+                            dipUserActionModelList[index];
+                        List<AdditionalField>? dipUserActionAdditionalField =
+                            dipUserActionModel.additionalFields?.fields;
 
-                          DateTime date = DateTime.fromMillisecondsSinceEpoch(
-                              dipUserActionModel.timestamp);
-                          String wfpSupervisor = dipUserActionAdditionalField
-                                  ?.firstWhere(
-                                    (e) => e.key == 'SupervisorName',
-                                    orElse: () =>
-                                        AdditionalField('SupervisorName', ''),
-                                  )
-                                  .value ??
-                              '';
+                        DateTime date = DateTime.fromMillisecondsSinceEpoch(
+                            dipUserActionModel.timestamp);
+                        String wfpSupervisor = dipUserActionAdditionalField
+                                ?.firstWhere(
+                                  (e) => e.key == Constants.supervisorName,
+                                  orElse: () => const AdditionalField(
+                                      Constants.supervisorName, ''),
+                                )
+                                .value ??
+                            '';
 
-                          return InkWell(
-                            onTap: () {
-                              context.router.push(
-                                  SelectSettlementsDateViewRoute(
-                                      clientReferenceId: dipUserActionModel
-                                          .clientReferenceId));
-                            },
-                            child: DigitCard(
-                              margin:
-                                  const EdgeInsets.symmetric(vertical: spacer1),
-                              children: [
-                                Text(
-                                  date.toString(),
-                                  style: textTheme.bodyL,
-                                ),
-                                Text(
-                                  wfpSupervisor,
-                                  style: textTheme.bodyL,
-                                ),
-                                Text(dipUserActionModel.clientReferenceId),
-                              ],
-                            ),
-                          );
-                        });
-                  } else {
-                    return Center(
-                      child: Text(
-                        localizations.translate(i18_local
-                            .dailyImplementationFlow
-                            .no_daily_implementation_plan_found),
-                        style: textTheme.bodyL,
-                      ),
-                    );
-                  }
+                        return InkWell(
+                          onTap: () {
+                            context.router.push(SelectSettlementsDateViewRoute(
+                                clientReferenceId:
+                                    dipUserActionModel.clientReferenceId));
+                          },
+                          child: DigitCard(
+                            margin:
+                                const EdgeInsets.symmetric(vertical: spacer1),
+                            children: [
+                              Text(
+                                date.toString(),
+                                style: textTheme.bodyL,
+                              ),
+                              Text(
+                                wfpSupervisor,
+                                style: textTheme.bodyL,
+                              ),
+                              Text(dipUserActionModel.clientReferenceId),
+                            ],
+                          ),
+                        );
+                      });
+                } else {
+                  return Center(
+                    child: Text(
+                      localizations.translate(i18_local.dailyImplementationFlow
+                          .no_daily_implementation_plan_found),
+                      style: textTheme.bodyL,
+                    ),
+                  );
                 }
-                return const SizedBox.shrink();
-              },
-            ),
+              }
+              return const SizedBox.shrink();
+            }),
           ),
         ),
       ],
