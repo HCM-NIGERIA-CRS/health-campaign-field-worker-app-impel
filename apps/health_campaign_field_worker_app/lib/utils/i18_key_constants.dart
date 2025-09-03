@@ -249,6 +249,8 @@ class DeliverIntervention {
   String get ninetoElevenAgeRange => 'NINE_ELEVEN_AGE_RANGE';
   String get twelvetofiftyNineAgeRange => 'TWELVE_FIFTYNINE_AGE_RANGE';
   String get selectAgeRangeMessage => 'SELECT_AGE_RANGE';
+
+  String get disabilityLabel => 'DELIVER_INTERVENTION_DISABILITY_LABEL';
 }
 
 class Checklist {

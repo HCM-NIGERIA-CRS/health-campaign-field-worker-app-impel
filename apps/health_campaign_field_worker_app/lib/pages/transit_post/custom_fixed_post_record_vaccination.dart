@@ -320,8 +320,10 @@ class CustomFixedPostRecordVaccinationPageState
                       ),
                     ],
                   ),
-                  if (context.projectTypeCode == ProjectTypes.oncho.toValue())
-                    DigitCard(
+                  Offstage(
+                    offstage: !(context.projectTypeCode ==
+                        ProjectTypes.oncho.toValue()),
+                    child: DigitCard(
                       margin: const EdgeInsets.all(spacer2),
                       children: [
                         Text(
@@ -444,6 +446,7 @@ class CustomFixedPostRecordVaccinationPageState
                         ),
                       ],
                     ),
+                  ),
                   DigitCard(
                     margin: const EdgeInsets.all(spacer2),
                     children: [

@@ -63,13 +63,6 @@ class CustomTransitPostSelectionPageState
         DialogType.inProgress,
       );
     });
-
-    ProjectTypeModel? projectType = RegistrationDeliverySingleton()
-        .selectedProject
-        ?.additionalDetails
-        ?.projectType;
-
-    print('${projectType} model is');
   }
 
   @override

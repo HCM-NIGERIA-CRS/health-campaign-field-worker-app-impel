@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:digit_components/widgets/atoms/digit_reactive_dropdown.dart';
 import 'package:digit_components/widgets/atoms/digit_text_form_field.dart';
 import 'package:digit_ui_components/widgets/molecules/show_pop_up.dart';
 import 'package:registration_delivery/blocs/app_localization.dart';
@@ -7,6 +8,7 @@ import 'package:registration_delivery/blocs/search_households/search_households.
 import 'package:registration_delivery/blocs/unique_id/unique_id.dart';
 import 'package:registration_delivery/widgets/beneficiary/id_count_alert.dart';
 // import 'package:digit_components/utils/date_utils.dart' as digits;
+import '../../blocs/app_initialization/app_initialization.dart';
 import '../../models/entities/project_types.dart';
 import '../../utils/date_utils.dart' as digits;
 import 'package:digit_components/widgets/atoms/digit_toaster.dart';
@@ -71,6 +73,7 @@ class CustomIndividualDetailsPageState
   static const _genderKey = 'gender';
   static const _mobileNumberKey = 'mobileNumber';
   static const _heightKey = 'height';
+  static const _disabilityKey = 'disability';
 
   bool isDuplicateTag = false;
   static const maxLength = 200;
@@ -950,7 +953,10 @@ class CustomIndividualDetailsPageState
                                         ),
                                         // enable only when projectType oncho
                                         Offstage(
-                                          offstage: true,
+                                          offstage: !(context.projectTypeCode ==
+                                                  ProjectTypes.oncho
+                                                      .toValue() &&
+                                              widget.isHeadOfHousehold),
                                           child: Padding(
                                             padding: const EdgeInsets.fromLTRB(
                                               kPadding / 2,
@@ -1028,6 +1034,39 @@ class CustomIndividualDetailsPageState
                                                   errorMessage: field.errorText,
                                                 ),
                                               ),
+                                            ),
+                                          ),
+                                        ),
+                                        Offstage(
+                                          offstage: !(context.projectTypeCode ==
+                                                  ProjectTypes.oncho
+                                                      .toValue() &&
+                                              widget.isHeadOfHousehold),
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                              kPadding / 2,
+                                              0,
+                                              kPadding / 2,
+                                              0,
+                                            ),
+                                            child:
+                                                DigitReactiveDropdown<String>(
+                                              label: localizations.translate(
+                                                i18_local.deliverIntervention
+                                                    .disabilityLabel,
+                                              ),
+                                              isRequired: true,
+                                              valueMapper: (value) =>
+                                                  localizations
+                                                      .translate(value),
+                                              menuItems: const ["YES", "NO"],
+                                              formControlName: _disabilityKey,
+                                              validationMessages: {
+                                                'required': (object) =>
+                                                    localizations.translate(i18
+                                                        .common
+                                                        .corecommonRequired),
+                                              },
                                             ),
                                           ),
                                         ),
@@ -1307,10 +1346,11 @@ class CustomIndividualDetailsPageState
       _genderKey: FormControl<String>(
           value: getGenderOptions(individual),
           validators: [Validators.required]),
-      // todo set based on projectType
       _heightKey: FormControl<String>(
-        value: height,
-        validators: true ? [] : [Validators.required],
+        value: "0",
+        validators: context.projectTypeCode == ProjectTypes.oncho.toValue()
+            ? []
+            : [Validators.required],
       ),
       _mobileNumberKey:
           FormControl<String>(value: individual?.mobileNumber, validators: [
@@ -1318,6 +1358,9 @@ class CustomIndividualDetailsPageState
             local_utils.CustomValidator.validMobileNumber(validator)),
         Validators.minLength(11),
         Validators.maxLength(11),
+      ]),
+      _disabilityKey: FormControl<String>(value: _disabilityKey, validators: [
+        Validators.required,
       ]),
     });
   }
