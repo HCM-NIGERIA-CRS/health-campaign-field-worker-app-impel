@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:registration_delivery/utils/utils.dart';
 
 import '../../blocs/daily_implementation_plan/daily_implementation_plan.dart';
+import '../../blocs/daily_implementation_plan/dip_search.dart';
 import '../../models/settlement/settlement_model.dart';
 import '../../router/app_router.dart';
 import '../../utils/utils.dart';
@@ -49,8 +50,19 @@ class _SelectSettlementsPageState
               double? latitude = locationState.latitude;
               double? longitude = locationState.longitude;
               double? locationAccuracy = locationState.accuracy;
-              return BlocBuilder<DailyImplementationPlanBloc,
+              return BlocConsumer<DailyImplementationPlanBloc,
                   DailyImplementationPlanState>(
+                listener: (context, state) {
+                  if (state is DailyImplementationPlanCreateState) {
+                    var tripBookAction = state.dipUserAction;
+                    context.read<DipSearchBloc>().add(DipSearchEvent.search(
+                        clientReferenceId: tripBookAction?.clientReferenceId));
+                    context.router.pushAndPopUntil(
+                        const SelectSettlementsDateViewRoute(),
+                        predicate: (route) =>
+                            route.settings.name == HomeRoute.name);
+                  }
+                },
                 builder: (context, state) {
                   if (state is DailyImplementationPlanSelectSettlementsState) {
                     return Column(
@@ -151,16 +163,12 @@ class _SelectSettlementsPageState
                                                   .map((e) => e.toJson())
                                                   .toList()),
                                       ]));
+
                               context.read<DailyImplementationPlanBloc>().add(
                                     DailyImplementationPlanEvent.handleCreate(
                                       dipUserAction: tripBookAction,
                                     ),
                                   );
-                              context.router.pushAndPopUntil(
-                                  SelectSettlementsDateViewRoute(
-                                      clientReferenceId: clientReferenceId),
-                                  predicate: (route) =>
-                                      route.settings.name == HomeRoute.name);
                             },
                             label: localizations
                                 .translate(i18.common.coreCommonSubmit),
