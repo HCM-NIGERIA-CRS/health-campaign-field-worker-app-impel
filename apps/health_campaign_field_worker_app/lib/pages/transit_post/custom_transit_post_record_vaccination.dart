@@ -154,47 +154,10 @@ class CustomTransitPostRecordVaccinationPageState
                               ),
                             ],
                           ),
-                        ) as bool;
+                        );
 
                         if (submit ?? false) {
                           if (context.mounted) {
-                            // // submit polio event
-                            // context.read<CustomTransitPostBloc>().add(
-                            //     CustomTransitPostEvent.submitDelivery(
-                            //         latitude: latKey.text.isNotEmpty
-                            //             ? double.parse(latKey.text)
-                            //             : transitPostState.latitude,
-                            //         longitude: lngKey.text.isNotEmpty
-                            //             ? double.parse(lngKey.text)
-                            //             : transitPostState.longitude,
-                            //         locationAccuracy:
-                            //             accuracyKey.text.isNotEmpty
-                            //                 ? double.parse(accuracyKey.text)
-                            //                 : transitPostState.locationAccuracy,
-                            //         scannedResource: "",
-                            //         drugType: "POLIO",
-                            //         beneficiaryDelivered:
-                            //             polioBeneficiaryCount));
-
-                            // // submit measles event
-
-                            // context
-                            //     .read<CustomTransitPostBloc>()
-                            //     .add(CustomTransitPostEvent.submitDelivery(
-                            //       latitude: latKey.text.isNotEmpty
-                            //           ? double.parse(latKey.text)
-                            //           : transitPostState.latitude,
-                            //       longitude: lngKey.text.isNotEmpty
-                            //           ? double.parse(lngKey.text)
-                            //           : transitPostState.longitude,
-                            //       locationAccuracy: accuracyKey.text.isNotEmpty
-                            //           ? double.parse(accuracyKey.text)
-                            //           : transitPostState.locationAccuracy,
-                            //       scannedResource: "",
-                            //       drugType: drugType,
-                            //       beneficiaryDelivered: measlesBeneficiaryCount,
-                            //     ));
-
                             context.router.replaceAll(
                                 [const CustomTransitPostSelectionRoute()]);
                           }
@@ -259,21 +222,6 @@ class CustomTransitPostRecordVaccinationPageState
                         color: theme.colorTheme.text.primary,
                       ),
                     ),
-                    // if (TransitPostSingleton().minAge != null &&
-                    //     TransitPostSingleton().maxAge != null)
-                    //   LabelValueSummary(items: [
-                    //     LabelValueItem(
-                    //       labelFlex: 5,
-                    //       maxLines: 4,
-                    //       label: localizations.translate(
-                    //         i18.transitPost.beneficiaryAgeLabel,
-                    //       ),
-                    //       value:
-                    //           "${localizations.translate(i18.transitPost.beneficiaryAgeDescription)} ${TransitPostSingleton().minAge!.toString()} ${"-"} ${TransitPostSingleton().maxAge!.toString()} ${localizations.translate(
-                    //         i18_local.individualDetails.monthsHintText,
-                    //       )}",
-                    //     )
-                    //   ]),
                     SizedBox(
                       height: (tableRow.length * 70.0).toDouble().clamp(
                               100, MediaQuery.of(context).size.height * 0.5) +
@@ -359,6 +307,7 @@ class CustomTransitPostRecordVaccinationPageState
                                           ? 1
                                           : transitPostState.totalCount! + 1,
                                   action: widget.postType,
+                                  scannedResource: "POLIO",
                                 ));
 
                             context.router
@@ -446,6 +395,7 @@ class CustomTransitPostRecordVaccinationPageState
                                             ? 1
                                             : transitPostState.totalCount! + 1,
                                     action: widget.postType,
+                                    scannedResource: "MEASLES",
                                   ),
                                 );
 

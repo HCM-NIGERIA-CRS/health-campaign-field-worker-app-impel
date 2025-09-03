@@ -154,7 +154,7 @@ class CustomFixedPostRecordVaccinationPageState
                               ),
                             ],
                           ),
-                        ) as bool;
+                        );
 
                         if (submit ?? false) {
                           if (context.mounted) {
@@ -306,6 +306,7 @@ class CustomFixedPostRecordVaccinationPageState
                                           ? 1
                                           : fixedPostState.totalCount! + 1,
                                   action: widget.postType,
+                                  scannedResource: "POLIO",
                                 ));
 
                             context.router
@@ -392,6 +393,7 @@ class CustomFixedPostRecordVaccinationPageState
                                             ? 1
                                             : fixedPostState.totalCount! + 1,
                                     action: widget.postType,
+                                    scannedResource: "MEASLES",
                                   ),
                                 );
 
