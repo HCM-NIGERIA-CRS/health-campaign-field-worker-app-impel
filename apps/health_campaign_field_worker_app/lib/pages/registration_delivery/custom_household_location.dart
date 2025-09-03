@@ -226,32 +226,81 @@ class CustomHouseholdLocationPageState
                                 loading,
                                 isHeadOfHousehold,
                               ) {
+                                var addressModel = AddressModel(
+                                  addressLine1: addressLine1 != null &&
+                                          addressLine1.trim().isNotEmpty
+                                      ? addressLine1
+                                      : null,
+                                  addressLine2: addressLine2 != null &&
+                                          addressLine2.trim().isNotEmpty
+                                      ? addressLine2
+                                      : null,
+                                  landmark: landmark != null &&
+                                          landmark.trim().isNotEmpty
+                                      ? landmark
+                                      : null,
+                                  pincode: postalCode != null &&
+                                          postalCode.trim().isNotEmpty
+                                      ? postalCode
+                                      : null,
+                                  type: AddressType.correspondence,
+                                  latitude: form.control(_latKey).value ??
+                                      locationState.latitude,
+                                  longitude: form.control(_lngKey).value ??
+                                      locationState.longitude,
+                                  locationAccuracy:
+                                      form.control(_accuracyKey).value ??
+                                          locationState.accuracy,
+                                  locality: LocalityModel(
+                                    code: RegistrationDeliverySingleton()
+                                        .boundary!
+                                        .code!,
+                                    name: RegistrationDeliverySingleton()
+                                        .boundary!
+                                        .name,
+                                  ),
+                                  tenantId:
+                                      RegistrationDeliverySingleton().tenantId,
+                                  rowVersion: 1,
+                                  buildingName: (RegistrationDeliverySingleton()
+                                              .householdType ==
+                                          HouseholdType.community)
+                                      ? form.control(_buildingNameKey).value
+                                      : null,
+                                  auditDetails: AuditDetails(
+                                    createdBy: RegistrationDeliverySingleton()
+                                        .loggedInUserUuid!,
+                                    createdTime:
+                                        ContextUtilityExtensions(context)
+                                            .millisecondsSinceEpoch(),
+                                  ),
+                                  clientAuditDetails: ClientAuditDetails(
+                                    createdBy: RegistrationDeliverySingleton()
+                                        .loggedInUserUuid!,
+                                    createdTime:
+                                        ContextUtilityExtensions(context)
+                                            .millisecondsSinceEpoch(),
+                                    lastModifiedBy:
+                                        RegistrationDeliverySingleton()
+                                            .loggedInUserUuid,
+                                    lastModifiedTime:
+                                        ContextUtilityExtensions(context)
+                                            .millisecondsSinceEpoch(),
+                                  ),
+                                );
+
+                                bloc.add(
+                                  BeneficiaryRegistrationSaveAddressEvent(
+                                    addressModel,
+                                  ),
+                                );
+
                                 if (!isConsent) {
                                   context.router
                                       .push(CustomHouseholdSummaryRoute(
                                     householdNumber: householdNumberCaptured,
                                     headName: householdHeadName,
                                     reasonNonCompliance: reasonForNonCompliance,
-                                  ));
-                                } else {
-                                  var addressModel = AddressModel(
-                                    addressLine1: addressLine1 != null &&
-                                            addressLine1.trim().isNotEmpty
-                                        ? addressLine1
-                                        : null,
-                                    addressLine2: addressLine2 != null &&
-                                            addressLine2.trim().isNotEmpty
-                                        ? addressLine2
-                                        : null,
-                                    landmark: landmark != null &&
-                                            landmark.trim().isNotEmpty
-                                        ? landmark
-                                        : null,
-                                    pincode: postalCode != null &&
-                                            postalCode.trim().isNotEmpty
-                                        ? postalCode
-                                        : null,
-                                    type: AddressType.correspondence,
                                     latitude: form.control(_latKey).value ??
                                         locationState.latitude,
                                     longitude: form.control(_lngKey).value ??
@@ -259,52 +308,8 @@ class CustomHouseholdLocationPageState
                                     locationAccuracy:
                                         form.control(_accuracyKey).value ??
                                             locationState.accuracy,
-                                    locality: LocalityModel(
-                                      code: RegistrationDeliverySingleton()
-                                          .boundary!
-                                          .code!,
-                                      name: RegistrationDeliverySingleton()
-                                          .boundary!
-                                          .name,
-                                    ),
-                                    tenantId: RegistrationDeliverySingleton()
-                                        .tenantId,
-                                    rowVersion: 1,
-                                    buildingName:
-                                        (RegistrationDeliverySingleton()
-                                                    .householdType ==
-                                                HouseholdType.community)
-                                            ? form
-                                                .control(_buildingNameKey)
-                                                .value
-                                            : null,
-                                    auditDetails: AuditDetails(
-                                      createdBy: RegistrationDeliverySingleton()
-                                          .loggedInUserUuid!,
-                                      createdTime:
-                                          ContextUtilityExtensions(context)
-                                              .millisecondsSinceEpoch(),
-                                    ),
-                                    clientAuditDetails: ClientAuditDetails(
-                                      createdBy: RegistrationDeliverySingleton()
-                                          .loggedInUserUuid!,
-                                      createdTime:
-                                          ContextUtilityExtensions(context)
-                                              .millisecondsSinceEpoch(),
-                                      lastModifiedBy:
-                                          RegistrationDeliverySingleton()
-                                              .loggedInUserUuid,
-                                      lastModifiedTime:
-                                          ContextUtilityExtensions(context)
-                                              .millisecondsSinceEpoch(),
-                                    ),
-                                  );
-
-                                  bloc.add(
-                                    BeneficiaryRegistrationSaveAddressEvent(
-                                      addressModel,
-                                    ),
-                                  );
+                                  ));
+                                } else {
                                   router.push(CustomHouseHoldDetailsRoute());
                                 }
                               },
