@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:digit_data_model/models/entities/project_type.dart';
 import 'package:digit_scanner/digit_scanner.dart';
 import 'package:digit_scanner/pages/qr_scanner.dart';
 import 'package:digit_ui_components/digit_components.dart';
@@ -62,6 +63,13 @@ class CustomTransitPostSelectionPageState
         DialogType.inProgress,
       );
     });
+
+    ProjectTypeModel? projectType = RegistrationDeliverySingleton()
+        .selectedProject
+        ?.additionalDetails
+        ?.projectType;
+
+    print('${projectType} model is');
   }
 
   @override

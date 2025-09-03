@@ -1,9 +1,11 @@
 import 'package:dart_mappable/dart_mappable.dart';
 
+part 'project_types.mapper.dart';
+
 @MappableEnum(caseStyle: CaseStyle.upperCase)
 enum ProjectTypes {
-  @MappableValue("polio")
+  @MappableValue("Polio-ng")
   polio,
-  @MappableValue("oncho")
+  @MappableValue("Polio-smc-ng")
   oncho,
 }
