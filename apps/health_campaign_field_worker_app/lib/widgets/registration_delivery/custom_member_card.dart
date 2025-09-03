@@ -205,8 +205,9 @@ class CustomMemberCard extends StatelessWidget {
     bool isBeneficiaryInEligibleSMC =
         checkBeneficiaryInEligibleSMC(tasks, context.selectedCycle);
 
-    if ((isNotEligibleSMC || isBeneficiaryIneligible || isBeneficiaryAbsent) &&
-        !doseStatus) return const Offstage();
+    if ((isNotEligibleSMC || isBeneficiaryIneligible) && !doseStatus) {
+      return const Offstage();
+    }
     if (isNotEligibleSMC) {
       return const Offstage();
     }
@@ -214,14 +215,16 @@ class CustomMemberCard extends StatelessWidget {
       children: [
         if (smcAssessmentPendingStatus &&
             !isBeneficiaryReferredSMC &&
-            !isBeneficiaryInEligibleSMC &&
-            !isBeneficiaryAbsent)
+            !isBeneficiaryInEligibleSMC)
           DigitElevatedButton(
             child: Center(
               child: Text(
                 localizations.translate(
-                  i18_local.householdOverView
-                      .householdOverViewSMCAssessmentActionText,
+                  isBeneficiaryAbsent
+                      ? i18_local
+                          .householdOverView.householdOverViewRevisitAbsentText
+                      : i18_local.householdOverView
+                          .householdOverViewSMCAssessmentActionText,
                 ),
                 style: textTheme.headingM.copyWith(color: Colors.white),
               ),
@@ -394,12 +397,10 @@ class CustomMemberCard extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: isHead
-                      ? const Text("")
-                      : Text(
-                          " | $years ${localizations.translate(i18.memberCard.deliverDetailsYearText)} $months ${localizations.translate(i18.memberCard.deliverDetailsMonthsText)}",
-                          style: theme.textTheme.bodyMedium,
-                        ),
+                  child: Text(
+                    " | $years ${localizations.translate(i18.memberCard.deliverDetailsYearText)} $months ${localizations.translate(i18.memberCard.deliverDetailsMonthsText)}",
+                    style: theme.textTheme.bodyMedium,
+                  ),
                 ),
               ],
             ),

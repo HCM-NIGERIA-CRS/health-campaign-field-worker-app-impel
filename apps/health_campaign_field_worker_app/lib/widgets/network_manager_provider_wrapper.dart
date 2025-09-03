@@ -8,27 +8,19 @@ import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/user_action.dart';
 import 'package:digit_location_tracker/data/oplog/oplog.dart';
 import 'package:digit_location_tracker/data/repositories/local/location_tracker.dart';
+import 'package:digit_location_tracker/data/repositories/remote/location_tracker.dart';
 import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:inventory_management/data/repositories/local/stock.dart';
-import 'package:inventory_management/data/repositories/oplog/oplog.dart';
-import 'package:inventory_management/models/entities/stock.dart';
 import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
 import 'package:registration_delivery/data/repositories/local/unique_id_pool.dart';
 import 'package:registration_delivery/data/repositories/remote/unique_id_pool.dart';
 import 'package:registration_delivery/models/entities/unique_id_pool.dart';
-import 'package:survey_form/data/repositories/local/service.dart';
-import 'package:survey_form/data/repositories/local/service_definition.dart';
-import 'package:survey_form/data/repositories/oplog/oplog.dart';
-import 'package:survey_form/data/repositories/remote/service.dart';
-import 'package:survey_form/data/repositories/remote/service_definition.dart';
-import 'package:survey_form/models/entities/service.dart';
-import 'package:survey_form/models/entities/service_definition.dart';
-import 'package:transit_post/transit_post.dart';
+import 'package:transit_post/data/repositories/local/user_action.dart';
+import 'package:transit_post/data/repositories/oplog/oplog.dart';
 
 import '../blocs/app_initialization/app_initialization.dart';
 import '../data/local_store/downsync/downsync.dart';
@@ -36,6 +28,7 @@ import '../data/network_manager.dart';
 import '../data/repositories/custom_task.dart';
 import '../data/repositories/local/inventory_management/custom_stock.dart';
 import '../data/repositories/local/registration_delivery/custom_registration_delivery.dart';
+import '../data/repositories/local/transit_post/custom_user_action.dart';
 import '../data/repositories/oplog.dart';
 import '../data/repositories/remote/auth.dart';
 import '../data/repositories/remote/downsync.dart';
@@ -45,6 +38,8 @@ import 'package:registration_delivery/registration_delivery.dart';
 import 'package:referral_reconciliation/referral_reconciliation.dart';
 import 'package:attendance_management/attendance_management.dart';
 import 'package:survey_form/survey_form.dart';
+
+import 'package:transit_post/data/repositories/remote/user_action.dart';
 
 class NetworkManagerProviderWrapper extends StatelessWidget {
   final LocalSqlDataStore sql;
@@ -202,8 +197,16 @@ class NetworkManagerProviderWrapper extends StatelessWidget {
       ),
 
       // INFO Need to add packages here
-      RepositoryProvider<UserActionLocalRepository>(
+      RepositoryProvider<
+          LocalRepository<UserActionModel, UserActionSearchModel>>(
         create: (_) => UserActionLocalRepository(
+          sql,
+          UserActionOpLogManager(isar),
+        ),
+      ),
+      RepositoryProvider<
+          LocalRepository<UserActionModel, UserActionSearchModel>>(
+        create: (_) => CustomUserActionLocalRepository(
           sql,
           UserActionOpLogManager(isar),
         ),
@@ -579,6 +582,17 @@ class NetworkManagerProviderWrapper extends StatelessWidget {
               dio,
               actionMap: actions,
             ),
+          ),
+        if (value == DataModelType.userLocation)
+          RepositoryProvider<
+              RemoteRepository<UserActionModel, UserActionSearchModel>>(
+            create: (_) =>
+                LocationTrackerRemoteRepository(dio, actionMap: actions),
+          ),
+        // INFO Need to add packages here
+        if (value == DataModelType.userAction)
+          RepositoryProvider<UserActionRemoteRepository>(
+            create: (_) => UserActionRemoteRepository(dio, actionMap: actions),
           ),
       ]);
     }

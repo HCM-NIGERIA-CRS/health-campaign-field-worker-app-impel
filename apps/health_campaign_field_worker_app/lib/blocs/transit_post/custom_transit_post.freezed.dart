@@ -16,25 +16,26 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$CustomTransitPostEvent {
-  double get latitude => throw _privateConstructorUsedError;
-  double get longitude => throw _privateConstructorUsedError;
-  double get locationAccuracy => throw _privateConstructorUsedError;
-  String? get scannedResource => throw _privateConstructorUsedError;
-  String? get drugType => throw _privateConstructorUsedError;
-  int? get beneficiaryDelivered => throw _privateConstructorUsedError;
-  List<AdditionalField>? get additionalFields =>
-      throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
             double latitude,
             double longitude,
             double locationAccuracy,
+            String? transitPostType,
+            String? transitPostName)
+        handleSelection,
+    required TResult Function(
+            double latitude,
+            double longitude,
+            double locationAccuracy,
             String? scannedResource,
-            String? drugType,
-            int? beneficiaryDelivered,
-            List<AdditionalField>? additionalFields)
-        submitDelivery,
+            String? action,
+            int? curCount,
+            int? totalCount)
+        handleDelivery,
+    required TResult Function(int curCount, int totalCount, String? action)
+        handleDeliveryCount,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -43,47 +44,67 @@ mixin _$CustomTransitPostEvent {
             double latitude,
             double longitude,
             double locationAccuracy,
+            String? transitPostType,
+            String? transitPostName)?
+        handleSelection,
+    TResult? Function(
+            double latitude,
+            double longitude,
+            double locationAccuracy,
             String? scannedResource,
-            String? drugType,
-            int? beneficiaryDelivered,
-            List<AdditionalField>? additionalFields)?
-        submitDelivery,
+            String? action,
+            int? curCount,
+            int? totalCount)?
+        handleDelivery,
+    TResult? Function(int curCount, int totalCount, String? action)?
+        handleDeliveryCount,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
+    TResult Function(double latitude, double longitude, double locationAccuracy,
+            String? transitPostType, String? transitPostName)?
+        handleSelection,
     TResult Function(
             double latitude,
             double longitude,
             double locationAccuracy,
             String? scannedResource,
-            String? drugType,
-            int? beneficiaryDelivered,
-            List<AdditionalField>? additionalFields)?
-        submitDelivery,
+            String? action,
+            int? curCount,
+            int? totalCount)?
+        handleDelivery,
+    TResult Function(int curCount, int totalCount, String? action)?
+        handleDeliveryCount,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(TransitPostSubmitDeliveryEvent value)
-        submitDelivery,
+    required TResult Function(CustomTransitPostSelectionEvent value)
+        handleSelection,
+    required TResult Function(CustomTransitPostDeliveryEvent value)
+        handleDelivery,
+    required TResult Function(CustomTransitPostDeliveryCountEvent value)
+        handleDeliveryCount,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(TransitPostSubmitDeliveryEvent value)? submitDelivery,
+    TResult? Function(CustomTransitPostSelectionEvent value)? handleSelection,
+    TResult? Function(CustomTransitPostDeliveryEvent value)? handleDelivery,
+    TResult? Function(CustomTransitPostDeliveryCountEvent value)?
+        handleDeliveryCount,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(TransitPostSubmitDeliveryEvent value)? submitDelivery,
+    TResult Function(CustomTransitPostSelectionEvent value)? handleSelection,
+    TResult Function(CustomTransitPostDeliveryEvent value)? handleDelivery,
+    TResult Function(CustomTransitPostDeliveryCountEvent value)?
+        handleDeliveryCount,
     required TResult orElse(),
   }) =>
-      throw _privateConstructorUsedError;
-
-  @JsonKey(ignore: true)
-  $CustomTransitPostEventCopyWith<CustomTransitPostEvent> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -92,15 +113,6 @@ abstract class $CustomTransitPostEventCopyWith<$Res> {
   factory $CustomTransitPostEventCopyWith(CustomTransitPostEvent value,
           $Res Function(CustomTransitPostEvent) then) =
       _$CustomTransitPostEventCopyWithImpl<$Res, CustomTransitPostEvent>;
-  @useResult
-  $Res call(
-      {double latitude,
-      double longitude,
-      double locationAccuracy,
-      String? scannedResource,
-      String? drugType,
-      int? beneficiaryDelivered,
-      List<AdditionalField>? additionalFields});
 }
 
 /// @nodoc
@@ -113,6 +125,32 @@ class _$CustomTransitPostEventCopyWithImpl<$Res,
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+}
+
+/// @nodoc
+abstract class _$$CustomTransitPostSelectionEventImplCopyWith<$Res> {
+  factory _$$CustomTransitPostSelectionEventImplCopyWith(
+          _$CustomTransitPostSelectionEventImpl value,
+          $Res Function(_$CustomTransitPostSelectionEventImpl) then) =
+      __$$CustomTransitPostSelectionEventImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call(
+      {double latitude,
+      double longitude,
+      double locationAccuracy,
+      String? transitPostType,
+      String? transitPostName});
+}
+
+/// @nodoc
+class __$$CustomTransitPostSelectionEventImplCopyWithImpl<$Res>
+    extends _$CustomTransitPostEventCopyWithImpl<$Res,
+        _$CustomTransitPostSelectionEventImpl>
+    implements _$$CustomTransitPostSelectionEventImplCopyWith<$Res> {
+  __$$CustomTransitPostSelectionEventImplCopyWithImpl(
+      _$CustomTransitPostSelectionEventImpl _value,
+      $Res Function(_$CustomTransitPostSelectionEventImpl) _then)
+      : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
@@ -120,12 +158,10 @@ class _$CustomTransitPostEventCopyWithImpl<$Res,
     Object? latitude = null,
     Object? longitude = null,
     Object? locationAccuracy = null,
-    Object? scannedResource = freezed,
-    Object? drugType = freezed,
-    Object? beneficiaryDelivered = freezed,
-    Object? additionalFields = freezed,
+    Object? transitPostType = freezed,
+    Object? transitPostName = freezed,
   }) {
-    return _then(_value.copyWith(
+    return _then(_$CustomTransitPostSelectionEventImpl(
       latitude: null == latitude
           ? _value.latitude
           : latitude // ignore: cast_nullable_to_non_nullable
@@ -138,53 +174,240 @@ class _$CustomTransitPostEventCopyWithImpl<$Res,
           ? _value.locationAccuracy
           : locationAccuracy // ignore: cast_nullable_to_non_nullable
               as double,
-      scannedResource: freezed == scannedResource
-          ? _value.scannedResource
-          : scannedResource // ignore: cast_nullable_to_non_nullable
+      transitPostType: freezed == transitPostType
+          ? _value.transitPostType
+          : transitPostType // ignore: cast_nullable_to_non_nullable
               as String?,
-      drugType: freezed == drugType
-          ? _value.drugType
-          : drugType // ignore: cast_nullable_to_non_nullable
+      transitPostName: freezed == transitPostName
+          ? _value.transitPostName
+          : transitPostName // ignore: cast_nullable_to_non_nullable
               as String?,
-      beneficiaryDelivered: freezed == beneficiaryDelivered
-          ? _value.beneficiaryDelivered
-          : beneficiaryDelivered // ignore: cast_nullable_to_non_nullable
-              as int?,
-      additionalFields: freezed == additionalFields
-          ? _value.additionalFields
-          : additionalFields // ignore: cast_nullable_to_non_nullable
-              as List<AdditionalField>?,
-    ) as $Val);
+    ));
   }
 }
 
 /// @nodoc
-abstract class _$$TransitPostSubmitDeliveryEventImplCopyWith<$Res>
-    implements $CustomTransitPostEventCopyWith<$Res> {
-  factory _$$TransitPostSubmitDeliveryEventImplCopyWith(
-          _$TransitPostSubmitDeliveryEventImpl value,
-          $Res Function(_$TransitPostSubmitDeliveryEventImpl) then) =
-      __$$TransitPostSubmitDeliveryEventImplCopyWithImpl<$Res>;
+
+class _$CustomTransitPostSelectionEventImpl
+    implements CustomTransitPostSelectionEvent {
+  const _$CustomTransitPostSelectionEventImpl(
+      {this.latitude = 0,
+      this.longitude = 0,
+      this.locationAccuracy = 0,
+      this.transitPostType,
+      this.transitPostName});
+
   @override
+  @JsonKey()
+  final double latitude;
+  @override
+  @JsonKey()
+  final double longitude;
+  @override
+  @JsonKey()
+  final double locationAccuracy;
+  @override
+  final String? transitPostType;
+  @override
+  final String? transitPostName;
+
+  @override
+  String toString() {
+    return 'CustomTransitPostEvent.handleSelection(latitude: $latitude, longitude: $longitude, locationAccuracy: $locationAccuracy, transitPostType: $transitPostType, transitPostName: $transitPostName)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$CustomTransitPostSelectionEventImpl &&
+            (identical(other.latitude, latitude) ||
+                other.latitude == latitude) &&
+            (identical(other.longitude, longitude) ||
+                other.longitude == longitude) &&
+            (identical(other.locationAccuracy, locationAccuracy) ||
+                other.locationAccuracy == locationAccuracy) &&
+            (identical(other.transitPostType, transitPostType) ||
+                other.transitPostType == transitPostType) &&
+            (identical(other.transitPostName, transitPostName) ||
+                other.transitPostName == transitPostName));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, latitude, longitude,
+      locationAccuracy, transitPostType, transitPostName);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$CustomTransitPostSelectionEventImplCopyWith<
+          _$CustomTransitPostSelectionEventImpl>
+      get copyWith => __$$CustomTransitPostSelectionEventImplCopyWithImpl<
+          _$CustomTransitPostSelectionEventImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(
+            double latitude,
+            double longitude,
+            double locationAccuracy,
+            String? transitPostType,
+            String? transitPostName)
+        handleSelection,
+    required TResult Function(
+            double latitude,
+            double longitude,
+            double locationAccuracy,
+            String? scannedResource,
+            String? action,
+            int? curCount,
+            int? totalCount)
+        handleDelivery,
+    required TResult Function(int curCount, int totalCount, String? action)
+        handleDeliveryCount,
+  }) {
+    return handleSelection(latitude, longitude, locationAccuracy,
+        transitPostType, transitPostName);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(
+            double latitude,
+            double longitude,
+            double locationAccuracy,
+            String? transitPostType,
+            String? transitPostName)?
+        handleSelection,
+    TResult? Function(
+            double latitude,
+            double longitude,
+            double locationAccuracy,
+            String? scannedResource,
+            String? action,
+            int? curCount,
+            int? totalCount)?
+        handleDelivery,
+    TResult? Function(int curCount, int totalCount, String? action)?
+        handleDeliveryCount,
+  }) {
+    return handleSelection?.call(latitude, longitude, locationAccuracy,
+        transitPostType, transitPostName);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(double latitude, double longitude, double locationAccuracy,
+            String? transitPostType, String? transitPostName)?
+        handleSelection,
+    TResult Function(
+            double latitude,
+            double longitude,
+            double locationAccuracy,
+            String? scannedResource,
+            String? action,
+            int? curCount,
+            int? totalCount)?
+        handleDelivery,
+    TResult Function(int curCount, int totalCount, String? action)?
+        handleDeliveryCount,
+    required TResult orElse(),
+  }) {
+    if (handleSelection != null) {
+      return handleSelection(latitude, longitude, locationAccuracy,
+          transitPostType, transitPostName);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(CustomTransitPostSelectionEvent value)
+        handleSelection,
+    required TResult Function(CustomTransitPostDeliveryEvent value)
+        handleDelivery,
+    required TResult Function(CustomTransitPostDeliveryCountEvent value)
+        handleDeliveryCount,
+  }) {
+    return handleSelection(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(CustomTransitPostSelectionEvent value)? handleSelection,
+    TResult? Function(CustomTransitPostDeliveryEvent value)? handleDelivery,
+    TResult? Function(CustomTransitPostDeliveryCountEvent value)?
+        handleDeliveryCount,
+  }) {
+    return handleSelection?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(CustomTransitPostSelectionEvent value)? handleSelection,
+    TResult Function(CustomTransitPostDeliveryEvent value)? handleDelivery,
+    TResult Function(CustomTransitPostDeliveryCountEvent value)?
+        handleDeliveryCount,
+    required TResult orElse(),
+  }) {
+    if (handleSelection != null) {
+      return handleSelection(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class CustomTransitPostSelectionEvent
+    implements CustomTransitPostEvent {
+  const factory CustomTransitPostSelectionEvent(
+      {final double latitude,
+      final double longitude,
+      final double locationAccuracy,
+      final String? transitPostType,
+      final String? transitPostName}) = _$CustomTransitPostSelectionEventImpl;
+
+  double get latitude;
+  double get longitude;
+  double get locationAccuracy;
+  String? get transitPostType;
+  String? get transitPostName;
+  @JsonKey(ignore: true)
+  _$$CustomTransitPostSelectionEventImplCopyWith<
+          _$CustomTransitPostSelectionEventImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$CustomTransitPostDeliveryEventImplCopyWith<$Res> {
+  factory _$$CustomTransitPostDeliveryEventImplCopyWith(
+          _$CustomTransitPostDeliveryEventImpl value,
+          $Res Function(_$CustomTransitPostDeliveryEventImpl) then) =
+      __$$CustomTransitPostDeliveryEventImplCopyWithImpl<$Res>;
   @useResult
   $Res call(
       {double latitude,
       double longitude,
       double locationAccuracy,
       String? scannedResource,
-      String? drugType,
-      int? beneficiaryDelivered,
-      List<AdditionalField>? additionalFields});
+      String? action,
+      int? curCount,
+      int? totalCount});
 }
 
 /// @nodoc
-class __$$TransitPostSubmitDeliveryEventImplCopyWithImpl<$Res>
+class __$$CustomTransitPostDeliveryEventImplCopyWithImpl<$Res>
     extends _$CustomTransitPostEventCopyWithImpl<$Res,
-        _$TransitPostSubmitDeliveryEventImpl>
-    implements _$$TransitPostSubmitDeliveryEventImplCopyWith<$Res> {
-  __$$TransitPostSubmitDeliveryEventImplCopyWithImpl(
-      _$TransitPostSubmitDeliveryEventImpl _value,
-      $Res Function(_$TransitPostSubmitDeliveryEventImpl) _then)
+        _$CustomTransitPostDeliveryEventImpl>
+    implements _$$CustomTransitPostDeliveryEventImplCopyWith<$Res> {
+  __$$CustomTransitPostDeliveryEventImplCopyWithImpl(
+      _$CustomTransitPostDeliveryEventImpl _value,
+      $Res Function(_$CustomTransitPostDeliveryEventImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -194,11 +417,11 @@ class __$$TransitPostSubmitDeliveryEventImplCopyWithImpl<$Res>
     Object? longitude = null,
     Object? locationAccuracy = null,
     Object? scannedResource = freezed,
-    Object? drugType = freezed,
-    Object? beneficiaryDelivered = freezed,
-    Object? additionalFields = freezed,
+    Object? action = freezed,
+    Object? curCount = freezed,
+    Object? totalCount = freezed,
   }) {
-    return _then(_$TransitPostSubmitDeliveryEventImpl(
+    return _then(_$CustomTransitPostDeliveryEventImpl(
       latitude: null == latitude
           ? _value.latitude
           : latitude // ignore: cast_nullable_to_non_nullable
@@ -215,35 +438,34 @@ class __$$TransitPostSubmitDeliveryEventImplCopyWithImpl<$Res>
           ? _value.scannedResource
           : scannedResource // ignore: cast_nullable_to_non_nullable
               as String?,
-      drugType: freezed == drugType
-          ? _value.drugType
-          : drugType // ignore: cast_nullable_to_non_nullable
+      action: freezed == action
+          ? _value.action
+          : action // ignore: cast_nullable_to_non_nullable
               as String?,
-      beneficiaryDelivered: freezed == beneficiaryDelivered
-          ? _value.beneficiaryDelivered
-          : beneficiaryDelivered // ignore: cast_nullable_to_non_nullable
+      curCount: freezed == curCount
+          ? _value.curCount
+          : curCount // ignore: cast_nullable_to_non_nullable
               as int?,
-      additionalFields: freezed == additionalFields
-          ? _value._additionalFields
-          : additionalFields // ignore: cast_nullable_to_non_nullable
-              as List<AdditionalField>?,
+      totalCount: freezed == totalCount
+          ? _value.totalCount
+          : totalCount // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
 
 /// @nodoc
 
-class _$TransitPostSubmitDeliveryEventImpl
-    implements TransitPostSubmitDeliveryEvent {
-  const _$TransitPostSubmitDeliveryEventImpl(
+class _$CustomTransitPostDeliveryEventImpl
+    implements CustomTransitPostDeliveryEvent {
+  const _$CustomTransitPostDeliveryEventImpl(
       {this.latitude = 0,
       this.longitude = 0,
       this.locationAccuracy = 0,
       this.scannedResource,
-      this.drugType,
-      this.beneficiaryDelivered,
-      final List<AdditionalField>? additionalFields})
-      : _additionalFields = additionalFields;
+      this.action,
+      this.curCount,
+      this.totalCount});
 
   @override
   @JsonKey()
@@ -257,30 +479,22 @@ class _$TransitPostSubmitDeliveryEventImpl
   @override
   final String? scannedResource;
   @override
-  final String? drugType;
+  final String? action;
   @override
-  final int? beneficiaryDelivered;
-  final List<AdditionalField>? _additionalFields;
+  final int? curCount;
   @override
-  List<AdditionalField>? get additionalFields {
-    final value = _additionalFields;
-    if (value == null) return null;
-    if (_additionalFields is EqualUnmodifiableListView)
-      return _additionalFields;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
+  final int? totalCount;
 
   @override
   String toString() {
-    return 'CustomTransitPostEvent.submitDelivery(latitude: $latitude, longitude: $longitude, locationAccuracy: $locationAccuracy, scannedResource: $scannedResource, drugType: $drugType, beneficiaryDelivered: $beneficiaryDelivered, additionalFields: $additionalFields)';
+    return 'CustomTransitPostEvent.handleDelivery(latitude: $latitude, longitude: $longitude, locationAccuracy: $locationAccuracy, scannedResource: $scannedResource, action: $action, curCount: $curCount, totalCount: $totalCount)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$TransitPostSubmitDeliveryEventImpl &&
+            other is _$CustomTransitPostDeliveryEventImpl &&
             (identical(other.latitude, latitude) ||
                 other.latitude == latitude) &&
             (identical(other.longitude, longitude) ||
@@ -289,32 +503,24 @@ class _$TransitPostSubmitDeliveryEventImpl
                 other.locationAccuracy == locationAccuracy) &&
             (identical(other.scannedResource, scannedResource) ||
                 other.scannedResource == scannedResource) &&
-            (identical(other.drugType, drugType) ||
-                other.drugType == drugType) &&
-            (identical(other.beneficiaryDelivered, beneficiaryDelivered) ||
-                other.beneficiaryDelivered == beneficiaryDelivered) &&
-            const DeepCollectionEquality()
-                .equals(other._additionalFields, _additionalFields));
+            (identical(other.action, action) || other.action == action) &&
+            (identical(other.curCount, curCount) ||
+                other.curCount == curCount) &&
+            (identical(other.totalCount, totalCount) ||
+                other.totalCount == totalCount));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      latitude,
-      longitude,
-      locationAccuracy,
-      scannedResource,
-      drugType,
-      beneficiaryDelivered,
-      const DeepCollectionEquality().hash(_additionalFields));
+  int get hashCode => Object.hash(runtimeType, latitude, longitude,
+      locationAccuracy, scannedResource, action, curCount, totalCount);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$TransitPostSubmitDeliveryEventImplCopyWith<
-          _$TransitPostSubmitDeliveryEventImpl>
-      get copyWith => __$$TransitPostSubmitDeliveryEventImplCopyWithImpl<
-          _$TransitPostSubmitDeliveryEventImpl>(this, _$identity);
+  _$$CustomTransitPostDeliveryEventImplCopyWith<
+          _$CustomTransitPostDeliveryEventImpl>
+      get copyWith => __$$CustomTransitPostDeliveryEventImplCopyWithImpl<
+          _$CustomTransitPostDeliveryEventImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -323,14 +529,23 @@ class _$TransitPostSubmitDeliveryEventImpl
             double latitude,
             double longitude,
             double locationAccuracy,
+            String? transitPostType,
+            String? transitPostName)
+        handleSelection,
+    required TResult Function(
+            double latitude,
+            double longitude,
+            double locationAccuracy,
             String? scannedResource,
-            String? drugType,
-            int? beneficiaryDelivered,
-            List<AdditionalField>? additionalFields)
-        submitDelivery,
+            String? action,
+            int? curCount,
+            int? totalCount)
+        handleDelivery,
+    required TResult Function(int curCount, int totalCount, String? action)
+        handleDeliveryCount,
   }) {
-    return submitDelivery(latitude, longitude, locationAccuracy,
-        scannedResource, drugType, beneficiaryDelivered, additionalFields);
+    return handleDelivery(latitude, longitude, locationAccuracy,
+        scannedResource, action, curCount, totalCount);
   }
 
   @override
@@ -340,33 +555,47 @@ class _$TransitPostSubmitDeliveryEventImpl
             double latitude,
             double longitude,
             double locationAccuracy,
+            String? transitPostType,
+            String? transitPostName)?
+        handleSelection,
+    TResult? Function(
+            double latitude,
+            double longitude,
+            double locationAccuracy,
             String? scannedResource,
-            String? drugType,
-            int? beneficiaryDelivered,
-            List<AdditionalField>? additionalFields)?
-        submitDelivery,
+            String? action,
+            int? curCount,
+            int? totalCount)?
+        handleDelivery,
+    TResult? Function(int curCount, int totalCount, String? action)?
+        handleDeliveryCount,
   }) {
-    return submitDelivery?.call(latitude, longitude, locationAccuracy,
-        scannedResource, drugType, beneficiaryDelivered, additionalFields);
+    return handleDelivery?.call(latitude, longitude, locationAccuracy,
+        scannedResource, action, curCount, totalCount);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
+    TResult Function(double latitude, double longitude, double locationAccuracy,
+            String? transitPostType, String? transitPostName)?
+        handleSelection,
     TResult Function(
             double latitude,
             double longitude,
             double locationAccuracy,
             String? scannedResource,
-            String? drugType,
-            int? beneficiaryDelivered,
-            List<AdditionalField>? additionalFields)?
-        submitDelivery,
+            String? action,
+            int? curCount,
+            int? totalCount)?
+        handleDelivery,
+    TResult Function(int curCount, int totalCount, String? action)?
+        handleDeliveryCount,
     required TResult orElse(),
   }) {
-    if (submitDelivery != null) {
-      return submitDelivery(latitude, longitude, locationAccuracy,
-          scannedResource, drugType, beneficiaryDelivered, additionalFields);
+    if (handleDelivery != null) {
+      return handleDelivery(latitude, longitude, locationAccuracy,
+          scannedResource, action, curCount, totalCount);
     }
     return orElse();
   }
@@ -374,63 +603,283 @@ class _$TransitPostSubmitDeliveryEventImpl
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(TransitPostSubmitDeliveryEvent value)
-        submitDelivery,
+    required TResult Function(CustomTransitPostSelectionEvent value)
+        handleSelection,
+    required TResult Function(CustomTransitPostDeliveryEvent value)
+        handleDelivery,
+    required TResult Function(CustomTransitPostDeliveryCountEvent value)
+        handleDeliveryCount,
   }) {
-    return submitDelivery(this);
+    return handleDelivery(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(TransitPostSubmitDeliveryEvent value)? submitDelivery,
+    TResult? Function(CustomTransitPostSelectionEvent value)? handleSelection,
+    TResult? Function(CustomTransitPostDeliveryEvent value)? handleDelivery,
+    TResult? Function(CustomTransitPostDeliveryCountEvent value)?
+        handleDeliveryCount,
   }) {
-    return submitDelivery?.call(this);
+    return handleDelivery?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(TransitPostSubmitDeliveryEvent value)? submitDelivery,
+    TResult Function(CustomTransitPostSelectionEvent value)? handleSelection,
+    TResult Function(CustomTransitPostDeliveryEvent value)? handleDelivery,
+    TResult Function(CustomTransitPostDeliveryCountEvent value)?
+        handleDeliveryCount,
     required TResult orElse(),
   }) {
-    if (submitDelivery != null) {
-      return submitDelivery(this);
+    if (handleDelivery != null) {
+      return handleDelivery(this);
     }
     return orElse();
   }
 }
 
-abstract class TransitPostSubmitDeliveryEvent
+abstract class CustomTransitPostDeliveryEvent
     implements CustomTransitPostEvent {
-  const factory TransitPostSubmitDeliveryEvent(
-          {final double latitude,
-          final double longitude,
-          final double locationAccuracy,
-          final String? scannedResource,
-          final String? drugType,
-          final int? beneficiaryDelivered,
-          final List<AdditionalField>? additionalFields}) =
-      _$TransitPostSubmitDeliveryEventImpl;
+  const factory CustomTransitPostDeliveryEvent(
+      {final double latitude,
+      final double longitude,
+      final double locationAccuracy,
+      final String? scannedResource,
+      final String? action,
+      final int? curCount,
+      final int? totalCount}) = _$CustomTransitPostDeliveryEventImpl;
+
+  double get latitude;
+  double get longitude;
+  double get locationAccuracy;
+  String? get scannedResource;
+  String? get action;
+  int? get curCount;
+  int? get totalCount;
+  @JsonKey(ignore: true)
+  _$$CustomTransitPostDeliveryEventImplCopyWith<
+          _$CustomTransitPostDeliveryEventImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$CustomTransitPostDeliveryCountEventImplCopyWith<$Res> {
+  factory _$$CustomTransitPostDeliveryCountEventImplCopyWith(
+          _$CustomTransitPostDeliveryCountEventImpl value,
+          $Res Function(_$CustomTransitPostDeliveryCountEventImpl) then) =
+      __$$CustomTransitPostDeliveryCountEventImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({int curCount, int totalCount, String? action});
+}
+
+/// @nodoc
+class __$$CustomTransitPostDeliveryCountEventImplCopyWithImpl<$Res>
+    extends _$CustomTransitPostEventCopyWithImpl<$Res,
+        _$CustomTransitPostDeliveryCountEventImpl>
+    implements _$$CustomTransitPostDeliveryCountEventImplCopyWith<$Res> {
+  __$$CustomTransitPostDeliveryCountEventImplCopyWithImpl(
+      _$CustomTransitPostDeliveryCountEventImpl _value,
+      $Res Function(_$CustomTransitPostDeliveryCountEventImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? curCount = null,
+    Object? totalCount = null,
+    Object? action = freezed,
+  }) {
+    return _then(_$CustomTransitPostDeliveryCountEventImpl(
+      curCount: null == curCount
+          ? _value.curCount
+          : curCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      totalCount: null == totalCount
+          ? _value.totalCount
+          : totalCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      action: freezed == action
+          ? _value.action
+          : action // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$CustomTransitPostDeliveryCountEventImpl
+    implements CustomTransitPostDeliveryCountEvent {
+  const _$CustomTransitPostDeliveryCountEventImpl(
+      {this.curCount = 0, this.totalCount = 0, this.action});
 
   @override
-  double get latitude;
+  @JsonKey()
+  final int curCount;
   @override
-  double get longitude;
+  @JsonKey()
+  final int totalCount;
   @override
-  double get locationAccuracy;
+  final String? action;
+
   @override
-  String? get scannedResource;
+  String toString() {
+    return 'CustomTransitPostEvent.handleDeliveryCount(curCount: $curCount, totalCount: $totalCount, action: $action)';
+  }
+
   @override
-  String? get drugType;
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$CustomTransitPostDeliveryCountEventImpl &&
+            (identical(other.curCount, curCount) ||
+                other.curCount == curCount) &&
+            (identical(other.totalCount, totalCount) ||
+                other.totalCount == totalCount) &&
+            (identical(other.action, action) || other.action == action));
+  }
+
   @override
-  int? get beneficiaryDelivered;
-  @override
-  List<AdditionalField>? get additionalFields;
-  @override
+  int get hashCode => Object.hash(runtimeType, curCount, totalCount, action);
+
   @JsonKey(ignore: true)
-  _$$TransitPostSubmitDeliveryEventImplCopyWith<
-          _$TransitPostSubmitDeliveryEventImpl>
+  @override
+  @pragma('vm:prefer-inline')
+  _$$CustomTransitPostDeliveryCountEventImplCopyWith<
+          _$CustomTransitPostDeliveryCountEventImpl>
+      get copyWith => __$$CustomTransitPostDeliveryCountEventImplCopyWithImpl<
+          _$CustomTransitPostDeliveryCountEventImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(
+            double latitude,
+            double longitude,
+            double locationAccuracy,
+            String? transitPostType,
+            String? transitPostName)
+        handleSelection,
+    required TResult Function(
+            double latitude,
+            double longitude,
+            double locationAccuracy,
+            String? scannedResource,
+            String? action,
+            int? curCount,
+            int? totalCount)
+        handleDelivery,
+    required TResult Function(int curCount, int totalCount, String? action)
+        handleDeliveryCount,
+  }) {
+    return handleDeliveryCount(curCount, totalCount, action);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(
+            double latitude,
+            double longitude,
+            double locationAccuracy,
+            String? transitPostType,
+            String? transitPostName)?
+        handleSelection,
+    TResult? Function(
+            double latitude,
+            double longitude,
+            double locationAccuracy,
+            String? scannedResource,
+            String? action,
+            int? curCount,
+            int? totalCount)?
+        handleDelivery,
+    TResult? Function(int curCount, int totalCount, String? action)?
+        handleDeliveryCount,
+  }) {
+    return handleDeliveryCount?.call(curCount, totalCount, action);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(double latitude, double longitude, double locationAccuracy,
+            String? transitPostType, String? transitPostName)?
+        handleSelection,
+    TResult Function(
+            double latitude,
+            double longitude,
+            double locationAccuracy,
+            String? scannedResource,
+            String? action,
+            int? curCount,
+            int? totalCount)?
+        handleDelivery,
+    TResult Function(int curCount, int totalCount, String? action)?
+        handleDeliveryCount,
+    required TResult orElse(),
+  }) {
+    if (handleDeliveryCount != null) {
+      return handleDeliveryCount(curCount, totalCount, action);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(CustomTransitPostSelectionEvent value)
+        handleSelection,
+    required TResult Function(CustomTransitPostDeliveryEvent value)
+        handleDelivery,
+    required TResult Function(CustomTransitPostDeliveryCountEvent value)
+        handleDeliveryCount,
+  }) {
+    return handleDeliveryCount(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(CustomTransitPostSelectionEvent value)? handleSelection,
+    TResult? Function(CustomTransitPostDeliveryEvent value)? handleDelivery,
+    TResult? Function(CustomTransitPostDeliveryCountEvent value)?
+        handleDeliveryCount,
+  }) {
+    return handleDeliveryCount?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(CustomTransitPostSelectionEvent value)? handleSelection,
+    TResult Function(CustomTransitPostDeliveryEvent value)? handleDelivery,
+    TResult Function(CustomTransitPostDeliveryCountEvent value)?
+        handleDeliveryCount,
+    required TResult orElse(),
+  }) {
+    if (handleDeliveryCount != null) {
+      return handleDeliveryCount(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class CustomTransitPostDeliveryCountEvent
+    implements CustomTransitPostEvent {
+  const factory CustomTransitPostDeliveryCountEvent(
+      {final int curCount,
+      final int totalCount,
+      final String? action}) = _$CustomTransitPostDeliveryCountEventImpl;
+
+  int get curCount;
+  int get totalCount;
+  String? get action;
+  @JsonKey(ignore: true)
+  _$$CustomTransitPostDeliveryCountEventImplCopyWith<
+          _$CustomTransitPostDeliveryCountEventImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -442,6 +891,8 @@ mixin _$CustomTransitPostState {
   double get locationAccuracy => throw _privateConstructorUsedError;
   String? get transitPostType => throw _privateConstructorUsedError;
   String? get transitPostName => throw _privateConstructorUsedError;
+  int? get curCount => throw _privateConstructorUsedError;
+  int? get totalCount => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $CustomTransitPostStateCopyWith<CustomTransitPostState> get copyWith =>
@@ -460,7 +911,9 @@ abstract class $CustomTransitPostStateCopyWith<$Res> {
       double longitude,
       double locationAccuracy,
       String? transitPostType,
-      String? transitPostName});
+      String? transitPostName,
+      int? curCount,
+      int? totalCount});
 }
 
 /// @nodoc
@@ -483,6 +936,8 @@ class _$CustomTransitPostStateCopyWithImpl<$Res,
     Object? locationAccuracy = null,
     Object? transitPostType = freezed,
     Object? transitPostName = freezed,
+    Object? curCount = freezed,
+    Object? totalCount = freezed,
   }) {
     return _then(_value.copyWith(
       loading: freezed == loading
@@ -509,6 +964,14 @@ class _$CustomTransitPostStateCopyWithImpl<$Res,
           ? _value.transitPostName
           : transitPostName // ignore: cast_nullable_to_non_nullable
               as String?,
+      curCount: freezed == curCount
+          ? _value.curCount
+          : curCount // ignore: cast_nullable_to_non_nullable
+              as int?,
+      totalCount: freezed == totalCount
+          ? _value.totalCount
+          : totalCount // ignore: cast_nullable_to_non_nullable
+              as int?,
     ) as $Val);
   }
 }
@@ -528,7 +991,9 @@ abstract class _$$CustomTransitPostStateImplCopyWith<$Res>
       double longitude,
       double locationAccuracy,
       String? transitPostType,
-      String? transitPostName});
+      String? transitPostName,
+      int? curCount,
+      int? totalCount});
 }
 
 /// @nodoc
@@ -550,6 +1015,8 @@ class __$$CustomTransitPostStateImplCopyWithImpl<$Res>
     Object? locationAccuracy = null,
     Object? transitPostType = freezed,
     Object? transitPostName = freezed,
+    Object? curCount = freezed,
+    Object? totalCount = freezed,
   }) {
     return _then(_$CustomTransitPostStateImpl(
       loading: freezed == loading ? _value.loading! : loading,
@@ -573,6 +1040,14 @@ class __$$CustomTransitPostStateImplCopyWithImpl<$Res>
           ? _value.transitPostName
           : transitPostName // ignore: cast_nullable_to_non_nullable
               as String?,
+      curCount: freezed == curCount
+          ? _value.curCount
+          : curCount // ignore: cast_nullable_to_non_nullable
+              as int?,
+      totalCount: freezed == totalCount
+          ? _value.totalCount
+          : totalCount // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -586,7 +1061,9 @@ class _$CustomTransitPostStateImpl implements _CustomTransitPostState {
       this.longitude = 0,
       this.locationAccuracy = 0,
       this.transitPostType,
-      this.transitPostName});
+      this.transitPostName,
+      this.curCount,
+      this.totalCount});
 
   @override
   @JsonKey()
@@ -604,10 +1081,14 @@ class _$CustomTransitPostStateImpl implements _CustomTransitPostState {
   final String? transitPostType;
   @override
   final String? transitPostName;
+  @override
+  final int? curCount;
+  @override
+  final int? totalCount;
 
   @override
   String toString() {
-    return 'CustomTransitPostState(loading: $loading, latitude: $latitude, longitude: $longitude, locationAccuracy: $locationAccuracy, transitPostType: $transitPostType, transitPostName: $transitPostName)';
+    return 'CustomTransitPostState(loading: $loading, latitude: $latitude, longitude: $longitude, locationAccuracy: $locationAccuracy, transitPostType: $transitPostType, transitPostName: $transitPostName, curCount: $curCount, totalCount: $totalCount)';
   }
 
   @override
@@ -625,7 +1106,11 @@ class _$CustomTransitPostStateImpl implements _CustomTransitPostState {
             (identical(other.transitPostType, transitPostType) ||
                 other.transitPostType == transitPostType) &&
             (identical(other.transitPostName, transitPostName) ||
-                other.transitPostName == transitPostName));
+                other.transitPostName == transitPostName) &&
+            (identical(other.curCount, curCount) ||
+                other.curCount == curCount) &&
+            (identical(other.totalCount, totalCount) ||
+                other.totalCount == totalCount));
   }
 
   @override
@@ -636,7 +1121,9 @@ class _$CustomTransitPostStateImpl implements _CustomTransitPostState {
       longitude,
       locationAccuracy,
       transitPostType,
-      transitPostName);
+      transitPostName,
+      curCount,
+      totalCount);
 
   @JsonKey(ignore: true)
   @override
@@ -653,7 +1140,9 @@ abstract class _CustomTransitPostState implements CustomTransitPostState {
       final double longitude,
       final double locationAccuracy,
       final String? transitPostType,
-      final String? transitPostName}) = _$CustomTransitPostStateImpl;
+      final String? transitPostName,
+      final int? curCount,
+      final int? totalCount}) = _$CustomTransitPostStateImpl;
 
   @override
   dynamic get loading;
@@ -667,6 +1156,10 @@ abstract class _CustomTransitPostState implements CustomTransitPostState {
   String? get transitPostType;
   @override
   String? get transitPostName;
+  @override
+  int? get curCount;
+  @override
+  int? get totalCount;
   @override
   @JsonKey(ignore: true)
   _$$CustomTransitPostStateImplCopyWith<_$CustomTransitPostStateImpl>

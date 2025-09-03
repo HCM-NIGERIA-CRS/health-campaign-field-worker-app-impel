@@ -183,6 +183,7 @@ class CustomHouseholdSummaryPageState
                                   "",
                                   widget.householdNumber,
                                   beneficiaryType,
+                                  widget.headName,
                                   false,
                                 ));
                                 Future.delayed(

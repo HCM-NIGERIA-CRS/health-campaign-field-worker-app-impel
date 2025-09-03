@@ -166,6 +166,9 @@ class HouseholdOverView {
   String get householdOverViewSMCAssessmentActionText =>
       'HOUSEHOLD_OVER_VIEW_SMC_ASSESSMENT_ACTION_TEXT';
 
+  String get householdOverViewRevisitAbsentText =>
+      'HOUSEHOLD_OVER_VIEW_REVISIT_ABSENT_TEXT';
+
   String get householdOverViewVASAssessmentActionText =>
       'HOUSEHOLD_OVER_VIEW_VAS_ASSESSMENT_ACTION_TEXT';
 
@@ -188,6 +191,8 @@ class HouseholdOverView {
 
   String get householdOverViewBeneficiaryReferredVASLabel =>
       'HOUSEHOLD_OVER_VIEW_BENEFICIARY_REFERRED_VAS_LABEL';
+
+  String get nonCompliantHouseholdStatus => 'HOUSEHOLD_NON_COMPLIANT_STATUS';
 }
 
 class DeliverIntervention {
@@ -226,7 +231,7 @@ class DeliverIntervention {
   String get beneficiaryIneligibleDescription => 'BENEFICIARY_INELIGIBLE_DESC';
   String get beneficiaryReferralDescription => 'BENEFICIARY_REFERRAL_DESC';
   String get spaqRedirectionScreenDescription => 'SPAQ_REDIRECTED_SCREEN_DESC';
-  String get deliversmcintervention => 'DELIVER_SMC_INTERVENTION';
+  String get deliverintervention => 'DELIVER_INTERVENTION';
   String get deliverVASIntervention => 'DELIVER_VAS_INTERVENTION';
   String get recordsmcdeliverdetails => 'RECORD_SMC_DELIVER_DETAILS';
   String get doseadministeredby => 'DOSE_ADMINISTERED_BY_LABEL';
@@ -770,6 +775,8 @@ class CaregiverConsent {
 class DailyImplementationFlow {
   const DailyImplementationFlow();
 
+  String get dip => 'DIP_LABEL';
+  String get obrRound => 'OBR_ROUND_LABEL';
   String get selectBoundaryLabel => 'SELECT_BOUNDARY_HEADING_LABEL';
   String get dateOfEntry => 'SELECT_DATE_OF_ENTRY';
   String get administrativeUnitLabel => 'SELECT_ADMINISTRATIVE_UNIT_LABEL';
@@ -777,6 +784,13 @@ class DailyImplementationFlow {
   String get boundaryLabel => 'SELECT_BOUNDARY_LABEL';
   String get createDIPLabel => 'CREATE_DIP_LABEL';
   String get viewDIPLabel => 'VIEW_DIP_LABEL';
+
+  String get selectDateForAllSettlements => 'SELECT_DATE_FOR_ALL_SETTLEMENTS';
+  String get settlements => 'SETTLEMENTS_LABEL';
+  String get dateOfVisit => 'DATE_OF_VISIT_LABEL';
+
+  String get no_daily_implementation_plan_found =>
+      'NO_DAILY_IMPLEMENTATION_PLAN_FOUND';
 }
 
 class ComplaintsDetailsShowcase {
@@ -1385,6 +1399,8 @@ class IndividualDetails {
   String get linkVoucherToIndividual => 'LINK_VOUCHER_TO_INDIVIDUAL';
   String get beneficiarySearchTextLabel => 'SEARCH_BY_BENEFICIARY_ID';
   String get absentSearchTextLabel => 'SEARCH_CHILD_ABSENT';
+  String get nonCompliantHouseSearchTextLabel =>
+      'SEARCH_NON_COMPLIANT_HOUSE_SEARCH';
 }
 
 class BeneficiaryDetails {
@@ -1496,6 +1512,8 @@ class BeneficiaryDetails {
   String get recordCycle => 'BENEFICIARY_DETAILS_RECORD_CYCLE';
 
   String get currentSmcCycleLabel => 'BENEFICIARY_DETAILS_CURRENT_SMC_CYCLE';
+  String get reasonForNonComplianceNeeded => 'REASON_FOR_NON_COMPLIANCE_NEEDED';
+  String get houseHeadNameNeeded => 'HEAD_NAME_NEEDED';
   String get invalidChildCount => 'INVALID_CHILD_COUNT_MESSAGE';
   String get noHealthFacilityError => 'NO_HEALTH_FACILITY_ERROR';
 }

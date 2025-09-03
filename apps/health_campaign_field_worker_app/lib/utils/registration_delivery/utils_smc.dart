@@ -24,18 +24,18 @@ bool checkStatusSMC(List<TaskModel>? tasks, ProjectCycle? currentCycle) {
     return true;
   }
 
-  if (tasks.firstWhereOrNull((e) =>
-          e.additionalFields?.fields.firstWhereOrNull(
-            (element) =>
-                element.key ==
-                    additional_fields_local.AdditionalFieldsType.deliveryType
-                        .toValue() &&
-                element.value == EligibilityAssessmentStatus.smcDone.name,
-          ) !=
-          null) ==
-      null) {
-    return true;
-  }
+  // if (tasks.firstWhereOrNull((e) =>
+  //         e.additionalFields?.fields.firstWhereOrNull(
+  //           (element) =>
+  //               element.key ==
+  //                   additional_fields_local.AdditionalFieldsType.deliveryType
+  //                       .toValue() &&
+  //               element.value == EligibilityAssessmentStatus.smcDone.name,
+  //         ) !=
+  //         null) ==
+  //     null) {
+  //   return true;
+  // }
 
   final lastTask = tasks.last;
   final lastTaskCreatedTime = lastTask.clientAuditDetails?.createdTime;

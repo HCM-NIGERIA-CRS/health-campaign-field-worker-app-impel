@@ -7,6 +7,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:transit_post/data/repositories/local/user_action.dart';
 import 'package:transit_post/utils/utils.dart';
 
+import '../../data/repositories/local/transit_post/custom_user_action.dart';
+
 part 'custom_transit_post.freezed.dart';
 
 typedef CustomTransitPostEmitter = Emitter<CustomTransitPostState>;
@@ -15,25 +17,62 @@ typedef UserActionRemoteRepository
 
 class CustomTransitPostBloc
     extends Bloc<CustomTransitPostEvent, CustomTransitPostState> {
+  final CustomUserActionLocalRepository customUserActionLocalRepository;
   final UserActionLocalRepository userActionLocalRepository;
   final UserActionRemoteRepository userActionRemoteRepository;
 
   CustomTransitPostBloc(
     super.initialState, {
+    required this.customUserActionLocalRepository,
     required this.userActionLocalRepository,
     required this.userActionRemoteRepository,
   }) {
-    on(_handleSubmitDelivery);
+    on(_handleTransitPostSelection);
+    on(_handleDeliveryCount);
+    on(_handleRecordDelivery);
   }
 
-  FutureOr<void> _handleSubmitDelivery(
-    CustomTransitPostEvent event,
+  FutureOr<void> _handleTransitPostSelection(
+    CustomTransitPostSelectionEvent event,
+    CustomTransitPostEmitter emit,
+  ) async {
+    emit(state.copyWith(
+      transitPostType: event.transitPostType,
+      transitPostName: event.transitPostName,
+      locationAccuracy: event.locationAccuracy,
+      latitude: event.latitude,
+      longitude: event.longitude,
+    ));
+  }
+
+  FutureOr<void> _handleDeliveryCount(
+    CustomTransitPostDeliveryCountEvent event,
+    CustomTransitPostEmitter emit,
+  ) async {
+    emit(state.copyWith(loading: true));
+    final totalCount =
+        await customUserActionLocalRepository.fetchUserActionCount(
+            TransitPostSingleton().loggedInUserUuid, event.action);
+
+    final curCount = await customUserActionLocalRepository.fetchUserActionCount(
+        TransitPostSingleton().loggedInUserUuid, event.action,
+        query: UserActionSearchModel(
+            auditDetails: AuditDetails(
+                createdBy: TransitPostSingleton().loggedInUserUuid!,
+                createdTime: DateTime.now().millisecondsSinceEpoch)));
+
+    emit(state.copyWith(
+      loading: false,
+      totalCount: totalCount,
+      curCount: curCount,
+    ));
+  }
+
+  FutureOr<void> _handleRecordDelivery(
+    CustomTransitPostDeliveryEvent event,
     CustomTransitPostEmitter emit,
   ) async {
     try {
-      //TODO : set action type enum in backend and here
-      //for delivery intervention in transit and fixed post
-
       await userActionLocalRepository.create(UserActionModel(
           latitude: event.latitude,
           longitude: event.longitude,
@@ -44,7 +83,7 @@ class CustomTransitPostBloc
           timestamp: DateTime.now().millisecondsSinceEpoch,
           projectId: TransitPostSingleton().projectId!,
           boundaryCode: TransitPostSingleton().boundary!.code!,
-          action: 'OTHER',
+          action: event.action ?? 'OTHER',
           rowVersion: 1,
           clientAuditDetails: ClientAuditDetails(
             createdBy: TransitPostSingleton().loggedInUserUuid!,
@@ -67,18 +106,14 @@ class CustomTransitPostBloc
               'transitPostName',
               state.transitPostName,
             ),
-            if (event.drugType != null && (event.drugType?.isNotEmpty ?? false))
-              AdditionalField("drugType", event.drugType),
-            if (event.beneficiaryDelivered != null)
-              AdditionalField(
-                  "beneficiaryDeliveredCount", event.beneficiaryDelivered),
-            if (event.additionalFields != null &&
-                (event.additionalFields?.isNotEmpty ?? false))
-              ...event.additionalFields!
+            AdditionalField(
+              'scannedResource',
+              event.scannedResource,
+            ),
           ])));
       emit(state.copyWith(
-        transitPostType: state.transitPostType ?? "",
-        transitPostName: state.transitPostName ?? "",
+        curCount: state.curCount != null ? state.curCount! + 1 : 1,
+        totalCount: state.totalCount != null ? state.totalCount! + 1 : 1,
       ));
     } catch (e) {
       rethrow;
@@ -88,15 +123,29 @@ class CustomTransitPostBloc
 
 @freezed
 class CustomTransitPostEvent with _$CustomTransitPostEvent {
-  const factory CustomTransitPostEvent.submitDelivery({
+  const factory CustomTransitPostEvent.handleSelection({
+    @Default(0) double latitude,
+    @Default(0) double longitude,
+    @Default(0) double locationAccuracy,
+    String? transitPostType,
+    String? transitPostName,
+  }) = CustomTransitPostSelectionEvent;
+
+  const factory CustomTransitPostEvent.handleDelivery({
     @Default(0) double latitude,
     @Default(0) double longitude,
     @Default(0) double locationAccuracy,
     String? scannedResource,
-    String? drugType,
-    int? beneficiaryDelivered,
-    List<AdditionalField>? additionalFields,
-  }) = TransitPostSubmitDeliveryEvent;
+    String? action,
+    int? curCount,
+    int? totalCount,
+  }) = CustomTransitPostDeliveryEvent;
+
+  const factory CustomTransitPostEvent.handleDeliveryCount({
+    @Default(0) int curCount,
+    @Default(0) int totalCount,
+    String? action,
+  }) = CustomTransitPostDeliveryCountEvent;
 }
 
 @freezed
@@ -108,5 +157,7 @@ class CustomTransitPostState with _$CustomTransitPostState {
     @Default(0) double locationAccuracy,
     String? transitPostType,
     String? transitPostName,
+    int? curCount,
+    int? totalCount,
   }) = _CustomTransitPostState;
 }

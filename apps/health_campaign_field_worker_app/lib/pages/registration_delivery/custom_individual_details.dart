@@ -1,9 +1,9 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:digit_components/widgets/atoms/digit_text_form_field.dart';
 import 'package:digit_ui_components/widgets/molecules/show_pop_up.dart';
 import 'package:registration_delivery/blocs/app_localization.dart';
+import 'package:registration_delivery/blocs/search_households/search_households.dart';
 import 'package:registration_delivery/blocs/unique_id/unique_id.dart';
 import 'package:registration_delivery/widgets/beneficiary/id_count_alert.dart';
 // import 'package:digit_components/utils/date_utils.dart' as digits;
@@ -16,28 +16,18 @@ import '../../widgets/custom_back_navigation.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/household_type.dart';
 import 'package:digit_scanner/blocs/scanner.dart';
-import 'package:digit_scanner/pages/qr_scanner.dart';
 import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/theme/digit_extended_theme.dart';
 import 'package:digit_ui_components/utils/date_utils.dart';
-import 'package:digit_ui_components/widgets/atoms/digit_dob_picker.dart';
 import 'package:digit_ui_components/widgets/atoms/pop_up_card.dart';
-import 'package:digit_ui_components/widgets/atoms/selection_card.dart';
 import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:digit_components/widgets/atoms/digit_dropdown.dart' as dropdown;
-import 'package:health_campaign_field_worker_app/blocs/app_initialization/app_initialization.dart';
-import 'package:health_campaign_field_worker_app/models/app_config/app_config_model.dart';
-import 'package:health_campaign_field_worker_app/widgets/date/custom_digit_dob_picker.dart';
 // import 'package:health_campaign_field_worker_app/widgets/header/custom_back_button.dart';
 import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
-import 'package:registration_delivery/blocs/search_households/search_bloc_common_wrapper.dart';
-import 'package:registration_delivery/blocs/search_households/search_households.dart'
-    as registration_delivery;
-import 'package:registration_delivery/models/entities/household.dart';
 import 'package:registration_delivery/utils/constants.dart';
 import 'package:registration_delivery/utils/extensions/extensions.dart';
 
@@ -49,15 +39,13 @@ import 'package:registration_delivery/utils/utils.dart';
 // import 'package:registration_delivery/widgets/back_navigation_help_header.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 import 'package:registration_delivery/widgets/showcase/config/showcase_constants.dart';
-import 'package:registration_delivery/widgets/showcase/showcase_button.dart';
 
 import '../../blocs/registration_delivery/custom_beneficairy_registration.dart';
-import '../../blocs/registration_delivery/custom_search_household.dart';
 import '../../router/app_router.dart';
 import '../../utils/utils.dart' as local_utils;
-import '../../utils/registration_delivery/registration_delivery_utils.dart';
 import '../../utils/constants.dart' as local_constants;
 import '../../widgets/showcase/showcase_wrappers.dart';
+import '../../widgets/date/custom_digit_dob_picker.dart';
 import 'custom_beneficiary_acknowledgement.dart';
 import '../../utils/i18_key_constants.dart' as i18_local;
 
@@ -108,7 +96,7 @@ class CustomIndividualDetailsPageState
   final beneficiaryType = RegistrationDeliverySingleton().beneficiaryType!;
   Set<String>? beneficiaryId;
 
-  late final CustomSearchHouseholdsBloc customSearchHouseholdsBloc;
+  late final SearchHouseholdsBloc searchHouseholdsBloc;
 
   @override
   void initState() {
@@ -128,17 +116,18 @@ class CustomIndividualDetailsPageState
         fetchUniqueBeneficiaryId();
       },
       editHousehold: (value) {},
-      editIndividual: (value) {},
+      editIndividual: (value) {
+        fetchUniqueBeneficiaryId();
+      },
       orElse: () {},
     );
-    customSearchHouseholdsBloc = context.read<CustomSearchHouseholdsBloc>();
+    searchHouseholdsBloc = context.read<SearchHouseholdsBloc>();
 
     super.initState();
   }
 
-  onSubmit(name, bool isCreate, bool isAddIndividual) {
+  onSubmit(bool isCreate, bool isAddIndividual) {
     final bloc = context.read<CustomBeneficiaryRegistrationBloc>();
-    final router = context.router;
 
     if (context.mounted) {
       if (isCreate) {
@@ -149,36 +138,6 @@ class CustomIndividualDetailsPageState
               boundary: RegistrationDeliverySingleton().boundary!,
               tag: null,
               navigateToSummary: false),
-        );
-      }
-
-      customSearchHouseholdsBloc.add(const CustomSearchHouseholdsEvent.clear());
-      customSearchHouseholdsBloc.add(
-        CustomSearchHouseholdsEvent.searchByHouseholdHead(
-          searchText: name.trim(),
-          projectId: RegistrationDeliverySingleton().projectId!,
-          isProximityEnabled: false,
-          maxRadius: RegistrationDeliverySingleton().maxRadius,
-          limit: customSearchHouseholdsBloc.state.limit,
-          offset: 0,
-        ),
-      );
-
-      final reloadState = context.read<HouseholdOverviewBloc>();
-
-      reloadState.add(
-        HouseholdOverviewReloadEvent(
-          projectId: RegistrationDeliverySingleton().projectId!,
-          projectBeneficiaryType:
-              RegistrationDeliverySingleton().beneficiaryType!,
-        ),
-      );
-
-      if (individualCaptured != null) {
-        reloadState.add(
-          HouseholdOverviewEvent.selectedIndividual(
-            individualModel: individualCaptured!,
-          ),
         );
       }
     }
@@ -211,30 +170,13 @@ class CustomIndividualDetailsPageState
                         generatedUniqueId = uniqueId.id;
                       });
                 },
-                child: BlocConsumer<CustomSearchHouseholdsBloc,
-                    CustomSearchHouseholdsState>(
+                child:
+                    BlocConsumer<SearchHouseholdsBloc, SearchHouseholdsState>(
                   listener: (context, searchHouseholdsState) {
                     if (isCreate) {
-                      HouseholdMemberWrapper? i =
+                      HouseholdMemberWrapper? householdMemberWrapper =
                           searchHouseholdsState.householdMembers.lastOrNull;
 
-                      registration_delivery.HouseholdMemberWrapper?
-                          householdMemberWrapper;
-                      if (i == null) {
-                        householdMemberWrapper = null;
-                      } else {
-                        householdMemberWrapper =
-                            registration_delivery.HouseholdMemberWrapper(
-                          household: i.household,
-                          headOfHousehold: i.headOfHousehold,
-                          members: i.members,
-                          projectBeneficiaries: i.projectBeneficiaries,
-                          distance: i.distance,
-                          tasks: i.tasks,
-                          sideEffects: i.sideEffects,
-                          referrals: i.referrals,
-                        );
-                      }
                       if (householdMemberWrapper != null) {
                         router.push(CustomBeneficiaryAcknowledgementRoute(
                           enableViewHousehold: true,
@@ -242,43 +184,13 @@ class CustomIndividualDetailsPageState
                         ));
                       }
                     } else if (isAddIndividual) {
-                      HouseholdMemberWrapper? i =
+                      HouseholdMemberWrapper? householdMemberWrapper =
                           searchHouseholdsState.householdMembers.lastOrNull;
 
-                      registration_delivery.HouseholdMemberWrapper?
-                          householdMemberWrapper;
-                      if (i == null) {
-                        householdMemberWrapper = null;
-                      } else {
-                        householdMemberWrapper =
-                            registration_delivery.HouseholdMemberWrapper(
-                          household: i.household,
-                          headOfHousehold: i.headOfHousehold,
-                          members: i.members,
-                          projectBeneficiaries: i.projectBeneficiaries,
-                          distance: i.distance,
-                          tasks: i.tasks,
-                          sideEffects: i.sideEffects,
-                          referrals: i.referrals,
-                        );
-                      }
                       if (householdMemberWrapper != null) {
-                        (router.parent() as StackRouter).maybePop();
-
                         if (individualCaptured != null) {
-                          // info get the relevant project beneficiary here
-                          final projectBeneficiaryAddMember =
-                              householdMemberWrapper
-                                  .projectBeneficiaries
-                                  ?.where((e) =>
-                                      e.beneficiaryClientReferenceId ==
-                                      individualCaptured!.clientReferenceId)
-                                  .toSet();
-
                           // assumption add individual here is used for creating child,
-                          //if invalid age send to overview no checklist
-                          List<IndividualModel> householdMembers =
-                              householdMemberWrapper.members ?? [];
+                          // if invalid age send to overview no checklist
                           if (verifyIfChildAgeValid(
                               context, individualCaptured!)) {
                             router.push(
@@ -293,8 +205,92 @@ class CustomIndividualDetailsPageState
                                 ],
                               ),
                             );
+                          } else {
+                            router.push(
+                              BeneficiaryWrapperRoute(
+                                wrapper: householdMemberWrapper,
+                              ),
+                            );
                           }
+
+                          // final overviewBloc =
+                          //     context.read<HouseholdOverviewBloc>();
+
+                          // overviewBloc.add(
+                          //   HouseholdOverviewReloadEvent(
+                          //     projectId: RegistrationDeliverySingleton()
+                          //         .projectId
+                          //         .toString(),
+                          //     projectBeneficiaryType:
+                          //         RegistrationDeliverySingleton()
+                          //                 .beneficiaryType ??
+                          //             BeneficiaryType.household,
+                          //   ),
+                          // );
+                          // overviewBloc.stream
+                          //     .firstWhere((element) =>
+                          //         element.loading == false &&
+                          //         element.householdMemberWrapper.household !=
+                          //             null)
+                          //     .then((value) {
+                          //   HouseholdMemberWrapper memberWrapper =
+                          //       overviewBloc.state.householdMemberWrapper;
+                          //   final route = router.parent() as StackRouter;
+                          //   route.popUntilRouteWithName(
+                          //       SearchBeneficiaryRoute.name);
+                          //   route.push(BeneficiaryWrapperRoute(
+                          //       wrapper: memberWrapper));
+                          // });
                         } else {
+                          (router.parent() as StackRouter).maybePop();
+                          router.popUntil((route) =>
+                              route.settings.name ==
+                              SearchBeneficiaryRoute.name);
+                          router.push(CustomBeneficiaryAcknowledgementRoute(
+                            enableViewHousehold: true,
+                            acknowledgementType: AcknowledgementType.addMember,
+                          ));
+                        }
+                      }
+                    } else if (isEditIndividual) {
+                      HouseholdMemberWrapper? householdMemberWrapper =
+                          searchHouseholdsState.householdMembers.lastOrNull;
+
+                      if (householdMemberWrapper != null) {
+                        if (individualCaptured != null) {
+                          final overviewBloc =
+                              context.read<HouseholdOverviewBloc>();
+
+                          overviewBloc.add(
+                            HouseholdOverviewReloadEvent(
+                              projectId: RegistrationDeliverySingleton()
+                                  .projectId
+                                  .toString(),
+                              projectBeneficiaryType:
+                                  RegistrationDeliverySingleton()
+                                          .beneficiaryType ??
+                                      BeneficiaryType.household,
+                            ),
+                          );
+                          overviewBloc.stream
+                              .firstWhere((element) =>
+                                  element.loading == false &&
+                                  element.householdMemberWrapper.household !=
+                                      null)
+                              .then((value) {
+                            HouseholdMemberWrapper memberWrapper =
+                                overviewBloc.state.householdMemberWrapper;
+                            final route = router.parent() as StackRouter;
+                            route.popUntilRouteWithName(
+                                SearchBeneficiaryRoute.name);
+                            route.push(BeneficiaryWrapperRoute(
+                                wrapper: memberWrapper));
+                          });
+                        } else {
+                          (router.parent() as StackRouter).maybePop();
+                          router.popUntil((route) =>
+                              route.settings.name ==
+                              SearchBeneficiaryRoute.name);
                           router.push(CustomBeneficiaryAcknowledgementRoute(
                             enableViewHousehold: true,
                             acknowledgementType: AcknowledgementType.addMember,
@@ -306,7 +302,74 @@ class CustomIndividualDetailsPageState
                   builder: (context, searchHouseholdsState) {
                     return BlocConsumer<CustomBeneficiaryRegistrationBloc,
                         BeneficiaryRegistrationState>(
-                      listener: (context, state) {},
+                      listener: (context, state) {
+                        state.mapOrNull(persisted: (value) async {
+                          searchHouseholdsBloc
+                              .add(const SearchHouseholdsEvent.clear());
+                          searchHouseholdsBloc.add(
+                            SearchHouseholdsEvent.searchByHousehold(
+                              householdModel: value.householdModel,
+                              projectId:
+                                  RegistrationDeliverySingleton().projectId!,
+                              isProximityEnabled: false,
+                              maxRadius:
+                                  RegistrationDeliverySingleton().maxRadius,
+                            ),
+                          );
+
+                          final reloadState =
+                              context.read<HouseholdOverviewBloc>();
+
+                          reloadState.add(
+                            HouseholdOverviewReloadEvent(
+                              projectId:
+                                  RegistrationDeliverySingleton().projectId!,
+                              projectBeneficiaryType:
+                                  RegistrationDeliverySingleton()
+                                      .beneficiaryType!,
+                            ),
+                          );
+
+                          if (individualCaptured != null) {
+                            reloadState.add(
+                              HouseholdOverviewEvent.selectedIndividual(
+                                individualModel: individualCaptured!,
+                              ),
+                            );
+                          }
+
+                          // final router = context.router;
+                          // if (value.navigateToRoot) {
+                          //   final overviewBloc =
+                          //       context.read<HouseholdOverviewBloc>();
+
+                          //   overviewBloc.add(
+                          //     HouseholdOverviewReloadEvent(
+                          //       projectId: RegistrationDeliverySingleton()
+                          //           .projectId
+                          //           .toString(),
+                          //       projectBeneficiaryType:
+                          //           RegistrationDeliverySingleton()
+                          //                   .beneficiaryType ??
+                          //               BeneficiaryType.household,
+                          //     ),
+                          //   );
+
+                          //   await overviewBloc.stream.firstWhere((element) =>
+                          //       element.loading == false &&
+                          //       element.householdMemberWrapper.household !=
+                          //           null);
+                          //   registration_delivery.HouseholdMemberWrapper
+                          //       memberWrapper =
+                          //       overviewBloc.state.householdMemberWrapper;
+                          //   final route = router.parent() as StackRouter;
+                          //   route.popUntilRouteWithName(
+                          //       SearchBeneficiaryRoute.name);
+                          //   route.push(BeneficiaryWrapperRoute(
+                          //       wrapper: memberWrapper));
+                          // }
+                        });
+                      },
                       builder: (context, state) {
                         return ScrollableContent(
                           enableFixedDigitButton: true,
@@ -321,9 +384,8 @@ class CustomIndividualDetailsPageState
                                         context.router.parent() as StackRouter;
                                     parent.maybePop();
                                   } else {
-                                    customSearchHouseholdsBloc.add(
-                                        const CustomSearchHouseholdsEvent
-                                            .clear());
+                                    searchHouseholdsBloc.add(
+                                        const SearchHouseholdsEvent.clear());
                                     context.router.maybePop();
                                   }
                                 },
@@ -358,6 +420,14 @@ class CustomIndividualDetailsPageState
                                                     form.control(_dobKey).value
                                                         as DateTime,
                                                   );
+                                        if ((age.years == 0 &&
+                                                age.months == 0) ||
+                                            age.years >= 150 &&
+                                                age.months > 0) {
+                                          form
+                                              .control(_dobKey)
+                                              .setErrors({'': true});
+                                        }
 
                                         if (age.years < 18 &&
                                             widget.isHeadOfHousehold) {
@@ -504,10 +574,8 @@ class CustomIndividualDetailsPageState
                                                   ),
                                                 );
                                                 onSubmit(
-                                                  individual.name?.givenName ??
-                                                      "",
-                                                  true,
-                                                  false,
+                                                  isCreate,
+                                                  isAddIndividual,
                                                 );
                                               }
                                             },
@@ -517,7 +585,7 @@ class CustomIndividualDetailsPageState
                                               addressModel,
                                               projectBeneficiaryModel,
                                               loading,
-                                            ) {
+                                            ) async {
                                               isEditIndividual = true;
                                               final scannerBloc = context
                                                   .read<DigitScannerBloc>();
@@ -530,6 +598,8 @@ class CustomIndividualDetailsPageState
                                                 context,
                                                 form: form,
                                                 oldIndividual: individualModel,
+                                                generatedUniqueId:
+                                                    generatedUniqueId,
                                               );
                                               final tag = scannerBloc
                                                       .state.qrCodes.isNotEmpty
@@ -589,11 +659,9 @@ class CustomIndividualDetailsPageState
                                                   ),
                                                 );
                                                 onSubmit(
-                                                    individual
-                                                            .name?.givenName ??
-                                                        "",
-                                                    false,
-                                                    false);
+                                                  false,
+                                                  isAddIndividual,
+                                                );
                                                 context.router.maybePop();
                                               }
                                             },
@@ -659,11 +727,8 @@ class CustomIndividualDetailsPageState
                                                     ),
                                                   );
                                                   onSubmit(
-                                                    individual
-                                                            .name?.givenName ??
-                                                        "",
                                                     false,
-                                                    true,
+                                                    isAddIndividual,
                                                   );
                                                 }
                                               }
@@ -1117,7 +1182,78 @@ class CustomIndividualDetailsPageState
               ),
             ],
     );
+    //Info add uniqueBeneficiaryId as identifier in individualModel
+    individual =
+        setUniqueIdAsIdentifier(individual, context, generatedUniqueId);
 
+    return individual;
+  }
+
+  IndividualModel setUniqueIdAsIdentifier(IndividualModel individual,
+      BuildContext context, String? generatedUniqueId) {
+    final updatedIdentifiers = individual?.identifiers;
+    final uniqueId = generatedUniqueId;
+
+    if (updatedIdentifiers != null &&
+        updatedIdentifiers.isNotEmpty &&
+        uniqueId!.isNotEmpty) {
+      final uniqueIdIdentifierPresent = updatedIdentifiers.any((identifier) =>
+          identifier.identifierType ==
+          IdentifierTypes.uniqueBeneficiaryID.toValue());
+
+      if (!uniqueIdIdentifierPresent) {
+        updatedIdentifiers.add(IdentifierModel(
+          clientReferenceId: individual.clientReferenceId,
+          tenantId: RegistrationDeliverySingleton().tenantId,
+          rowVersion: 1,
+          auditDetails: AuditDetails(
+            createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
+            createdTime:
+                ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+            lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid,
+            lastModifiedTime:
+                ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+          ),
+          clientAuditDetails: ClientAuditDetails(
+            createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
+            createdTime:
+                ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+            lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid,
+            lastModifiedTime:
+                ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+          ),
+          identifierId: uniqueId,
+          identifierType: IdentifierTypes.uniqueBeneficiaryID.toValue(),
+        ));
+        individual = individual.copyWith(identifiers: updatedIdentifiers);
+      }
+    } else if (updatedIdentifiers == null && uniqueId!.isNotEmpty) {
+      individual = individual.copyWith(identifiers: [
+        IdentifierModel(
+          clientReferenceId: individual.clientReferenceId,
+          tenantId: RegistrationDeliverySingleton().tenantId,
+          rowVersion: 1,
+          auditDetails: AuditDetails(
+            createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
+            createdTime:
+                ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+            lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid,
+            lastModifiedTime:
+                ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+          ),
+          clientAuditDetails: ClientAuditDetails(
+            createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
+            createdTime:
+                ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+            lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid,
+            lastModifiedTime:
+                ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+          ),
+          identifierId: uniqueId,
+          identifierType: IdentifierTypes.uniqueBeneficiaryID.toValue(),
+        ),
+      ]);
+    }
     return individual;
   }
 
@@ -1168,7 +1304,9 @@ class CustomIndividualDetailsPageState
               )
             : null,
       ),
-      _genderKey: FormControl<String>(value: getGenderOptions(individual)),
+      _genderKey: FormControl<String>(
+          value: getGenderOptions(individual),
+          validators: [Validators.required]),
       // todo set based on projectType
       _heightKey: FormControl<String>(
         value: height,

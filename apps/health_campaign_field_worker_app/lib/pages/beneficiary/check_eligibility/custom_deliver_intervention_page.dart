@@ -29,8 +29,6 @@ import 'package:registration_delivery/utils/utils.dart';
 import 'package:registration_delivery/models/entities/additional_fields_type.dart';
 import 'package:registration_delivery/models/entities/status.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
-import 'package:registration_delivery/widgets/back_navigation_help_header.dart';
-import 'package:registration_delivery/widgets/beneficiary/resource_beneficiary_card.dart';
 import 'package:registration_delivery/widgets/component_wrapper/product_variant_bloc_wrapper.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 
@@ -49,6 +47,7 @@ import '../../../models/entities/status.dart' as local_status;
 class CustomDeliverInterventionPage extends LocalizedStatefulWidget {
   final EligibilityAssessmentType eligibilityAssessmentType;
   final bool isEditing;
+  final bool? isRevisit;
   final IndividualModel? selectedIndividual;
 
   const CustomDeliverInterventionPage({
@@ -56,6 +55,7 @@ class CustomDeliverInterventionPage extends LocalizedStatefulWidget {
     super.appLocalizations,
     required this.eligibilityAssessmentType,
     this.selectedIndividual,
+    this.isRevisit,
     this.isEditing = false,
   });
 
@@ -74,6 +74,9 @@ class CustomDeliverInterventionPageState
   static const _deliveryCommentKey = 'deliveryComment';
   final clickedStatus = ValueNotifier<bool>(false);
   bool? shouldSubmit = false;
+
+  bool isTaskUpdate = false;
+  TaskModel? oldTaskCaptured;
 
   // Variable to track dose administration status
   bool doseAdministered = false;
@@ -116,18 +119,32 @@ class CustomDeliverInterventionPageState
       longitude: long,
       selectedIndividual: selectedIndividual,
     );
-    context.read<DeliverInterventionBloc>().add(
-          DeliverInterventionSubmitEvent(
-              task: taskModel,
+
+// update the old task if needed
+    if (isTaskUpdate && oldTaskCaptured != null) {
+      TaskModel updatedTask =
+          _updateTaskModel(context, oldTaskCaptured!, taskModel);
+      context.read<DeliverInterventionBloc>().add(
+            DeliverInterventionSubmitEvent(
+                task: updatedTask,
+                isEditing: true,
+                boundaryModel: RegistrationDeliverySingleton().boundary!,
+                navigateToSummary: false,
+                householdMemberWrapper: householdMember),
+          );
+    } else {
+      context.read<DeliverInterventionBloc>().add(
+            DeliverInterventionSubmitEvent(
+              task: deliverInterventionState.oldTask ?? taskModel,
               isEditing: (deliverInterventionState.tasks ?? []).isNotEmpty &&
                       RegistrationDeliverySingleton().beneficiaryType ==
                           BeneficiaryType.household
                   ? true
                   : false,
               boundaryModel: RegistrationDeliverySingleton().boundary!,
-              navigateToSummary: true,
-              householdMemberWrapper: householdMember),
-        );
+            ),
+          );
+    }
 
     final productvariantList =
         ((form.control(_resourceDeliveredKey) as FormArray).value
@@ -199,18 +216,6 @@ class CustomDeliverInterventionPageState
     TaskModel taskModel,
     DeliverInterventionState deliverState,
   ) async {
-    context.read<DeliverInterventionBloc>().add(
-          DeliverInterventionSubmitEvent(
-            task: deliverState.oldTask ?? taskModel,
-            isEditing: (deliverState.tasks ?? []).isNotEmpty &&
-                    RegistrationDeliverySingleton().beneficiaryType ==
-                        BeneficiaryType.household
-                ? true
-                : false,
-            boundaryModel: RegistrationDeliverySingleton().boundary!,
-          ),
-        );
-
     ProjectTypeModel? projectTypeModel = RegistrationDeliverySingleton()
         .selectedProject
         ?.additionalDetails
@@ -238,10 +243,27 @@ class CustomDeliverInterventionPageState
       context.router.popAndPush(
         CustomHouseholdAcknowledgementRoute(
           enableViewHousehold: true,
+          isAddChild: true,
           eligibilityAssessmentType: widget.eligibilityAssessmentType,
         ),
       );
     }
+  }
+
+  getProductVariants(DeliverInterventionState deliveryInterventionState,
+      HouseholdOverviewState state) {
+    var result = (fetchProductVariant(
+        RegistrationDeliverySingleton()
+            .selectedProject
+            ?.additionalDetails
+            ?.projectType
+            ?.cycles![deliveryInterventionState.cycle - 1]
+            .deliveries?[deliveryInterventionState.dose - 1],
+        state.selectedIndividual ?? widget.selectedIndividual,
+        state.householdMemberWrapper.household,
+        context: context));
+
+    return result;
   }
 
   @override
@@ -292,21 +314,12 @@ class CustomDeliverInterventionPageState
 
                       List<DeliveryProductVariant>? productVariants =
                           projectTypeModel?.cycles?.isNotEmpty == true
-                              ? (fetchProductVariant(
-                                      projectTypeModel
-                                              ?.cycles![deliveryInterventionState
-                                                      .cycle -
-                                                  1]
-                                              .deliveries?[
-                                          deliveryInterventionState.dose - 1],
-                                      state?.selectedIndividual ??
-                                          widget?.selectedIndividual,
-                                      state.householdMemberWrapper
-                                          .household)["criteria"]
-                                  ?.productVariants)
+                              ? getProductVariants(deliveryInterventionState,
+                                      state)['criteria']
+                                  ?.productVariants
                               : projectTypeModel?.resources
-                                  ?.map((r) =>
-                                      DeliveryProductVariant(productVariantId: r.productVariantId))
+                                  ?.map((r) => DeliveryProductVariant(
+                                      productVariantId: r.productVariantId))
                                   .toList();
 
                       final int numberOfDoses = (projectTypeModel
@@ -506,6 +519,24 @@ class CustomDeliverInterventionPageState
                                                             if (context
                                                                 .mounted) {
                                                               // vas
+
+                                                              oldTaskCaptured =
+                                                                  deliveryInterventionState
+                                                                      ?.tasks
+                                                                      ?.where(
+                                                                          (element) {
+                                                                return element
+                                                                        ?.projectBeneficiaryClientReferenceId ==
+                                                                    projectBeneficiary
+                                                                        ?.first
+                                                                        .clientReferenceId;
+                                                              }).firstOrNull;
+
+                                                              setState(() {
+                                                                isTaskUpdate =
+                                                                    checkIfTaskUpdate(
+                                                                        oldTaskCaptured);
+                                                              });
 
                                                               context
                                                                   .read<
@@ -872,50 +903,6 @@ class CustomDeliverInterventionPageState
       ),
     );
 
-    int getIndividualAge(IndividualModel individualModel) {
-      DateTime dateOfBirth =
-          DateFormat("dd/MM/yyyy").parse(individualModel.dateOfBirth ?? '');
-      DigitDOBAge age = DigitDateUtils.calculateAge(dateOfBirth);
-      return getAgeMonths(age);
-    }
-
-    String? getBeneficiaryId(IndividualModel individualModel) {
-      IdentifierTypes.uniqueBeneficiaryID.toValue();
-      return individualModel.identifiers
-              ?.firstWhereOrNull((e) =>
-                  e.identifierType ==
-                  IdentifierTypes.uniqueBeneficiaryID.toValue())
-              ?.identifierId ??
-          '';
-    }
-
-    List<AdditionalField> getIndividualAdditionalFields(
-        IndividualModel? individualModel) {
-      return [
-        if (individualModel != null)
-          AdditionalField(
-            additional_fields_local.AdditionalFieldsType.age.toValue(),
-            getIndividualAge(individualModel),
-          ),
-        if (individualModel?.gender != null)
-          AdditionalField(
-            additional_fields_local.AdditionalFieldsType.gender.toValue(),
-            individualModel?.gender,
-          ),
-        if (individualModel?.clientReferenceId != null)
-          AdditionalField(
-            'individualClientReferenceId',
-            individualModel?.clientReferenceId,
-          ),
-        if (individualModel != null &&
-            getBeneficiaryId(individualModel) != null)
-          AdditionalField(
-            'uniqueBeneficiaryId',
-            getBeneficiaryId(individualModel),
-          ),
-      ];
-    }
-
     // Extract productvariantList from the form
     final productvariantList =
         ((form.control(_resourceDeliveredKey) as FormArray).value
@@ -933,30 +920,34 @@ class CustomDeliverInterventionPageState
     task = task.copyWith(
       projectId: RegistrationDeliverySingleton().projectId,
       // set quantity as 0  in resource if childAbsent
-      resources: productvariantList
-          .map((e) => TaskResourceModel(
-                taskclientReferenceId: clientReferenceId,
-                clientReferenceId: IdGen.i.identifier,
-                productVariantId: e?.id,
-                isDelivered: true,
-                taskId: task?.id,
-                tenantId: RegistrationDeliverySingleton().tenantId,
-                rowVersion: oldTask?.rowVersion ?? 1,
-                quantity: isChildAbsent
-                    ? "0"
-                    : (((form.control(_quantityDistributedKey) as FormArray)
-                            .value)?[productvariantList.indexOf(e)])
-                        .toString(),
-                clientAuditDetails: ClientAuditDetails(
-                  createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
-                  createdTime: context.millisecondsSinceEpoch(),
-                ),
-                auditDetails: AuditDetails(
-                  createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
-                  createdTime: context.millisecondsSinceEpoch(),
-                ),
-              ))
-          .toList(),
+      resources: isChildAbsent
+          ? []
+          : productvariantList
+              .map((e) => TaskResourceModel(
+                    taskclientReferenceId: clientReferenceId,
+                    clientReferenceId: IdGen.i.identifier,
+                    productVariantId: e?.id,
+                    isDelivered: true,
+                    taskId: task?.id,
+                    tenantId: RegistrationDeliverySingleton().tenantId,
+                    rowVersion: oldTask?.rowVersion ?? 1,
+                    quantity: isChildAbsent
+                        ? "0"
+                        : (((form.control(_quantityDistributedKey) as FormArray)
+                                .value)?[productvariantList.indexOf(e)])
+                            .toString(),
+                    clientAuditDetails: ClientAuditDetails(
+                      createdBy:
+                          RegistrationDeliverySingleton().loggedInUserUuid!,
+                      createdTime: context.millisecondsSinceEpoch(),
+                    ),
+                    auditDetails: AuditDetails(
+                      createdBy:
+                          RegistrationDeliverySingleton().loggedInUserUuid!,
+                      createdTime: context.millisecondsSinceEpoch(),
+                    ),
+                  ))
+              .toList(),
       address: address?.copyWith(
         relatedClientReferenceId: clientReferenceId,
         id: null,
@@ -1019,6 +1010,86 @@ class CustomDeliverInterventionPageState
     return task;
   }
 
+  int getIndividualAge(IndividualModel individualModel) {
+    DateTime dateOfBirth =
+        DateFormat("dd/MM/yyyy").parse(individualModel.dateOfBirth ?? '');
+    DigitDOBAge age = DigitDateUtils.calculateAge(dateOfBirth);
+    return getAgeMonths(age);
+  }
+
+  String? getBeneficiaryId(IndividualModel individualModel) {
+    IdentifierTypes.uniqueBeneficiaryID.toValue();
+    return individualModel.identifiers
+            ?.firstWhereOrNull((e) =>
+                e.identifierType ==
+                IdentifierTypes.uniqueBeneficiaryID.toValue())
+            ?.identifierId ??
+        '';
+  }
+
+  List<AdditionalField> getIndividualAdditionalFields(
+      IndividualModel? individualModel) {
+    return [
+      if (individualModel != null)
+        AdditionalField(
+          additional_fields_local.AdditionalFieldsType.age.toValue(),
+          getIndividualAge(individualModel),
+        ),
+      if (individualModel?.gender != null)
+        AdditionalField(
+          additional_fields_local.AdditionalFieldsType.gender.toValue(),
+          individualModel?.gender,
+        ),
+      if (individualModel?.clientReferenceId != null)
+        AdditionalField(
+          'individualClientReferenceId',
+          individualModel?.clientReferenceId,
+        ),
+      if (individualModel != null && getBeneficiaryId(individualModel) != null)
+        AdditionalField(
+          'uniqueBeneficiaryId',
+          getBeneficiaryId(individualModel),
+        ),
+    ];
+  }
+
+  // ignore: long-parameter-list
+  TaskModel _updateTaskModel(
+    BuildContext context,
+    TaskModel oldTask,
+    TaskModel newTask,
+  ) {
+    oldTask = oldTask.copyWith(
+        tenantId: RegistrationDeliverySingleton().tenantId,
+        auditDetails: oldTask.auditDetails!.copyWith(
+            lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid!,
+            lastModifiedTime: context.millisecondsSinceEpoch()),
+        clientAuditDetails: oldTask.clientAuditDetails!.copyWith(
+            lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid!,
+            lastModifiedTime: context.millisecondsSinceEpoch()),
+        status: newTask.status,
+        resources: newTask.resources,
+        additionalFields: oldTask.additionalFields == null
+            ? TaskAdditionalFields(
+                version: 1, fields: [...newTask.additionalFields?.fields ?? []])
+            : oldTask.additionalFields!
+                .copyWith(fields: [...newTask.additionalFields?.fields ?? []]));
+
+    return oldTask;
+  }
+
+  bool checkIfTaskUpdate(TaskModel? oldTask) {
+    if (oldTask == null) {
+      return false;
+    }
+
+    bool ifUpdate = (oldTask.status?.isEmpty ?? true)
+        ? false
+        : oldTask.status == local_status.Status.beneficiaryAbsent.toValue();
+
+    return ifUpdate;
+  }
+
 // This method builds a form used for delivering interventions.
 
   FormGroup buildForm(
@@ -1040,15 +1111,15 @@ class CustomDeliverInterventionPageState
     if (_controllers.isEmpty) {
       final int r = projectTypeModel?.cycles == null
           ? 1
-          : fetchProductVariant(
-                      projectTypeModel
-                          ?.cycles![bloc.cycle - 1].deliveries?[bloc.dose - 1],
-                      overViewbloc.selectedIndividual,
-                      overViewbloc
-                          .householdMemberWrapper.household)?["criteria"]
+          : getProductVariants(
+                    bloc,
+                    overViewbloc,
+                  ) !=
+                  null
+              ? getProductVariants(bloc, overViewbloc)['criteria']
                   .productVariants
-                  ?.length ??
-              0;
+                  .length
+              : 0;
 
       _controllers.addAll(List.generate(r, (index) => index)
           .mapIndexed((index, element) => index));

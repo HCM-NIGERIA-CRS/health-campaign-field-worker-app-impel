@@ -24,8 +24,8 @@ class IndividualGlobalSearchSMCRepository extends LocalRepository {
   DataModelType get type => throw UnimplementedError();
 
   individualGlobalSearch(GlobalSearchParametersSMC params) async {
-    dynamic selectQuery;
-    late int? count = params.totalCount == 0 ? 0 : params.totalCount;
+    JoinedSelectStatement? selectQuery;
+    int? count = params.totalCount;
 
     // Check if the filter contains status for registered or not registered
     if (params.filter!.contains(Status.registered.name) ||
@@ -166,94 +166,158 @@ class IndividualGlobalSearchSMCRepository extends LocalRepository {
 
         return {"data": data, "total_count": count};
       }
-    } else {
-      if (params.isChildAbsentEnabled != null) {
-        if (params.isChildAbsentEnabled!) {
-          var childAbsentQuery =
-              await absentSearch(selectQuery, params, super.sql);
+    } else if (params.beneficiaryId?.isNotEmpty ?? false) {
+      var beneficiarySelectQuery =
+          await beneficiaryIdSearch(selectQuery, params, super.sql);
 
-          // Return empty list if no results found
-          if (childAbsentQuery == null) {
-            return [];
-          } else {
-            // Get total count if offset is zero and filters are applied
-            if (params.offset == 0) {
-              count = await _getTotalCount(childAbsentQuery, params, super.sql);
-            }
-            await childAbsentQuery.limit(params.limit ?? 50,
-                offset: params.offset ?? 0);
-
-            final results = await childAbsentQuery.get();
-            var data;
-            data = results
-                .map((e) {
-                  final task = e.readTableOrNull(sql.task);
-                  final resources = e.readTableOrNull(sql.taskResource);
-
-                  return TaskModel(
-                    id: task.id,
-                    createdBy: task.createdBy,
-                    clientReferenceId: task.clientReferenceId,
-                    rowVersion: task.rowVersion,
-                    tenantId: task.tenantId,
-                    isDeleted: task.isDeleted,
-                    projectId: task.projectId,
-                    projectBeneficiaryId: task.projectBeneficiaryId,
-                    projectBeneficiaryClientReferenceId:
-                        task.projectBeneficiaryClientReferenceId,
-                    createdDate: task.createdDate,
-                    status: task.status,
-                    resources: resources == null
-                        ? null
-                        : [
-                            TaskResourceModel(
-                              taskclientReferenceId:
-                                  resources.taskclientReferenceId,
-                              clientReferenceId: resources.clientReferenceId,
-                              id: resources.id,
-                              productVariantId: resources.productVariantId,
-                              taskId: resources.taskId,
-                              deliveryComment: resources.deliveryComment,
-                              quantity: resources.quantity,
-                              rowVersion: resources.rowVersion,
-                            ),
-                          ],
-                  );
-                })
-                .where((element) => element.isDeleted != true)
-                .toList();
-            return {"data": data, "total_count": count};
-          }
-        }
+      // Return empty list if no results found
+      if (beneficiarySelectQuery == null) {
+        return [];
       } else {
-        var beneficiarySelectQuery =
-            await beneficiaryIdSearch(selectQuery, params, super.sql);
+        // Get total count if offset is zero and filters are applied
+        if (params.offset == 0 &&
+            params.filter != null &&
+            params.filter!.isNotEmpty) {
+          count =
+              await _getTotalCount(beneficiarySelectQuery, params, super.sql);
+        }
+        await beneficiarySelectQuery.limit(params.limit ?? 50,
+            offset: params.offset ?? 0);
 
+        final results = await beneficiarySelectQuery.get();
+
+        return _returnIndividualModel(results, count);
+      }
+    } else if (params.isHouseNonCompliant != null &&
+        params.isHouseNonCompliant!) {
+      var nonCompliantHouseSearchQuery =
+          await nonCompliantHouseSearch(selectQuery, params, super.sql);
+
+      // Return empty list if no results found
+      if (nonCompliantHouseSearchQuery == null) {
+        return [];
+      } else {
+        // Get total count if offset is zero and filters are applied
+        if (params.offset == 0) {
+          count = await _getTotalCount(
+              nonCompliantHouseSearchQuery, params, super.sql);
+        }
+        await nonCompliantHouseSearchQuery.limit(params.limit ?? 50,
+            offset: params.offset ?? 0);
         // Return empty list if no results found
-        if (beneficiarySelectQuery == null) {
+        if (nonCompliantHouseSearchQuery == null) {
           return [];
         } else {
           // Get total count if offset is zero and filters are applied
-          if (params.offset == 0 &&
-              params.filter != null &&
-              params.filter!.isNotEmpty) {
-            count =
-                await _getTotalCount(beneficiarySelectQuery, params, super.sql);
+          if (params.offset == 0) {
+            count = await _getTotalCount(
+                nonCompliantHouseSearchQuery, params, super.sql);
           }
-          await beneficiarySelectQuery.limit(params.limit ?? 50,
+          await nonCompliantHouseSearchQuery.limit(params.limit ?? 50,
               offset: params.offset ?? 0);
 
-          final results = await beneficiarySelectQuery.get();
+          final results = await nonCompliantHouseSearchQuery.get();
+          var data = results
+              .map((e) {
+                final task = e.readTableOrNull(sql.task);
+                final resources = e.readTableOrNull(sql.taskResource);
 
-          return _returnIndividualModel(results, count);
+                return TaskModel(
+                  id: task.id,
+                  createdBy: task.createdBy,
+                  clientReferenceId: task.clientReferenceId,
+                  rowVersion: task.rowVersion,
+                  tenantId: task.tenantId,
+                  isDeleted: task.isDeleted,
+                  projectId: task.projectId,
+                  projectBeneficiaryId: task.projectBeneficiaryId,
+                  projectBeneficiaryClientReferenceId:
+                      task.projectBeneficiaryClientReferenceId,
+                  createdDate: task.createdDate,
+                  status: task.status,
+                  resources: resources == null
+                      ? null
+                      : [
+                          TaskResourceModel(
+                            taskclientReferenceId:
+                                resources.taskclientReferenceId,
+                            clientReferenceId: resources.clientReferenceId,
+                            id: resources.id,
+                            productVariantId: resources.productVariantId,
+                            taskId: resources.taskId,
+                            deliveryComment: resources.deliveryComment,
+                            quantity: resources.quantity,
+                            rowVersion: resources.rowVersion,
+                          ),
+                        ],
+                );
+              })
+              .where((element) => element.isDeleted != true)
+              .toList();
+          return {"data": data, "total_count": count};
         }
+      }
+    } else if (params.isChildAbsentEnabled != null &&
+        params.isChildAbsentEnabled!) {
+      var childAbsentQuery = await absentSearch(selectQuery, params, super.sql);
+
+      // Return empty list if no results found
+      if (childAbsentQuery == null) {
+        return [];
+      } else {
+        // Get total count if offset is zero and filters are applied
+        if (params.offset == 0) {
+          count = await _getTotalCount(childAbsentQuery, params, super.sql);
+        }
+        await childAbsentQuery.limit(params.limit ?? 50,
+            offset: params.offset ?? 0);
+
+        final results = await childAbsentQuery.get();
+        var data = results
+            .map((e) {
+              final task = e.readTableOrNull(sql.task);
+              final resources = e.readTableOrNull(sql.taskResource);
+
+              return TaskModel(
+                id: task.id,
+                createdBy: task.createdBy,
+                clientReferenceId: task.clientReferenceId,
+                rowVersion: task.rowVersion,
+                tenantId: task.tenantId,
+                isDeleted: task.isDeleted,
+                projectId: task.projectId,
+                projectBeneficiaryId: task.projectBeneficiaryId,
+                projectBeneficiaryClientReferenceId:
+                    task.projectBeneficiaryClientReferenceId,
+                createdDate: task.createdDate,
+                status: task.status,
+                resources: resources == null
+                    ? null
+                    : [
+                        TaskResourceModel(
+                          taskclientReferenceId:
+                              resources.taskclientReferenceId,
+                          clientReferenceId: resources.clientReferenceId,
+                          id: resources.id,
+                          productVariantId: resources.productVariantId,
+                          taskId: resources.taskId,
+                          deliveryComment: resources.deliveryComment,
+                          quantity: resources.quantity,
+                          rowVersion: resources.rowVersion,
+                        ),
+                      ],
+              );
+            })
+            .where((element) => element.isDeleted != true)
+            .toList();
+        return {"data": data, "total_count": count};
       }
     }
   }
 
   // Function to perform BeneficiaryId search based on provided parameters
-  beneficiaryIdSearch(selectQuery, GlobalSearchParametersSMC params,
-      LocalSqlDataStore sql) async {
+  beneficiaryIdSearch(JoinedSelectStatement? selectQuery,
+      GlobalSearchParametersSMC params, LocalSqlDataStore sql) async {
     if (params.beneficiaryId == null || params.beneficiaryId!.isEmpty) {
       return selectQuery;
     } else if (params.beneficiaryId != null ||
@@ -303,7 +367,10 @@ class IndividualGlobalSearchSMCRepository extends LocalRepository {
     ]));
   }
 
-  filterSearch(selectQuery, GlobalSearchParametersSMC params, String filter,
+  filterSearch(
+      JoinedSelectStatement? selectQuery,
+      GlobalSearchParametersSMC params,
+      String filter,
       LocalSqlDataStore sql) async {
     var sql = super.sql;
     if (selectQuery == null) {
@@ -364,8 +431,20 @@ class IndividualGlobalSearchSMCRepository extends LocalRepository {
     return selectQuery;
   }
 
-  absentSearch(selectQuery, GlobalSearchParametersSMC params,
-      LocalSqlDataStore sql) async {
+  nonCompliantHouseSearch(JoinedSelectStatement? selectQuery,
+      GlobalSearchParametersSMC params, LocalSqlDataStore sql) async {
+    var sql = super.sql;
+
+    var nonCompliantHouseSearchQuery =
+        await filterFailedTasks(selectQuery, sql, params);
+
+    selectQuery = nonCompliantHouseSearchQuery;
+
+    return selectQuery;
+  }
+
+  absentSearch(JoinedSelectStatement? selectQuery,
+      GlobalSearchParametersSMC params, LocalSqlDataStore sql) async {
     var sql = super.sql;
 
     var absentSearchQuery = await filterAbsentTasks(selectQuery, sql, params);
@@ -375,8 +454,27 @@ class IndividualGlobalSearchSMCRepository extends LocalRepository {
     return selectQuery;
   }
 
-  filterAbsentTasks(
-      selectQuery, LocalSqlDataStore sql, GlobalSearchParametersSMC params) {
+  filterFailedTasks(JoinedSelectStatement? selectQuery, LocalSqlDataStore sql,
+      GlobalSearchParametersSMC params) {
+    selectQuery = sql.select(sql.task).join([
+      leftOuterJoin(
+          sql.projectBeneficiary,
+          sql.projectBeneficiary.clientReferenceId
+              .equalsExp(sql.task.projectBeneficiaryClientReferenceId)),
+      leftOuterJoin(
+          sql.individual,
+          sql.individual.clientReferenceId
+              .equalsExp(sql.projectBeneficiary.beneficiaryClientReferenceId)),
+    ])
+      ..where(sql.task.status.equals(
+        Status.administeredFailed.toValue(),
+      ));
+
+    return selectQuery;
+  }
+
+  filterAbsentTasks(JoinedSelectStatement? selectQuery, LocalSqlDataStore sql,
+      GlobalSearchParametersSMC params) {
     selectQuery = sql.select(sql.task).join([
       leftOuterJoin(
           sql.projectBeneficiary,
@@ -394,8 +492,8 @@ class IndividualGlobalSearchSMCRepository extends LocalRepository {
     return selectQuery;
   }
 
-  filterTasks(selectQuery, String filter, LocalSqlDataStore sql,
-      GlobalSearchParametersSMC params) {
+  filterTasks(JoinedSelectStatement? selectQuery, String filter,
+      LocalSqlDataStore sql, GlobalSearchParametersSMC params) {
     final statusMap = {
       Status.delivered.name: Status.delivered,
       Status.notAdministered.name: Status.notAdministered,

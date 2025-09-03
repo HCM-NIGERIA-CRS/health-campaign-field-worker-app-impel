@@ -22,8 +22,12 @@ import 'package:transit_post/widgets/localized.dart';
 import 'package:transit_post/widgets/total_delivery.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart'
     as i18_registration_delivery;
+import '../../../utils/i18_key_constants.dart' as i18_local;
 
+import '../../blocs/transit_post/custom_transit_post.dart';
+import '../../models/entities/user_action_enums.dart';
 import '../../router/app_router.dart';
+import '../campaign_delivery_select.dart';
 import '../campaign_delivery_select.dart';
 
 @RoutePage()
@@ -47,7 +51,9 @@ class CustomTransitPostSelectionPageState
   @override
   void initState() {
     super.initState();
-    context.read<TransitPostBloc>().add(const TransitPostDeliveryCountEvent());
+    context.read<CustomTransitPostBloc>().add(
+        CustomTransitPostDeliveryCountEvent(
+            action: UserActionEnums.transit.toValue()));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Show the dialog after the first frame is built
       DigitComponentsUtils.showDialog(
@@ -60,7 +66,7 @@ class CustomTransitPostSelectionPageState
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TransitPostBloc, TransitPostState>(
+    return BlocBuilder<CustomTransitPostBloc, CustomTransitPostState>(
         builder: (context, transitPostState) {
       return Scaffold(
         body: transitPostState.loading
@@ -104,12 +110,12 @@ class CustomTransitPostSelectionPageState
                         children: [
                           DigitButton(
                             label: localizations.translate(
-                              i18.transitPost.scanResourceLabel,
+                              i18_local.common.coreCommonNext,
                             ),
-                            isDisabled: false,
+                            isDisabled: !form.valid,
                             onPressed: () async {
                               form.markAllAsTouched();
-                              // if (!form.valid) return;
+                              if (!form.valid) return;
 
                               final transitPostType =
                                   form.control(_transitPostType).value;
@@ -120,8 +126,8 @@ class CustomTransitPostSelectionPageState
                               final accuracy = form.control(_accuracyKey).value;
 
                               context
-                                  .read<TransitPostBloc>()
-                                  .add(TransitPostSelectionEvent(
+                                  .read<CustomTransitPostBloc>()
+                                  .add(CustomTransitPostSelectionEvent(
                                     longitude: lng,
                                     latitude: lat,
                                     locationAccuracy: accuracy,
@@ -129,62 +135,16 @@ class CustomTransitPostSelectionPageState
                                     transitPostType: transitPostType,
                                   ));
 
-                              // final bloc = context.read<DigitScannerBloc>();
-                              // final state = bloc.state.barCodes;
-
-                              // if (state.isNotEmpty) {
-                              //   await showCustomPopup(
-                              //       context: context,
-                              //       builder: (popUpContext) => Popup(
-                              //             title: localizations.translate(
-                              //               i18.transitPost.alertPopupTitle,
-                              //             ),
-                              //             type: PopUpType.alert,
-                              //             description: localizations.translate(
-                              //               i18.transitPost
-                              //                   .alertPopupDescription,
-                              //             ),
-                              //             actions: [
-                              //               DigitButton(
-                              //                 label: localizations.translate(
-                              //                   i18.common.coreCommonOk,
-                              //                 ),
-                              //                 onPressed: () {
-                              //                   Navigator.of(popUpContext)
-                              //                       .pop();
-                              //                 },
-                              //                 type: DigitButtonType.primary,
-                              //                 size: DigitButtonSize.large,
-                              //               )
-                              //             ],
-                              //           ));
-                              // }
-
-                              // await Navigator.of(context).push(
-                              //   MaterialPageRoute(
-                              //     builder: (context) => const DigitScannerPage(
-                              //       quantity: 1,
-                              //       isGS1code: true,
-                              //       singleValue: true,
-                              //     ),
-                              //     settings:
-                              //         const RouteSettings(name: '/qr-scanner'),
-                              //   ),
-                              // );
                               if (context.mounted) {
-                                // final bloc = context.read<DigitScannerBloc>();
-                                // final state = bloc.state.barCodes;
-                                // if (state.isNotEmpty) {
                                 context.router.push(
                                     CustomTransitPostRecordVaccinationRoute(
-                                        postType: PostType.transit.toString()));
-                                // }
+                                        postType:
+                                            UserActionEnums.transit.toValue()));
                               }
                             },
                             type: DigitButtonType.primary,
                             size: DigitButtonSize.large,
                             mainAxisSize: MainAxisSize.max,
-                            prefixIcon: Icons.document_scanner_sharp,
                           )
                         ],
                       ),
@@ -349,7 +309,11 @@ class CustomTransitPostSelectionPageState
         validators: [Validators.required],
       ),
       _transitPostName: FormControl<String>(
-        validators: [Validators.required],
+        validators: [
+          Validators.required,
+          Validators.delegate(
+              (validator) => CustomValidator.sizeLessThan2(validator))
+        ],
       ),
       _latKey: FormControl<double>(),
       _lngKey: FormControl<double>(),

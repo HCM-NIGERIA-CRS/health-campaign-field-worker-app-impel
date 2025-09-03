@@ -33,6 +33,8 @@ enum MasterEnums {
   idTypes,
   @MappableValue("DELIVERY_COMMENT_OPTIONS_POPULATOR")
   deliveryComments,
+  @MappableValue("USER_ACTION_DAILY_PLAN")
+  dipConfig,
   @MappableValue("BACKEND_INTERFACE")
   backendInterface,
   @MappableValue("CALL_SUPPORT")
@@ -57,4 +59,8 @@ enum MasterEnums {
   privacyPolicy,
   @MappableValue("dashboardConfig")
   dashboardConfig,
+  @MappableValue("TRANSIT_POST_TYPE")
+  transitPostType,
+  @MappableValue("NON_COMPLIANCE_REASONS")
+  nonComplianceReasons,
 }

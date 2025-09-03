@@ -83,6 +83,10 @@ class HCMWrapperModel with _$HCMWrapperModel {
     required List<IdTypeOptions> idTypeOptions,
     @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_POPULATOR')
     required List<DeliveryCommentOptions> deliveryCommentOptions,
+    @JsonKey(name: 'USER_ACTION_DAILY_PLAN')
+    required List<DailyActionPlanConfig> dailyPlanConfigs,
+    @JsonKey(name: 'NON_COMPLIANCE_REASONS')
+    required List<NonComplianceReasons> nonComplianceReasons,
     @JsonKey(name: 'BACKEND_INTERFACE')
     required List<BackendInterface> backendInterface,
     @JsonKey(name: 'CALL_SUPPORT')
@@ -101,6 +105,7 @@ class HCMWrapperModel with _$HCMWrapperModel {
     @JsonKey(name: 'REFUSAL_REASONS') List<CommonMasterModel>? refusalReasons,
     @JsonKey(name: 'FIREBASE_CONFIG')
     required List<FirebaseConfig>? firebaseConfig,
+    @JsonKey(name: 'TRANSIT_POST_TYPE') List<TransitPostType>? transitPostType,
   }) = _HCMWrapperModel;
 
   factory HCMWrapperModel.fromJson(
@@ -237,6 +242,28 @@ class DeliveryCommentOptions with _$DeliveryCommentOptions {
 }
 
 @freezed
+class DailyActionPlanConfig with _$DailyActionPlanConfig {
+  factory DailyActionPlanConfig({
+    required String key,
+    required String value,
+  }) = _DailyActionPlanConfig;
+
+  factory DailyActionPlanConfig.fromJson(Map<String, dynamic> json) =>
+      _$DailyActionPlanConfigFromJson(json);
+}
+
+@freezed
+class NonComplianceReasons with _$NonComplianceReasons {
+  factory NonComplianceReasons({
+    required String name,
+    required String code,
+  }) = _NonComplianceReasons;
+
+  factory NonComplianceReasons.fromJson(Map<String, dynamic> json) =>
+      _$NonComplianceReasonsFromJson(json);
+}
+
+@freezed
 class DeletionReasonOptions with _$DeletionReasonOptions {
   factory DeletionReasonOptions({
     required String value,
@@ -256,6 +283,18 @@ class GenderOptions with _$GenderOptions {
 
   factory GenderOptions.fromJson(Map<String, dynamic> json) =>
       _$GenderOptionsFromJson(json);
+}
+
+@freezed
+class TransitPostType with _$TransitPostType {
+  factory TransitPostType({
+    required String name,
+    required String code,
+    required bool active,
+  }) = _TransitPostType;
+
+  factory TransitPostType.fromJson(Map<String, dynamic> json) =>
+      _$TransitPostTypeFromJson(json);
 }
 
 @freezed

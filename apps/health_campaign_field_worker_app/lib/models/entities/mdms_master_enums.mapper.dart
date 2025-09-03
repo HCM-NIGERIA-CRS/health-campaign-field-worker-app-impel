@@ -53,6 +53,8 @@ class MasterEnumsMapper extends EnumMapper<MasterEnums> {
         return MasterEnums.idTypes;
       case "DELIVERY_COMMENT_OPTIONS_POPULATOR":
         return MasterEnums.deliveryComments;
+      case "USER_ACTION_DAILY_PLAN":
+        return MasterEnums.dipConfig;
       case "BACKEND_INTERFACE":
         return MasterEnums.backendInterface;
       case "CALL_SUPPORT":
@@ -77,6 +79,10 @@ class MasterEnumsMapper extends EnumMapper<MasterEnums> {
         return MasterEnums.privacyPolicy;
       case "dashboardConfig":
         return MasterEnums.dashboardConfig;
+      case "TRANSIT_POST_TYPE":
+        return MasterEnums.transitPostType;
+      case "NON_COMPLIANCE_REASONS":
+        return MasterEnums.nonComplianceReasons;
       default:
         throw MapperException.unknownEnumValue(value);
     }
@@ -113,6 +119,8 @@ class MasterEnumsMapper extends EnumMapper<MasterEnums> {
         return "ID_TYPE_OPTIONS_POPULATOR";
       case MasterEnums.deliveryComments:
         return "DELIVERY_COMMENT_OPTIONS_POPULATOR";
+      case MasterEnums.dipConfig:
+        return "USER_ACTION_DAILY_PLAN";
       case MasterEnums.backendInterface:
         return "BACKEND_INTERFACE";
       case MasterEnums.callSupport:
@@ -137,6 +145,10 @@ class MasterEnumsMapper extends EnumMapper<MasterEnums> {
         return "PrivacyPolicy";
       case MasterEnums.dashboardConfig:
         return "dashboardConfig";
+      case MasterEnums.transitPostType:
+        return "TRANSIT_POST_TYPE";
+      case MasterEnums.nonComplianceReasons:
+        return "NON_COMPLIANCE_REASONS";
     }
   }
 }

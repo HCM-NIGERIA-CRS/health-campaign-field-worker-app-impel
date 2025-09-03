@@ -22,6 +22,8 @@ import 'package:transit_post/widgets/localized.dart';
 import 'package:transit_post/widgets/total_delivery.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart'
     as i18_registration_delivery;
+import '../../blocs/transit_post/fixed_post.dart';
+import '../../models/entities/user_action_enums.dart';
 import '../../utils/i18_key_constants.dart' as i18_local;
 
 import '../../router/app_router.dart';
@@ -38,7 +40,6 @@ class CustomFixedPostSelectionPage extends LocalizedStatefulWidget {
 
 class CustomFixedPostSelectionPageState
     extends LocalizedState<CustomFixedPostSelectionPage> {
-  static const _transitPostType = 'transitPostType';
   static const _transitPostName = 'transitPostName';
   static const _latKey = 'latKey';
   static const _lngKey = 'lngKey';
@@ -48,7 +49,8 @@ class CustomFixedPostSelectionPageState
   @override
   void initState() {
     super.initState();
-    context.read<TransitPostBloc>().add(const TransitPostDeliveryCountEvent());
+    context.read<FixedPostBloc>().add(
+        FixedPostDeliveryCountEvent(action: UserActionEnums.fixed.toValue()));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Show the dialog after the first frame is built
       DigitComponentsUtils.showDialog(
@@ -61,10 +63,10 @@ class CustomFixedPostSelectionPageState
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TransitPostBloc, TransitPostState>(
-        builder: (context, transitPostState) {
+    return BlocBuilder<FixedPostBloc, FixedPostState>(
+        builder: (context, fixedPostState) {
       return Scaffold(
-        body: transitPostState.loading
+        body: fixedPostState.loading
             ? const Center(
                 child: CircularProgressIndicator(),
               )
@@ -105,15 +107,13 @@ class CustomFixedPostSelectionPageState
                         children: [
                           DigitButton(
                             label: localizations.translate(
-                              i18.transitPost.scanResourceLabel,
+                              i18_local.common.coreCommonNext,
                             ),
-                            isDisabled: false,
+                            isDisabled: !form.valid,
                             onPressed: () async {
                               form.markAllAsTouched();
-                              // if (!form.valid) return;
+                              if (!form.valid) return;
 
-                              final transitPostType =
-                                  form.control(_transitPostType).value;
                               final transitPostName =
                                   form.control(_transitPostName).value;
                               final lat = form.control(_latKey).value;
@@ -121,71 +121,25 @@ class CustomFixedPostSelectionPageState
                               final accuracy = form.control(_accuracyKey).value;
 
                               context
-                                  .read<TransitPostBloc>()
-                                  .add(TransitPostSelectionEvent(
+                                  .read<FixedPostBloc>()
+                                  .add(FixedPostSelectionEvent(
                                     longitude: lng,
                                     latitude: lat,
                                     locationAccuracy: accuracy,
-                                    transitPostName: transitPostName,
-                                    transitPostType: transitPostType,
+                                    fixedPostName: transitPostName,
+                                    fixedPostType: "",
                                   ));
 
-                              // final bloc = context.read<DigitScannerBloc>();
-                              // final state = bloc.state.barCodes;
-
-                              // if (state.isNotEmpty) {
-                              //   await showCustomPopup(
-                              //       context: context,
-                              //       builder: (popUpContext) => Popup(
-                              //             title: localizations.translate(
-                              //               i18.transitPost.alertPopupTitle,
-                              //             ),
-                              //             type: PopUpType.alert,
-                              //             description: localizations.translate(
-                              //               i18.transitPost
-                              //                   .alertPopupDescription,
-                              //             ),
-                              //             actions: [
-                              //               DigitButton(
-                              //                 label: localizations.translate(
-                              //                   i18.common.coreCommonOk,
-                              //                 ),
-                              //                 onPressed: () {
-                              //                   Navigator.of(popUpContext)
-                              //                       .pop();
-                              //                 },
-                              //                 type: DigitButtonType.primary,
-                              //                 size: DigitButtonSize.large,
-                              //               )
-                              //             ],
-                              //           ));
-                              // }
-
-                              // await Navigator.of(context).push(
-                              //   MaterialPageRoute(
-                              //     builder: (context) => const DigitScannerPage(
-                              //       quantity: 1,
-                              //       isGS1code: true,
-                              //       singleValue: true,
-                              //     ),
-                              //     settings:
-                              //         const RouteSettings(name: '/qr-scanner'),
-                              //   ),
-                              // );
                               if (context.mounted) {
-                                // final bloc = context.read<DigitScannerBloc>();
-                                // final state = bloc.state.barCodes;
-                                // if (state.isNotEmpty) {
                                 context.router.push(
-                                    CustomTransitPostRecordVaccinationRoute(
-                                        postType: PostType.fixed.toString()));
-                                // }
+                                    CustomFixedPostRecordVaccinationRoute(
+                                        postType:
+                                            UserActionEnums.fixed.toValue()));
                               }
                             },
                             type: DigitButtonType.primary,
                             size: DigitButtonSize.large,
                             mainAxisSize: MainAxisSize.max,
-                            prefixIcon: Icons.document_scanner_sharp,
                           )
                         ],
                       ),
@@ -194,13 +148,13 @@ class CustomFixedPostSelectionPageState
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             DeliveryWidget(
-                              count: transitPostState.totalCount ?? 0,
+                              count: fixedPostState.totalCount ?? 0,
                               description: localizations.translate(
                                   i18.transitPost.totalDeliveriesDescription),
                               width: MediaQuery.of(context).size.width * 0.5,
                             ),
                             DeliveryWidget(
-                              count: transitPostState.curCount ?? 0,
+                              count: fixedPostState.curCount ?? 0,
                               description: localizations.translate(
                                   i18.transitPost.todayDeliveriesDescription),
                               width: MediaQuery.of(context).size.width * 0.5,
@@ -267,25 +221,25 @@ class CustomFixedPostSelectionPageState
                                 ),
                               ),
                               ReactiveWrapperField(
-                                formControlName: _transitPostType,
+                                formControlName: _transitPostName,
                                 validationMessages: {
                                   "required": (_) => localizations
                                       .translate(i18.common.coreCommonRequired)
                                 },
                                 builder: (field) => LabeledField(
                                   label: localizations.translate(
-                                    i18_local.transitFixedPost
-                                        .fixedTypeSelectionLabel,
+                                    i18_local
+                                        .transitFixedPost.fixedPostnameLabel,
                                   ),
                                   isRequired: true,
                                   child: DigitDropdown(
                                     selectedOption: DropdownItem(
                                         name: localizations.translate(form
-                                                .control(_transitPostType)
+                                                .control(_transitPostName)
                                                 .value ??
                                             ''),
                                         code: form
-                                                .control(_transitPostType)
+                                                .control(_transitPostName)
                                                 .value ??
                                             ''),
                                     items: TransitPostSingleton()
@@ -300,7 +254,7 @@ class CustomFixedPostSelectionPageState
                                         [],
                                     onSelect: (value) {
                                       setState(() {
-                                        form.control(_transitPostType).value =
+                                        form.control(_transitPostName).value =
                                             value.code;
                                       });
                                     },
@@ -308,31 +262,6 @@ class CustomFixedPostSelectionPageState
                                   ),
                                 ),
                               ),
-                              ReactiveWrapperField(
-                                formControlName: _transitPostName,
-                                validationMessages: {
-                                  "required": (_) => localizations
-                                      .translate(i18.common.coreCommonRequired)
-                                },
-                                builder: (field) => LabeledField(
-                                  label: localizations.translate(
-                                    i18_local
-                                        .transitFixedPost.fixedPostnameLabel,
-                                  ),
-                                  isRequired: true,
-                                  child: DigitTextFormInput(
-                                    onChange: (value) {
-                                      setState(() {
-                                        form.control(_transitPostName).value =
-                                            value;
-                                      });
-                                    },
-                                    errorMessage: field.errorText,
-                                    initialValue:
-                                        form.control(_transitPostName).value,
-                                  ),
-                                ),
-                              )
                             ]),
                       ],
                     )),
@@ -346,9 +275,6 @@ class CustomFixedPostSelectionPageState
       _administrationAreaKey: FormControl<String>(
         value: localizations
             .translate(RegistrationDeliverySingleton().boundary!.code ?? ''),
-        validators: [Validators.required],
-      ),
-      _transitPostType: FormControl<String>(
         validators: [Validators.required],
       ),
       _transitPostName: FormControl<String>(

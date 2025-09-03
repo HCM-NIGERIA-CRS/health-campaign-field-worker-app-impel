@@ -979,7 +979,7 @@ class _CustomHouseholdOverviewPageState
             RegistrationDeliverySingleton().beneficiaryType!,
       ),
     );
-    await context.router.popAndPush(
+    await context.router.push(
       CustomBeneficiaryRegistrationWrapperRoute(
         initialState: BeneficiaryRegistrationAddMemberState(
           addressModel: address,

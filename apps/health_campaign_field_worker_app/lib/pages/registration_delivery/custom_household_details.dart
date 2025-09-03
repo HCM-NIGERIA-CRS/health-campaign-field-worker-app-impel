@@ -35,12 +35,15 @@ import '../../router/app_router.dart';
 import '../../utils/registration_delivery/registration_delivery_utils.dart';
 import 'custom_beneficiary_acknowledgement.dart';
 import '../../utils/constants.dart' as local_constants;
+import '../../models/entities/status.dart';
 
 @RoutePage()
 class CustomHouseHoldDetailsPage extends LocalizedStatefulWidget {
+  final bool? isConsent;
   const CustomHouseHoldDetailsPage({
     super.key,
     super.appLocalizations,
+    this.isConsent,
   });
 
   @override
@@ -56,6 +59,7 @@ class CustomHouseHoldDetailsPageState
   static const _childrenCountKey = 'childrenCount';
   static const _childrenAFPCountKey = 'childrenAFPCount';
   static const _guineaWormDiseaseCountKey = 'guineaWormDiseaseCount';
+  bool isNoConsent = false;
 
   // Define controllers
   final TextEditingController _pregnantWomenController =
@@ -225,7 +229,8 @@ class CustomHouseHoldDetailsPageState
               BeneficiaryRegistrationState>(
             listener: (context, state) {
               if (state is BeneficiaryRegistrationPersistedState &&
-                  state.isEdit) {
+                  state.isEdit &&
+                  !isNoConsent) {
                 final overviewBloc = context.read<HouseholdOverviewBloc>();
 
                 overviewBloc.add(
@@ -289,15 +294,7 @@ class CustomHouseHoldDetailsPageState
                           final dateOfRegistration = form
                               .control(_dateOfRegistrationKey)
                               .value as DateTime;
-                          // if ((memberCount < children)) {
-                          //   DigitToast.show(context,
-                          //       options: DigitToastOptions(
-                          //           localizations.translate(i18_local
-                          //               .beneficiaryDetails.invalidChildCount),
-                          //           true,
-                          //           theme));
-                          //   return;
-                          // }
+
                           registrationState.maybeWhen(
                             orElse: () {
                               return;
@@ -384,6 +381,8 @@ class CustomHouseHoldDetailsPageState
                                         context.millisecondsSinceEpoch(),
                                   ),
                                   address: addressModel,
+                                  householdType: RegistrationDeliverySingleton()
+                                      .householdType,
                                   additionalFields: HouseholdAdditionalFields(
                                       version: 1,
                                       fields: [
@@ -450,7 +449,16 @@ class CustomHouseHoldDetailsPageState
                               projectBeneficiaryModel,
                               loading,
                               isHeadOfHousehold,
-                            ) {
+                            ) async {
+                              final isConsentAdditionalField = householdModel
+                                  .additionalFields?.fields
+                                  .where((e) =>
+                                      e.key ==
+                                      local_constants.Constants.consentsKey)
+                                  .firstOrNull;
+                              isNoConsent =
+                                  isConsentAdditionalField?.value == false;
+
                               var household = householdModel.copyWith(
                                   memberCount: memberCount,
                                   address: addressModel,
@@ -482,21 +490,38 @@ class CustomHouseHoldDetailsPageState
                                         //[TODO: Use pregnant women form value based on project config
                                         ...?householdModel
                                             .additionalFields?.fields
-                                            .where((e) =>
-                                                e
-                                                        .key !=
-                                                    AdditionalFieldsType
-                                                        .children
-                                                        .toValue() &&
-                                                e.key !=
-                                                    local_constants.Constants
-                                                        .childrenAFP &&
-                                                e.key !=
-                                                    local_constants.Constants
-                                                        .childrenAbsent &&
-                                                e.key !=
-                                                    local_constants
-                                                        .Constants.guineaWorm),
+                                            .where(
+                                                (e) =>
+                                                    e
+                                                            .key !=
+                                                        AdditionalFieldsType
+                                                            .children
+                                                            .toValue() &&
+                                                    e
+                                                            .key !=
+                                                        local_constants
+                                                            .Constants
+                                                            .childrenAFP &&
+                                                    e
+                                                            .key !=
+                                                        local_constants
+                                                            .Constants
+                                                            .childrenAbsent &&
+                                                    e
+                                                            .key !=
+                                                        local_constants
+                                                            .Constants
+                                                            .guineaWorm &&
+                                                    e
+                                                            .key !=
+                                                        local_constants
+                                                            .Constants
+                                                            .isNoConsentEdit),
+                                        if (isNoConsent)
+                                          const AdditionalField(
+                                              local_constants
+                                                  .Constants.isNoConsentEdit,
+                                              true),
 
                                         AdditionalField(
                                           AdditionalFieldsType.children
@@ -566,6 +591,30 @@ class CustomHouseHoldDetailsPageState
                                   ),
                                 ),
                               );
+                              if (isNoConsent && individuals.isNotEmpty) {
+                                await context.router.root.push(
+                                  CustomBeneficiaryRegistrationWrapperRoute(
+                                    initialState:
+                                        BeneficiaryRegistrationEditIndividualState(
+                                            individualModel: individuals.first,
+                                            householdModel: household,
+                                            addressModel: addressModel,
+                                            projectBeneficiaryModel:
+                                                projectBeneficiaryModel),
+                                    children: [
+                                      CustomIndividualDetailsRoute(
+                                        isHeadOfHousehold: true,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              } else {
+                                context.router.push(
+                                  CustomBeneficiaryAcknowledgementRoute(
+                                      acknowledgementType:
+                                          AcknowledgementType.addMember),
+                                );
+                              }
                             },
                           );
                         },
@@ -617,45 +666,6 @@ class CustomHouseHoldDetailsPageState
                               ),
                             ),
                           ),
-                          //[TODO: Use pregnant women form value based on project config
-
-                          // householdDetailsShowcaseData
-                          //     .numberOfMembersLivingInHousehold
-                          //     .buildWith(
-                          //   child: ReactiveWrapperField(
-                          //     formControlName: _memberCountKey,
-                          //     builder: (field) => LabeledField(
-                          //       child: DigitIntegerFormPicker(
-                          //         minimum: 1,
-                          //         maximum: !isCommunity ? 30 : 1000000,
-                          //         form: form,
-                          //         formControlName: _memberCountKey,
-                          //         onChange: () {
-                          //           int children =
-                          //               form.control(_childrenCountKey).value;
-                          //           int memberCount =
-                          //               form.control(_memberCountKey).value;
-                          //           form.control(_childrenCountKey).value =
-                          //               memberCount < children
-                          //                   ? memberCount
-                          //                   : children;
-                          //         },
-                          //         label: (RegistrationDeliverySingleton()
-                          //                     .householdType ==
-                          //                 HouseholdType.community)
-                          //             ? localizations.translate(
-                          //                 i18.householdDetails
-                          //                     .noOfMembersCountCLFLabel,
-                          //               )
-                          //             : localizations.translate(
-                          //                 i18.householdDetails
-                          //                     .noOfMembersCountLabel,
-                          //               ),
-                          //         incrementer: true,
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
                           householdDetailsShowcaseData
                               .numberOfChildrenBelow5InHousehold
                               .buildWith(
@@ -703,7 +713,6 @@ class CustomHouseHoldDetailsPageState
                             ),
                             incrementer: true,
                           ),
-
                           DigitIntegerFormPicker(
                             minimum: 0,
                             maximum: 20,
@@ -717,7 +726,6 @@ class CustomHouseHoldDetailsPageState
                             ),
                             incrementer: true,
                           ),
-
                           DigitIntegerFormPicker(
                             minimum: 0,
                             maximum: 20,

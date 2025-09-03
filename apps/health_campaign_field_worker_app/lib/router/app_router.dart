@@ -37,6 +37,9 @@ import '../pages/beneficiary/check_eligibility/refer_beneficiary_smc.dart';
 import '../pages/beneficiary/check_eligibility/refer_beneficiary_vas.dart';
 import '../pages/complaints/custom_complaints_inbox.dart';
 import '../pages/custom_household_summary.dart';
+import '../pages/daily_Implementation_plan/select_settlements_date.dart';
+import '../pages/daily_Implementation_plan/select_settlements_date_view.dart';
+import '../pages/daily_Implementation_plan/select_settlements_date_view_list.dart';
 import '../pages/inventory_management/custom_inventory_facility_selection.dart';
 import '../pages/inventory_management/qr_scanner.dart';
 import '../pages/inventory_management/view_record_lga.dart';
@@ -104,11 +107,12 @@ import '../pages/summary_report/custom_distribution_summary_report.dart';
 import '../pages/transit_post/custom_transit_post_selection.dart';
 import '../pages/transit_post/custom_fixed_post_selection.dart';
 import '../pages/transit_post/custom_transit_post_record_vaccination.dart';
+import '../pages/transit_post/custom_fixed_post_record_vaccination.dart';
 import '../pages/transit_post/custom_transit_post_wrapper.dart';
 
 import '../pages/campaign_delivery_select.dart';
 
-import '../pages/dailyImplementationPlan/select_boundary.dart';
+import '../pages/daily_Implementation_plan/select_settlements.dart';
 
 part 'app_router.gr.dart';
 
@@ -187,8 +191,20 @@ class AppRouter extends _$AppRouter {
         ),
 
         AutoRoute(
-          page: SelectBoundaryRoute.page,
-          path: 'select-boundary',
+          page: SelectSettlementsRoute.page,
+          path: 'select-settlements',
+        ),
+        AutoRoute(
+          page: SelectSettlementsDateRoute.page,
+          path: 'select-settlements-date',
+        ),
+        AutoRoute(
+          page: SelectSettlementsDateViewRoute.page,
+          path: 'select-settlements-date-view',
+        ),
+        AutoRoute(
+          page: SelectSettlementsDateViewListRoute.page,
+          path: 'select-settlements-date-view-list',
         ),
 
         // Attendance Route
@@ -302,6 +318,9 @@ class AppRouter extends _$AppRouter {
               AutoRoute(
                   page: CustomTransitPostRecordVaccinationRoute.page,
                   path: 'custom-transit-post-record'),
+              AutoRoute(
+                  page: CustomFixedPostRecordVaccinationRoute.page,
+                  path: 'custom-fixed-post-record'),
               RedirectRoute(
                   path: 'transit-post-record',
                   redirectTo: 'custom-transit-post-record'),
@@ -380,7 +399,7 @@ class AppRouter extends _$AppRouter {
                   // ),
                   AutoRoute(
                     page: CustomBeneficiaryAcknowledgementRoute.page,
-                    path: 'beneficiary-acknowledgement',
+                    path: 'custom-beneficiary-acknowledgement',
                   ),
                 ],
               ),

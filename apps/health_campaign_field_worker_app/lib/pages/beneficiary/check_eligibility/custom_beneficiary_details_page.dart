@@ -44,9 +44,11 @@ import 'custom_record_delivery_cycle.dart';
 class CustomBeneficiaryDetailsPage extends LocalizedStatefulWidget {
   final EligibilityAssessmentType eligibilityAssessmentType;
   final IndividualModel? individualSelected;
+  final bool? isRevisit;
   const CustomBeneficiaryDetailsPage({
     required this.eligibilityAssessmentType,
     this.individualSelected,
+    this.isRevisit,
     super.key,
     super.appLocalizations,
   });
@@ -285,7 +287,7 @@ class CustomBeneficiaryDetailsPageState
                                                                                 1]
                                                                         .deliveries?[currentDose - 1];
 
-                                                                    var productVariants = fetchProductVariant(
+                                                                    DeliveryDoseCriteria? deliveryCriteria = getProductVariant(
                                                                         items,
                                                                         state.selectedIndividual ??
                                                                             widget
@@ -293,68 +295,27 @@ class CustomBeneficiaryDetailsPageState
                                                                         state
                                                                             .householdMemberWrapper
                                                                             .household,
-                                                                        context:
-                                                                            context)['criteria'];
+                                                                        context)["criteria"];
 
-                                                                    final value = variant!
-                                                                            .firstWhere(
-                                                                              (element) => element.id == productVariants!.first.productVariantId,
-                                                                            )
-                                                                            .sku ??
-                                                                        "";
+                                                                    // var productVariants =
+                                                                    //     deliveryCriteria
+                                                                    //         .productVariants;
 
-                                                                    if (true) {
+                                                                    // final value = variant!
+                                                                    //         .firstWhere(
+                                                                    //           (element) => element.id == productVariants?.first.productVariantId,
+                                                                    //         )
+                                                                    //         .sku ??
+                                                                    //     "";
+
+                                                                    if (deliveryCriteria !=
+                                                                        null) {
                                                                       router
                                                                           .push(
                                                                         CustomDeliverInterventionRoute(
                                                                             eligibilityAssessmentType:
                                                                                 widget.eligibilityAssessmentType,
                                                                             selectedIndividual: widget.individualSelected),
-                                                                      );
-                                                                    } else {
-                                                                      DigitDialog
-                                                                          .show(
-                                                                        context,
-                                                                        options:
-                                                                            DigitDialogOptions(
-                                                                          titleText:
-                                                                              localizations.translate(
-                                                                            i18_local.beneficiaryDetails.insufficientStockHeading,
-                                                                          ),
-                                                                          titleIcon:
-                                                                              Icon(
-                                                                            Icons.warning,
-                                                                            color:
-                                                                                DigitTheme.instance.colorScheme.error,
-                                                                          ),
-                                                                          contentText:
-                                                                              "${localizations.translate(
-                                                                            i18_local.beneficiaryDetails.insufficientAZTStockMessageDelivery,
-                                                                          )} \n ${localizations.translate(
-                                                                            (value.contains(Constants.spaq1)
-                                                                                ? i18_local.beneficiaryDetails.spaq1DoseUnit
-                                                                                : i18_local.beneficiaryDetails.spaq2DoseUnit),
-                                                                          )}",
-                                                                          primaryAction:
-                                                                              DigitDialogActions(
-                                                                            label:
-                                                                                localizations.translate(i18_local.beneficiaryDetails.backToSearchHousehold),
-                                                                            action:
-                                                                                (ctx) async {
-                                                                              Navigator.of(
-                                                                                context,
-                                                                                rootNavigator: true,
-                                                                              ).pop();
-                                                                              await context.router.popAndPush(
-                                                                                CustomRegistrationDeliveryWrapperRoute(
-                                                                                  children: [
-                                                                                    CustomSearchBeneficiaryRoute(),
-                                                                                  ],
-                                                                                ),
-                                                                              );
-                                                                            },
-                                                                          ),
-                                                                        ),
                                                                       );
                                                                     }
                                                                   },
@@ -398,13 +359,9 @@ class CustomBeneficiaryDetailsPageState
                                   margin: const EdgeInsets.all(spacer2),
                                   children: [
                                     Text(
-                                      localizations.translate(
-                                          widget.eligibilityAssessmentType ==
-                                                  EligibilityAssessmentType.smc
-                                              ? i18_local.deliverIntervention
-                                                  .deliversmcintervention
-                                              : i18_local.deliverIntervention
-                                                  .deliverVASIntervention),
+                                      localizations.translate(i18_local
+                                          .deliverIntervention
+                                          .deliverintervention),
                                       style: textTheme.headingXl.copyWith(
                                           color: theme.colorTheme.text.primary),
                                     ),
