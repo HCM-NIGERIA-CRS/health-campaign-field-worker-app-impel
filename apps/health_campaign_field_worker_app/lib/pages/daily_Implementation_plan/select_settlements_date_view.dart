@@ -19,10 +19,8 @@ import '../../utils/i18_key_constants.dart' as i18;
 
 @RoutePage()
 class SelectSettlementsDateViewPage extends LocalizedStatefulWidget {
-  final String clientReferenceId;
   const SelectSettlementsDateViewPage({
     super.key,
-    required this.clientReferenceId,
   });
 
   @override
@@ -34,9 +32,6 @@ class _SelectSettlementsDateViewState
     extends LocalizedState<SelectSettlementsDateViewPage> {
   @override
   void initState() {
-    context.read<DipSearchBloc>().add(
-          DipSearchEvent.search(clientReferenceId: widget.clientReferenceId),
-        );
     super.initState();
   }
 
