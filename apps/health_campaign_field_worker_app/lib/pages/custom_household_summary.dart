@@ -33,10 +33,16 @@ class CustomHouseholdSummaryPage extends LocalizedStatefulWidget {
   final String? householdNumber;
   final String? headName;
   final String? reasonNonCompliance;
+  final double latitude;
+  final double longitude;
+  final double locationAccuracy;
   const CustomHouseholdSummaryPage({
     required this.householdNumber,
     required this.headName,
     required this.reasonNonCompliance,
+    required this.latitude,
+    required this.longitude,
+    required this.locationAccuracy,
     super.key,
     super.appLocalizations,
   });
@@ -185,6 +191,9 @@ class CustomHouseholdSummaryPageState
                                   beneficiaryType,
                                   widget.headName,
                                   false,
+                                  latitude: widget.latitude,
+                                  longitude: widget.longitude,
+                                  locationAccuracy: widget.locationAccuracy,
                                 ));
                                 Future.delayed(
                                         const Duration(milliseconds: 700))
