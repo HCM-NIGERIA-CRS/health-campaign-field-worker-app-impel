@@ -319,6 +319,9 @@ abstract class _$AppRouter extends RootStackRouter {
           householdNumber: args.householdNumber,
           headName: args.headName,
           reasonNonCompliance: args.reasonNonCompliance,
+          latitude: args.latitude,
+          longitude: args.longitude,
+          locationAccuracy: args.locationAccuracy,
           key: args.key,
           appLocalizations: args.appLocalizations,
         ),
@@ -2007,6 +2010,9 @@ class CustomHouseholdSummaryRoute
     required String? householdNumber,
     required String? headName,
     required String? reasonNonCompliance,
+    required double latitude,
+    required double longitude,
+    required double locationAccuracy,
     Key? key,
     RegistrationDeliveryLocalization? appLocalizations,
     List<PageRouteInfo>? children,
@@ -2016,6 +2022,9 @@ class CustomHouseholdSummaryRoute
             householdNumber: householdNumber,
             headName: headName,
             reasonNonCompliance: reasonNonCompliance,
+            latitude: latitude,
+            longitude: longitude,
+            locationAccuracy: locationAccuracy,
             key: key,
             appLocalizations: appLocalizations,
           ),
@@ -2033,6 +2042,9 @@ class CustomHouseholdSummaryRouteArgs {
     required this.householdNumber,
     required this.headName,
     required this.reasonNonCompliance,
+    required this.latitude,
+    required this.longitude,
+    required this.locationAccuracy,
     this.key,
     this.appLocalizations,
   });
@@ -2043,13 +2055,19 @@ class CustomHouseholdSummaryRouteArgs {
 
   final String? reasonNonCompliance;
 
+  final double latitude;
+
+  final double longitude;
+
+  final double locationAccuracy;
+
   final Key? key;
 
   final RegistrationDeliveryLocalization? appLocalizations;
 
   @override
   String toString() {
-    return 'CustomHouseholdSummaryRouteArgs{householdNumber: $householdNumber, headName: $headName, reasonNonCompliance: $reasonNonCompliance, key: $key, appLocalizations: $appLocalizations}';
+    return 'CustomHouseholdSummaryRouteArgs{householdNumber: $householdNumber, headName: $headName, reasonNonCompliance: $reasonNonCompliance, latitude: $latitude, longitude: $longitude, locationAccuracy: $locationAccuracy, key: $key, appLocalizations: $appLocalizations}';
   }
 }
 
