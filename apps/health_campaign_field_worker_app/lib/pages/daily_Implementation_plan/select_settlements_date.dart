@@ -57,10 +57,11 @@ class _SelectSettlementsPageState
                     var tripBookAction = state.dipUserAction;
                     context.read<DipSearchBloc>().add(DipSearchEvent.search(
                         clientReferenceId: tripBookAction?.clientReferenceId));
-                    context.router.pushAndPopUntil(
-                        const SelectSettlementsDateViewRoute(),
-                        predicate: (route) =>
-                            route.settings.name == HomeRoute.name);
+                    if (tripBookAction == null) return;
+                    context.router.popUntilRoot();
+                    context.router.push(
+                      const SelectSettlementsDateViewRoute(),
+                    );
                   }
                 },
                 builder: (context, state) {
