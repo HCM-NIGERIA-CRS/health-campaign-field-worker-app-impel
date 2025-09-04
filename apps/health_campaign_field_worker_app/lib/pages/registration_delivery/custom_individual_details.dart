@@ -188,6 +188,11 @@ class CustomIndividualDetailsPageState
                           // if invalid age send to overview no checklist
                           if (verifyIfChildAgeValid(
                               context, individualCaptured!)) {
+                            final parent =
+                                context.router.parent() as StackRouter;
+                            parent.popUntilRoot();
+                            router.push(BeneficiaryWrapperRoute(
+                                wrapper: householdMemberWrapper));
                             router.push(
                               BeneficiaryWrapperRoute(
                                 wrapper: householdMemberWrapper,
@@ -201,6 +206,9 @@ class CustomIndividualDetailsPageState
                               ),
                             );
                           } else {
+                            final parent =
+                                context.router.parent() as StackRouter;
+                            parent.popUntilRoot();
                             router.push(
                               BeneficiaryWrapperRoute(
                                 wrapper: householdMemberWrapper,
