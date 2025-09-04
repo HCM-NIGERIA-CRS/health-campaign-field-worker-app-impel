@@ -20,8 +20,8 @@ class LocalSecureStore {
   static const isAppInActiveKey = 'isAppInActiveKey';
   static const manualSyncKey = 'manualSyncKey';
   static const selectedProjectTypeKey = 'selectedProjectType';
-  static const polioKey = 'Polio-nOPV,bOPV';
-  static const measlesKey = 'Measles-MRV';
+  static const polioKey = "Polio - nOPV, bOPV";
+  static const measlesKey = "Measles - MRV";
 
   List<String> keysToKeep = [polioKey, measlesKey];
 
