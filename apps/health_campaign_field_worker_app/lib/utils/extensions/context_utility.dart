@@ -168,6 +168,23 @@ extension ContextUtilityExtensions on BuildContext {
     }
   }
 
+  Map<String, int> getAllProductSkuCounts() {
+    final authBloc = _get<AuthBloc>();
+    final counts = authBloc.state.whenOrNull(
+      authenticated: (
+        accessToken,
+        refreshToken,
+        userModel,
+        actionsWrapper,
+        individualId,
+        productSkuCounts,
+      ) {
+        return productSkuCounts;
+      },
+    );
+    return counts ?? {};
+  }
+
   List<UserRoleModel> get loggedInUserRoles {
     final authBloc = _get<AuthBloc>();
     final userRequestObject = authBloc.state.whenOrNull(
@@ -177,10 +194,7 @@ extension ContextUtilityExtensions on BuildContext {
         userModel,
         actionsWrapper,
         individualId,
-        spaq1,
-        spaq2,
-        blueVas,
-        redVas,
+        productSkuCounts,
       ) {
         return userModel.roles;
       },
@@ -202,10 +216,7 @@ extension ContextUtilityExtensions on BuildContext {
         userModel,
         actionsWrapper,
         individualId,
-        spaq1,
-        spaq2,
-        blueVas,
-        redVas,
+        productSkuCounts,
       ) {
         return individualId;
       },
@@ -244,10 +255,7 @@ extension ContextUtilityExtensions on BuildContext {
         userModel,
         actions,
         individualId,
-        spaq1,
-        spaq2,
-        blueVas,
-        redVas,
+        productSkuCounts,
       ) {
         return userModel;
       },
@@ -280,108 +288,6 @@ extension ContextUtilityExtensions on BuildContext {
     }
 
     return false;
-  }
-
-  int get spaq1 {
-    final authBloc = _get<AuthBloc>();
-    final spaq1 = authBloc.state.whenOrNull(
-      authenticated: (
-        accessToken,
-        refreshToken,
-        userModel,
-        actionsWrapper,
-        individualId,
-        spaq1,
-        spaq2,
-        blueVas,
-        redVas,
-      ) {
-        return spaq1;
-      },
-    );
-
-    if (spaq1 == null) {
-      return 0;
-    }
-
-    return spaq1;
-  }
-
-  int get spaq2 {
-    final authBloc = _get<AuthBloc>();
-    final spaq2 = authBloc.state.whenOrNull(
-      authenticated: (
-        accessToken,
-        refreshToken,
-        userModel,
-        actionsWrapper,
-        individualId,
-        spaq1,
-        spaq2,
-        blueVas,
-        redVas,
-      ) {
-        return spaq2;
-      },
-    );
-
-    if (spaq2 == null) {
-      return 0;
-    }
-
-    return spaq2;
-  }
-
-//vas
-
-  int get blueVas {
-    final authBloc = _get<AuthBloc>();
-    final blueVas = authBloc.state.whenOrNull(
-      authenticated: (
-        accessToken,
-        refreshToken,
-        userModel,
-        actionsWrapper,
-        individualId,
-        spaq1,
-        spaq2,
-        blueVas,
-        redVas,
-      ) {
-        return blueVas;
-      },
-    );
-
-    if (blueVas == null) {
-      return 0;
-    }
-
-    return blueVas;
-  }
-
-  int get redVas {
-    final authBloc = _get<AuthBloc>();
-    final redVas = authBloc.state.whenOrNull(
-      authenticated: (
-        accessToken,
-        refreshToken,
-        userModel,
-        actionsWrapper,
-        individualId,
-        spaq1,
-        spaq2,
-        blueVas,
-        redVas,
-      ) {
-        return redVas;
-      },
-    );
-
-    if (redVas == null) {
-      return 0;
-    }
-
-    return redVas;
   }
 
   bool get isCommunityDistributor {

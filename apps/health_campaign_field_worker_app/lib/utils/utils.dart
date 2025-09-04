@@ -196,6 +196,10 @@ performBackgroundService({
   }
 }
 
+List<String> extractAllSkus(List<ProductVariantModel> variants) {
+  return variants.map((variant) => variant.sku).whereType<String>().toList();
+}
+
 String? formatBeneficiaryId(String? id) {
   if (id == null) return null;
   final buffer = StringBuffer();

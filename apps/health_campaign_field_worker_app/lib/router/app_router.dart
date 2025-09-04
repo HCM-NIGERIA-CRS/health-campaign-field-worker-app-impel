@@ -44,7 +44,7 @@ import '../pages/registration_delivery/custom_complaints_details.dart';
 import '../pages/boundary_selection.dart';
 import '../pages/home.dart';
 import '../pages/inventory_management/custom_manage_stock.dart';
-import '../pages/inventory_management/custom_transactional_details.dart';
+// import '../pages/inventory_management/custom_transactional_details.dart';
 import '../pages/inventory_management/custom_inventory_report_selection.dart';
 import '../pages/inventory_management/custom_stock_details.dart';
 import '../pages/inventory_management/custom_stock_reconciliation.dart';
@@ -576,10 +576,10 @@ class AppRouter extends _$AppRouter {
               path: 'details',
               redirectTo: 'custom-details',
             ),
-            AutoRoute(
-              page: CustomTransactionalDetailsRoute.page,
-              path: 'custom-transaction-details',
-            ),
+            // AutoRoute(
+            //   page: CustomTransactionalDetailsRoute.page,
+            //   path: 'custom-transaction-details',
+            // ),
             AutoRoute(
               page: ViewAllTransactionsRoute.page,
               path: 'custom-all-transactions',

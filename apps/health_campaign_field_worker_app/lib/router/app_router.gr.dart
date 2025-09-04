@@ -645,17 +645,6 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
-    CustomTransactionalDetailsRoute.name: (routeData) {
-      final args = routeData.argsAs<CustomTransactionalDetailsRouteArgs>(
-          orElse: () => const CustomTransactionalDetailsRouteArgs());
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: CustomTransactionalDetailsPage(
-          key: args.key,
-          appLocalizations: args.appLocalizations,
-        ),
-      );
-    },
     CustomTransitPostRecordVaccinationRoute.name: (routeData) {
       final args =
           routeData.argsAs<CustomTransitPostRecordVaccinationRouteArgs>();
@@ -3213,45 +3202,6 @@ class CustomSurveyformRouteArgs {
   @override
   String toString() {
     return 'CustomSurveyformRouteArgs{key: $key, appLocalizations: $appLocalizations}';
-  }
-}
-
-/// generated route for
-/// [CustomTransactionalDetailsPage]
-class CustomTransactionalDetailsRoute
-    extends PageRouteInfo<CustomTransactionalDetailsRouteArgs> {
-  CustomTransactionalDetailsRoute({
-    Key? key,
-    InventoryLocalization? appLocalizations,
-    List<PageRouteInfo>? children,
-  }) : super(
-          CustomTransactionalDetailsRoute.name,
-          args: CustomTransactionalDetailsRouteArgs(
-            key: key,
-            appLocalizations: appLocalizations,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'CustomTransactionalDetailsRoute';
-
-  static const PageInfo<CustomTransactionalDetailsRouteArgs> page =
-      PageInfo<CustomTransactionalDetailsRouteArgs>(name);
-}
-
-class CustomTransactionalDetailsRouteArgs {
-  const CustomTransactionalDetailsRouteArgs({
-    this.key,
-    this.appLocalizations,
-  });
-
-  final Key? key;
-
-  final InventoryLocalization? appLocalizations;
-
-  @override
-  String toString() {
-    return 'CustomTransactionalDetailsRouteArgs{key: $key, appLocalizations: $appLocalizations}';
   }
 }
 

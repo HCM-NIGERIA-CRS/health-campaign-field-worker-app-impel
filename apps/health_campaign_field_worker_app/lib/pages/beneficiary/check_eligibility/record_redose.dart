@@ -83,6 +83,14 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
   // List of controllers for form elements
   final List _controllers = [];
 
+  @override
+  void initState() {
+    context
+        .read<AuthBloc>()
+        .add(const AuthUpdateProductSkuCountsEvent(skuCountUpdates: {}));
+    super.initState();
+  }
+
   // toggle doseAdministered
   void checkDoseAdministration(bool newValue) {
     setState(() {
@@ -365,11 +373,6 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
 
                                                       if (true) {
                                                         if (context.mounted) {
-                                                          int spaq1 = 0;
-                                                          int spaq2 = 0;
-                                                          int blueVas = 0;
-                                                          int redVas = 0;
-
                                                           var productVariantId =
                                                               updatedTask
                                                                   .resources!
@@ -398,36 +401,24 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                                                                   .toString()
                                                                   .split(
                                                                       " ")[0];
+                                                          Map<String, int>
+                                                              skuCounts =
+                                                              context
+                                                                  .getAllProductSkuCounts()
+                                                                  .map((key,
+                                                                          value) =>
+                                                                      MapEntry(
+                                                                          key,
+                                                                          value));
 
-                                                          if (productVariant!
-                                                                  ?.sku! ==
-                                                              'SPAQ 1') {
-                                                            spaq1 = quantity !=
-                                                                    'null'
-                                                                ? int.parse(quantity
-                                                                        .toString()) *
-                                                                    -1
-                                                                : 0;
-                                                          } else if (productVariant
-                                                                  ?.sku! ==
-                                                              'SPAQ 2') {
-                                                            spaq2 = quantity !=
-                                                                    'null'
-                                                                ? int.parse(quantity
-                                                                        .toString()) *
-                                                                    -1
-                                                                : 0;
-                                                          } else if (productVariant
-                                                                  ?.sku! ==
-                                                              'Blue VAS') {
-                                                            blueVas = quantity !=
-                                                                    'null'
-                                                                ? int.parse(quantity
-                                                                        .toString()) *
-                                                                    -1
-                                                                : 0;
-                                                          } else {
-                                                            redVas = quantity !=
+                                                          if (productVariant
+                                                                      ?.sku !=
+                                                                  null &&
+                                                              skuCounts.containsKey(
+                                                                  productVariant!
+                                                                      .sku)) {
+                                                            skuCounts[productVariant
+                                                                .sku!] = quantity !=
                                                                     'null'
                                                                 ? int.parse(quantity
                                                                         .toString()) *
@@ -435,26 +426,12 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                                                                 : 0;
                                                           }
 
-                                                          // spaq1 = quantity !=
-                                                          //         'null'
-                                                          //     ? int.parse(quantity
-                                                          //             .toString()) *
-                                                          //         -1
-                                                          //     : 0;
-
                                                           context
                                                               .read<AuthBloc>()
                                                               .add(
-                                                                AuthAddSpaqCountsEvent(
-                                                                  spaq1Count:
-                                                                      spaq1,
-                                                                  spaq2Count:
-                                                                      spaq2,
-                                                                  // TODO: need to work here [pitabash]
-                                                                  blueVasCount:
-                                                                      blueVas,
-                                                                  redVasCount:
-                                                                      redVas,
+                                                                AuthUpdateProductSkuCountsEvent(
+                                                                  skuCountUpdates:
+                                                                      skuCounts,
                                                                 ),
                                                               );
                                                           final reloadState =

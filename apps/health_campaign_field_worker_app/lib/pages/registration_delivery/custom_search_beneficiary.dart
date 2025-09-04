@@ -1163,22 +1163,31 @@ class _CustomSearchBeneficiaryPageState
                     size: DigitButtonSize.large,
                     isDisabled: false,
                     onPressed: () {
-                      int spaq1 = context.spaq1;
-                      int spaq2 = context.spaq2;
+                      Map<String, int> skuCounts = context
+                          .getAllProductSkuCounts()
+                          .map((key, value) => MapEntry(key, value));
 
                       String descriptionText = localizations.translate(i18_local
                           .beneficiaryDetails.insufficientStockMessage);
 
-                      if (spaq1 == 0) {
-                        descriptionText +=
-                            "\n ${localizations.translate(i18_local.beneficiaryDetails.spaq1DoseUnit)}";
-                      }
-                      if (spaq2 == 0) {
-                        descriptionText +=
-                            "\n ${localizations.translate(i18_local.beneficiaryDetails.spaq2DoseUnit)}";
+                      if (skuCounts.isEmpty) {
+                        skuCounts = {
+                          'Polio - nOPV, bOPV': 1,
+                          'Measles - MRV': 1
+                        };
                       }
 
-                      if ((spaq1 > 0 || spaq2 > 0) || true) {
+                      skuCounts.forEach((productSku, productCount) {
+                        print("Checking $productSku: count = $productCount");
+                        if ((productCount == 0)) {
+                          descriptionText +=
+                              "\n  $productSku ${localizations.translate(i18_local.beneficiaryDetails.productSkuCountUnit)}";
+                        }
+                      });
+                      bool hasAvailableStock = skuCounts.values
+                          .any((productCount) => productCount > 0);
+
+                      if (hasAvailableStock) {
                         FocusManager.instance.primaryFocus?.unfocus();
 
                         searchController.clear();
