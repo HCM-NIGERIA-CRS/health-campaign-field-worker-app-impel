@@ -1172,8 +1172,8 @@ class _CustomSearchBeneficiaryPageState
 
                       if (skuCounts.isEmpty) {
                         skuCounts = {
-                          'Polio - nOPV, bOPV': 1,
-                          'Measles - MRV': 1
+                          'Polio - nOPV, bOPV': 0,
+                          'Measles - MRV': 0
                         };
                       }
 
