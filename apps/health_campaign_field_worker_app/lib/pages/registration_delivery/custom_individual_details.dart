@@ -173,6 +173,22 @@ class CustomIndividualDetailsPageState
                           searchHouseholdsState.householdMembers.lastOrNull;
 
                       if (householdMemberWrapper != null) {
+                        // final householdCaptured =
+                        //     householdMemberWrapper.household;
+                        // if (householdCaptured != null) {
+                        //   searchHouseholdsBloc
+                        //       .add(const SearchHouseholdsEvent.clear());
+                        //   searchHouseholdsBloc.add(
+                        //     SearchHouseholdsEvent.searchByHousehold(
+                        //       householdModel: householdCaptured,
+                        //       projectId:
+                        //           RegistrationDeliverySingleton().projectId!,
+                        //       isProximityEnabled: false,
+                        //       maxRadius:
+                        //           RegistrationDeliverySingleton().maxRadius,
+                        //     ),
+                        //   );
+                        // }
                         router.push(CustomBeneficiaryAcknowledgementRoute(
                           enableViewHousehold: true,
                           acknowledgementType: AcknowledgementType.addHousehold,
