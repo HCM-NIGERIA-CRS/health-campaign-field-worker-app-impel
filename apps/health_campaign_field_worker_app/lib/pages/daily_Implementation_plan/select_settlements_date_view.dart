@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:digit_data_model/data/local_store/sql_store/tables/user_action.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/user_action.dart';
@@ -68,7 +70,7 @@ class _SelectSettlementsDateViewState
                           ? []
                           : selectedSettlementsDateAdditionalField.first.value
                                   .map((e) {
-                                return SettlementModel.fromJson(e);
+                                return SettlementModel.fromJson(json.decode(e));
                               }).toList() ??
                               [];
 

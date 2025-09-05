@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/user_action.dart';
@@ -161,7 +163,8 @@ class _SelectSettlementsPageState
                                           AdditionalField(
                                               Constants.data,
                                               state.settlementData!
-                                                  .map((e) => e.toJson())
+                                                  .map((e) =>
+                                                      json.encode(e.toJson()))
                                                   .toList()),
                                       ]));
 
