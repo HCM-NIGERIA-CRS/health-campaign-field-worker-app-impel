@@ -30,6 +30,7 @@ import '../../blocs/search/individual_global_search_smc.dart';
 import '../../blocs/search/search_households_smc.dart'
     as searchHouseholdSMCBloc;
 import '../../utils/i18_key_constants.dart' as i18_local;
+import '../../utils/constants.dart';
 import 'package:registration_delivery/models/entities/status.dart';
 import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
 import 'package:registration_delivery/utils/utils.dart';
@@ -1171,10 +1172,7 @@ class _CustomSearchBeneficiaryPageState
                           .beneficiaryDetails.insufficientStockMessage);
 
                       if (skuCounts.isEmpty) {
-                        skuCounts = {
-                          'Polio - nOPV, bOPV': 0,
-                          'Measles - MRV': 0
-                        };
+                        skuCounts = {Constants.polio: 0, Constants.measles: 0};
                       }
 
                       skuCounts.forEach((productSku, productCount) {
