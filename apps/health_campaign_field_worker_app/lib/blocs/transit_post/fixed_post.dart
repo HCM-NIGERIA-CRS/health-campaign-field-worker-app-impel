@@ -110,6 +110,8 @@ class FixedPostBloc extends Bloc<FixedPostEvent, FixedPostState> {
               'scannedResource',
               event.scannedResource,
             ),
+            if (event.additionalFieldsCaptured?.isNotEmpty ?? false)
+              ...event.additionalFieldsCaptured!
           ])));
       emit(state.copyWith(
         curCount: state.curCount != null ? state.curCount! + 1 : 1,
@@ -119,16 +121,6 @@ class FixedPostBloc extends Bloc<FixedPostEvent, FixedPostState> {
       rethrow;
     }
   }
-
-  // FutureOr<int> fetchCount(
-  //   String? userId, {
-  //   UserActionSearchModel? query,
-  // }) async {
-  //   return retryLocalCallOperation<int>(() async {
-  //     final totalCount =
-  //         userActionLocalRepository.search(UserActionSearchModel(),);
-  //   });
-  // }
 }
 
 @freezed
@@ -149,6 +141,7 @@ class FixedPostEvent with _$FixedPostEvent {
     String? action,
     int? curCount,
     int? totalCount,
+    List<AdditionalField>? additionalFieldsCaptured,
   }) = FixedPostDeliveryEvent;
 
   const factory FixedPostEvent.handleDeliveryCount({

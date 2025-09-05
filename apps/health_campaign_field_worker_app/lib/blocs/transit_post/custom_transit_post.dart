@@ -110,6 +110,8 @@ class CustomTransitPostBloc
               'scannedResource',
               event.scannedResource,
             ),
+            if (event.additionalFieldsCaptured?.isNotEmpty ?? false)
+              ...event.additionalFieldsCaptured!
           ])));
       emit(state.copyWith(
         curCount: state.curCount != null ? state.curCount! + 1 : 1,
@@ -139,6 +141,7 @@ class CustomTransitPostEvent with _$CustomTransitPostEvent {
     String? action,
     int? curCount,
     int? totalCount,
+    List<AdditionalField>? additionalFieldsCaptured,
   }) = CustomTransitPostDeliveryEvent;
 
   const factory CustomTransitPostEvent.handleDeliveryCount({

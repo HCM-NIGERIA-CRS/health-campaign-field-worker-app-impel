@@ -356,8 +356,8 @@ class CustomFixedPostRecordVaccinationPageState
                             setState(() {
                               drugType = "ONCHO";
                             });
-                            if (ageRangeSelected == null ||
-                                (ageRangeSelected?.isEmpty ?? true)) {
+                            if (heightRangeSelected == null ||
+                                (heightRangeSelected?.isEmpty ?? true)) {
                               await DigitToast.show(
                                 context,
                                 options: DigitToastOptions(
@@ -377,29 +377,32 @@ class CustomFixedPostRecordVaccinationPageState
                               setState(() {
                                 onchoBeneficiaryCount += 1;
                               });
-                              context
-                                  .read<FixedPostBloc>()
-                                  .add(FixedPostDeliveryEvent(
-                                    latitude: latKey.text.isNotEmpty
-                                        ? double.parse(latKey.text)
-                                        : fixedPostState.latitude,
-                                    longitude: lngKey.text.isNotEmpty
-                                        ? double.parse(lngKey.text)
-                                        : fixedPostState.longitude,
-                                    locationAccuracy:
-                                        accuracyKey.text.isNotEmpty
-                                            ? double.parse(accuracyKey.text)
-                                            : fixedPostState.locationAccuracy,
-                                    curCount: (fixedPostState.curCount == null)
-                                        ? 1
-                                        : fixedPostState.curCount! + 1,
-                                    totalCount:
-                                        (fixedPostState.totalCount == null)
-                                            ? 1
-                                            : fixedPostState.totalCount! + 1,
-                                    action: widget.postType,
-                                    scannedResource: "ONCHO",
-                                  ));
+                              context.read<FixedPostBloc>().add(
+                                  FixedPostDeliveryEvent(
+                                      latitude: latKey.text.isNotEmpty
+                                          ? double.parse(latKey.text)
+                                          : fixedPostState.latitude,
+                                      longitude: lngKey.text.isNotEmpty
+                                          ? double.parse(lngKey.text)
+                                          : fixedPostState.longitude,
+                                      locationAccuracy:
+                                          accuracyKey.text.isNotEmpty
+                                              ? double.parse(accuracyKey.text)
+                                              : fixedPostState.locationAccuracy,
+                                      curCount:
+                                          (fixedPostState.curCount == null)
+                                              ? 1
+                                              : fixedPostState.curCount! + 1,
+                                      totalCount:
+                                          (fixedPostState.totalCount == null)
+                                              ? 1
+                                              : fixedPostState.totalCount! + 1,
+                                      action: widget.postType,
+                                      scannedResource: "ONCHO",
+                                      additionalFieldsCaptured:
+                                          heightSelected == null
+                                              ? []
+                                              : [heightSelected]));
 
                               context.router
                                   .push(const TransitPostAcknowledgmentRoute());
@@ -506,26 +509,28 @@ class CustomFixedPostRecordVaccinationPageState
 
                             context.read<FixedPostBloc>().add(
                                   FixedPostDeliveryEvent(
-                                    latitude: latKey.text.isNotEmpty
-                                        ? double.parse(latKey.text)
-                                        : fixedPostState.latitude,
-                                    longitude: lngKey.text.isNotEmpty
-                                        ? double.parse(lngKey.text)
-                                        : fixedPostState.longitude,
-                                    locationAccuracy:
-                                        accuracyKey.text.isNotEmpty
-                                            ? double.parse(accuracyKey.text)
-                                            : fixedPostState.locationAccuracy,
-                                    curCount: (fixedPostState.curCount == null)
-                                        ? 1
-                                        : fixedPostState.curCount! + 1,
-                                    totalCount:
-                                        (fixedPostState.totalCount == null)
-                                            ? 1
-                                            : fixedPostState.totalCount! + 1,
-                                    action: widget.postType,
-                                    scannedResource: "MEASLES",
-                                  ),
+                                      latitude: latKey.text.isNotEmpty
+                                          ? double.parse(latKey.text)
+                                          : fixedPostState.latitude,
+                                      longitude: lngKey.text.isNotEmpty
+                                          ? double.parse(lngKey.text)
+                                          : fixedPostState.longitude,
+                                      locationAccuracy:
+                                          accuracyKey.text.isNotEmpty
+                                              ? double.parse(accuracyKey.text)
+                                              : fixedPostState.locationAccuracy,
+                                      curCount:
+                                          (fixedPostState.curCount == null)
+                                              ? 1
+                                              : fixedPostState.curCount! + 1,
+                                      totalCount:
+                                          (fixedPostState.totalCount == null)
+                                              ? 1
+                                              : fixedPostState.totalCount! + 1,
+                                      action: widget.postType,
+                                      scannedResource: "MEASLES",
+                                      additionalFieldsCaptured:
+                                          ageRange == null ? [] : [ageRange]),
                                 );
 
                             // set age range empty once selection done and event submitted
@@ -595,18 +600,18 @@ class CustomFixedPostRecordVaccinationPageState
     );
   }
 
-  String? getAgeRangeSelected(String? ageRangeSelected) {
+  AdditionalField? getAgeRangeSelected(String? ageRangeSelected) {
     if (ageRangeSelected == null) {
-      return "";
+      return null;
     }
-    return ageRangeSelected;
+    return AdditionalField("ageRange", heightRangeSelected);
   }
 
-  dynamic getHeightRangeSelected(String? heightRangeSelected) {
+  AdditionalField? getHeightRangeSelected(String? heightRangeSelected) {
     if (heightRangeSelected == null) {
-      return;
+      return null;
     }
-    return AdditionalField("heightRangeSelectedMeasles", heightRangeSelected);
+    return AdditionalField("heightRange", heightRangeSelected);
   }
 
   List<DigitTableRow> buildTableData() {

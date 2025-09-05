@@ -32,7 +32,8 @@ mixin _$CustomTransitPostEvent {
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)
         handleDelivery,
     required TResult Function(int curCount, int totalCount, String? action)
         handleDeliveryCount,
@@ -54,7 +55,8 @@ mixin _$CustomTransitPostEvent {
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)?
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)?
         handleDelivery,
     TResult? Function(int curCount, int totalCount, String? action)?
         handleDeliveryCount,
@@ -72,7 +74,8 @@ mixin _$CustomTransitPostEvent {
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)?
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)?
         handleDelivery,
     TResult Function(int curCount, int totalCount, String? action)?
         handleDeliveryCount,
@@ -262,7 +265,8 @@ class _$CustomTransitPostSelectionEventImpl
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)
         handleDelivery,
     required TResult Function(int curCount, int totalCount, String? action)
         handleDeliveryCount,
@@ -288,7 +292,8 @@ class _$CustomTransitPostSelectionEventImpl
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)?
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)?
         handleDelivery,
     TResult? Function(int curCount, int totalCount, String? action)?
         handleDeliveryCount,
@@ -310,7 +315,8 @@ class _$CustomTransitPostSelectionEventImpl
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)?
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)?
         handleDelivery,
     TResult Function(int curCount, int totalCount, String? action)?
         handleDeliveryCount,
@@ -397,7 +403,8 @@ abstract class _$$CustomTransitPostDeliveryEventImplCopyWith<$Res> {
       String? scannedResource,
       String? action,
       int? curCount,
-      int? totalCount});
+      int? totalCount,
+      List<AdditionalField>? additionalFieldsCaptured});
 }
 
 /// @nodoc
@@ -420,6 +427,7 @@ class __$$CustomTransitPostDeliveryEventImplCopyWithImpl<$Res>
     Object? action = freezed,
     Object? curCount = freezed,
     Object? totalCount = freezed,
+    Object? additionalFieldsCaptured = freezed,
   }) {
     return _then(_$CustomTransitPostDeliveryEventImpl(
       latitude: null == latitude
@@ -450,6 +458,10 @@ class __$$CustomTransitPostDeliveryEventImplCopyWithImpl<$Res>
           ? _value.totalCount
           : totalCount // ignore: cast_nullable_to_non_nullable
               as int?,
+      additionalFieldsCaptured: freezed == additionalFieldsCaptured
+          ? _value._additionalFieldsCaptured
+          : additionalFieldsCaptured // ignore: cast_nullable_to_non_nullable
+              as List<AdditionalField>?,
     ));
   }
 }
@@ -465,7 +477,9 @@ class _$CustomTransitPostDeliveryEventImpl
       this.scannedResource,
       this.action,
       this.curCount,
-      this.totalCount});
+      this.totalCount,
+      final List<AdditionalField>? additionalFieldsCaptured})
+      : _additionalFieldsCaptured = additionalFieldsCaptured;
 
   @override
   @JsonKey()
@@ -484,10 +498,20 @@ class _$CustomTransitPostDeliveryEventImpl
   final int? curCount;
   @override
   final int? totalCount;
+  final List<AdditionalField>? _additionalFieldsCaptured;
+  @override
+  List<AdditionalField>? get additionalFieldsCaptured {
+    final value = _additionalFieldsCaptured;
+    if (value == null) return null;
+    if (_additionalFieldsCaptured is EqualUnmodifiableListView)
+      return _additionalFieldsCaptured;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   @override
   String toString() {
-    return 'CustomTransitPostEvent.handleDelivery(latitude: $latitude, longitude: $longitude, locationAccuracy: $locationAccuracy, scannedResource: $scannedResource, action: $action, curCount: $curCount, totalCount: $totalCount)';
+    return 'CustomTransitPostEvent.handleDelivery(latitude: $latitude, longitude: $longitude, locationAccuracy: $locationAccuracy, scannedResource: $scannedResource, action: $action, curCount: $curCount, totalCount: $totalCount, additionalFieldsCaptured: $additionalFieldsCaptured)';
   }
 
   @override
@@ -507,12 +531,22 @@ class _$CustomTransitPostDeliveryEventImpl
             (identical(other.curCount, curCount) ||
                 other.curCount == curCount) &&
             (identical(other.totalCount, totalCount) ||
-                other.totalCount == totalCount));
+                other.totalCount == totalCount) &&
+            const DeepCollectionEquality().equals(
+                other._additionalFieldsCaptured, _additionalFieldsCaptured));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, latitude, longitude,
-      locationAccuracy, scannedResource, action, curCount, totalCount);
+  int get hashCode => Object.hash(
+      runtimeType,
+      latitude,
+      longitude,
+      locationAccuracy,
+      scannedResource,
+      action,
+      curCount,
+      totalCount,
+      const DeepCollectionEquality().hash(_additionalFieldsCaptured));
 
   @JsonKey(ignore: true)
   @override
@@ -539,13 +573,21 @@ class _$CustomTransitPostDeliveryEventImpl
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)
         handleDelivery,
     required TResult Function(int curCount, int totalCount, String? action)
         handleDeliveryCount,
   }) {
-    return handleDelivery(latitude, longitude, locationAccuracy,
-        scannedResource, action, curCount, totalCount);
+    return handleDelivery(
+        latitude,
+        longitude,
+        locationAccuracy,
+        scannedResource,
+        action,
+        curCount,
+        totalCount,
+        additionalFieldsCaptured);
   }
 
   @override
@@ -565,13 +607,21 @@ class _$CustomTransitPostDeliveryEventImpl
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)?
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)?
         handleDelivery,
     TResult? Function(int curCount, int totalCount, String? action)?
         handleDeliveryCount,
   }) {
-    return handleDelivery?.call(latitude, longitude, locationAccuracy,
-        scannedResource, action, curCount, totalCount);
+    return handleDelivery?.call(
+        latitude,
+        longitude,
+        locationAccuracy,
+        scannedResource,
+        action,
+        curCount,
+        totalCount,
+        additionalFieldsCaptured);
   }
 
   @override
@@ -587,15 +637,23 @@ class _$CustomTransitPostDeliveryEventImpl
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)?
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)?
         handleDelivery,
     TResult Function(int curCount, int totalCount, String? action)?
         handleDeliveryCount,
     required TResult orElse(),
   }) {
     if (handleDelivery != null) {
-      return handleDelivery(latitude, longitude, locationAccuracy,
-          scannedResource, action, curCount, totalCount);
+      return handleDelivery(
+          latitude,
+          longitude,
+          locationAccuracy,
+          scannedResource,
+          action,
+          curCount,
+          totalCount,
+          additionalFieldsCaptured);
     }
     return orElse();
   }
@@ -643,13 +701,15 @@ class _$CustomTransitPostDeliveryEventImpl
 abstract class CustomTransitPostDeliveryEvent
     implements CustomTransitPostEvent {
   const factory CustomTransitPostDeliveryEvent(
-      {final double latitude,
-      final double longitude,
-      final double locationAccuracy,
-      final String? scannedResource,
-      final String? action,
-      final int? curCount,
-      final int? totalCount}) = _$CustomTransitPostDeliveryEventImpl;
+          {final double latitude,
+          final double longitude,
+          final double locationAccuracy,
+          final String? scannedResource,
+          final String? action,
+          final int? curCount,
+          final int? totalCount,
+          final List<AdditionalField>? additionalFieldsCaptured}) =
+      _$CustomTransitPostDeliveryEventImpl;
 
   double get latitude;
   double get longitude;
@@ -658,6 +718,7 @@ abstract class CustomTransitPostDeliveryEvent
   String? get action;
   int? get curCount;
   int? get totalCount;
+  List<AdditionalField>? get additionalFieldsCaptured;
   @JsonKey(ignore: true)
   _$$CustomTransitPostDeliveryEventImplCopyWith<
           _$CustomTransitPostDeliveryEventImpl>
@@ -769,7 +830,8 @@ class _$CustomTransitPostDeliveryCountEventImpl
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)
         handleDelivery,
     required TResult Function(int curCount, int totalCount, String? action)
         handleDeliveryCount,
@@ -794,7 +856,8 @@ class _$CustomTransitPostDeliveryCountEventImpl
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)?
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)?
         handleDelivery,
     TResult? Function(int curCount, int totalCount, String? action)?
         handleDeliveryCount,
@@ -815,7 +878,8 @@ class _$CustomTransitPostDeliveryCountEventImpl
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)?
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)?
         handleDelivery,
     TResult Function(int curCount, int totalCount, String? action)?
         handleDeliveryCount,

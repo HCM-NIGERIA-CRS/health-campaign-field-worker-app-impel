@@ -376,27 +376,29 @@ class CustomTransitPostRecordVaccinationPageState
 
                             context.read<CustomTransitPostBloc>().add(
                                   CustomTransitPostDeliveryEvent(
-                                    latitude: latKey.text.isNotEmpty
-                                        ? double.parse(latKey.text)
-                                        : transitPostState.latitude,
-                                    longitude: lngKey.text.isNotEmpty
-                                        ? double.parse(lngKey.text)
-                                        : transitPostState.longitude,
-                                    locationAccuracy:
-                                        accuracyKey.text.isNotEmpty
-                                            ? double.parse(accuracyKey.text)
-                                            : transitPostState.locationAccuracy,
-                                    curCount:
-                                        (transitPostState.curCount == null)
-                                            ? 1
-                                            : transitPostState.curCount! + 1,
-                                    totalCount:
-                                        (transitPostState.totalCount == null)
-                                            ? 1
-                                            : transitPostState.totalCount! + 1,
-                                    action: widget.postType,
-                                    scannedResource: "MEASLES",
-                                  ),
+                                      latitude: latKey.text.isNotEmpty
+                                          ? double.parse(latKey.text)
+                                          : transitPostState.latitude,
+                                      longitude: lngKey.text.isNotEmpty
+                                          ? double.parse(lngKey.text)
+                                          : transitPostState.longitude,
+                                      locationAccuracy: accuracyKey
+                                              .text.isNotEmpty
+                                          ? double.parse(accuracyKey.text)
+                                          : transitPostState.locationAccuracy,
+                                      curCount:
+                                          (transitPostState.curCount == null)
+                                              ? 1
+                                              : transitPostState.curCount! + 1,
+                                      totalCount:
+                                          (transitPostState.totalCount == null)
+                                              ? 1
+                                              : transitPostState.totalCount! +
+                                                  1,
+                                      action: widget.postType,
+                                      scannedResource: "MEASLES",
+                                      additionalFieldsCaptured:
+                                          ageRange != null ? [ageRange] : []),
                                 );
 
                             // set age range empty once selection done and event submitted
@@ -466,11 +468,11 @@ class CustomTransitPostRecordVaccinationPageState
     );
   }
 
-  String? getAgeRangeSelected(String? ageRangeSelected) {
+  AdditionalField? getAgeRangeSelected(String? ageRangeSelected) {
     if (ageRangeSelected == null) {
-      return "";
+      return null;
     }
-    return ageRangeSelected;
+    return AdditionalField("ageRange", ageRangeSelected);
   }
 
   List<DigitTableRow> buildTableData() {
