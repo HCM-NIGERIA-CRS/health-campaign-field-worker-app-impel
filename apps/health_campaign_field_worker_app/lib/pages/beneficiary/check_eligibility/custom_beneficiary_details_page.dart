@@ -44,11 +44,11 @@ import 'custom_record_delivery_cycle.dart';
 class CustomBeneficiaryDetailsPage extends LocalizedStatefulWidget {
   final EligibilityAssessmentType eligibilityAssessmentType;
   final IndividualModel? individualSelected;
-  final bool? isRevisit;
+  final bool? isHead;
   const CustomBeneficiaryDetailsPage({
     required this.eligibilityAssessmentType,
     this.individualSelected,
-    this.isRevisit,
+    this.isHead,
     super.key,
     super.appLocalizations,
   });
@@ -342,6 +342,16 @@ class CustomBeneficiaryDetailsPageState
                                               size: DigitButtonSize.large,
                                               mainAxisSize: MainAxisSize.max,
                                               onPressed: () {
+                                                if (widget?.isHead ?? false) {
+                                                  context.router.push(
+                                                      CustomDeliverInterventionHeadRoute(
+                                                    eligibilityAssessmentType:
+                                                        widget
+                                                            .eligibilityAssessmentType,
+                                                    selectedIndividual: widget
+                                                        .individualSelected,
+                                                  ));
+                                                }
                                                 context.router.push(
                                                     CustomDeliverInterventionRoute(
                                                   eligibilityAssessmentType: widget

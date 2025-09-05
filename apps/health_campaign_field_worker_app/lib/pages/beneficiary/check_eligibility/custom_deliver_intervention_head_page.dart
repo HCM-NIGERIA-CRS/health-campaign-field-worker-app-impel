@@ -75,9 +75,6 @@ class CustomDeliverInterventionHeadPageState
   final clickedStatus = ValueNotifier<bool>(false);
   bool? shouldSubmit = false;
 
-  bool isTaskUpdate = false;
-  TaskModel? oldTaskCaptured;
-
   // Variable to track dose administration status
   bool doseAdministered = false;
 
@@ -120,31 +117,17 @@ class CustomDeliverInterventionHeadPageState
       selectedIndividual: selectedIndividual,
     );
 
-// update the old task if needed
-    if (isTaskUpdate && oldTaskCaptured != null) {
-      TaskModel updatedTask =
-          _updateTaskModel(context, oldTaskCaptured!, taskModel);
-      context.read<DeliverInterventionBloc>().add(
-            DeliverInterventionSubmitEvent(
-                task: updatedTask,
-                isEditing: true,
-                boundaryModel: RegistrationDeliverySingleton().boundary!,
-                navigateToSummary: false,
-                householdMemberWrapper: householdMember),
-          );
-    } else {
-      context.read<DeliverInterventionBloc>().add(
-            DeliverInterventionSubmitEvent(
-              task: deliverInterventionState.oldTask ?? taskModel,
-              isEditing: (deliverInterventionState.tasks ?? []).isNotEmpty &&
-                      RegistrationDeliverySingleton().beneficiaryType ==
-                          BeneficiaryType.household
-                  ? true
-                  : false,
-              boundaryModel: RegistrationDeliverySingleton().boundary!,
-            ),
-          );
-    }
+    context.read<DeliverInterventionBloc>().add(
+          DeliverInterventionSubmitEvent(
+            task: deliverInterventionState.oldTask ?? taskModel,
+            isEditing: (deliverInterventionState.tasks ?? []).isNotEmpty &&
+                    RegistrationDeliverySingleton().beneficiaryType ==
+                        BeneficiaryType.household
+                ? true
+                : false,
+            boundaryModel: RegistrationDeliverySingleton().boundary!,
+          ),
+        );
 
     final productvariantList =
         ((form.control(_resourceDeliveredKey) as FormArray).value
@@ -317,6 +300,8 @@ class CustomDeliverInterventionHeadPageState
                               ? getProductVariants(deliveryInterventionState,
                                       state)['criteria']
                                   ?.productVariants
+                                  .where((variant) => variant.sku == "IRV")
+                                  .toList()
                               : projectTypeModel?.resources
                                   ?.map((r) => DeliveryProductVariant(
                                       productVariantId: r.productVariantId))
@@ -370,7 +355,9 @@ class CustomDeliverInterventionHeadPageState
                             fetched: (productVariantsValue) {
                               final variant = productState.whenOrNull(
                                 fetched: (productVariants) {
-                                  return productVariants;
+                                  return productVariants
+                                      .where((variant) => variant.sku == "IRV")
+                                      .toList();
                                 },
                               );
 
@@ -518,26 +505,6 @@ class CustomDeliverInterventionHeadPageState
                                                               false) {
                                                             if (context
                                                                 .mounted) {
-                                                              // vas
-
-                                                              oldTaskCaptured =
-                                                                  deliveryInterventionState
-                                                                      ?.tasks
-                                                                      ?.where(
-                                                                          (element) {
-                                                                return element
-                                                                        ?.projectBeneficiaryClientReferenceId ==
-                                                                    projectBeneficiary
-                                                                        ?.first
-                                                                        .clientReferenceId;
-                                                              }).firstOrNull;
-
-                                                              setState(() {
-                                                                isTaskUpdate =
-                                                                    checkIfTaskUpdate(
-                                                                        oldTaskCaptured);
-                                                              });
-
                                                               context
                                                                   .read<
                                                                       LocationBloc>()

@@ -169,6 +169,9 @@ class HouseholdOverView {
   String get householdOverViewRevisitAbsentText =>
       'HOUSEHOLD_OVER_VIEW_REVISIT_ABSENT_TEXT';
 
+  String get householdOverViewAdministerHeadText =>
+      'HOUSEHOLD_OVER_VIEW_ADMINISTER_HEAD_TEXT';
+
   String get householdOverViewVASAssessmentActionText =>
       'HOUSEHOLD_OVER_VIEW_VAS_ASSESSMENT_ACTION_TEXT';
 

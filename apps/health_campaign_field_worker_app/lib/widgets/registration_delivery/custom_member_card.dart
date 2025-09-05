@@ -86,16 +86,15 @@ class CustomMemberCard extends StatelessWidget {
         checkBeneficiaryInEligibleSMC(tasks, context.selectedCycle);
 
     final theme = Theme.of(context);
-    if (isHead) {
+    if (isHead && !isDelivered) {
       return Align(
         alignment: Alignment.centerLeft,
         child: DigitIconButton(
           icon: Icons.info_rounded,
           iconSize: 20,
-          iconText: localizations.translate(i18_local
-              .householdOverView.householdOverViewHouseholderHeadLabel),
-          iconTextColor: theme.colorScheme.surfaceTint,
-          iconColor: theme.colorScheme.surfaceTint,
+          iconText: localizations.translate(Status.notVisited.toValue()),
+          iconTextColor: theme.colorScheme.error,
+          iconColor: theme.colorScheme.error,
         ),
       );
     }
@@ -207,6 +206,34 @@ class CustomMemberCard extends StatelessWidget {
 
     if ((isNotEligibleSMC || isBeneficiaryIneligible) && !doseStatus) {
       return const Offstage();
+    }
+    // todo add a condition to check if already delivered
+    if (isHead) {
+      return DigitElevatedButton(
+        child: Center(
+          child: Text(
+            localizations.translate(i18_local
+                .householdOverView.householdOverViewAdministerHeadText),
+            style: textTheme.headingM.copyWith(color: Colors.white),
+          ),
+        ),
+        onPressed: () async {
+          final bloc = context.read<HouseholdOverviewBloc>();
+          bloc.add(
+            HouseholdOverviewEvent.selectedIndividual(
+              individualModel: individual,
+            ),
+          );
+
+          context.router.push(
+            CustomBeneficiaryDetailsRoute(
+              isHead: true,
+              individualSelected: individual,
+              eligibilityAssessmentType: EligibilityAssessmentType.smc,
+            ),
+          );
+        },
+      );
     }
     if (isNotEligibleSMC) {
       return const Offstage();
@@ -418,18 +445,14 @@ class CustomMemberCard extends StatelessWidget {
             offstage: beneficiaryType != BeneficiaryType.individual,
             child: Padding(
               padding: const EdgeInsets.all(4.0),
-              child: isHead
-                  ? const Column(
-                      children: [],
-                    )
-                  : Column(
-                      children: [
-                        actionButton(context),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                      ],
-                    ),
+              child: Column(
+                children: [
+                  actionButton(context),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                ],
+              ),
             ),
           ),
         ],

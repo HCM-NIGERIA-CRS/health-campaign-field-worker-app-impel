@@ -113,6 +113,7 @@ import '../pages/transit_post/custom_transit_post_wrapper.dart';
 import '../pages/campaign_delivery_select.dart';
 
 import '../pages/daily_Implementation_plan/select_settlements.dart';
+import '../pages/beneficiary/check_eligibility/custom_deliver_intervention_head_page.dart';
 
 part 'app_router.gr.dart';
 
@@ -432,6 +433,10 @@ class AppRouter extends _$AppRouter {
                   AutoRoute(
                     page: CustomDeliverInterventionRoute.page,
                     path: 'custom-deliver-intervention',
+                  ),
+                  AutoRoute(
+                    page: CustomDeliverInterventionHeadRoute.page,
+                    path: 'custom-deliver-intervention-head',
                   ),
                   // AutoRoute(
                   //   page: DeliverInterventionRoute.page,

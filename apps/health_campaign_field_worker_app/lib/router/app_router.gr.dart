@@ -110,7 +110,7 @@ abstract class _$AppRouter extends RootStackRouter {
         child: CustomBeneficiaryDetailsPage(
           eligibilityAssessmentType: args.eligibilityAssessmentType,
           individualSelected: args.individualSelected,
-          isRevisit: args.isRevisit,
+          isHead: args.isHead,
           key: args.key,
           appLocalizations: args.appLocalizations,
         ),
@@ -158,6 +158,20 @@ abstract class _$AppRouter extends RootStackRouter {
         child: CustomComplaintsInboxPage(
           key: args.key,
           appLocalizations: args.appLocalizations,
+        ),
+      );
+    },
+    CustomDeliverInterventionHeadRoute.name: (routeData) {
+      final args = routeData.argsAs<CustomDeliverInterventionHeadRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CustomDeliverInterventionHeadPage(
+          key: args.key,
+          appLocalizations: args.appLocalizations,
+          eligibilityAssessmentType: args.eligibilityAssessmentType,
+          selectedIndividual: args.selectedIndividual,
+          isRevisit: args.isRevisit,
+          isEditing: args.isEditing,
         ),
       );
     },
@@ -1246,7 +1260,7 @@ class CustomBeneficiaryDetailsRoute
   CustomBeneficiaryDetailsRoute({
     required EligibilityAssessmentType eligibilityAssessmentType,
     IndividualModel? individualSelected,
-    bool? isRevisit,
+    bool? isHead,
     Key? key,
     RegistrationDeliveryLocalization? appLocalizations,
     List<PageRouteInfo>? children,
@@ -1255,7 +1269,7 @@ class CustomBeneficiaryDetailsRoute
           args: CustomBeneficiaryDetailsRouteArgs(
             eligibilityAssessmentType: eligibilityAssessmentType,
             individualSelected: individualSelected,
-            isRevisit: isRevisit,
+            isHead: isHead,
             key: key,
             appLocalizations: appLocalizations,
           ),
@@ -1272,7 +1286,7 @@ class CustomBeneficiaryDetailsRouteArgs {
   const CustomBeneficiaryDetailsRouteArgs({
     required this.eligibilityAssessmentType,
     this.individualSelected,
-    this.isRevisit,
+    this.isHead,
     this.key,
     this.appLocalizations,
   });
@@ -1281,7 +1295,7 @@ class CustomBeneficiaryDetailsRouteArgs {
 
   final IndividualModel? individualSelected;
 
-  final bool? isRevisit;
+  final bool? isHead;
 
   final Key? key;
 
@@ -1289,7 +1303,7 @@ class CustomBeneficiaryDetailsRouteArgs {
 
   @override
   String toString() {
-    return 'CustomBeneficiaryDetailsRouteArgs{eligibilityAssessmentType: $eligibilityAssessmentType, individualSelected: $individualSelected, isRevisit: $isRevisit, key: $key, appLocalizations: $appLocalizations}';
+    return 'CustomBeneficiaryDetailsRouteArgs{eligibilityAssessmentType: $eligibilityAssessmentType, individualSelected: $individualSelected, isHead: $isHead, key: $key, appLocalizations: $appLocalizations}';
   }
 }
 
@@ -1446,6 +1460,65 @@ class CustomComplaintsInboxRouteArgs {
   @override
   String toString() {
     return 'CustomComplaintsInboxRouteArgs{key: $key, appLocalizations: $appLocalizations}';
+  }
+}
+
+/// generated route for
+/// [CustomDeliverInterventionHeadPage]
+class CustomDeliverInterventionHeadRoute
+    extends PageRouteInfo<CustomDeliverInterventionHeadRouteArgs> {
+  CustomDeliverInterventionHeadRoute({
+    Key? key,
+    RegistrationDeliveryLocalization? appLocalizations,
+    required EligibilityAssessmentType eligibilityAssessmentType,
+    IndividualModel? selectedIndividual,
+    bool? isRevisit,
+    bool isEditing = false,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CustomDeliverInterventionHeadRoute.name,
+          args: CustomDeliverInterventionHeadRouteArgs(
+            key: key,
+            appLocalizations: appLocalizations,
+            eligibilityAssessmentType: eligibilityAssessmentType,
+            selectedIndividual: selectedIndividual,
+            isRevisit: isRevisit,
+            isEditing: isEditing,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CustomDeliverInterventionHeadRoute';
+
+  static const PageInfo<CustomDeliverInterventionHeadRouteArgs> page =
+      PageInfo<CustomDeliverInterventionHeadRouteArgs>(name);
+}
+
+class CustomDeliverInterventionHeadRouteArgs {
+  const CustomDeliverInterventionHeadRouteArgs({
+    this.key,
+    this.appLocalizations,
+    required this.eligibilityAssessmentType,
+    this.selectedIndividual,
+    this.isRevisit,
+    this.isEditing = false,
+  });
+
+  final Key? key;
+
+  final RegistrationDeliveryLocalization? appLocalizations;
+
+  final EligibilityAssessmentType eligibilityAssessmentType;
+
+  final IndividualModel? selectedIndividual;
+
+  final bool? isRevisit;
+
+  final bool isEditing;
+
+  @override
+  String toString() {
+    return 'CustomDeliverInterventionHeadRouteArgs{key: $key, appLocalizations: $appLocalizations, eligibilityAssessmentType: $eligibilityAssessmentType, selectedIndividual: $selectedIndividual, isRevisit: $isRevisit, isEditing: $isEditing}';
   }
 }
 
