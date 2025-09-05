@@ -133,13 +133,11 @@ class Constants {
   static const String blueVAS = "Blue VAS";
   static const String redVAS = "Red VAS";
 
-  static const String polio = 'Polio - nOPV, bOPV';
-  static const String measles = 'Measles - MRV';
-
   static const String productVariantId1 = 'PVAR-2025-05-08-000001';
   static const String productVariantId2 = 'PVAR-2025-05-08-000002';
 
   static const String polioVariant = 'Polio - nOPV, bOPV';
+  static const String measlesVariant = 'Measles - MRV';
 
   // todo enable before cycle2
   static const bool isDownSyncEnabled = false;

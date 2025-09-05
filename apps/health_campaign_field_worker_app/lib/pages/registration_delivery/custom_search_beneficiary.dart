@@ -1171,8 +1171,12 @@ class _CustomSearchBeneficiaryPageState
                       String descriptionText = localizations.translate(i18_local
                           .beneficiaryDetails.insufficientStockMessage);
 
+//TODO:we need to make this dynamic to fetch product variant sku
                       if (skuCounts.isEmpty) {
-                        skuCounts = {Constants.polio: 0, Constants.measles: 0};
+                        skuCounts = {
+                          Constants.polioVariant: 0,
+                          Constants.measlesVariant: 0
+                        };
                       }
 
                       skuCounts.forEach((productSku, productCount) {
