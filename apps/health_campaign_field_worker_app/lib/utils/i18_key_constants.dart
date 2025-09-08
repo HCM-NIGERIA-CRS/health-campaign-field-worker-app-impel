@@ -49,6 +49,7 @@ const transitFixedPost = TransitFixedPost();
 
 class Common {
   const Common();
+  String get nonComplianceTrackingLabel => 'NON_COMPLIANCE_TRACKING_LABEL';
 
   String get coreCommonContinue => 'CORE_COMMON_CONTINUE';
   String get coreCommonWarning => 'CORE_COMMON_WARNING';
@@ -979,6 +980,7 @@ class Home {
   String get dailyImplementationPlanLabel => 'HOME_DIP_LABEL';
   String get campaignDeliverySelection =>
       'HOME_CAMPAIGN_DELIVERY_SELECTION_LABEL';
+  String get nonComplianceTracking => 'HOME_NON_COMPLIANCE_TRACKING_LABEL';
 
   String get viewSummaryReportsLabel => 'VIEW_SUMMARY_REPORTS_LABEL';
 }

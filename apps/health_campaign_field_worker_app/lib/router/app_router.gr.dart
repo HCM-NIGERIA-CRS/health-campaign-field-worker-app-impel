@@ -752,6 +752,23 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    NonComplianceTrackingSearchRoute.name: (routeData) {
+      final args = routeData.argsAs<NonComplianceTrackingSearchRouteArgs>(
+          orElse: () => const NonComplianceTrackingSearchRouteArgs());
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: NonComplianceTrackingSearchPage(
+          key: args.key,
+          appLocalizations: args.appLocalizations,
+        ),
+      );
+    },
+    NonComplianceTrackingWrapperRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const NonComplianceTrackingWrapperPage(),
+      );
+    },
     ProfileRoute.name: (routeData) {
       final args = routeData.argsAs<ProfileRouteArgs>(
           orElse: () => const ProfileRouteArgs());
@@ -3611,6 +3628,59 @@ class LoginRouteArgs {
   String toString() {
     return 'LoginRouteArgs{key: $key, appLocalizations: $appLocalizations}';
   }
+}
+
+/// generated route for
+/// [NonComplianceTrackingSearchPage]
+class NonComplianceTrackingSearchRoute
+    extends PageRouteInfo<NonComplianceTrackingSearchRouteArgs> {
+  NonComplianceTrackingSearchRoute({
+    Key? key,
+    RegistrationDeliveryLocalization? appLocalizations,
+    List<PageRouteInfo>? children,
+  }) : super(
+          NonComplianceTrackingSearchRoute.name,
+          args: NonComplianceTrackingSearchRouteArgs(
+            key: key,
+            appLocalizations: appLocalizations,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'NonComplianceTrackingSearchRoute';
+
+  static const PageInfo<NonComplianceTrackingSearchRouteArgs> page =
+      PageInfo<NonComplianceTrackingSearchRouteArgs>(name);
+}
+
+class NonComplianceTrackingSearchRouteArgs {
+  const NonComplianceTrackingSearchRouteArgs({
+    this.key,
+    this.appLocalizations,
+  });
+
+  final Key? key;
+
+  final RegistrationDeliveryLocalization? appLocalizations;
+
+  @override
+  String toString() {
+    return 'NonComplianceTrackingSearchRouteArgs{key: $key, appLocalizations: $appLocalizations}';
+  }
+}
+
+/// generated route for
+/// [NonComplianceTrackingWrapperPage]
+class NonComplianceTrackingWrapperRoute extends PageRouteInfo<void> {
+  const NonComplianceTrackingWrapperRoute({List<PageRouteInfo>? children})
+      : super(
+          NonComplianceTrackingWrapperRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'NonComplianceTrackingWrapperRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for
