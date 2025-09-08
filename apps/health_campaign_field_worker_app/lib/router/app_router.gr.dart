@@ -103,6 +103,19 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    CustomBeneficiaryDetailsHeadRoute.name: (routeData) {
+      final args = routeData.argsAs<CustomBeneficiaryDetailsHeadRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CustomBeneficiaryDetailsHeadPage(
+          eligibilityAssessmentType: args.eligibilityAssessmentType,
+          individualSelected: args.individualSelected,
+          isHead: args.isHead,
+          key: args.key,
+          appLocalizations: args.appLocalizations,
+        ),
+      );
+    },
     CustomBeneficiaryDetailsRoute.name: (routeData) {
       final args = routeData.argsAs<CustomBeneficiaryDetailsRouteArgs>();
       return AutoRoutePage<dynamic>(
@@ -1250,6 +1263,60 @@ class CustomBeneficiaryAcknowledgementRouteArgs {
   @override
   String toString() {
     return 'CustomBeneficiaryAcknowledgementRouteArgs{key: $key, appLocalizations: $appLocalizations, acknowledgementType: $acknowledgementType, enableViewHousehold: $enableViewHousehold}';
+  }
+}
+
+/// generated route for
+/// [CustomBeneficiaryDetailsHeadPage]
+class CustomBeneficiaryDetailsHeadRoute
+    extends PageRouteInfo<CustomBeneficiaryDetailsHeadRouteArgs> {
+  CustomBeneficiaryDetailsHeadRoute({
+    required EligibilityAssessmentType eligibilityAssessmentType,
+    IndividualModel? individualSelected,
+    bool? isHead,
+    Key? key,
+    RegistrationDeliveryLocalization? appLocalizations,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CustomBeneficiaryDetailsHeadRoute.name,
+          args: CustomBeneficiaryDetailsHeadRouteArgs(
+            eligibilityAssessmentType: eligibilityAssessmentType,
+            individualSelected: individualSelected,
+            isHead: isHead,
+            key: key,
+            appLocalizations: appLocalizations,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CustomBeneficiaryDetailsHeadRoute';
+
+  static const PageInfo<CustomBeneficiaryDetailsHeadRouteArgs> page =
+      PageInfo<CustomBeneficiaryDetailsHeadRouteArgs>(name);
+}
+
+class CustomBeneficiaryDetailsHeadRouteArgs {
+  const CustomBeneficiaryDetailsHeadRouteArgs({
+    required this.eligibilityAssessmentType,
+    this.individualSelected,
+    this.isHead,
+    this.key,
+    this.appLocalizations,
+  });
+
+  final EligibilityAssessmentType eligibilityAssessmentType;
+
+  final IndividualModel? individualSelected;
+
+  final bool? isHead;
+
+  final Key? key;
+
+  final RegistrationDeliveryLocalization? appLocalizations;
+
+  @override
+  String toString() {
+    return 'CustomBeneficiaryDetailsHeadRouteArgs{eligibilityAssessmentType: $eligibilityAssessmentType, individualSelected: $individualSelected, isHead: $isHead, key: $key, appLocalizations: $appLocalizations}';
   }
 }
 

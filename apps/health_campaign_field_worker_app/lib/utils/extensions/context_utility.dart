@@ -26,6 +26,7 @@ extension ContextUtilityExtensions on BuildContext {
 
   String get projectId => selectedProject.id;
 
+  // returns project type code
   String? get projectTypeCode {
     final projectType = selectedProject.projectType;
 

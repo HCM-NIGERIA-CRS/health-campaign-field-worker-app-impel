@@ -300,8 +300,6 @@ class CustomDeliverInterventionHeadPageState
                               ? getProductVariants(deliveryInterventionState,
                                       state)['criteria']
                                   ?.productVariants
-                                  .where((variant) => variant.sku == "IRV")
-                                  .toList()
                               : projectTypeModel?.resources
                                   ?.map((r) => DeliveryProductVariant(
                                       productVariantId: r.productVariantId))
@@ -355,9 +353,7 @@ class CustomDeliverInterventionHeadPageState
                             fetched: (productVariantsValue) {
                               final variant = productState.whenOrNull(
                                 fetched: (productVariants) {
-                                  return productVariants
-                                      .where((variant) => variant.sku == "IRV")
-                                      .toList();
+                                  return productVariants;
                                 },
                               );
 

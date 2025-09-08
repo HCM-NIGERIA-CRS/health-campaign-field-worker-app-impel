@@ -114,6 +114,7 @@ import '../pages/campaign_delivery_select.dart';
 
 import '../pages/daily_Implementation_plan/select_settlements.dart';
 import '../pages/beneficiary/check_eligibility/custom_deliver_intervention_head_page.dart';
+import '../pages/beneficiary/check_eligibility/custom_beneficiary_details_head_page.dart';
 
 part 'app_router.gr.dart';
 
@@ -425,6 +426,10 @@ class AppRouter extends _$AppRouter {
                   AutoRoute(
                     page: CustomBeneficiaryDetailsRoute.page,
                     path: 'custom-beneficiary-details',
+                  ),
+                  AutoRoute(
+                    page: CustomBeneficiaryDetailsHeadRoute.page,
+                    path: 'custom-beneficiary-details-head',
                   ),
                   // RedirectRoute(
                   //   path: 'beneficiary-details',

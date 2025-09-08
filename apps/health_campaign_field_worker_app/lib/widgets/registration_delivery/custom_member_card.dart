@@ -226,7 +226,7 @@ class CustomMemberCard extends StatelessWidget {
           );
 
           context.router.push(
-            CustomBeneficiaryDetailsRoute(
+            CustomBeneficiaryDetailsHeadRoute(
               isHead: true,
               individualSelected: individual,
               eligibilityAssessmentType: EligibilityAssessmentType.smc,
