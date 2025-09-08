@@ -16,6 +16,7 @@ import 'package:registration_delivery/router/registration_delivery_router.gm.dar
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
 import '../../blocs/localization/app_localization.dart';
 
+import '../../models/entities/project_types.dart';
 import '../../router/app_router.dart';
 import '../../utils/app_enums.dart';
 import '../../utils/registration_delivery/utils_smc.dart';
@@ -86,7 +87,9 @@ class CustomMemberCard extends StatelessWidget {
         checkBeneficiaryInEligibleSMC(tasks, context.selectedCycle);
 
     final theme = Theme.of(context);
-    if (isHead && !isDelivered) {
+    if (isHead &&
+        !isDelivered &&
+        (context.projectTypeCode == ProjectTypes.oncho.toValue())) {
       return Align(
         alignment: Alignment.centerLeft,
         child: DigitIconButton(
@@ -208,7 +211,7 @@ class CustomMemberCard extends StatelessWidget {
       return const Offstage();
     }
     // todo add a condition to check if already delivered
-    if (isHead) {
+    if (isHead && context.projectTypeCode == ProjectTypes.oncho.toValue()) {
       return DigitElevatedButton(
         child: Center(
           child: Text(

@@ -63,4 +63,8 @@ enum MasterEnums {
   transitPostType,
   @MappableValue("NON_COMPLIANCE_REASONS")
   nonComplianceReasons,
+  @MappableValue("AGE_RANGE_OPTIONS")
+  ageRangeOptions,
+  @MappableValue("HEIGHT_RANGE_OPTIONS")
+  heightRangeOptions,
 }

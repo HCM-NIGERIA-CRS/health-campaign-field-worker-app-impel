@@ -83,6 +83,10 @@ class MasterEnumsMapper extends EnumMapper<MasterEnums> {
         return MasterEnums.transitPostType;
       case "NON_COMPLIANCE_REASONS":
         return MasterEnums.nonComplianceReasons;
+      case "AGE_RANGE_OPTIONS":
+        return MasterEnums.ageRangeOptions;
+      case "HEIGHT_RANGE_OPTIONS":
+        return MasterEnums.heightRangeOptions;
       default:
         throw MapperException.unknownEnumValue(value);
     }
@@ -149,6 +153,10 @@ class MasterEnumsMapper extends EnumMapper<MasterEnums> {
         return "TRANSIT_POST_TYPE";
       case MasterEnums.nonComplianceReasons:
         return "NON_COMPLIANCE_REASONS";
+      case MasterEnums.ageRangeOptions:
+        return "AGE_RANGE_OPTIONS";
+      case MasterEnums.heightRangeOptions:
+        return "HEIGHT_RANGE_OPTIONS";
     }
   }
 }

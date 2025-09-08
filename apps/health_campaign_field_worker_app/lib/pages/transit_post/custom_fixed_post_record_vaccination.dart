@@ -30,12 +30,15 @@ import 'package:transit_post/widgets/total_delivery.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart'
     as registration_delivery;
 import '../../../utils/i18_key_constants.dart' as i18_local;
+import '../../blocs/app_initialization/app_initialization.dart';
 import '../../blocs/transit_post/custom_transit_post.dart';
 import '../../blocs/transit_post/fixed_post.dart';
+import '../../data/local_store/no_sql/schema/app_configuration.dart';
 import '../../models/entities/project_types.dart';
 import '../../models/entities/user_action_enums.dart';
 import '../../router/app_router.dart';
 import '../../utils/extensions/extensions.dart';
+import '../../utils/utils.dart';
 import '../../widgets/showcase/showcase_wrappers.dart';
 import '../campaign_delivery_select.dart';
 
@@ -420,31 +423,46 @@ class CustomFixedPostRecordVaccinationPageState
                                   color: theme.colorTheme.text.primary),
                             ),
                             Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                    kPadding, 0, kPadding, 0),
-                                child: FormField(
-                                    autovalidateMode:
-                                        AutovalidateMode.onUserInteraction,
-                                    builder: (context) {
-                                      return RadioList(
-                                        radioDigitButtons: [
-                                          "90to110",
-                                          "110to150",
-                                          "150to200"
-                                        ]
-                                            .map((element) => RadioButtonModel(
-                                                code: element,
-                                                name: localizations
-                                                    .translate(element)))
-                                            .toList(),
-                                        onChanged: (value) {
-                                          if (value.code.isNotEmpty) {}
-                                          setState(() {
-                                            heightRangeSelected = value.code;
-                                          });
-                                        },
-                                      );
-                                    }))
+                              padding: const EdgeInsets.fromLTRB(
+                                  kPadding, 0, kPadding, 0),
+                              child: BlocBuilder<AppInitializationBloc,
+                                  AppInitializationState>(
+                                builder: (context, state) {
+                                  if (state is! AppInitialized) {
+                                    return const Offstage();
+                                  }
+
+                                  final heightRangeOptions = state
+                                          .appConfiguration
+                                          .heightRangeOptions ??
+                                      <HeightRangeOptions>[];
+
+                                  return FormField(
+                                      autovalidateMode:
+                                          AutovalidateMode.onUserInteraction,
+                                      builder: (context) {
+                                        return RadioList(
+                                          radioDigitButtons: heightRangeOptions
+                                              .map((element) =>
+                                                  RadioButtonModel(
+                                                      code: element.code,
+                                                      name: localizations
+                                                          .translate(
+                                                              element.code)))
+                                              .toList(),
+                                          onChanged: (value) {
+                                            if (value.code.isNotEmpty) {
+                                              setState(() {
+                                                heightRangeSelected =
+                                                    value.code;
+                                              });
+                                            }
+                                          },
+                                        );
+                                      });
+                                },
+                              ),
+                            )
                           ],
                         ),
                       ],
@@ -551,46 +569,53 @@ class CustomFixedPostRecordVaccinationPageState
                             .copyWith(color: theme.colorTheme.text.primary),
                       ),
                       Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                              kPadding, 0, kPadding, 0),
-                          child: FormField(
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              builder: (context) {
-                                return RadioList(
-                                  radioDigitButtons: [
-                                    RadioButtonModel(
-                                      code: AgeRange.nineToEleven.name,
-                                      name: localizations.translate(
-                                        i18_local.deliverIntervention
-                                            .ninetoElevenAgeRange,
-                                      ),
-                                    ),
-                                    RadioButtonModel(
-                                      code: AgeRange.twelveToFiftyNine.name,
-                                      name: localizations.translate(
-                                        i18_local.deliverIntervention
-                                            .twelvetofiftyNineAgeRange,
-                                      ),
-                                    ),
-                                  ],
-                                  groupValue: ageRangeSelected ?? '',
-                                  onChanged: (value) {
-                                    if (value.code ==
-                                        AgeRange.nineToEleven.name) {
-                                      setState(() {
-                                        ageRangeSelected =
-                                            AgeRange.nineToEleven.name;
-                                      });
-                                    } else {
-                                      setState(() {
-                                        ageRangeSelected =
-                                            AgeRange.twelveToFiftyNine.name;
-                                      });
-                                    }
-                                  },
-                                );
-                              }))
+                        padding:
+                            const EdgeInsets.fromLTRB(kPadding, 0, kPadding, 0),
+                        child: BlocBuilder<AppInitializationBloc,
+                            AppInitializationState>(
+                          builder: (context, state) {
+                            if (state is! AppInitialized) {
+                              return const Offstage();
+                            }
+
+                            final ageRangeOptions =
+                                state.appConfiguration.ageRangeOptions ??
+                                    <AgeRangeOptions>[];
+
+                            return FormField(
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                builder: (context) {
+                                  return RadioList(
+                                    radioDigitButtons: ageRangeOptions
+                                        .map((age) => RadioButtonModel(
+                                            code: age.code, name: age.code))
+                                        .toList(),
+                                    groupValue: ageRangeSelected ?? '',
+                                    onChanged: (value) {
+                                      if (value.code.isNotEmpty) {
+                                        setState(() {
+                                          ageRangeSelected = value.code;
+                                        });
+                                      }
+                                      // if (value.code ==
+                                      //     AgeRange.nineToEleven.name) {
+                                      //   setState(() {
+                                      //     ageRangeSelected =
+                                      //         AgeRange.nineToEleven.name;
+                                      //   });
+                                      // } else {
+                                      //   setState(() {
+                                      //     ageRangeSelected =
+                                      //         AgeRange.twelveToFiftyNine.name;
+                                      //   });
+                                      // }
+                                    },
+                                  );
+                                });
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ],

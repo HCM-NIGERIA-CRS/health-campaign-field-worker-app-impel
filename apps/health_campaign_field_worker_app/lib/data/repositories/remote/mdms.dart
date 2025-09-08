@@ -305,6 +305,24 @@ class MdmsRepository {
       return deliveryCommentOption;
     }).toList();
 
+    final List<AgeRangeOptions>? ageRangeOptions =
+        element?.ageRangeOptions.map((element) {
+      final ageRangeOption = AgeRangeOptions()
+        ..name = element.name
+        ..code = element.code;
+
+      return ageRangeOption;
+    }).toList();
+
+    final List<HeightRangeOptions>? heightRangeOptions =
+        element?.heightRangeOptions.map((element) {
+      final heightRangeOption = HeightRangeOptions()
+        ..name = element.name
+        ..code = element.code;
+
+      return heightRangeOption;
+    }).toList();
+
     final List<DailyActionPlanConfig>? dailyPlanConfigs =
         element?.dailyPlanConfigs.map((element) {
       final dailyPlanConfig = DailyActionPlanConfig()
@@ -350,6 +368,8 @@ class MdmsRepository {
     appConfiguration.idTypeOptions = idTypeOptions;
     appConfiguration.privacyPolicyConfig = privacyPolicy;
     appConfiguration.deliveryCommentOptions = deliveryCommentOptions;
+    appConfiguration.ageRangeOptions = ageRangeOptions;
+    appConfiguration.heightRangeOptions = heightRangeOptions;
     appConfiguration.dailyPlanConfigs = dailyPlanConfigs;
     appConfiguration.nonComplianceReasons = nonComplianceReasons;
     appConfiguration.beneficiaryIdConfig = beneficiaryIdConfig;

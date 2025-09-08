@@ -13,6 +13,7 @@ import 'package:registration_delivery/blocs/search_households/search_households.
 import 'package:registration_delivery/models/entities/status.dart';
 import 'package:registration_delivery/models/entities/task.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
+import '../../models/entities/project_types.dart';
 import '../../utils/extensions/extensions.dart';
 import 'package:registration_delivery/utils/utils.dart';
 import 'package:registration_delivery/widgets/beneficiary/beneficiary_card.dart';
@@ -109,6 +110,8 @@ class CustomViewBeneficiaryCardState
 
     final tableData = householdMember.members?.map(
       (e) {
+        final isHead = householdMember.headOfHousehold?.clientReferenceId ==
+            e.clientReferenceId;
         final projectBeneficiary =
             householdMember.projectBeneficiaries?.where((element) {
           if (RegistrationDeliverySingleton().beneficiaryType ==
@@ -160,15 +163,18 @@ class CustomViewBeneficiaryCardState
               : DateTime.now(),
         ).months;
 
-        final isNotEligible = !checkEligibilityForAgeAndSideEffect(
-          DigitDOBAgeConvertor(
-            years: ageInYears,
-            months: ageInMonths,
-          ),
-          RegistrationDeliverySingleton().projectType,
-          (taskData ?? []).isNotEmpty ? taskData?.last : null,
-          sideEffects,
-        );
+        final isNotEligible =
+            isHead && context.projectTypeCode == ProjectTypes.oncho.toValue()
+                ? false
+                : !checkEligibilityForAgeAndSideEffect(
+                    DigitDOBAgeConvertor(
+                      years: ageInYears,
+                      months: ageInMonths,
+                    ),
+                    RegistrationDeliverySingleton().projectType,
+                    (taskData ?? []).isNotEmpty ? taskData?.last : null,
+                    sideEffects,
+                  );
 
         final isBeneficiaryRefused = checkIfBeneficiaryRefused(taskData);
         final isBeneficiaryAbsent = checkIfBeneficiaryAbsent(taskData);
@@ -176,8 +182,6 @@ class CustomViewBeneficiaryCardState
             checkBeneficiaryInEligibleSMC(taskData, context.selectedCycle);
         final isBeneficiaryReferred =
             checkBeneficiaryReferredSMC(taskData, context.selectedCycle);
-        final isHead = householdMember.headOfHousehold?.clientReferenceId ==
-            e.clientReferenceId;
 
         final isStatusReset = util_local.checkStatusSMC(taskData, currentCycle);
 
@@ -206,7 +210,8 @@ class CustomViewBeneficiaryCardState
             "",
             cellKey: 'delivery',
             widget: Text(
-              isHead
+              isHead &&
+                      (context.projectTypeCode == ProjectTypes.polio.toValue())
                   ? localizations.translate(
                       i18_local.householdOverView
                           .householdOverViewHouseholderHeadLabel,
@@ -223,7 +228,9 @@ class CustomViewBeneficiaryCardState
                       taskData,
                     ),
               style: TextStyle(
-                color: isHead
+                color: isHead &&
+                        (context.projectTypeCode ==
+                            ProjectTypes.polio.toValue())
                     ? theme.colorScheme.surfaceTint
                     : getTableCellTextColor(
                         isNotEligible: isNotEligible,

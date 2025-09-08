@@ -127,6 +127,12 @@ _$HCMWrapperModelImpl _$$HCMWrapperModelImplFromJson(
           .map(
               (e) => DeliveryCommentOptions.fromJson(e as Map<String, dynamic>))
           .toList(),
+      ageRangeOptions: (json['AGE_RANGE_OPTIONS'] as List<dynamic>)
+          .map((e) => AgeRangeOptions.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      heightRangeOptions: (json['HEIGHT_RANGE_OPTIONS'] as List<dynamic>)
+          .map((e) => HeightRangeOptions.fromJson(e as Map<String, dynamic>))
+          .toList(),
       dailyPlanConfigs: (json['USER_ACTION_DAILY_PLAN'] as List<dynamic>)
           .map((e) => DailyActionPlanConfig.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -185,6 +191,8 @@ Map<String, dynamic> _$$HCMWrapperModelImplToJson(
       'CHECKLIST_TYPES': instance.checklistTypes,
       'ID_TYPE_OPTIONS_POPULATOR': instance.idTypeOptions,
       'DELIVERY_COMMENT_OPTIONS_POPULATOR': instance.deliveryCommentOptions,
+      'AGE_RANGE_OPTIONS': instance.ageRangeOptions,
+      'HEIGHT_RANGE_OPTIONS': instance.heightRangeOptions,
       'USER_ACTION_DAILY_PLAN': instance.dailyPlanConfigs,
       'NON_COMPLIANCE_REASONS': instance.nonComplianceReasons,
       'BACKEND_INTERFACE': instance.backendInterface,
@@ -356,6 +364,34 @@ _$DeliveryCommentOptionsImpl _$$DeliveryCommentOptionsImplFromJson(
 
 Map<String, dynamic> _$$DeliveryCommentOptionsImplToJson(
         _$DeliveryCommentOptionsImpl instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'code': instance.code,
+    };
+
+_$AgeRangeOptionsImpl _$$AgeRangeOptionsImplFromJson(
+        Map<String, dynamic> json) =>
+    _$AgeRangeOptionsImpl(
+      name: json['name'] as String,
+      code: json['code'] as String,
+    );
+
+Map<String, dynamic> _$$AgeRangeOptionsImplToJson(
+        _$AgeRangeOptionsImpl instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'code': instance.code,
+    };
+
+_$HeightRangeOptionsImpl _$$HeightRangeOptionsImplFromJson(
+        Map<String, dynamic> json) =>
+    _$HeightRangeOptionsImpl(
+      name: json['name'] as String,
+      code: json['code'] as String,
+    );
+
+Map<String, dynamic> _$$HeightRangeOptionsImplToJson(
+        _$HeightRangeOptionsImpl instance) =>
     <String, dynamic>{
       'name': instance.name,
       'code': instance.code,
