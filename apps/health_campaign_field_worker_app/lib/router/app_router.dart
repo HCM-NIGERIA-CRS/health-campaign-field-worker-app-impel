@@ -43,6 +43,8 @@ import '../pages/daily_Implementation_plan/select_settlements_date_view_list.dar
 import '../pages/inventory_management/custom_inventory_facility_selection.dart';
 import '../pages/inventory_management/qr_scanner.dart';
 import '../pages/inventory_management/view_record_lga.dart';
+import '../pages/non_compliance_tracker/non_compliance_tracking_search.dart';
+import '../pages/non_compliance_tracker/non_compliance_tracking_wrapper.dart';
 import '../pages/registration_delivery/custom_complaints_details.dart';
 import '../pages/boundary_selection.dart';
 import '../pages/home.dart';
@@ -155,6 +157,16 @@ class AppRouter extends _$AppRouter {
         AutoRoute(
             page: CampaignDeliverySelectRoute.page,
             path: 'campaign-delivery-select'),
+        AutoRoute(
+            page: NonComplianceTrackingWrapperRoute.page,
+            path: 'non-compliance-tracking-wrapper',
+            children: [
+              AutoRoute(
+                page: NonComplianceTrackingSearchRoute.page,
+                path: 'non-compliance-tracking-search',
+                initial: true,
+              )
+            ]),
         AutoRoute(page: BeneficiaryIdDownSyncRoute.page),
         AutoRoute(page: ProfileRoute.page, path: 'profile'),
         AutoRoute(page: UserQRDetailsRoute.page, path: 'user-qr-code'),

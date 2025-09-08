@@ -66,6 +66,7 @@ import '../widgets/localized.dart';
 import '../widgets/registration_delivery/custom_beneficiary_progress.dart';
 import '../widgets/showcase/config/showcase_constants.dart';
 import '../widgets/showcase/showcase_button.dart';
+import 'non_compliance_tracker/non_compliance_tracking_search.dart';
 
 @RoutePage()
 class HomePage extends LocalizedStatefulWidget {
@@ -570,6 +571,16 @@ class _HomePageState extends LocalizedState<HomePage> {
           icon: Icons.groups,
         ),
       ),
+      i18.home.nonComplianceTracking:
+          homeShowcaseData.nonComplianceTracking.buildWith(
+        child: HomeItemCard(
+          label: i18.home.nonComplianceTracking,
+          onPressed: () {
+            context.router.push(const NonComplianceTrackingWrapperRoute());
+          },
+          icon: Icons.announcement,
+        ),
+      ),
     };
 
     final Map<String, GlobalKey> homeItemsShowcaseMap = {
@@ -598,6 +609,8 @@ class _HomePageState extends LocalizedState<HomePage> {
           homeShowcaseData.dailyImplementationPlan.showcaseKey,
       i18.home.campaignDeliverySelection:
           homeShowcaseData.campaignDeliverySelection.showcaseKey,
+      i18.home.nonComplianceTracking:
+          homeShowcaseData.nonComplianceTracking.showcaseKey,
       i18.home.db: homeShowcaseData.db.showcaseKey,
       i18.home.dashboard: homeShowcaseData.dashBoard.showcaseKey,
       i18.home.clfLabel: homeShowcaseData.clf.showcaseKey,
@@ -612,6 +625,7 @@ class _HomePageState extends LocalizedState<HomePage> {
       // INFO: Need to add items label of package Here
       i18.home.dailyImplementationPlanLabel,
       i18.home.campaignDeliverySelection,
+      i18.home.nonComplianceTracking,
       i18.home.mySurveyForm,
       i18.home.manageAttendanceLabel,
       i18.home.beneficiaryReferralLabel,
@@ -636,7 +650,8 @@ class _HomePageState extends LocalizedState<HomePage> {
                   .contains(element) ||
               element == i18.home.db ||
               element == i18.home.dailyImplementationPlanLabel ||
-              element == i18.home.campaignDeliverySelection,
+              element == i18.home.campaignDeliverySelection ||
+              element == i18.home.nonComplianceTracking,
         )
         .toList();
 
