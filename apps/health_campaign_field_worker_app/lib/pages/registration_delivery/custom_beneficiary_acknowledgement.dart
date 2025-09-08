@@ -72,11 +72,11 @@ class CustomBeneficiaryAcknowledgementPageState
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(spacer2),
-        child: BlocConsumer<CustomSearchHouseholdsBloc,
-            CustomSearchHouseholdsState>(
+        child: BlocConsumer<registration_delivery.SearchHouseholdsBloc,
+            registration_delivery.SearchHouseholdsState>(
           listener: (context, searchHouseholdsState) {},
           builder: (context, searchHouseholdsState) {
-            HouseholdMemberWrapper? i =
+            registration_delivery.HouseholdMemberWrapper? i =
                 searchHouseholdsState.householdMembers.lastOrNull;
             registration_delivery.HouseholdMemberWrapper?
                 householdMemberWrapper;

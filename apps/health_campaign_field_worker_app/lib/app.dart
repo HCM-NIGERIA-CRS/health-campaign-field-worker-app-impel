@@ -19,6 +19,7 @@ import 'package:registration_delivery/registration_delivery.dart';
 import 'package:survey_form/survey_form.dart';
 import 'package:transit_post/data/repositories/local/user_action.dart';
 import 'package:transit_post/data/repositories/oplog/oplog.dart';
+import 'package:transit_post/data/repositories/remote/user_action.dart';
 
 import 'blocs/app_initialization/app_initialization.dart';
 import 'blocs/auth/auth.dart';
@@ -112,12 +113,12 @@ class MainApplicationState extends State<MainApplication>
             UserActionOpLogManager(widget.isar),
           ),
         ),
-        RepositoryProvider<UserActionLocalRepository>(
-          create: (context) => UserActionLocalRepository(
-            widget.sql,
-            UserActionOpLogManager(widget.isar),
-          ),
-        ),
+        // RepositoryProvider<UserActionLocalRepository>(
+        //   create: (context) => UserActionLocalRepository(
+        //     widget.sql,
+        //     UserActionOpLogManager(widget.isar),
+        //   ),
+        // ),
       ],
       child: BlocProvider(
         create: (context) => AppInitializationBloc(

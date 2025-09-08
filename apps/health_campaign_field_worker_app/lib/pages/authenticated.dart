@@ -46,6 +46,7 @@ import '../router/authenticated_route_observer.dart';
 import '../utils/environment_config.dart';
 import '../utils/i18_key_constants.dart' as i18;
 import '../utils/utils.dart';
+import '../data/sync_service_mapper.dart' as local_sync_mapper;
 
 @RoutePage()
 class AuthenticatedPageWrapper extends StatelessWidget {
@@ -273,9 +274,7 @@ class AuthenticatedPageWrapper extends StatelessWidget {
       SyncBloc bloc, String userId, List<OpLog> event) {
     bloc.add(
       SyncRefreshEvent(
-        userId,
-        SyncServiceSingleton().entityMapper!.getSyncCount(event),
-      ),
+          userId, local_sync_mapper.SyncServiceMapper().getSyncCount(event)),
     );
   }
 

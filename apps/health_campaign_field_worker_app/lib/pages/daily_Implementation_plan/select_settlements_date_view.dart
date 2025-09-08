@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:digit_data_model/data/local_store/sql_store/tables/user_action.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/user_action.dart';
@@ -19,10 +21,8 @@ import '../../utils/i18_key_constants.dart' as i18;
 
 @RoutePage()
 class SelectSettlementsDateViewPage extends LocalizedStatefulWidget {
-  final String clientReferenceId;
   const SelectSettlementsDateViewPage({
     super.key,
-    required this.clientReferenceId,
   });
 
   @override
@@ -34,9 +34,6 @@ class _SelectSettlementsDateViewState
     extends LocalizedState<SelectSettlementsDateViewPage> {
   @override
   void initState() {
-    context.read<DipSearchBloc>().add(
-          DipSearchEvent.search(clientReferenceId: widget.clientReferenceId),
-        );
     super.initState();
   }
 
@@ -73,7 +70,7 @@ class _SelectSettlementsDateViewState
                           ? []
                           : selectedSettlementsDateAdditionalField.first.value
                                   .map((e) {
-                                return SettlementModel.fromJson(e);
+                                return SettlementModel.fromJson(json.decode(e));
                               }).toList() ??
                               [];
 

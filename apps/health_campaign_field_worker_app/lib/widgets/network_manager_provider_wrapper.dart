@@ -583,15 +583,16 @@ class NetworkManagerProviderWrapper extends StatelessWidget {
               actionMap: actions,
             ),
           ),
-        if (value == DataModelType.userLocation)
-          RepositoryProvider<
-              RemoteRepository<UserActionModel, UserActionSearchModel>>(
-            create: (_) =>
-                LocationTrackerRemoteRepository(dio, actionMap: actions),
-          ),
+        // if (value == DataModelType.userLocation)
+        //   RepositoryProvider<
+        //       RemoteRepository<UserActionModel, UserActionSearchModel>>(
+        //     create: (_) =>
+        //         LocationTrackerRemoteRepository(dio, actionMap: actions),
+        //   ),
         // INFO Need to add packages here
         if (value == DataModelType.userAction)
-          RepositoryProvider<UserActionRemoteRepository>(
+          RepositoryProvider<
+              RemoteRepository<UserActionModel, UserActionSearchModel>>(
             create: (_) => UserActionRemoteRepository(dio, actionMap: actions),
           ),
       ]);

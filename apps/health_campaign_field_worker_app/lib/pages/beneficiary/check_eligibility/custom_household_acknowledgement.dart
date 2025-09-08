@@ -101,8 +101,9 @@ class CustomHouseholdAcknowledgementPageState
                             .read<HouseholdOverviewBloc>()
                             .state
                             .householdMemberWrapper;
-
-                        context.router.popAndPush(
+                        final parent = context.router.parent() as StackRouter;
+                        parent.popUntilRoot();
+                        context.router.push(
                           BeneficiaryWrapperRoute(wrapper: wrapper),
                         );
                       },

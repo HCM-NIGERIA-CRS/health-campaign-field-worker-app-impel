@@ -847,13 +847,9 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
     SelectSettlementsDateViewRoute.name: (routeData) {
-      final args = routeData.argsAs<SelectSettlementsDateViewRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: SelectSettlementsDateViewPage(
-          key: args.key,
-          clientReferenceId: args.clientReferenceId,
-        ),
+        child: const SelectSettlementsDateViewPage(),
       );
     },
     SelectSettlementsRoute.name: (routeData) {
@@ -3988,41 +3984,16 @@ class SelectSettlementsDateViewListRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [SelectSettlementsDateViewPage]
-class SelectSettlementsDateViewRoute
-    extends PageRouteInfo<SelectSettlementsDateViewRouteArgs> {
-  SelectSettlementsDateViewRoute({
-    Key? key,
-    required String clientReferenceId,
-    List<PageRouteInfo>? children,
-  }) : super(
+class SelectSettlementsDateViewRoute extends PageRouteInfo<void> {
+  const SelectSettlementsDateViewRoute({List<PageRouteInfo>? children})
+      : super(
           SelectSettlementsDateViewRoute.name,
-          args: SelectSettlementsDateViewRouteArgs(
-            key: key,
-            clientReferenceId: clientReferenceId,
-          ),
           initialChildren: children,
         );
 
   static const String name = 'SelectSettlementsDateViewRoute';
 
-  static const PageInfo<SelectSettlementsDateViewRouteArgs> page =
-      PageInfo<SelectSettlementsDateViewRouteArgs>(name);
-}
-
-class SelectSettlementsDateViewRouteArgs {
-  const SelectSettlementsDateViewRouteArgs({
-    this.key,
-    required this.clientReferenceId,
-  });
-
-  final Key? key;
-
-  final String clientReferenceId;
-
-  @override
-  String toString() {
-    return 'SelectSettlementsDateViewRouteArgs{key: $key, clientReferenceId: $clientReferenceId}';
-  }
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for

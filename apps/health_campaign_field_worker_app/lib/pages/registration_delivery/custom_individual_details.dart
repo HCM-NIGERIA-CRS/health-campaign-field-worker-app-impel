@@ -181,6 +181,22 @@ class CustomIndividualDetailsPageState
                           searchHouseholdsState.householdMembers.lastOrNull;
 
                       if (householdMemberWrapper != null) {
+                        // final householdCaptured =
+                        //     householdMemberWrapper.household;
+                        // if (householdCaptured != null) {
+                        //   searchHouseholdsBloc
+                        //       .add(const SearchHouseholdsEvent.clear());
+                        //   searchHouseholdsBloc.add(
+                        //     SearchHouseholdsEvent.searchByHousehold(
+                        //       householdModel: householdCaptured,
+                        //       projectId:
+                        //           RegistrationDeliverySingleton().projectId!,
+                        //       isProximityEnabled: false,
+                        //       maxRadius:
+                        //           RegistrationDeliverySingleton().maxRadius,
+                        //     ),
+                        //   );
+                        // }
                         router.push(CustomBeneficiaryAcknowledgementRoute(
                           enableViewHousehold: true,
                           acknowledgementType: AcknowledgementType.addHousehold,
@@ -196,6 +212,11 @@ class CustomIndividualDetailsPageState
                           // if invalid age send to overview no checklist
                           if (verifyIfChildAgeValid(
                               context, individualCaptured!)) {
+                            final parent =
+                                context.router.parent() as StackRouter;
+                            parent.popUntilRoot();
+                            router.push(BeneficiaryWrapperRoute(
+                                wrapper: householdMemberWrapper));
                             router.push(
                               BeneficiaryWrapperRoute(
                                 wrapper: householdMemberWrapper,
@@ -209,6 +230,9 @@ class CustomIndividualDetailsPageState
                               ),
                             );
                           } else {
+                            final parent =
+                                context.router.parent() as StackRouter;
+                            parent.popUntilRoot();
                             router.push(
                               BeneficiaryWrapperRoute(
                                 wrapper: householdMemberWrapper,

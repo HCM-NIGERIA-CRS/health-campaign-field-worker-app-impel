@@ -540,8 +540,8 @@ class CustomBeneficiaryRegistrationBloc
             if (task.isNotEmpty) {
               if (task.last.status == Status.administeredFailed.toValue()) {
                 // marking household as registered when updating to compliant
-                await taskDataRepository.update(
-                    task.last.copyWith(status: Status.registered.toValue()));
+                await taskDataRepository.update(task.last
+                    .copyWith(status: Status.notAdministered.toValue()));
               }
             }
           } else {
@@ -688,8 +688,8 @@ class CustomBeneficiaryRegistrationBloc
                   Status.administeredFailed.toValue()) {
                 // marking household as registered when updating to compliant
 
-                await taskDataRepository.update(
-                    task.last.copyWith(status: Status.registered.toValue()));
+                await taskDataRepository.update(task.last
+                    .copyWith(status: Status.notAdministered.toValue()));
               }
             }
           }

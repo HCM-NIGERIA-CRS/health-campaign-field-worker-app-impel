@@ -10,6 +10,7 @@ import 'package:inventory_management/widgets/localized.dart';
 
 import '../../blocs/daily_implementation_plan/daily_implementation_plan.dart';
 import '../../blocs/daily_implementation_plan/dip_all_search.dart';
+import '../../blocs/daily_implementation_plan/dip_search.dart';
 import '../../router/app_router.dart';
 import '../../utils/constants.dart';
 import '../../widgets/custom_back_navigation.dart';
@@ -84,9 +85,12 @@ class _SelectSettlementsDateViewListPageState
 
                         return InkWell(
                           onTap: () {
-                            context.router.push(SelectSettlementsDateViewRoute(
-                                clientReferenceId:
-                                    dipUserActionModel.clientReferenceId));
+                            context.read<DipSearchBloc>().add(
+                                DipSearchEvent.search(
+                                    clientReferenceId:
+                                        dipUserActionModel.clientReferenceId));
+                            context.router
+                                .push(const SelectSettlementsDateViewRoute());
                           },
                           child: DigitCard(
                             margin:
