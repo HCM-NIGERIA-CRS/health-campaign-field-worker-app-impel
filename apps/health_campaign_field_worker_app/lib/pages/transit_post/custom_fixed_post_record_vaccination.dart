@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:collection/collection.dart';
 import 'package:digit_components/widgets/atoms/digit_toaster.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_scanner/digit_scanner.dart';
@@ -450,6 +451,7 @@ class CustomFixedPostRecordVaccinationPageState
                                                           .translate(
                                                               element.code)))
                                               .toList(),
+                                          groupValue: heightRangeSelected ?? '',
                                           onChanged: (value) {
                                             if (value.code.isNotEmpty) {
                                               setState(() {
@@ -598,18 +600,6 @@ class CustomFixedPostRecordVaccinationPageState
                                           ageRangeSelected = value.code;
                                         });
                                       }
-                                      // if (value.code ==
-                                      //     AgeRange.nineToEleven.name) {
-                                      //   setState(() {
-                                      //     ageRangeSelected =
-                                      //         AgeRange.nineToEleven.name;
-                                      //   });
-                                      // } else {
-                                      //   setState(() {
-                                      //     ageRangeSelected =
-                                      //         AgeRange.twelveToFiftyNine.name;
-                                      //   });
-                                      // }
                                     },
                                   );
                                 });
@@ -640,7 +630,8 @@ class CustomFixedPostRecordVaccinationPageState
   }
 
   List<DigitTableRow> buildTableData() {
-    final resources = TransitPostSingleton().resources;
+    final resources =
+        getResourceVariantsBasedOnProjectType(TransitPostSingleton().resources);
 
     if (resources == null || resources.isEmpty) return [];
 
@@ -662,5 +653,24 @@ class CustomFixedPostRecordVaccinationPageState
       count++;
     }
     return finalTableRow;
+  }
+
+  List<ProjectProductVariantModel> getResourceVariantsBasedOnProjectType(
+    List<ProjectProductVariantModel>? resources,
+  ) {
+    if (resources == null || resources.isEmpty) return [];
+
+    return context.projectTypeCode == ProjectTypes.oncho.toValue()
+        ? resources
+            .whereNot((resource) =>
+                resource.productVariantId == "PVAR-2025-09-01-000022" ||
+                resource.productVariantId == "PVAR-2025-09-01-000021")
+            .toList()
+        : resources
+            .whereNot((resource) =>
+                resource.productVariantId == "PVAR-2025-09-01-000022" ||
+                resource.productVariantId == "PVAR-2025-09-01-000021" ||
+                resource.productVariantId == "PVAR-2025-09-01-000023")
+            .toList();
   }
 }

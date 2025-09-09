@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:collection/collection.dart';
 import 'package:digit_components/widgets/atoms/digit_toaster.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_scanner/digit_scanner.dart';
@@ -34,8 +35,10 @@ import '../../blocs/app_initialization/app_initialization.dart';
 import '../../blocs/transit_post/custom_transit_post.dart';
 import '../../blocs/transit_post/fixed_post.dart';
 import '../../data/local_store/no_sql/schema/app_configuration.dart';
+import '../../models/entities/project_types.dart';
 import '../../models/entities/user_action_enums.dart';
 import '../../router/app_router.dart';
+import '../../utils/extensions/extensions.dart';
 import '../../widgets/showcase/showcase_wrappers.dart';
 import '../campaign_delivery_select.dart';
 
@@ -450,18 +453,6 @@ class CustomTransitPostRecordVaccinationPageState
                                           ageRangeSelected = value.code;
                                         });
                                       }
-                                      // if (value.code ==
-                                      //     AgeRange.nineToEleven.name) {
-                                      //   setState(() {
-                                      //     ageRangeSelected =
-                                      //         AgeRange.nineToEleven.name;
-                                      //   });
-                                      // } else {
-                                      //   setState(() {
-                                      //     ageRangeSelected =
-                                      //         AgeRange.twelveToFiftyNine.name;
-                                      //   });
-                                      // }
                                     },
                                   );
                                 });
@@ -485,7 +476,8 @@ class CustomTransitPostRecordVaccinationPageState
   }
 
   List<DigitTableRow> buildTableData() {
-    final resources = TransitPostSingleton().resources;
+    final resources =
+        getResourceVariantsBasedOnProjectType(TransitPostSingleton().resources);
 
     if (resources == null || resources.isEmpty) return [];
 
@@ -507,5 +499,18 @@ class CustomTransitPostRecordVaccinationPageState
       count++;
     }
     return finalTableRow;
+  }
+
+  List<ProjectProductVariantModel> getResourceVariantsBasedOnProjectType(
+    List<ProjectProductVariantModel>? resources,
+  ) {
+    if (resources == null || resources.isEmpty) return [];
+
+    return resources
+        .whereNot((resource) =>
+            resource.productVariantId == "PVAR-2025-09-01-000022" ||
+            resource.productVariantId == "PVAR-2025-09-01-000021" ||
+            resource.productVariantId == "PVAR-2025-09-01-000023")
+        .toList();
   }
 }
