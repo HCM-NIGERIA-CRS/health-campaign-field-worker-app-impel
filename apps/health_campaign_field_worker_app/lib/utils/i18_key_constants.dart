@@ -493,6 +493,9 @@ class StockDetails {
   }
 
   String get transportTypeLabel => 'STOCK_DETAILS_TYPE_OF_TRANSPORT_LABEL';
+  String get statusVvmLabel => 'STOCK_DETAILS_STATUS_OF_VVM';
+  String get manufacturerLabel => 'STOCK_DETAILS_STATUS_OF_MANUFACTURER_LABEL';
+  String get expireDateLabel => 'STOCK_DETAILS_EXPIRE_DATE_LABEL';
 
   String get quantityUnusedReturnedLabel =>
       'STOCK_DETAILS_UNUSED_QUANTITY_RETURNED';
@@ -510,6 +513,8 @@ class StockDetails {
 
   String get recordStockReturnedDescription =>
       'STOCK_DETAILS_RECORD_STOCK_RETURNED_DESCRIPTION';
+
+  String get voucherSerialNumberLabel => 'STOCK_DETAILS_VOUCHER_SERIAL_NUMBER';
 }
 
 class StockReconciliationDetails {
