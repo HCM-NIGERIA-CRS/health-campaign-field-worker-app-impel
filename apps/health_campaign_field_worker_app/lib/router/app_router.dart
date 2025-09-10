@@ -117,6 +117,7 @@ import '../pages/campaign_delivery_select.dart';
 import '../pages/daily_Implementation_plan/select_settlements.dart';
 import '../pages/beneficiary/check_eligibility/custom_deliver_intervention_head_page.dart';
 import '../pages/beneficiary/check_eligibility/custom_beneficiary_details_head_page.dart';
+import '../pages/registration_delivery/custom_individual_details_polio_smc.dart';
 
 part 'app_router.gr.dart';
 
@@ -393,9 +394,10 @@ class AppRouter extends _$AppRouter {
                   AutoRoute(
                       page: CustomIndividualDetailsRoute.page,
                       path: 'custom-individual-details'),
-                  // AutoRoute(
-                  //     page: HouseHoldDetailsRoute.page,
-                  //     path: 'household-details'),
+                  AutoRoute(
+                      page: CustomIndividualDetailsPolioSMCRoute.page,
+                      path: 'custom-individual-details-polio-smc'),
+
                   AutoRoute(
                       page: CustomHouseHoldDetailsRoute.page,
                       path: 'household-details'),

@@ -366,6 +366,18 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    CustomIndividualDetailsPolioSMCRoute.name: (routeData) {
+      final args = routeData.argsAs<CustomIndividualDetailsPolioSMCRouteArgs>(
+          orElse: () => const CustomIndividualDetailsPolioSMCRouteArgs());
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CustomIndividualDetailsPolioSMCPage(
+          key: args.key,
+          appLocalizations: args.appLocalizations,
+          isHeadOfHousehold: args.isHeadOfHousehold,
+        ),
+      );
+    },
     CustomInventoryFacilitySelectionRoute.name: (routeData) {
       final args =
           routeData.argsAs<CustomInventoryFacilitySelectionRouteArgs>();
@@ -2269,6 +2281,50 @@ class CustomIndividualDetailsRouteArgs {
   @override
   String toString() {
     return 'CustomIndividualDetailsRouteArgs{key: $key, appLocalizations: $appLocalizations, isHeadOfHousehold: $isHeadOfHousehold}';
+  }
+}
+
+/// generated route for
+/// [CustomIndividualDetailsPolioSMCPage]
+class CustomIndividualDetailsPolioSMCRoute
+    extends PageRouteInfo<CustomIndividualDetailsPolioSMCRouteArgs> {
+  CustomIndividualDetailsPolioSMCRoute({
+    Key? key,
+    RegistrationDeliveryLocalization? appLocalizations,
+    bool isHeadOfHousehold = false,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CustomIndividualDetailsPolioSMCRoute.name,
+          args: CustomIndividualDetailsPolioSMCRouteArgs(
+            key: key,
+            appLocalizations: appLocalizations,
+            isHeadOfHousehold: isHeadOfHousehold,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CustomIndividualDetailsPolioSMCRoute';
+
+  static const PageInfo<CustomIndividualDetailsPolioSMCRouteArgs> page =
+      PageInfo<CustomIndividualDetailsPolioSMCRouteArgs>(name);
+}
+
+class CustomIndividualDetailsPolioSMCRouteArgs {
+  const CustomIndividualDetailsPolioSMCRouteArgs({
+    this.key,
+    this.appLocalizations,
+    this.isHeadOfHousehold = false,
+  });
+
+  final Key? key;
+
+  final RegistrationDeliveryLocalization? appLocalizations;
+
+  final bool isHeadOfHousehold;
+
+  @override
+  String toString() {
+    return 'CustomIndividualDetailsPolioSMCRouteArgs{key: $key, appLocalizations: $appLocalizations, isHeadOfHousehold: $isHeadOfHousehold}';
   }
 }
 

@@ -35,6 +35,7 @@ import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
 import 'package:registration_delivery/utils/utils.dart';
 import '../../blocs/registration_delivery/custom_search_household.dart'
     as customSearchHouseholdBloc;
+import '../../models/entities/project_types.dart';
 import '../../utils/utils.dart';
 import '../../utils/date_utils.dart' as digits;
 import '../../utils/i18_key_constants.dart' as i18_local;
@@ -760,12 +761,23 @@ class _CustomHouseholdOverviewPageState
                                                                             ?.clientReferenceId),
                                                               ),
                                                             ),
-                                                            children: [
-                                                              CustomIndividualDetailsRoute(
-                                                                isHeadOfHousehold:
-                                                                    isHead,
-                                                              ),
-                                                            ],
+                                                            children: context
+                                                                        .projectTypeCode ==
+                                                                    ProjectTypes
+                                                                        .polio
+                                                                        .toValue()
+                                                                ? [
+                                                                    CustomIndividualDetailsRoute(
+                                                                      isHeadOfHousehold:
+                                                                          isHead,
+                                                                    ),
+                                                                  ]
+                                                                : [
+                                                                    CustomIndividualDetailsPolioSMCRoute(
+                                                                      isHeadOfHousehold:
+                                                                          isHead,
+                                                                    )
+                                                                  ],
                                                           ),
                                                         );
                                                         callReloadEvent(
