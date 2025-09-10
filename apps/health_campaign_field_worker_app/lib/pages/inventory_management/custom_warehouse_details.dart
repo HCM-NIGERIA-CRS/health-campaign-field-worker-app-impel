@@ -71,6 +71,7 @@ class CustomWarehouseDetailsPageState
     final theme = Theme.of(context);
     final recordStockBloc = BlocProvider.of<RecordStockBloc>(context);
     final textTheme = theme.digitTextTheme(context);
+    bool isWareHouseMgr = InventorySingleton().isWareHouseMgr;
 
     return InventorySingleton().projectId.isEmpty
         ? Center(
@@ -88,11 +89,40 @@ class CustomWarehouseDetailsPageState
                     fetched: (facilities, allfacilities) {
                       if (ctx.selectedProject.address?.boundaryType ==
                           Constants.stateBoundaryLevel) {
+                        //TODO : change the role for the zonal facility
+                        if (isWareHouseMgr) {
+                          List<FacilityModel> filteredFacilities = facilities
+                              .where(
+                                (element) =>
+                                    element.usage == Constants.zonalFacility,
+                              )
+                              .toList();
+                          facilities = filteredFacilities.isEmpty
+                              ? facilities
+                              : filteredFacilities;
+                        } else {
+                          List<FacilityModel> filteredFacilities = facilities
+                              .where((element) =>
+                                  element.usage == Constants.stateFacility)
+                              .toList();
+                          facilities = filteredFacilities.isEmpty
+                              ? facilities
+                              : filteredFacilities;
+                        }
+                      } else if (ctx.selectedProject.address?.boundaryType ==
+                          Constants.lgaBoundaryLevel) {
                         List<FacilityModel> filteredFacilities = facilities
-                            .where(
-                              (element) =>
-                                  element.usage == Constants.stateFacility,
-                            )
+                            .where((element) =>
+                                element.usage == Constants.lgaFacility)
+                            .toList();
+                        facilities = filteredFacilities.isEmpty
+                            ? facilities
+                            : filteredFacilities;
+                      } else if (ctx.selectedProject.address?.boundaryType ==
+                          Constants.wardBoundaryLevel) {
+                        List<FacilityModel> filteredFacilities = facilities
+                            .where((element) =>
+                                element.usage == Constants.wardFacility)
                             .toList();
                         facilities = filteredFacilities.isEmpty
                             ? facilities

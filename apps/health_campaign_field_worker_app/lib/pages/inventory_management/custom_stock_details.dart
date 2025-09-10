@@ -551,42 +551,112 @@ class CustomStockDetailsPageState
                                             [];
 
                                         if (context.selectedProject.address
-                                                    ?.boundaryType ==
-                                                Constants.stateBoundaryLevel ||
-                                            context.selectedProject.address
-                                                    ?.boundaryType ==
-                                                Constants.stateBoundaryLevel) {
-                                          filteredFacilities = entryType ==
-                                                  StockRecordEntryType.receipt
-                                              ? allFacilities //TODO: changed from facilities
+                                                ?.boundaryType ==
+                                            Constants.stateBoundaryLevel) {
+                                          if (isWareHouseMgr) {
+                                            //TODO : change the role of zone
+                                            if (entryType ==
+                                                StockRecordEntryType.receipt) {
+                                              filteredFacilities = facilities
                                                   .where((element) =>
                                                       element.usage ==
-                                                      Constants.centralFacility)
-                                                  .toList()
-                                              : allFacilities //TODO: changed from facilities
-                                                  .where((element) =>
-                                                      element.usage ==
-                                                      Constants.healthFacility)
+                                                      Constants
+                                                          .nationalWarehouse)
                                                   .toList();
-                                        } else {
-                                          filteredFacilities = context
-                                                  .isDistributor
-                                              ? allFacilities //TODO: changed from facilities
+                                            } else if (entryType ==
+                                                StockRecordEntryType.dispatch) {
+                                              filteredFacilities = facilities
                                                   .where((element) =>
                                                       element.usage ==
-                                                      Constants.healthFacility)
-                                                  .toList()
-                                              : entryType ==
-                                                      StockRecordEntryType
-                                                          .receipt
-                                                  ? allFacilities //TODO: changed from facilities
-                                                      .where((element) =>
-                                                          element.usage ==
-                                                          Constants.lgaFacility)
-                                                      .toList()
-                                                  : [];
+                                                      Constants.stateFacility)
+                                                  .toList();
+                                            } else if (entryType ==
+                                                StockRecordEntryType.damaged) {
+                                              //TODO : need to add the facility
+                                            }
+                                          } else {
+                                            if (entryType ==
+                                                    StockRecordEntryType
+                                                        .receipt ||
+                                                entryType ==
+                                                    StockRecordEntryType
+                                                        .returned) {
+                                              filteredFacilities = facilities
+                                                  .where((element) =>
+                                                      element.usage ==
+                                                      Constants.zonalFacility)
+                                                  .toList();
+                                            } else if (entryType ==
+                                                StockRecordEntryType.dispatch) {
+                                              filteredFacilities = facilities
+                                                  .where((element) =>
+                                                      element.usage ==
+                                                      Constants.lgaWarehouse)
+                                                  .toList();
+                                            } else {
+                                              //TODO : add the damage warehouse mapping
+                                            }
+                                          }
+                                        } else if (context.selectedProject
+                                                    .address?.boundaryType ==
+                                                Constants.lgaBoundaryLevel &&
+                                            isWareHouseMgr) {
+                                          if (entryType ==
+                                              StockRecordEntryType.dispatch) {
+                                            filteredFacilities = facilities
+                                                .where((element) =>
+                                                    element.usage ==
+                                                    Constants.wardWarehouse)
+                                                .toList();
+                                          } else {
+                                            filteredFacilities = facilities
+                                                .where((element) =>
+                                                    element.usage ==
+                                                    Constants.stateFacility)
+                                                .toList();
+                                          }
+                                        } else if (context.selectedProject
+                                                .address?.boundaryType ==
+                                            Constants.wardBoundaryLevel) {
+                                          if (entryType ==
+                                              StockRecordEntryType.dispatch) {
+                                            filteredFacilities.add(
+                                              FacilityModel(
+                                                id: 'Delivery Team',
+                                                name: 'CDD Team',
+                                                additionalFields:
+                                                    FacilityAdditionalFields(
+                                                  version: 1,
+                                                  fields: [
+                                                    const AdditionalField(
+                                                        'type', 'CDD Team')
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          } else {
+                                            filteredFacilities = facilities
+                                                .where((element) =>
+                                                    element.usage ==
+                                                    Constants.lgaWarehouse)
+                                                .toList();
+                                          }
+                                        } else if (context.selectedProject
+                                                .address?.boundaryType ==
+                                            Constants.healthFacility) {
+                                          if (entryType ==
+                                                  StockRecordEntryType
+                                                      .receipt ||
+                                              entryType ==
+                                                  StockRecordEntryType
+                                                      .returned) {
+                                            filteredFacilities = facilities
+                                                .where((element) =>
+                                                    element.usage ==
+                                                    Constants.wardWarehouse)
+                                                .toList();
+                                          }
                                         }
-
                                         facilities =
                                             context.isHealthFacilitySupervisor &&
                                                     entryType !=
