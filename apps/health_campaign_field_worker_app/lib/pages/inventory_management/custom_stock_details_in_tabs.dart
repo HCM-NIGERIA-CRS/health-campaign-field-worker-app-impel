@@ -151,8 +151,8 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                   ]
                 : [],
           ),
-          _statusVvmKey: FormControl<int>(validators: []),
-          _manufacturerKey: FormControl<int>(validators: []),
+          _statusVvmKey: FormControl<String>(),
+          _manufacturerKey: FormControl<String>(),
           _transactionQuantityKey: FormControl<int>(
               validators: (InventorySingleton().isWareHouseMgr ||
                       context.isHealthFacilitySupervisor)
@@ -913,7 +913,10 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
       "batchNumber",
       "comments",
       "partialBlistersReturned",
-      "wastedBlistersReturned"
+      "wastedBlistersReturned",
+      "statusVvm",
+      "manufacturer",
+      "expireDate"
     };
 
     List<AdditionalField> filteredAdditionalFields = additionalFields
