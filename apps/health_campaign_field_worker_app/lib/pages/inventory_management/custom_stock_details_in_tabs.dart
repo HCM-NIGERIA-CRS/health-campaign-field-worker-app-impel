@@ -66,7 +66,10 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
   static const _transactionQuantityKey = 'quantity';
   static const _transactionQuantityPartialKey = 'quantityPartial';
   static const _transactionQuantityWastedKey = 'quantityWasted';
-  static const _waybillNumberKey = 'waybillNumber';
+  static const _voucherSerialNumberKey = 'voucherSerialNumber';
+  static const _statusVvmKey = 'statusVvm';
+  static const _manufacturerKey = ' manufacturer';
+  static const _expireDateKey = 'expireDate';
   // static const _waybillQuantityKey = 'waybillQuantity';
   static const _batchNumberKey = 'batchNumberKey';
   static const _commentsKey = 'comments';
@@ -75,6 +78,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
 
   @override
   void initState() {
+    transportTypes = InventorySingleton().transportType;
     context
         .read<AuthBloc>()
         .add(const AuthUpdateProductSkuCountsEvent(skuCountUpdates: {}));
@@ -136,7 +140,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
         product: FormGroup({
           'materialNoteNumber': FormControl<String>(value: _sharedMRN),
           _transactionReasonKey: FormControl<String>(),
-          _waybillNumberKey: FormControl<String>(
+          _voucherSerialNumberKey: FormControl<String>(
             validators: (InventorySingleton().isWareHouseMgr ||
                     (context.isHealthFacilitySupervisor &&
                         entryType != StockRecordEntryType.dispatch))
@@ -147,6 +151,8 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                   ]
                 : [],
           ),
+          _statusVvmKey: FormControl<int>(validators: []),
+          _manufacturerKey: FormControl<int>(validators: []),
           _transactionQuantityKey: FormControl<int>(
               validators: (InventorySingleton().isWareHouseMgr ||
                       context.isHealthFacilitySupervisor)
@@ -167,6 +173,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
           _transactionQuantityPartialKey: FormControl<int>(validators: []),
           _transactionQuantityWastedKey: FormControl<int>(validators: []),
           _batchNumberKey: FormControl<String>(),
+          _expireDateKey: FormControl<String>(),
           _commentsKey: FormControl<String>(),
         }),
     });
@@ -265,8 +272,10 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
               ?.value
               ?.toString() ??
           '0',
-      wayBillNumber:
-          _forms[productSku]?.control(_waybillNumberKey)?.value?.toString(),
+      wayBillNumber: _forms[productSku]
+          ?.control(_voucherSerialNumberKey)
+          ?.value
+          ?.toString(),
       transactionReason: transactionReason ??
           _forms[productSku]?.control(_transactionReasonKey)?.value?.toString(),
       clientReferenceId: IdGen.i.identifier,
@@ -517,45 +526,6 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 12),
-                    if ((isWareHouseMgr || isHealthFacilitySupervisor))
-                      ReactiveWrapperField(
-                          formControlName: _waybillNumberKey,
-                          builder: (field) {
-                            return InputField(
-                              type: InputType.text,
-                              label: localizations.translate(
-                                i18.stockDetails.waybillNumberLabel,
-                              ),
-                              errorMessage: field.errorText,
-                              onChange: (val) {
-                                field.control.value = val;
-                              },
-                              isRequired: !(context
-                                      .isHealthFacilitySupervisor &&
-                                  entryType == StockRecordEntryType.dispatch),
-                            );
-                          }),
-                    if ((isWareHouseMgr || isHealthFacilitySupervisor) &&
-                        entryType != StockRecordEntryType.returned)
-                      ReactiveWrapperField(
-                          formControlName: _batchNumberKey,
-                          builder: (field) {
-                            return InputField(
-                              type: InputType.text,
-                              label: localizations.translate(
-                                i18_local.stockDetails.batchNumberLabel,
-                              ),
-                              errorMessage: field.errorText,
-                              onChange: (val) {
-                                if (val == '') {
-                                  field.control.value = '0';
-                                } else {
-                                  field.control.value = val;
-                                }
-                              },
-                            );
-                          }),
-                    const SizedBox(height: 16),
                     ReactiveWrapperField(
                         formControlName: _transactionQuantityKey,
                         validationMessages: {
@@ -604,6 +574,123 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                             ),
                           );
                         }),
+                    const SizedBox(height: 16),
+                    ReactiveWrapperField(
+                      formControlName: _statusVvmKey,
+                      builder: (field) {
+                        return LabeledField(
+                          label: localizations.translate(
+                            i18_local.stockDetails.statusVvmLabel,
+                          ),
+                          child: DigitDropdown(
+                            emptyItemText: localizations.translate(
+                              i18.common.noMatchFound,
+                            ),
+                            items: transportTypes.map((type) {
+                              return DropdownItem(
+                                name: localizations.translate(type.name),
+                                code: type.code,
+                              );
+                            }).toList(),
+                            selectedOption:
+                                (form.control(_statusVvmKey).value != null)
+                                    ? DropdownItem(
+                                        name: localizations.translate(
+                                            form.control(_statusVvmKey).value),
+                                        code: form.control(_statusVvmKey).value)
+                                    : const DropdownItem(name: '', code: ''),
+                            onSelect: (value) {
+                              field.control.value = value.name;
+                              form.control(_statusVvmKey).value = value.code;
+                              form
+                                  .control(_statusVvmKey)
+                                  .updateValue(value.code);
+                              setState(() {});
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    if ((isWareHouseMgr || isHealthFacilitySupervisor))
+                      ReactiveWrapperField(
+                          formControlName: _voucherSerialNumberKey,
+                          builder: (field) {
+                            return InputField(
+                              type: InputType.text,
+                              label: localizations.translate(
+                                i18_local.stockDetails.voucherSerialNumberLabel,
+                              ),
+                              errorMessage: field.errorText,
+                              onChange: (val) {
+                                field.control.value = val;
+                              },
+                              isRequired: !(context
+                                      .isHealthFacilitySupervisor &&
+                                  entryType == StockRecordEntryType.dispatch),
+                            );
+                          }),
+                    const SizedBox(height: 16),
+                    ReactiveWrapperField(
+                      formControlName: _manufacturerKey,
+                      builder: (field) {
+                        return LabeledField(
+                          label: localizations.translate(
+                            i18_local.stockDetails.manufacturerLabel,
+                          ),
+                          child: DigitDropdown(
+                            emptyItemText: localizations.translate(
+                              i18.common.noMatchFound,
+                            ),
+                            items: transportTypes.map((type) {
+                              return DropdownItem(
+                                name: localizations.translate(type.name),
+                                code: type.code,
+                              );
+                            }).toList(),
+                            selectedOption: (form
+                                        .control(_manufacturerKey)
+                                        .value !=
+                                    null)
+                                ? DropdownItem(
+                                    name: localizations.translate(
+                                        form.control(_manufacturerKey).value),
+                                    code: form.control(_manufacturerKey).value)
+                                : const DropdownItem(name: '', code: ''),
+                            onSelect: (value) {
+                              field.control.value = value.name;
+                              form.control(_manufacturerKey).value = value.code;
+                              form
+                                  .control(_manufacturerKey)
+                                  .updateValue(value.code);
+                              setState(() {});
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    if ((isWareHouseMgr || isHealthFacilitySupervisor) &&
+                        entryType != StockRecordEntryType.returned)
+                      ReactiveWrapperField(
+                          formControlName: _batchNumberKey,
+                          builder: (field) {
+                            return InputField(
+                              type: InputType.text,
+                              label: localizations.translate(
+                                i18_local.stockDetails.batchNumberLabel,
+                              ),
+                              errorMessage: field.errorText,
+                              onChange: (val) {
+                                if (val == '') {
+                                  field.control.value = '0';
+                                } else {
+                                  field.control.value = val;
+                                }
+                              },
+                            );
+                          }),
+                    const SizedBox(height: 16),
                     if ((entryType == StockRecordEntryType.dispatch &&
                             context.isCommunityDistributor) ||
                         entryType == StockRecordEntryType.returned)
@@ -731,6 +818,18 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                     //     );
                     //   },
                     // ),
+                    ReactiveWrapperField(
+                        formControlName: _expireDateKey,
+                        builder: (field) {
+                          return InputField(
+                            type: InputType.text,
+                            label: localizations.translate(
+                              i18_local.stockDetails.expireDateLabel,
+                            ),
+                            errorMessage: field.errorText,
+                            onChange: (val) => field.control.value = val,
+                          );
+                        }),
                     const SizedBox(height: 16),
                     ReactiveWrapperField(
                       formControlName: _commentsKey,
@@ -823,7 +922,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
 
     _tabStocks[productName] = currentStock.copyWith(
       quantity: form.control(_transactionQuantityKey).value?.toString(),
-      wayBillNumber: form.control(_waybillNumberKey).value?.toString(),
+      wayBillNumber: form.control(_voucherSerialNumberKey).value?.toString(),
       transactionReason:
           form.control(_transactionReasonKey).value?.toString() ??
               transactionReason,
@@ -840,6 +939,13 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
           if (form.control(_transactionQuantityWastedKey).value != null)
             AdditionalField('wastedBlistersReturned',
                 form.control(_transactionQuantityWastedKey).value),
+          if (form.control(_statusVvmKey).value != null)
+            AdditionalField('statusVvm', form.control(_statusVvmKey).value),
+          if (form.control(_manufacturerKey).value != null)
+            AdditionalField(
+                'manufacturer', form.control(_manufacturerKey).value),
+          if (form.control(_expireDateKey).value != null)
+            AdditionalField('expireDate', form.control(_expireDateKey).value)
         ],
       ),
     );
