@@ -4,6 +4,7 @@ import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/user_action.dart';
 import 'package:digit_data_model/utils/utils.dart';
 import 'package:digit_location_tracker/utils/utils.dart';
+import 'package:digit_ui_components/utils/date_utils.dart';
 import 'package:inventory_management/inventory_management.dart';
 import 'package:referral_reconciliation/referral_reconciliation.dart'
     as referral_reconciliation_mappers;
@@ -59,6 +60,8 @@ import '../models/entities/status.dart' as local_status;
 import '../router/app_router.dart';
 import '../widgets/progress_indicator/progress_indicator.dart';
 import 'constants.dart';
+import '../../utils/date_utils.dart' as digits;
+
 import 'extensions/extensions.dart';
 
 export 'app_exception.dart';
@@ -358,6 +361,52 @@ int getPregnantWomenCount(HouseholdModel? householdCaptured) {
   } else {
     return 0;
   }
+}
+
+void decideFlowBasedOnAge(
+    DigitDOBAgeConvertor age, bool smcFlow, bool polioFlow, bool onchoFlow) {
+  final ageInMonths = (age.years * 12) + age.months;
+  if (ageInMonths >= Constants.smcMinValidAgeInMonths &&
+      ageInMonths <= Constants.smcMaxValidAgeInMonths) {
+    smcFlow = true;
+  }
+  if (ageInMonths >= Constants.polioMinValidAgeInMonths &&
+      ageInMonths <= Constants.polioMaxValidAgeInMonths) {
+    polioFlow = true;
+  }
+
+  if (age.years > Constants.onchoMinValidAgeInMonths) {
+    onchoFlow = true;
+  }
+}
+
+bool isSMCFlow(DigitDOBAgeConvertor age) {
+  final ageInMonths = (age.years * 12) + age.months;
+  if (ageInMonths >= Constants.smcMinValidAgeInMonths &&
+      ageInMonths <= Constants.smcMaxValidAgeInMonths) {
+    return true;
+  }
+  return false;
+}
+
+bool isPolioFlow(DigitDOBAgeConvertor age) {
+  final ageInMonths = (age.years * 12) + age.months;
+  if (ageInMonths >= Constants.polioMinValidAgeInMonths &&
+      ageInMonths <= Constants.polioMaxValidAgeInMonths) {
+    return true;
+  }
+
+  return false;
+}
+
+bool isOnchoFlow(
+  DigitDOBAgeConvertor age,
+) {
+  final ageInMonths = (age.years * 12) + age.months;
+  if (ageInMonths >= Constants.onchoMinValidAgeInMonths) {
+    return true;
+  }
+  return false;
 }
 
 bool showAddMember(HouseholdMemberWrapper? wrapper) {

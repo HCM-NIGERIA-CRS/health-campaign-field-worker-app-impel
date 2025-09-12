@@ -31,6 +31,8 @@ class UserActionEnumsMapper extends EnumMapper<UserActionEnums> {
         return UserActionEnums.fixed;
       case "DAILY_PLAN":
         return UserActionEnums.dailyPlan;
+      case "NON_COMPLIANCE":
+        return UserActionEnums.nonCompliance;
       default:
         throw MapperException.unknownEnumValue(value);
     }
@@ -45,6 +47,8 @@ class UserActionEnumsMapper extends EnumMapper<UserActionEnums> {
         return "FIXED";
       case UserActionEnums.dailyPlan:
         return "DAILY_PLAN";
+      case UserActionEnums.nonCompliance:
+        return "NON_COMPLIANCE";
     }
   }
 }

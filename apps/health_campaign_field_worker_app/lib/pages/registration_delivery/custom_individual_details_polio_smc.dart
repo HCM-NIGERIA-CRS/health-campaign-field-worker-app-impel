@@ -376,6 +376,12 @@ class CustomIndividualDetailsPolioSMCPageState
                                           return;
                                         }
 
+                                        smcFlow = local_utils.isSMCFlow(age);
+                                        polioFlow =
+                                            local_utils.isPolioFlow(age);
+                                        onchoFlow =
+                                            local_utils.isOnchoFlow(age);
+
                                         final submit = await showDialog(
                                           context: context,
                                           builder: (ctx) => Popup(
@@ -831,7 +837,7 @@ class CustomIndividualDetailsPolioSMCPageState
 
                                               setState(() {
                                                 hideFieldsBasedOnAge =
-                                                    !validOnchoAge;
+                                                    validOnchoAge;
                                               });
 
                                               if ((age.years == 0 &&
@@ -1504,22 +1510,6 @@ class CustomIndividualDetailsPolioSMCPageState
     );
   }
 
-  void decideFlowBasedOnAge(digits.DigitDOBAge age) {
-    final ageInMonths = (age.years * 12) + age.months;
-    if (ageInMonths >= local_constants.Constants.smcMinValidAgeInMonths &&
-        ageInMonths <= local_constants.Constants.smcMaxValidAgeInMonths) {
-      smcFlow = true;
-    }
-    if (ageInMonths >= local_constants.Constants.polioMinValidAgeInMonths &&
-        ageInMonths <= local_constants.Constants.polioMaxValidAgeInMonths) {
-      polioFlow = true;
-    }
-
-    if (age.years > local_constants.Constants.onchoMinValidAgeInMonths) {
-      onchoFlow = true;
-    }
-  }
-
   void routeBasedOnFlow(
       IndividualModel individual,
       HouseholdMemberWrapper wrapper,
@@ -1529,14 +1519,14 @@ class CustomIndividualDetailsPolioSMCPageState
     parent.popUntilRoot();
     router.push(BeneficiaryWrapperRoute(wrapper: wrapper));
 
-    if (smcFlow) {
+    if (smcFlow && polioFlow) {
       //route to eligibility checklist page first
 
-      BeneficiaryWrapperRoute(wrapper: wrapper, children: [
+      router.push(BeneficiaryWrapperRoute(wrapper: wrapper, children: [
         EligibilityChecklistViewRoute(
             eligibilityAssessmentType: EligibilityAssessmentType.smc,
             individual: individual)
-      ]);
+      ]));
     } else if (polioFlow || onchoFlow) {
       // route to normal beneficiary details page first
       router.push(
@@ -1550,14 +1540,6 @@ class CustomIndividualDetailsPolioSMCPageState
           ],
         ),
       );
-    } else if (smcFlow && polioFlow) {
-      BeneficiaryWrapperRoute(wrapper: wrapper, children: [
-        EligibilityChecklistViewRoute(
-          eligibilityAssessmentType: EligibilityAssessmentType.smc,
-          individual: individual,
-        )
-      ]);
-      //route to eligibility checklist page first
     }
   }
 

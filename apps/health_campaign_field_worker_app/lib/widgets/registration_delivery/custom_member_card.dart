@@ -4,6 +4,7 @@ import 'package:digit_components/digit_components.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_ui_components/theme/digit_extended_theme.dart';
 import 'package:digit_ui_components/theme/spacers.dart';
+import 'package:digit_ui_components/utils/date_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:registration_delivery/blocs/app_localization.dart';
@@ -52,6 +53,9 @@ class CustomMemberCard extends StatelessWidget {
   final bool isBeneficiaryIneligible;
   final bool isBeneficiaryReferred;
   final bool isBeneficiaryAbsent;
+  final bool smcFlow;
+  final bool polioFlow;
+  final bool onchoFlow;
   final String? projectBeneficiaryClientReferenceId;
 
   const CustomMemberCard({
@@ -76,6 +80,9 @@ class CustomMemberCard extends StatelessWidget {
     this.isBeneficiaryReferred = false,
     this.isBeneficiaryAbsent = false,
     this.sideEffects,
+    this.smcFlow = false,
+    this.polioFlow = false,
+    this.onchoFlow = false,
     required this.variant,
   });
 
@@ -198,6 +205,7 @@ class CustomMemberCard extends StatelessWidget {
     final theme = Theme.of(context);
     final textTheme = theme.digitTextTheme(context);
     final doseStatus = checkStatusSMC(tasks, context.selectedCycle);
+
     bool smcAssessmentPendingStatus =
         assessmentSMCPending(tasks, context.selectedCycle);
 
@@ -211,33 +219,33 @@ class CustomMemberCard extends StatelessWidget {
       return const Offstage();
     }
     // todo add a condition to check if already delivered
-    if (isHead && context.projectTypeCode == ProjectTypes.oncho.toValue()) {
-      return DigitElevatedButton(
-        child: Center(
-          child: Text(
-            localizations.translate(i18_local
-                .householdOverView.householdOverViewAdministerHeadText),
-            style: textTheme.headingM.copyWith(color: Colors.white),
-          ),
-        ),
-        onPressed: () async {
-          final bloc = context.read<HouseholdOverviewBloc>();
-          bloc.add(
-            HouseholdOverviewEvent.selectedIndividual(
-              individualModel: individual,
-            ),
-          );
+    // if (isHead && context.projectTypeCode == ProjectTypes.oncho.toValue()) {
+    //   return DigitElevatedButton(
+    //     child: Center(
+    //       child: Text(
+    //         localizations.translate(i18_local
+    //             .householdOverView.householdOverViewAdministerHeadText),
+    //         style: textTheme.headingM.copyWith(color: Colors.white),
+    //       ),
+    //     ),
+    //     onPressed: () async {
+    //       final bloc = context.read<HouseholdOverviewBloc>();
+    //       bloc.add(
+    //         HouseholdOverviewEvent.selectedIndividual(
+    //           individualModel: individual,
+    //         ),
+    //       );
 
-          context.router.push(
-            CustomBeneficiaryDetailsHeadRoute(
-              isHead: true,
-              individualSelected: individual,
-              eligibilityAssessmentType: EligibilityAssessmentType.smc,
-            ),
-          );
-        },
-      );
-    }
+    //       context.router.push(
+    //         CustomBeneficiaryDetailsHeadRoute(
+    //           isHead: true,
+    //           individualSelected: individual,
+    //           eligibilityAssessmentType: EligibilityAssessmentType.smc,
+    //         ),
+    //       );
+    //     },
+    //   );
+    // }
     if (isNotEligibleSMC) {
       return const Offstage();
     }
@@ -253,8 +261,11 @@ class CustomMemberCard extends StatelessWidget {
                   isBeneficiaryAbsent
                       ? i18_local
                           .householdOverView.householdOverViewRevisitAbsentText
-                      : i18_local.householdOverView
-                          .householdOverViewSMCAssessmentActionText,
+                      : smcFlow
+                          ? i18_local.householdOverView
+                              .householdOverViewSMCAssessmentActionText
+                          : i18_local.householdOverView
+                              .householdOverViewDeliverActionText,
                 ),
                 style: textTheme.headingM.copyWith(color: Colors.white),
               ),
@@ -267,12 +278,19 @@ class CustomMemberCard extends StatelessWidget {
                 ),
               );
 
-              context.router.push(
-                CustomBeneficiaryDetailsRoute(
+              if (smcFlow && polioFlow) {
+                context.router.push(EligibilityChecklistViewRoute(
+                  eligibilityAssessmentType: EligibilityAssessmentType.smc,
+                  individual: individual,
+                ));
+                //route to eligibility checklist page first
+              } else if (polioFlow || onchoFlow) {
+                // route to normal beneficiary details page first
+                context.router.push(CustomBeneficiaryDetailsRoute(
                   individualSelected: individual,
                   eligibilityAssessmentType: EligibilityAssessmentType.smc,
-                ),
-              );
+                ));
+              }
             },
           ),
       ],
