@@ -171,7 +171,7 @@ class _EligibilityChecklistViewPage
                       // todo: verify the checklist name
                       selectedServiceDefinition = value.serviceDefinitionList
                           .where((element) => element.code.toString().contains(
-                                '${context.selectedProject.name}.$eligibilityAssessment.${context.isCommunityDistributor ? RolesType.communityDistributor.toValue() : RolesType.healthFacilitySupervisor.toValue()}',
+                                '${context.selectedProject.name}.$eligibilityAssessment.${context.isCommunityDistributor || context.isDistributor ? RolesType.distributor.toValue() : RolesType.healthFacilitySupervisor.toValue()}',
                               ))
                           .toList()
                           .firstOrNull;
@@ -259,10 +259,8 @@ class _EligibilityChecklistViewPage
                               List<String?> ineligibilityReasons = [];
                               List<bool> checkIfIneligibleFlow = [];
 
-                              ifReferral = widget.eligibilityAssessmentType ==
-                                      EligibilityAssessmentType.smc
-                                  ? isReferral(responses, referralReasons)
-                                  : isVASReferral(responses, referralReasons);
+                              ifReferral =
+                                  isReferral(responses, referralReasons);
                               ifDeliver = isDelivery(responses);
                               checkIfIneligibleFlow = isIneligible(
                                 responses,
@@ -1104,16 +1102,12 @@ class _EligibilityChecklistViewPage
     bool ifAdministration,
   ) {
     var isIneligible = false;
-    var q3Key = "KBEA3";
-    var q5Key = "KBEA4";
-    var q6Key = "KBEA5";
-    var q7Key = "KBEA7";
+    var q3Key = "PEA3";
+    var q5Key = "PEA4";
 
     Map<String, String> keyVsReason = {
       q3Key: "NOT_ADMINISTERED_IN_PREVIOUS_CYCLE",
       q5Key: "CHILD_ON_MEDICATION_1",
-      q6Key: "RESPIRATORY_INFECTION",
-      q7Key: "TAKEN_VITAMIN_A",
     };
     final individualModel = widget.individual;
 
@@ -1142,14 +1136,7 @@ class _EligibilityChecklistViewPage
           (responses.containsKey(q5Key) && responses[q5Key]!.isNotEmpty)) {
         isIneligible = responses[q5Key] == yes ? true : false;
       }
-      //       if (!isIneligible &&
-      //     (responses.containsKey(q6Key) && responses[q6Key]!.isNotEmpty)) {
-      //   isIneligible = responses[q6Key] == yes ? true : false;
-      // }
-      if (!isIneligible &&
-          (responses.containsKey(q7Key) && responses[q7Key]!.isNotEmpty)) {
-        isIneligible = responses[q7Key] == yes ? true : false;
-      }
+
       // passing all the reasons which have response as true
       if (isIneligible) {
         for (var entry in responses.entries) {
@@ -1170,21 +1157,16 @@ class _EligibilityChecklistViewPage
     List<String?> referralReasons,
   ) {
     var isReferral = false;
-    var q1Key = "KBEA1";
-    var q2Key = "KBEA2";
-    var q4Key = "KBEA3.NO.ADT1";
-    var q6Key = "KBEA5";
-    var q7Key = "KBEA6";
+    var q1Key = "PEA1";
+    var q2Key = "PEA2";
+    var q4Key = "PEA3.NO.ADT1";
+
     // var q8Key = "KBEA7";
     // var q3Key = "KBEA3";
     Map<String, String> referralKeysVsCode = {
       q1Key: "SICK",
       q2Key: "FEVER",
       q4Key: "DRUG_SE_PC",
-      q6Key: "RESPIRATORY_INFECTION",
-      // q7Key: "TAKEN_VITAMIN_A",
-      // q8Key: "SIDE_EFFECTS_TO_VITAMIN_A",
-      q7Key: "DRUG_SE_PC",
     };
     // TODO Configure the reasons ,verify hardcoded strings
 
@@ -1199,59 +1181,6 @@ class _EligibilityChecklistViewPage
       if (!isReferral &&
           (responses.containsKey(q4Key) && responses[q4Key]!.isNotEmpty)) {
         isReferral = responses[q4Key] == yes ? true : false;
-      }
-      if (!isReferral &&
-              (responses.containsKey(q6Key) && responses[q6Key]!.isNotEmpty)
-          // && (responses.containsKey(q7Key) && responses[q7Key]!.isNotEmpty)
-          ) {
-        isReferral = (responses[q6Key] == yes)
-            // && (responses[q7Key] == yes)
-            ? true
-            : false;
-      }
-      if (!isReferral &&
-          (responses.containsKey(q7Key) && responses[q7Key]!.isNotEmpty)) {
-        isReferral = responses[q7Key] == yes ? true : false;
-      }
-    }
-    if (isReferral) {
-      for (var entry in referralKeysVsCode.entries) {
-        if (responses.containsKey(entry.key) &&
-            responses[entry.key]!.isNotEmpty) {
-          if (responses[entry.key] == yes) {
-            referralReasons.add(entry.value);
-          }
-        }
-      }
-    }
-
-    return isReferral;
-  }
-
-  bool isVASReferral(
-    Map<String?, String> responses,
-    List<String?> referralReasons,
-  ) {
-    var isReferral = false;
-    var q1Key = "KBEA5";
-    var q2Key = "KBEA6";
-    // var q3Key = "KBEA3";
-    // var q4Key = "KBEA7";
-    Map<String, String> referralKeysVsCode = {
-      q1Key: "RESPIRATORY_INFECTION",
-      // q2Key: "TAKEN_VITAMIN_A",
-      q2Key: "DRUG_SE_PC",
-      // qKey: "SIDE_EFFECTS_TO_VITAMIN_A",
-    };
-    // TODO Configure the reasons ,verify hardcoded strings
-
-    if (responses.isNotEmpty) {
-      if (responses.containsKey(q1Key) && responses[q1Key]!.isNotEmpty) {
-        isReferral = responses[q1Key] == yes ? true : false;
-      }
-      if (!isReferral &&
-          (responses.containsKey(q2Key) && responses[q2Key]!.isNotEmpty)) {
-        isReferral = responses[q2Key] == yes ? true : false;
       }
     }
     if (isReferral) {
@@ -1270,12 +1199,7 @@ class _EligibilityChecklistViewPage
 
   bool isDelivery(Map<String?, String> responses) {
     var isDeliver = true;
-    var q1Key = "KBEA7";
-
     for (var entry in responses.entries) {
-      if (entry.key == q1Key) {
-        continue;
-      }
       if (entry.value == yes) {
         isDeliver = false;
         break;
