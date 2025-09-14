@@ -769,6 +769,16 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const NonComplianceTrackingWrapperPage(),
       );
     },
+    NonComplianceUpdateStatusRoute.name: (routeData) {
+      final args = routeData.argsAs<NonComplianceUpdateStatusRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: NonComplianceUpdateStatusPage(
+          key: args.key,
+          householdMember: args.householdMember,
+        ),
+      );
+    },
     ProfileRoute.name: (routeData) {
       final args = routeData.argsAs<ProfileRouteArgs>(
           orElse: () => const ProfileRouteArgs());
@@ -3681,6 +3691,45 @@ class NonComplianceTrackingWrapperRoute extends PageRouteInfo<void> {
   static const String name = 'NonComplianceTrackingWrapperRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [NonComplianceUpdateStatusPage]
+class NonComplianceUpdateStatusRoute
+    extends PageRouteInfo<NonComplianceUpdateStatusRouteArgs> {
+  NonComplianceUpdateStatusRoute({
+    Key? key,
+    required HouseholdMemberWrapper householdMember,
+    List<PageRouteInfo>? children,
+  }) : super(
+          NonComplianceUpdateStatusRoute.name,
+          args: NonComplianceUpdateStatusRouteArgs(
+            key: key,
+            householdMember: householdMember,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'NonComplianceUpdateStatusRoute';
+
+  static const PageInfo<NonComplianceUpdateStatusRouteArgs> page =
+      PageInfo<NonComplianceUpdateStatusRouteArgs>(name);
+}
+
+class NonComplianceUpdateStatusRouteArgs {
+  const NonComplianceUpdateStatusRouteArgs({
+    this.key,
+    required this.householdMember,
+  });
+
+  final Key? key;
+
+  final HouseholdMemberWrapper householdMember;
+
+  @override
+  String toString() {
+    return 'NonComplianceUpdateStatusRouteArgs{key: $key, householdMember: $householdMember}';
+  }
 }
 
 /// generated route for

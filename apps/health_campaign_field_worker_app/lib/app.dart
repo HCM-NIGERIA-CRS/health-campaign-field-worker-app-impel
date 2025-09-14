@@ -29,6 +29,7 @@ import 'blocs/daily_implementation_plan/dip_all_search.dart';
 import 'blocs/daily_implementation_plan/dip_search.dart';
 import 'blocs/inventory_management/stock_bloc.dart';
 import 'blocs/localization/localization.dart';
+import 'blocs/non_compliance/non_compliance_tracking.dart';
 import 'blocs/project/project.dart';
 import 'blocs/search/individual_global_search_smc.dart';
 import 'blocs/search/search_households_smc.dart';
@@ -525,6 +526,18 @@ class MainApplicationState extends State<MainApplication>
                         BlocProvider(
                           create: (ctx) => DipAllSearchBloc(
                             const DipAllSearchState.init(),
+                            customUserActionLocalRepository:
+                                CustomUserActionLocalRepository(widget.sql,
+                                    UserActionOpLogManager(widget.isar)),
+                          ),
+                        ),
+
+                        BlocProvider(
+                          create: (ctx) => NonComplianceTrackingBloc(
+                            const NonComplianceTrackingState.init(),
+                            userActionLocalRepository:
+                                UserActionLocalRepository(widget.sql,
+                                    UserActionOpLogManager(widget.isar)),
                             customUserActionLocalRepository:
                                 CustomUserActionLocalRepository(widget.sql,
                                     UserActionOpLogManager(widget.isar)),

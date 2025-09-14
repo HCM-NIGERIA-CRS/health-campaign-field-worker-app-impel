@@ -56,6 +56,7 @@ class CustomUserActionLocalRepository extends UserActionLocalRepository {
 
   FutureOr<List<UserActionModel>> searchUserAction(
       {String? action,
+      String? beneficiaryTag,
       String? additionalFieldfilterParam,
       String? clientReferenceId}) {
     return retryLocalCallOperation<List<UserActionModel>>(() async {
@@ -78,6 +79,10 @@ class CustomUserActionLocalRepository extends UserActionLocalRepository {
                     const Constant(true),
                   if (clientReferenceId != null)
                     sql.userAction.clientReferenceId.isIn([clientReferenceId])
+                  else
+                    const Constant(true),
+                  if (beneficiaryTag != null)
+                    sql.userAction.beneficiaryTag.isIn([beneficiaryTag])
                   else
                     const Constant(true),
                   // if (query.isPermanent != null)
@@ -110,6 +115,8 @@ class CustomUserActionLocalRepository extends UserActionLocalRepository {
             rowVersion: userActionModel.rowVersion,
             projectId: userActionModel.projectId,
             boundaryCode: userActionModel.boundaryCode,
+            beneficiaryTag: userActionModel.beneficiaryTag,
+            resourceTag: userActionModel.resourceTag,
             action: userActionModel.action,
             additionalFields: additionalField == null
                 ? null

@@ -50,6 +50,8 @@ const transitFixedPost = TransitFixedPost();
 class Common {
   const Common();
   String get nonComplianceTrackingLabel => 'NON_COMPLIANCE_TRACKING_LABEL';
+  String get nonComplianceUpdateStatusLabel =>
+      'NON_COMPLIANCE_UPDATE_STATUS_LABEL';
 
   String get coreCommonContinue => 'CORE_COMMON_CONTINUE';
   String get coreCommonWarning => 'CORE_COMMON_WARNING';
