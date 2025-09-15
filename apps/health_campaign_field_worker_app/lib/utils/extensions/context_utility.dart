@@ -184,6 +184,22 @@ extension ContextUtilityExtensions on BuildContext {
     }
   }
 
+  bool get isWFP {
+    return true;
+    try {
+      bool isDistributorUser = loggedInUserRoles
+          .where(
+            (role) => role.code == RolesType.teamSupervisor.toValue(),
+          )
+          .toList()
+          .isNotEmpty;
+
+      return isDistributorUser;
+    } catch (_) {
+      return false;
+    }
+  }
+
   List<UserRoleModel> get loggedInUserRoles {
     final authBloc = _get<AuthBloc>();
     final userRequestObject = authBloc.state.whenOrNull(

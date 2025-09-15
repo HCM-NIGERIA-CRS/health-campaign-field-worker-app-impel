@@ -286,7 +286,7 @@ class BeneficiaryDownSyncEvent with _$BeneficiaryDownSyncEvent {
   }) = DownSyncBeneficiaryEvent;
 
   const factory BeneficiaryDownSyncEvent.checkForData({
-    required String projectId,
+    required String? projectId,
     required String boundaryCode,
     required int pendingSyncCount,
     required int batchSize,

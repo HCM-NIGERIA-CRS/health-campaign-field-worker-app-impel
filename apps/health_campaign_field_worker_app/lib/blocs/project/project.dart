@@ -9,6 +9,7 @@ import 'package:attendance_management/models/entities/attendance_register.dart';
 import 'package:attendance_management/attendance_management.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:digit_data_model/data_model.dart';
+import 'package:digit_data_model/models/entities/user_action.dart';
 import 'package:digit_dss/digit_dss.dart';
 import 'package:digit_ui_components/utils/app_logger.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,6 +26,7 @@ import '../../data/local_store/no_sql/schema/app_configuration.dart';
 import '../../data/local_store/no_sql/schema/row_versions.dart';
 import '../../data/local_store/secure_store/secure_store.dart';
 import '../../data/repositories/local/inventory_management/custom_stock.dart';
+import '../../data/repositories/local/transit_post/custom_user_action.dart';
 import '../../data/repositories/remote/bandwidth_check.dart';
 import '../../data/repositories/remote/mdms.dart';
 import '../../models/app_config/app_config_model.dart';
@@ -115,6 +117,12 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
   final RemoteRepository<StockModel, StockSearchModel> stockRemoteRepository;
   final LocalRepository<StockModel, StockSearchModel> stockLocalRepository;
 
+  /// Stock Repositories
+  final RemoteRepository<UserActionModel, UserActionSearchModel>
+      userActionRemoteRepository;
+  final LocalRepository<UserActionModel, UserActionSearchModel>
+      userActionLocalRepository;
+
   final DashboardRemoteRepository dashboardRemoteRepository;
   BuildContext context;
 
@@ -148,6 +156,8 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     required this.dashboardRemoteRepository,
     required this.stockLocalRepository,
     required this.stockRemoteRepository,
+    required this.userActionLocalRepository,
+    required this.userActionRemoteRepository,
     required this.context,
   })  : localSecureStore = localSecureStore ?? LocalSecureStore.instance,
         super(const ProjectState()) {
@@ -629,6 +639,16 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
       ));
     }
 
+    try {
+      await downloadUserActionDataBasedOnRole(
+          event.model.address?.boundaryType);
+    } catch (_) {
+      emit(state.copyWith(
+        loading: false,
+        syncError: ProjectSyncErrorType.userAction,
+      ));
+    }
+
     final getSelectedProjectType = await localSecureStore.selectedProjectType;
     final currentRunningCycle = getSelectedProjectType?.cycles
         ?.where(
@@ -777,6 +797,31 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
 
     return stockEntries;
   }
+
+  FutureOr<void> downloadUserActionDataBasedOnRole(
+    String? boundaryType,
+  ) async {
+    if (context.isWFP) {
+      List<UserActionModel> userActionModelDownloaded =
+          await downloadUserActions(UserActionSearchModel());
+      await (userActionLocalRepository as CustomUserActionLocalRepository)
+          .bulkStockCreate(userActionModelDownloaded);
+    }
+  }
+
+  FutureOr<void> createUserActionDownloadedEntries(
+      List<UserActionModel> userActions) async {}
+
+  FutureOr<List<UserActionModel>> downloadUserActions(
+      UserActionSearchModel userActionSearchModel) async {
+    var offset = 0;
+    var initialLimit = Constants.apiCallLimit;
+
+    final userActionModels = await userActionRemoteRepository
+        .search(userActionSearchModel, limit: initialLimit, offSet: offset);
+
+    return userActionModels;
+  }
 }
 
 @freezed
@@ -813,5 +858,6 @@ enum ProjectSyncErrorType {
   projectFacilities,
   productVariants,
   serviceDefinitions,
-  boundary
+  boundary,
+  userAction,
 }

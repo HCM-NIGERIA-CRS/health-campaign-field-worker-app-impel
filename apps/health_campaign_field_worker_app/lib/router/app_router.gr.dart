@@ -776,6 +776,7 @@ abstract class _$AppRouter extends RootStackRouter {
         child: NonComplianceUpdateStatusPage(
           key: args.key,
           householdMember: args.householdMember,
+          userActionModel: args.userActionModel,
         ),
       );
     },
@@ -3700,12 +3701,14 @@ class NonComplianceUpdateStatusRoute
   NonComplianceUpdateStatusRoute({
     Key? key,
     required HouseholdMemberWrapper householdMember,
+    required UserActionModel? userActionModel,
     List<PageRouteInfo>? children,
   }) : super(
           NonComplianceUpdateStatusRoute.name,
           args: NonComplianceUpdateStatusRouteArgs(
             key: key,
             householdMember: householdMember,
+            userActionModel: userActionModel,
           ),
           initialChildren: children,
         );
@@ -3720,15 +3723,18 @@ class NonComplianceUpdateStatusRouteArgs {
   const NonComplianceUpdateStatusRouteArgs({
     this.key,
     required this.householdMember,
+    required this.userActionModel,
   });
 
   final Key? key;
 
   final HouseholdMemberWrapper householdMember;
 
+  final UserActionModel? userActionModel;
+
   @override
   String toString() {
-    return 'NonComplianceUpdateStatusRouteArgs{key: $key, householdMember: $householdMember}';
+    return 'NonComplianceUpdateStatusRouteArgs{key: $key, householdMember: $householdMember, userActionModel: $userActionModel}';
   }
 }
 

@@ -332,90 +332,106 @@ class _NonComplianceTrackingSearchPage
                             child: CircularProgressIndicator(),
                           ),
                         ),
-                      if (isChildAbsentEnabled)
-                        BlocConsumer<IndividualGlobalSearchSMCBloc,
-                            searchHouseholdSMCBloc.SearchHouseholdsSMCState>(
-                          listener: (context, searchSMCstate) {},
-                          builder: (context, searchSMCstate) {
-                            if (searchSMCstate.loading) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            } else {
-                              if (isChildAbsentEnabled &&
-                                  searchSMCstate.householdMembers.isEmpty) {
-                                return SliverList(
-                                    delegate: SliverChildBuilderDelegate(
-                                        (ctx, index) {
-                                  return DigitInfoCard(
-                                    description: localizations.translate(
-                                      i18_local.searchBeneficiary
-                                          .beneficiaryInfoDescription,
-                                    ),
-                                    title: localizations.translate(
-                                      i18.searchBeneficiary
-                                          .beneficiaryInfoTitle,
-                                    ),
-                                  );
-                                }, childCount: 1));
+                      BlocBuilder<NonComplianceTrackingBloc,
+                          NonComplianceTrackingState>(
+                        builder: (context, nonComplianceState) {
+                          if (nonComplianceState
+                              is NonComplianceTrackingAllSearchState) {
+                            Map<String, String?> statusMap = {};
+                            List<UserActionModel> actions =
+                                nonComplianceState.nonComplianceUserAction ??
+                                    [];
+                            for (var element in actions) {
+                              if (element.beneficiaryTag != null) {
+                                statusMap[element.beneficiaryTag!] = element
+                                        .additionalFields?.fields
+                                        .firstWhereOrNull(
+                                            (e) => e.key == Constants.status)
+                                        ?.value ??
+                                    null;
                               }
-                              return SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                  (ctx, index) {
-                                    final i =
-                                        searchSMCstate.householdMembers[index];
-                                    return Container(
-                                      margin: const EdgeInsets.only(
-                                          bottom: kPadding),
-                                      child: NonComplianceBeneficiaryCard(
-                                        currentLocation: Coordinate(lat, long),
-                                        householdMember: i,
-                                        onOpenPressed: () async {
-                                          context
-                                              .read<NonComplianceTrackingBloc>()
-                                              .add(
-                                                NonComplianceTrackingEvent
-                                                    .search(
-                                                  beneficiaryTag: i
-                                                      .tasks
-                                                      ?.firstOrNull
-                                                      ?.clientReferenceId,
-                                                ),
-                                              );
-                                          context.router.push(
-                                              NonComplianceUpdateStatusRoute(
-                                            householdMember: i,
-                                          ));
+                            }
+                            if (isChildAbsentEnabled) {
+                              BlocConsumer<
+                                  IndividualGlobalSearchSMCBloc,
+                                  searchHouseholdSMCBloc
+                                  .SearchHouseholdsSMCState>(
+                                listener: (context, searchSMCstate) {},
+                                builder: (context, searchSMCstate) {
+                                  if (searchSMCstate.loading) {
+                                    return const Center(
+                                        child: CircularProgressIndicator());
+                                  } else {
+                                    if (isChildAbsentEnabled &&
+                                        searchSMCstate
+                                            .householdMembers.isEmpty) {
+                                      return SliverList(
+                                          delegate: SliverChildBuilderDelegate(
+                                              (ctx, index) {
+                                        return DigitInfoCard(
+                                          description: localizations.translate(
+                                            i18_local.searchBeneficiary
+                                                .beneficiaryInfoDescription,
+                                          ),
+                                          title: localizations.translate(
+                                            i18.searchBeneficiary
+                                                .beneficiaryInfoTitle,
+                                          ),
+                                        );
+                                      }, childCount: 1));
+                                    }
+                                    return SliverList(
+                                      delegate: SliverChildBuilderDelegate(
+                                        (ctx, index) {
+                                          final i = searchSMCstate
+                                              .householdMembers[index];
+                                          return Container(
+                                            margin: const EdgeInsets.only(
+                                                bottom: kPadding),
+                                            child: NonComplianceBeneficiaryCard(
+                                              currentLocation:
+                                                  Coordinate(lat, long),
+                                              householdMember: i,
+                                              onOpenPressed: () async {
+                                                String id = i.tasks?.firstOrNull
+                                                        ?.clientReferenceId ??
+                                                    "";
+                                                context
+                                                    .read<
+                                                        NonComplianceTrackingBloc>()
+                                                    .add(
+                                                      NonComplianceTrackingEvent
+                                                          .search(
+                                                        beneficiaryTag: i
+                                                            .tasks
+                                                            ?.firstOrNull
+                                                            ?.clientReferenceId,
+                                                      ),
+                                                    );
+                                                context.router.push(
+                                                    NonComplianceUpdateStatusRoute(
+                                                  householdMember: i,
+                                                  userActionModel:
+                                                      actions.firstWhereOrNull(
+                                                    (element) =>
+                                                        element
+                                                            .beneficiaryTag ==
+                                                        id,
+                                                  ),
+                                                ));
+                                              },
+                                            ),
+                                          );
                                         },
+                                        childCount: searchSMCstate
+                                            .householdMembers.length,
                                       ),
                                     );
-                                  },
-                                  childCount:
-                                      searchSMCstate.householdMembers.length,
-                                ),
+                                  }
+                                },
                               );
                             }
-                          },
-                        ),
-                      if (isHouseNonCompliant)
-                        BlocBuilder<NonComplianceTrackingBloc,
-                            NonComplianceTrackingState>(
-                          builder: (context, nonComplianceState) {
-                            if (nonComplianceState
-                                is NonComplianceTrackingAllSearchState) {
-                              Map<String, String?> statusMap = {};
-                              List<UserActionModel> actions =
-                                  nonComplianceState.nonComplianceUserAction ??
-                                      [];
-                              for (var element in actions) {
-                                if (element.beneficiaryTag != null) {
-                                  statusMap[element.beneficiaryTag!] = element
-                                          .additionalFields?.fields
-                                          .firstWhereOrNull(
-                                              (e) => e.key == 'status')
-                                          ?.value ??
-                                      null;
-                                }
-                              }
+                            if (isHouseNonCompliant) {
                               return BlocConsumer<
                                   IndividualGlobalSearchSMCBloc,
                                   searchHouseholdSMCBloc
@@ -461,21 +477,27 @@ class _NonComplianceTrackingSearchPage
                                                   ?.firstOrNull
                                                   ?.clientReferenceId],
                                               onOpenPressed: () async {
+                                                var id = i.tasks?.firstOrNull
+                                                    ?.clientReferenceId;
                                                 context
                                                     .read<
                                                         NonComplianceTrackingBloc>()
                                                     .add(
                                                       NonComplianceTrackingEvent
                                                           .search(
-                                                        beneficiaryTag: i
-                                                            .tasks
-                                                            ?.firstOrNull
-                                                            ?.clientReferenceId,
+                                                        beneficiaryTag: id,
                                                       ),
                                                     );
                                                 context.router.push(
                                                     NonComplianceUpdateStatusRoute(
                                                   householdMember: i,
+                                                  userActionModel:
+                                                      actions.firstWhereOrNull(
+                                                    (element) =>
+                                                        element
+                                                            .beneficiaryTag ==
+                                                        id,
+                                                  ),
                                                 ));
                                               },
                                             ),
@@ -489,13 +511,14 @@ class _NonComplianceTrackingSearchPage
                                 },
                               );
                             }
-                            return SliverList(
-                                delegate:
-                                    SliverChildBuilderDelegate((ctx, index) {
-                              return const SizedBox.shrink();
-                            }, childCount: 0));
-                          },
-                        ),
+                          }
+                          return SliverList(
+                              delegate:
+                                  SliverChildBuilderDelegate((ctx, index) {
+                            return const SizedBox.shrink();
+                          }, childCount: 0));
+                        },
+                      ),
                     ],
                   );
                 },

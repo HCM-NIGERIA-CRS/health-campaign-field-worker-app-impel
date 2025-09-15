@@ -51,6 +51,22 @@ class CustomUserActionLocalRepository extends UserActionLocalRepository {
   //   });
   // }
 
+  FutureOr<void> bulkStockCreate(
+    List<UserActionModel> entities,
+  ) async {
+    return retryLocalCallOperation(() async {
+      final stockCompanions = entities.map((e) => e.companion).toList();
+
+      await sql.batch((batch) async {
+        batch.insertAll(
+          sql.stock,
+          stockCompanions,
+          mode: InsertMode.insertOrReplace,
+        );
+      });
+    });
+  }
+
   @override
   DataModelType get type => DataModelType.userAction;
 
