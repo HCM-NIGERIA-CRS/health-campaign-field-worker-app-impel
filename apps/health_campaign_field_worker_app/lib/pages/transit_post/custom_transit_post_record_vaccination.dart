@@ -343,6 +343,49 @@ class CustomTransitPostRecordVaccinationPageState
                           value: measlesBeneficiaryCount.toString(),
                         )
                       ]),
+                      Text(
+                        localizations.translate(
+                          i18_local.deliverIntervention.selectAgeRange,
+                        ),
+                        style: textTheme.headingL
+                            .copyWith(color: theme.colorTheme.text.primary),
+                      ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.fromLTRB(kPadding, 0, kPadding, 0),
+                        child: BlocBuilder<AppInitializationBloc,
+                            AppInitializationState>(
+                          builder: (context, state) {
+                            if (state is! AppInitialized) {
+                              return const Offstage();
+                            }
+
+                            final ageRangeOptions =
+                                state.appConfiguration.ageRangeOptions ??
+                                    <AgeRangeOptions>[];
+
+                            return FormField(
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                builder: (context) {
+                                  return RadioList(
+                                    radioDigitButtons: ageRangeOptions
+                                        .map((age) => RadioButtonModel(
+                                            code: age.code, name: age.code))
+                                        .toList(),
+                                    groupValue: ageRangeSelected ?? '',
+                                    onChanged: (value) {
+                                      if (value.code.isNotEmpty) {
+                                        setState(() {
+                                          ageRangeSelected = value.code;
+                                        });
+                                      }
+                                    },
+                                  );
+                                });
+                          },
+                        ),
+                      ),
                       DigitButton(
                         label: localizations.translate(
                           i18_local.deliverIntervention.vaccinateBeneficiary,
@@ -415,49 +458,6 @@ class CustomTransitPostRecordVaccinationPageState
                                 .push(const TransitPostAcknowledgmentRoute());
                           }
                         },
-                      ),
-                      Text(
-                        localizations.translate(
-                          i18_local.deliverIntervention.selectAgeRange,
-                        ),
-                        style: textTheme.headingL
-                            .copyWith(color: theme.colorTheme.text.primary),
-                      ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(kPadding, 0, kPadding, 0),
-                        child: BlocBuilder<AppInitializationBloc,
-                            AppInitializationState>(
-                          builder: (context, state) {
-                            if (state is! AppInitialized) {
-                              return const Offstage();
-                            }
-
-                            final ageRangeOptions =
-                                state.appConfiguration.ageRangeOptions ??
-                                    <AgeRangeOptions>[];
-
-                            return FormField(
-                                autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                builder: (context) {
-                                  return RadioList(
-                                    radioDigitButtons: ageRangeOptions
-                                        .map((age) => RadioButtonModel(
-                                            code: age.code, name: age.code))
-                                        .toList(),
-                                    groupValue: ageRangeSelected ?? '',
-                                    onChanged: (value) {
-                                      if (value.code.isNotEmpty) {
-                                        setState(() {
-                                          ageRangeSelected = value.code;
-                                        });
-                                      }
-                                    },
-                                  );
-                                });
-                          },
-                        ),
                       ),
                     ],
                   ),
