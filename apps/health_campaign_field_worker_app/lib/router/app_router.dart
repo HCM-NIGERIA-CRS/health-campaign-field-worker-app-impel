@@ -224,10 +224,10 @@ class AppRouter extends _$AppRouter {
           page: SelectSettlementsDateViewRoute.page,
           path: 'select-settlements-date-view',
         ),
-        AutoRoute(
-          page: SelectSettlementsDateViewListRoute.page,
-          path: 'select-settlements-date-view-list',
-        ),
+        // AutoRoute(
+        //   page: SelectSettlementsDateViewListRoute.page,
+        //   path: 'select-settlements-date-view-list',
+        // ),
 
         // Attendance Route
         AutoRoute(

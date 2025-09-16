@@ -11,6 +11,7 @@ import 'package:digit_ui_components/utils/component_utils.dart';
 import 'package:digit_ui_components/widgets/atoms/text_block.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:registration_delivery/utils/utils.dart';
 
 import '../../blocs/daily_implementation_plan/daily_implementation_plan.dart';
@@ -58,7 +59,7 @@ class _SelectSettlementsPageState
                   if (state is DailyImplementationPlanCreateState) {
                     var tripBookAction = state.dipUserAction;
                     context.read<DipSearchBloc>().add(DipSearchEvent.search(
-                        clientReferenceId: tripBookAction?.clientReferenceId));
+                        beneficiaryTag: tripBookAction?.beneficiaryTag));
                     if (tripBookAction == null) return;
                     context.router.popUntilRoot();
                     context.router.push(
@@ -68,21 +69,23 @@ class _SelectSettlementsPageState
                 },
                 builder: (context, state) {
                   if (state is DailyImplementationPlanSelectSettlementsState) {
+                    String monthYear =
+                        DateFormat('MMM yyyy').format(DateTime.now());
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         DigitTextBlock(
                           padding: EdgeInsets.zero,
-                          heading:
-                              "Team 1 ${localizations.translate(i18.dailyImplementationFlow.dip)}",
+                          heading: localizations
+                              .translate(i18.dailyImplementationFlow.dip),
                           headingStyle: textTheme.headingXl
                               .copyWith(color: theme.colorTheme.text.primary),
                         ),
                         DigitTextBlock(
                           padding: EdgeInsets.zero,
                           heading:
-                              "May 2024 ${localizations.translate(i18.dailyImplementationFlow.obrRound)}",
+                              "$monthYear ${localizations.translate(i18.dailyImplementationFlow.obrRound)}",
                           headingStyle: textTheme.headingXS
                               .copyWith(color: theme.colorTheme.text.primary),
                         ),
@@ -137,6 +140,7 @@ class _SelectSettlementsPageState
                                   longitude: longitude,
                                   locationAccuracy: locationAccuracy,
                                   clientReferenceId: clientReferenceId,
+                                  beneficiaryTag: context.loggedInUserUuid,
                                   isSync: true,
                                   timestamp: state.date ?? startTime,
                                   tenantId:
@@ -209,16 +213,16 @@ class SettlementGridView extends LocalizedStatefulWidget {
 }
 
 class _ReportDetailsContentState extends LocalizedState<SettlementGridView> {
-  static const _settlementKey = 'settlement';
-  static const _dateOfVisitKey = 'dateOfVisit';
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Column(
         children: [
-          const SettlementTitleRow(
-              settlementKey: _settlementKey, settlementValue: _dateOfVisitKey),
+          SettlementTitleRow(
+              settlementTitle: localizations
+                  .translate(i18.dailyImplementationFlow.settlements),
+              dateOfVisitTitle: localizations
+                  .translate(i18.dailyImplementationFlow.dateOfVisit)),
           const SizedBox(height: 1),
           Expanded(
             child: ListView.separated(
@@ -252,10 +256,12 @@ class _ReportDetailsContentState extends LocalizedState<SettlementGridView> {
 }
 
 class SettlementTitleRow extends StatelessWidget {
-  final String settlementKey;
-  final String settlementValue;
+  final String settlementTitle;
+  final String dateOfVisitTitle;
   const SettlementTitleRow(
-      {super.key, required this.settlementKey, required this.settlementValue});
+      {super.key,
+      required this.settlementTitle,
+      required this.dateOfVisitTitle});
 
   @override
   Widget build(BuildContext context) {
@@ -270,14 +276,14 @@ class SettlementTitleRow extends StatelessWidget {
             child: Container(
           decoration: cellDecoration,
           height: 40,
-          child: Center(child: Text(settlementKey)),
+          child: Center(child: Text(settlementTitle)),
         )),
         const SizedBox(width: 1),
         Expanded(
             child: Container(
           decoration: cellDecoration,
           height: 40,
-          child: Center(child: Text(settlementValue)),
+          child: Center(child: Text(dateOfVisitTitle)),
         )),
       ],
     );

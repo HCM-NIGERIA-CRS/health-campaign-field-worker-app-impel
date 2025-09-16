@@ -529,14 +529,14 @@ class MainApplicationState extends State<MainApplication>
                           ),
                         ),
 
-                        BlocProvider(
-                          create: (ctx) => DipAllSearchBloc(
-                            const DipAllSearchState.init(),
-                            customUserActionLocalRepository:
-                                CustomUserActionLocalRepository(widget.sql,
-                                    UserActionOpLogManager(widget.isar)),
-                          ),
-                        ),
+                        // BlocProvider(
+                        //   create: (ctx) => DipAllSearchBloc(
+                        //     const DipAllSearchState.init(),
+                        //     customUserActionLocalRepository:
+                        //         CustomUserActionLocalRepository(widget.sql,
+                        //             UserActionOpLogManager(widget.isar)),
+                        //   ),
+                        // ),
 
                         BlocProvider(
                           create: (ctx) => NonComplianceTrackingBloc(

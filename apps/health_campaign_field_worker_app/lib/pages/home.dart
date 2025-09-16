@@ -47,6 +47,7 @@ import 'package:transit_post/utils/utils.dart';
 
 import '../blocs/app_initialization/app_initialization.dart';
 import '../blocs/auth/auth.dart';
+import '../blocs/daily_implementation_plan/dip_search.dart';
 import '../blocs/localization/app_localization.dart';
 import '../blocs/localization/localization.dart';
 import '../data/local_store/app_shared_preferences.dart';
@@ -88,7 +89,7 @@ class _HomePageState extends LocalizedState<HomePage> {
   @override
   initState() {
     super.initState();
-
+    context.read<DipSearchBloc>().add(const DipSearchEvent.search());
     subscription = Connectivity()
         .onConnectivityChanged
         .listen((List<ConnectivityResult> result) async {
@@ -553,12 +554,20 @@ class _HomePageState extends LocalizedState<HomePage> {
       ),
       i18.home.dailyImplementationPlanLabel:
           homeShowcaseData.dailyImplementationPlan.buildWith(
-        child: HomeItemCard(
-          label: i18.home.dailyImplementationPlanLabel,
-          onPressed: () {
-            showDIPFLowDialog(context, localizations);
+        child: BlocBuilder<DipSearchBloc, DipSearchState>(
+          builder: (context, state) {
+            UserActionModel? dipUserAction;
+            if (state is DipSearchSettlementState) {
+              dipUserAction = state.selectedDipUserAction;
+            }
+            return HomeItemCard(
+              label: i18.home.dailyImplementationPlanLabel,
+              onPressed: () {
+                showDIPDialog(context, localizations, dipUserAction);
+              },
+              icon: Icons.people,
+            );
           },
-          icon: Icons.people,
         ),
       ),
       i18.home.campaignDeliverySelection:
@@ -946,9 +955,10 @@ void setPackagesSingleton(BuildContext context) {
       });
 }
 
-void showDIPFLowDialog(
+void showDIPDialog(
   BuildContext context,
   AppLocalizations localizations,
+  UserActionModel? dipUserAction,
 ) {
   showDialog(
       context: context,
@@ -957,88 +967,88 @@ void showDIPFLowDialog(
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              GestureDetector(
-                onTap: () {
-                  context.router.push(SelectSettlementsRoute());
+              if (dipUserAction != null)
+                GestureDetector(
+                  onTap: () {
+                    context.router.push(SelectSettlementsRoute());
 
-                  Navigator.of(context).pop();
-                },
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.orange[800]!,
-                      width: 1,
+                    Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.orange[800]!,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white,
                     ),
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.white,
-                  ),
-                  padding: const EdgeInsets.all(16),
-                  child: Center(
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.edit_note_outlined,
-                          size: 24,
-                          color: Colors.orange[800],
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          localizations.translate(
-                              i18.dailyImplementationFlow.createDIPLabel),
-                          style: TextStyle(
-                            fontSize: 16,
+                    padding: const EdgeInsets.all(16),
+                    child: Center(
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.edit_note_outlined,
+                            size: 24,
                             color: Colors.orange[800],
-                            fontWeight: FontWeight.bold,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 8),
+                          Text(
+                            localizations.translate(
+                                i18.dailyImplementationFlow.createDIPLabel),
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.orange[800],
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16), // Add spacing between buttons
-              GestureDetector(
-                onTap: () {
-                  context.router
-                      .push(const SelectSettlementsDateViewListRoute());
-                  Navigator.of(context).pop();
-                },
-                child: Container(
-                  width: 400,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.orange[800]!,
-                      width: 1,
+              if (dipUserAction != null)
+                GestureDetector(
+                  onTap: () {
+                    context.router.push(const SelectSettlementsDateViewRoute());
+                    Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    width: 400,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.orange[800]!,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white,
                     ),
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.white,
-                  ),
-                  padding: const EdgeInsets.all(16),
-                  child: Center(
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.remove_red_eye,
-                          size: 24,
-                          color: Colors.orange[800],
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          localizations.translate(
-                            i18.dailyImplementationFlow.viewDIPLabel,
-                          ),
-                          style: TextStyle(
-                            fontSize: 16,
+                    padding: const EdgeInsets.all(16),
+                    child: Center(
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.remove_red_eye,
+                            size: 24,
                             color: Colors.orange[800],
-                            fontWeight: FontWeight.bold,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 8),
+                          Text(
+                            localizations.translate(
+                              i18.dailyImplementationFlow.viewDIPLabel,
+                            ),
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.orange[800],
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
             ],
           ),
         );

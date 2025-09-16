@@ -786,7 +786,7 @@ class CaregiverConsent {
 class DailyImplementationFlow {
   const DailyImplementationFlow();
 
-  String get dip => 'DIP_LABEL';
+  String get dip => 'TEAM_1_DIP_LABEL';
   String get obrRound => 'OBR_ROUND_LABEL';
   String get selectBoundaryLabel => 'SELECT_BOUNDARY_HEADING_LABEL';
   String get dateOfEntry => 'SELECT_DATE_OF_ENTRY';
