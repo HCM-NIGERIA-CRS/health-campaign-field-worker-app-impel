@@ -44,13 +44,13 @@ import '../../../widgets/custom_back_navigation.dart';
 import '../../../models/entities/status.dart' as local_status;
 
 @RoutePage()
-class CustomDeliverInterventionPage extends LocalizedStatefulWidget {
+class CustomDeliverInterventionHeadPage extends LocalizedStatefulWidget {
   final EligibilityAssessmentType eligibilityAssessmentType;
   final bool isEditing;
   final bool? isRevisit;
   final IndividualModel? selectedIndividual;
 
-  const CustomDeliverInterventionPage({
+  const CustomDeliverInterventionHeadPage({
     super.key,
     super.appLocalizations,
     required this.eligibilityAssessmentType,
@@ -60,12 +60,12 @@ class CustomDeliverInterventionPage extends LocalizedStatefulWidget {
   });
 
   @override
-  State<CustomDeliverInterventionPage> createState() =>
-      CustomDeliverInterventionPageState();
+  State<CustomDeliverInterventionHeadPage> createState() =>
+      CustomDeliverInterventionHeadPageState();
 }
 
-class CustomDeliverInterventionPageState
-    extends LocalizedState<CustomDeliverInterventionPage> {
+class CustomDeliverInterventionHeadPageState
+    extends LocalizedState<CustomDeliverInterventionHeadPage> {
   // Constants for form control keys
   static const _resourceDeliveredKey = 'resourceDelivered';
   static const _quantityDistributedKey = 'quantityDistributed';
@@ -74,11 +74,6 @@ class CustomDeliverInterventionPageState
   static const _deliveryCommentKey = 'deliveryComment';
   final clickedStatus = ValueNotifier<bool>(false);
   bool? shouldSubmit = false;
-
-  bool isAbsent = false;
-
-  bool isTaskUpdate = false;
-  TaskModel? oldTaskCaptured;
 
   // Variable to track dose administration status
   bool doseAdministered = false;
@@ -96,82 +91,43 @@ class CustomDeliverInterventionPageState
   }
 
   Future<void> handleCapturedLocationState(
-    LocationState locationState,
-    BuildContext context,
-    DeliverInterventionState deliverInterventionState,
-    FormGroup form,
-    HouseholdMemberWrapper householdMember,
-    IndividualModel? selectedIndividual,
-    ProjectBeneficiaryModel projectBeneficiary,
-    List<ProductVariantModel?> productVariantsDelivered,
-  ) async {
+      LocationState locationState,
+      BuildContext context,
+      DeliverInterventionState deliverInterventionState,
+      FormGroup form,
+      HouseholdMemberWrapper householdMember,
+      IndividualModel? selectedIndividual,
+      ProjectBeneficiaryModel projectBeneficiary) async {
     final lat = locationState.latitude;
     final long = locationState.longitude;
-    List<TaskModel> tasks = [];
+    TaskModel taskModel = _getTaskModel(
+      context,
+      form: form,
+      oldTask: RegistrationDeliverySingleton().beneficiaryType ==
+              BeneficiaryType.household
+          ? deliverInterventionState.tasks?.lastOrNull
+          : null,
+      projectBeneficiaryClientReferenceId: projectBeneficiary.clientReferenceId,
+      dose: deliverInterventionState.dose,
+      cycle: deliverInterventionState.cycle,
+      deliveryStrategy: DeliverStrategyType.direct.toValue(),
+      address: householdMember.members?.first.address?.first,
+      latitude: lat,
+      longitude: long,
+      selectedIndividual: selectedIndividual,
+    );
 
-    for (var productDelivered in productVariantsDelivered) {
-      if (productDelivered == null) continue;
-      TaskModel task = _getTaskModel(
-        context,
-        form: form,
-        oldTask: null,
-        projectBeneficiaryClientReferenceId:
-            projectBeneficiary.clientReferenceId,
-        dose: deliverInterventionState.dose,
-        cycle: deliverInterventionState.cycle,
-        deliveryStrategy: DeliverStrategyType.direct.toValue(),
-        address: householdMember.members?.first.address?.first,
-        latitude: lat,
-        longitude: long,
-        selectedIndividual: selectedIndividual,
-        productVariantDelivered: [productDelivered!],
-      );
-      tasks.add(task);
-    }
-
-// update the old task if needed , update only the first task, as only one task will be there for individual
-// marked absent
-    if (isTaskUpdate && oldTaskCaptured != null) {
-      TaskModel updatedTask =
-          _updateTaskModel(context, oldTaskCaptured!, tasks.first);
-
-      // submit the updated task
-
-      context.read<DeliverInterventionBloc>().add(
-            DeliverInterventionSubmitEvent(
-                task: updatedTask,
-                isEditing: true,
-                boundaryModel: RegistrationDeliverySingleton().boundary!,
-                navigateToSummary: false,
-                householdMemberWrapper: householdMember),
-          );
-
-      /// submit the rest of the tasks as new tasks ,skipping 0th index as that is updated above
-
-      if (tasks.length > 1) {
-        for (int i = 1; i < tasks.length; i++) {
-          var task = tasks[i];
-
-          context.read<DeliverInterventionBloc>().add(
-                DeliverInterventionSubmitEvent(
-                  task: task,
-                  isEditing: false,
-                  boundaryModel: RegistrationDeliverySingleton().boundary!,
-                ),
-              );
-        }
-      }
-    } else {
-      for (var task in tasks) {
-        context.read<DeliverInterventionBloc>().add(
-              DeliverInterventionSubmitEvent(
-                task: task,
-                isEditing: false,
-                boundaryModel: RegistrationDeliverySingleton().boundary!,
-              ),
-            );
-      }
-    }
+    context.read<DeliverInterventionBloc>().add(
+          DeliverInterventionSubmitEvent(
+            task: deliverInterventionState.oldTask ?? taskModel,
+            isEditing: (deliverInterventionState.tasks ?? []).isNotEmpty &&
+                    RegistrationDeliverySingleton().beneficiaryType ==
+                        BeneficiaryType.household
+                ? true
+                : false,
+            boundaryModel: RegistrationDeliverySingleton().boundary!,
+          ),
+        );
 
     final productvariantList =
         ((form.control(_resourceDeliveredKey) as FormArray).value
@@ -205,19 +161,17 @@ class CustomDeliverInterventionPageState
           ),
         );
 
-    await handleSubmit(context, deliverInterventionState);
+    await handleSubmit(context, taskModel, deliverInterventionState);
   }
 
   void handleLocationState(
-    LocationState locationState,
-    BuildContext context,
-    DeliverInterventionState deliverInterventionState,
-    FormGroup form,
-    HouseholdMemberWrapper householdMember,
-    IndividualModel? selectedIndividual,
-    ProjectBeneficiaryModel projectBeneficiary,
-    List<ProductVariantModel?> productVariantsDelivered,
-  ) {
+      LocationState locationState,
+      BuildContext context,
+      DeliverInterventionState deliverInterventionState,
+      FormGroup form,
+      HouseholdMemberWrapper householdMember,
+      IndividualModel? selectedIndividual,
+      ProjectBeneficiaryModel projectBeneficiary) {
     if (context.mounted) {
       DigitComponentsUtils.showDialog(
         context,
@@ -235,14 +189,14 @@ class CustomDeliverInterventionPageState
             form,
             householdMember,
             selectedIndividual,
-            projectBeneficiary,
-            productVariantsDelivered);
+            projectBeneficiary);
       });
     }
   }
 
   Future<void> handleSubmit(
     BuildContext context,
+    TaskModel taskModel,
     DeliverInterventionState deliverState,
   ) async {
     ProjectTypeModel? projectTypeModel = RegistrationDeliverySingleton()
@@ -459,30 +413,6 @@ class CustomDeliverInterventionPageState
                                                                 deliveredProducts,
                                                                 form);
 
-                                                        // get the delivery comment
-                                                        final deliveryComment = form
-                                                            .control(
-                                                                _deliveryCommentKey)
-                                                            .value as String?;
-
-                                                        final isChildAbsent = deliveryComment !=
-                                                                    null &&
-                                                                deliveryComment
-                                                                    .isNotEmpty
-                                                            ? deliveryComment ==
-                                                                    local_status
-                                                                        .Status
-                                                                        .beneficiaryAbsent
-                                                                        .toValue()
-                                                                ? true
-                                                                : false
-                                                            : false;
-
-                                                        setState(() {
-                                                          isAbsent =
-                                                              isChildAbsent;
-                                                        });
-
                                                         if (hasEmptyResources) {
                                                           Toast.showToast(
                                                               context,
@@ -571,49 +501,21 @@ class CustomDeliverInterventionPageState
                                                               false) {
                                                             if (context
                                                                 .mounted) {
-                                                              // vas
-
-                                                              // assumption only one task for individual when marked absent
-                                                              oldTaskCaptured =
-                                                                  deliveryInterventionState
-                                                                      ?.tasks
-                                                                      ?.where(
-                                                                          (element) {
-                                                                return element
-                                                                        ?.projectBeneficiaryClientReferenceId ==
-                                                                    projectBeneficiary
-                                                                        ?.first
-                                                                        .clientReferenceId;
-                                                              }).firstOrNull;
-
-                                                              setState(() {
-                                                                isTaskUpdate =
-                                                                    checkIfTaskUpdate(
-                                                                        oldTaskCaptured);
-                                                              });
-
                                                               context
                                                                   .read<
                                                                       LocationBloc>()
                                                                   .add(
                                                                       const LoadLocationEvent());
-
-                                                              // here when absent flow , passing dummy product variant with product id only , as product variant is required in task model
                                                               handleLocationState(
-                                                                  locationState,
-                                                                  context,
-                                                                  deliveryInterventionState,
-                                                                  form,
-                                                                  householdMemberWrapper,
-                                                                  individualModel,
-                                                                  projectBeneficiary!
-                                                                      .first,
-                                                                  isAbsent
-                                                                      ? [
-                                                                          deliveredProducts
-                                                                              .first
-                                                                        ]
-                                                                      : deliveredProducts);
+                                                                locationState,
+                                                                context,
+                                                                deliveryInterventionState,
+                                                                form,
+                                                                householdMemberWrapper,
+                                                                individualModel,
+                                                                projectBeneficiary!
+                                                                    .first,
+                                                              );
                                                             }
                                                           }
                                                         }
@@ -942,10 +844,7 @@ class CustomDeliverInterventionPageState
     double? latitude,
     double? longitude,
     IndividualModel? selectedIndividual,
-    List<ProductVariantModel>? productVariantDelivered,
   }) {
-    // Assumption here productVariantDelivered will always have one item
-
     // Initialize task with oldTask if available, or create a new one
     var task = oldTask;
     var clientReferenceId = task?.clientReferenceId ?? IdGen.i.identifier;
@@ -986,7 +885,7 @@ class CustomDeliverInterventionPageState
       // set quantity as 0  in resource if childAbsent
       resources: isChildAbsent
           ? []
-          : productVariantDelivered!
+          : productvariantList
               .map((e) => TaskResourceModel(
                     taskclientReferenceId: clientReferenceId,
                     clientReferenceId: IdGen.i.identifier,
@@ -1065,14 +964,6 @@ class CustomDeliverInterventionPageState
             AdditionalField(
               AdditionalFieldsType.deliveryComment.toValue(),
               deliveryComment,
-            ),
-          if (productVariantDelivered != null &&
-              productVariantDelivered.isNotEmpty &&
-              !isAbsent)
-            AdditionalField(
-              "ProductDelivered",
-              productVariantDelivered.first?.sku ??
-                  productVariantDelivered.first.id,
             ),
           ...getIndividualAdditionalFields(selectedIndividual)
         ],

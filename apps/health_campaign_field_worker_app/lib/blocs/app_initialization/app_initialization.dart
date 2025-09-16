@@ -111,6 +111,8 @@ class AppInitializationBloc
                     MasterEnums.transitPostType.toValue(),
                     MasterEnums.nonComplianceReasons.toValue(),
                     MasterEnums.dipConfig.toValue(),
+                    MasterEnums.ageRangeOptions.toValue(),
+                    MasterEnums.heightRangeOptions.toValue(),
                   ]),
                 ),
                 MdmsModuleDetailModel(

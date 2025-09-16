@@ -10,8 +10,7 @@ import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
 import 'package:digit_ui_components/widgets/molecules/show_pop_up.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:health_campaign_field_worker_app/widgets/custom_back_navigation.dart';
-import 'package:health_campaign_field_worker_app/widgets/registration_delivery/past_delivery_smc.dart';
+
 import 'package:intl/intl.dart';
 import 'package:recase/recase.dart';
 import 'package:registration_delivery/blocs/app_localization.dart';
@@ -37,15 +36,17 @@ import 'package:registration_delivery/widgets/localized.dart';
 import 'package:registration_delivery/widgets/table_card/table_card.dart';
 
 import '../../../utils/utils.dart';
-import '../../../widgets/registration_delivery/past_delivery_vas.dart';
+import '../../../widgets/custom_back_navigation.dart';
+import '../../../widgets/registration_delivery/past_delivery_head.dart';
+
 import 'custom_record_delivery_cycle.dart';
 
 @RoutePage()
-class CustomBeneficiaryDetailsPage extends LocalizedStatefulWidget {
+class CustomBeneficiaryDetailsHeadPage extends LocalizedStatefulWidget {
   final EligibilityAssessmentType eligibilityAssessmentType;
   final IndividualModel? individualSelected;
   final bool? isHead;
-  const CustomBeneficiaryDetailsPage({
+  const CustomBeneficiaryDetailsHeadPage({
     required this.eligibilityAssessmentType,
     this.individualSelected,
     this.isHead,
@@ -54,12 +55,12 @@ class CustomBeneficiaryDetailsPage extends LocalizedStatefulWidget {
   });
 
   @override
-  State<CustomBeneficiaryDetailsPage> createState() =>
-      CustomBeneficiaryDetailsPageState();
+  State<CustomBeneficiaryDetailsHeadPage> createState() =>
+      CustomBeneficiaryDetailsHeadPageState();
 }
 
-class CustomBeneficiaryDetailsPageState
-    extends LocalizedState<CustomBeneficiaryDetailsPage> {
+class CustomBeneficiaryDetailsHeadPageState
+    extends LocalizedState<CustomBeneficiaryDetailsHeadPage> {
   @override
   void initState() {
     // TODO: implement initState
@@ -241,7 +242,7 @@ class CustomBeneficiaryDetailsPageState
                                                             contentPadding:
                                                                 EdgeInsets.zero,
                                                             additionalWidgets: [
-                                                              buildTableContentSMC(
+                                                              buildTableContentHead(
                                                                   deliverState,
                                                                   context,
                                                                   variant,
@@ -312,7 +313,7 @@ class CustomBeneficiaryDetailsPageState
                                                                         null) {
                                                                       router
                                                                           .push(
-                                                                        CustomDeliverInterventionRoute(
+                                                                        CustomDeliverInterventionHeadRoute(
                                                                             eligibilityAssessmentType:
                                                                                 widget.eligibilityAssessmentType,
                                                                             selectedIndividual: widget.individualSelected),

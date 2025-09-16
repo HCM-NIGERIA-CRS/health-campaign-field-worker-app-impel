@@ -52,32 +52,40 @@ import 'custom_beneficiary_acknowledgement.dart';
 import '../../utils/i18_key_constants.dart' as i18_local;
 
 @RoutePage()
-class CustomIndividualDetailsPage extends LocalizedStatefulWidget {
+class CustomIndividualDetailsPolioSMCPage extends LocalizedStatefulWidget {
   final bool isHeadOfHousehold;
 
-  const CustomIndividualDetailsPage({
+  const CustomIndividualDetailsPolioSMCPage({
     super.key,
     super.appLocalizations,
     this.isHeadOfHousehold = false,
   });
 
   @override
-  State<CustomIndividualDetailsPage> createState() =>
-      CustomIndividualDetailsPageState();
+  State<CustomIndividualDetailsPolioSMCPage> createState() =>
+      CustomIndividualDetailsPolioSMCPageState();
 }
 
-class CustomIndividualDetailsPageState
-    extends LocalizedState<CustomIndividualDetailsPage> {
+class CustomIndividualDetailsPolioSMCPageState
+    extends LocalizedState<CustomIndividualDetailsPolioSMCPage> {
   static const _individualNameKey = 'individualName';
   static const _dobKey = 'dob';
   static const _genderKey = 'gender';
   static const _mobileNumberKey = 'mobileNumber';
+  static const _heightKey = 'height';
+  static const _disabilityKey = 'disability';
+
+  bool hideFieldsBasedOnAge = true;
 
   bool isDuplicateTag = false;
   static const maxLength = 200;
   final clickedStatus = ValueNotifier<bool>(false);
   DateTime now = DateTime.now();
   String? generatedUniqueId;
+
+  bool smcFlow = false;
+  bool polioFlow = false;
+  bool onchoFlow = false;
 
   bool _isProgressDialogVisible = false;
   final ProgressDialog _progressDialog = ProgressDialog();
@@ -179,22 +187,6 @@ class CustomIndividualDetailsPageState
                           searchHouseholdsState.householdMembers.lastOrNull;
 
                       if (householdMemberWrapper != null) {
-                        // final householdCaptured =
-                        //     householdMemberWrapper.household;
-                        // if (householdCaptured != null) {
-                        //   searchHouseholdsBloc
-                        //       .add(const SearchHouseholdsEvent.clear());
-                        //   searchHouseholdsBloc.add(
-                        //     SearchHouseholdsEvent.searchByHousehold(
-                        //       householdModel: householdCaptured,
-                        //       projectId:
-                        //           RegistrationDeliverySingleton().projectId!,
-                        //       isProximityEnabled: false,
-                        //       maxRadius:
-                        //           RegistrationDeliverySingleton().maxRadius,
-                        //     ),
-                        //   );
-                        // }
                         router.push(CustomBeneficiaryAcknowledgementRoute(
                           enableViewHousehold: true,
                           acknowledgementType: AcknowledgementType.addHousehold,
@@ -208,64 +200,9 @@ class CustomIndividualDetailsPageState
                         if (individualCaptured != null) {
                           // assumption add individual here is used for creating child,
                           // if invalid age send to overview no checklist
-                          if (verifyIfChildAgeValid(
-                              context, individualCaptured!)) {
-                            final parent =
-                                context.router.parent() as StackRouter;
-                            parent.popUntilRoot();
-                            router.push(BeneficiaryWrapperRoute(
-                                wrapper: householdMemberWrapper));
-                            router.push(
-                              BeneficiaryWrapperRoute(
-                                wrapper: householdMemberWrapper,
-                                children: [
-                                  CustomBeneficiaryDetailsRoute(
-                                    individualSelected: individualCaptured,
-                                    eligibilityAssessmentType:
-                                        EligibilityAssessmentType.smc,
-                                  )
-                                ],
-                              ),
-                            );
-                          } else {
-                            final parent =
-                                context.router.parent() as StackRouter;
-                            parent.popUntilRoot();
-                            router.push(
-                              BeneficiaryWrapperRoute(
-                                wrapper: householdMemberWrapper,
-                              ),
-                            );
-                          }
 
-                          // final overviewBloc =
-                          //     context.read<HouseholdOverviewBloc>();
-
-                          // overviewBloc.add(
-                          //   HouseholdOverviewReloadEvent(
-                          //     projectId: RegistrationDeliverySingleton()
-                          //         .projectId
-                          //         .toString(),
-                          //     projectBeneficiaryType:
-                          //         RegistrationDeliverySingleton()
-                          //                 .beneficiaryType ??
-                          //             BeneficiaryType.household,
-                          //   ),
-                          // );
-                          // overviewBloc.stream
-                          //     .firstWhere((element) =>
-                          //         element.loading == false &&
-                          //         element.householdMemberWrapper.household !=
-                          //             null)
-                          //     .then((value) {
-                          //   HouseholdMemberWrapper memberWrapper =
-                          //       overviewBloc.state.householdMemberWrapper;
-                          //   final route = router.parent() as StackRouter;
-                          //   route.popUntilRouteWithName(
-                          //       SearchBeneficiaryRoute.name);
-                          //   route.push(BeneficiaryWrapperRoute(
-                          //       wrapper: memberWrapper));
-                          // });
+                          routeBasedOnFlow(individualCaptured!,
+                              householdMemberWrapper!, router, context);
                         } else {
                           (router.parent() as StackRouter).maybePop();
                           router.popUntil((route) =>
@@ -362,37 +299,6 @@ class CustomIndividualDetailsPageState
                               ),
                             );
                           }
-
-                          // final router = context.router;
-                          // if (value.navigateToRoot) {
-                          //   final overviewBloc =
-                          //       context.read<HouseholdOverviewBloc>();
-
-                          //   overviewBloc.add(
-                          //     HouseholdOverviewReloadEvent(
-                          //       projectId: RegistrationDeliverySingleton()
-                          //           .projectId
-                          //           .toString(),
-                          //       projectBeneficiaryType:
-                          //           RegistrationDeliverySingleton()
-                          //                   .beneficiaryType ??
-                          //               BeneficiaryType.household,
-                          //     ),
-                          //   );
-
-                          //   await overviewBloc.stream.firstWhere((element) =>
-                          //       element.loading == false &&
-                          //       element.householdMemberWrapper.household !=
-                          //           null);
-                          //   registration_delivery.HouseholdMemberWrapper
-                          //       memberWrapper =
-                          //       overviewBloc.state.householdMemberWrapper;
-                          //   final route = router.parent() as StackRouter;
-                          //   route.popUntilRouteWithName(
-                          //       SearchBeneficiaryRoute.name);
-                          //   route.push(BeneficiaryWrapperRoute(
-                          //       wrapper: memberWrapper));
-                          // }
                         });
                       },
                       builder: (context, state) {
@@ -469,6 +375,12 @@ class CustomIndividualDetailsPageState
 
                                           return;
                                         }
+
+                                        smcFlow = local_utils.isSMCFlow(age);
+                                        polioFlow =
+                                            local_utils.isPolioFlow(age);
+                                        onchoFlow =
+                                            local_utils.isOnchoFlow(age);
 
                                         final submit = await showDialog(
                                           context: context,
@@ -918,6 +830,16 @@ class CustomIndividualDetailsPageState
                                               digits.DigitDOBAge age =
                                                   digits.DigitDateUtils
                                                       .calculateAge(value);
+
+                                              // show or hide fields based on age
+                                              bool validOnchoAge =
+                                                  validAgeForOncho(age);
+
+                                              setState(() {
+                                                hideFieldsBasedOnAge =
+                                                    validOnchoAge;
+                                              });
+
                                               if ((age.years == 0 &&
                                                       age.months == 0) ||
                                                   age.months > 11 ||
@@ -973,6 +895,41 @@ class CustomIndividualDetailsPageState
                                             }
                                           },
                                         ),
+                                        // enable only when projectType oncho
+                                        Offstage(
+                                          offstage: !hideFieldsBasedOnAge,
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                              kPadding / 2,
+                                              0,
+                                              kPadding / 2,
+                                              0,
+                                            ),
+                                            child: DigitTextFormField(
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              isRequired: true,
+                                              formControlName: _heightKey,
+                                              inputFormatters: [
+                                                FilteringTextInputFormatter
+                                                    .allow(
+                                                  RegExp("[0-9]"),
+                                                ),
+                                              ],
+                                              label: localizations.translate(
+                                                i18.individualDetails
+                                                    .heightLabelText,
+                                              ),
+                                              maxLength: 3,
+                                              validationMessages: {
+                                                'required': (object) =>
+                                                    localizations.translate(i18
+                                                        .common
+                                                        .corecommonRequired),
+                                              },
+                                            ),
+                                          ),
+                                        ),
                                         individualDetailsShowcaseData.mobile
                                             .buildWith(
                                           child: Offstage(
@@ -1021,6 +978,36 @@ class CustomIndividualDetailsPageState
                                             ),
                                           ),
                                         ),
+                                        Offstage(
+                                          offstage: !hideFieldsBasedOnAge,
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                              kPadding / 2,
+                                              0,
+                                              kPadding / 2,
+                                              0,
+                                            ),
+                                            child:
+                                                DigitReactiveDropdown<String>(
+                                              label: localizations.translate(
+                                                i18_local.deliverIntervention
+                                                    .disabilityLabel,
+                                              ),
+                                              isRequired: true,
+                                              valueMapper: (value) =>
+                                                  localizations
+                                                      .translate(value),
+                                              menuItems: const ["YES", "NO"],
+                                              formControlName: _disabilityKey,
+                                              validationMessages: {
+                                                'required': (object) =>
+                                                    localizations.translate(i18
+                                                        .common
+                                                        .corecommonRequired),
+                                              },
+                                            ),
+                                          ),
+                                        ),
                                       ]),
                                 ])),
                           ],
@@ -1031,30 +1018,6 @@ class CustomIndividualDetailsPageState
                 ),
               )),
     );
-  }
-
-  bool verifyIfChildAgeValid(BuildContext context, IndividualModel individual) {
-    if (individual.dateOfBirth == null) {
-      return false;
-    }
-
-    final dob = digits.DigitDateUtils.getFormattedDateToDateTime(
-        individual.dateOfBirth ?? "");
-
-    final individualAge = digits.DigitDateUtils.calculateAge(
-      dob!,
-    );
-
-    final ageInMonths = digits.DigitDateUtils.getAgeMonths(individualAge);
-    // set default from constants if config has null
-    final validMinAge =
-        context.selectedProject.additionalDetails?.projectType?.validMinAge ??
-            local_constants.Constants.validMinAge;
-    final validMaxAge =
-        context.selectedProject.additionalDetails?.projectType?.validMaxAge ??
-            local_constants.Constants.validMaxAge;
-
-    return validMinAge <= ageInMonths && ageInMonths <= validMaxAge;
   }
 
   IndividualModel _getIndividualModel(
@@ -1069,28 +1032,31 @@ class CustomIndividualDetailsPageState
       dobString = DateFormat(Constants().dateFormat).format(dob);
     }
 
-    // final height = form.control(_heightKey).value as String? ?? "0";
+    final height = form.control(_heightKey).value as String? ?? "0";
 
     var individual = oldIndividual;
     individual ??= IndividualModel(
-      clientReferenceId: IdGen.i.identifier,
-      tenantId: RegistrationDeliverySingleton().tenantId,
-      rowVersion: 1,
-      auditDetails: AuditDetails(
-        createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
-        createdTime: ContextUtilityExtensions(context).millisecondsSinceEpoch(),
-        lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid,
-        lastModifiedTime:
-            ContextUtilityExtensions(context).millisecondsSinceEpoch(),
-      ),
-      clientAuditDetails: ClientAuditDetails(
-        createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
-        createdTime: ContextUtilityExtensions(context).millisecondsSinceEpoch(),
-        lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid,
-        lastModifiedTime:
-            ContextUtilityExtensions(context).millisecondsSinceEpoch(),
-      ),
-    );
+        clientReferenceId: IdGen.i.identifier,
+        tenantId: RegistrationDeliverySingleton().tenantId,
+        rowVersion: 1,
+        auditDetails: AuditDetails(
+          createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
+          createdTime:
+              ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+          lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid,
+          lastModifiedTime:
+              ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+        ),
+        clientAuditDetails: ClientAuditDetails(
+          createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
+          createdTime:
+              ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+          lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid,
+          lastModifiedTime:
+              ContextUtilityExtensions(context).millisecondsSinceEpoch(),
+        ),
+        additionalFields: IndividualAdditionalFields(
+            version: 1, fields: [AdditionalField("height", height)]));
 
     var name = individual.name;
     name ??= NameModel(
@@ -1294,12 +1260,21 @@ class CustomIndividualDetailsPageState
       _genderKey: FormControl<String>(
           value: getGenderOptions(individual),
           validators: [Validators.required]),
+      _heightKey: FormControl<String>(
+        value: "0",
+        validators: context.projectTypeCode == ProjectTypes.oncho.toValue()
+            ? []
+            : [Validators.required],
+      ),
       _mobileNumberKey:
           FormControl<String>(value: individual?.mobileNumber, validators: [
         Validators.delegate((validator) =>
             local_utils.CustomValidator.validMobileNumber(validator)),
         Validators.minLength(11),
         Validators.maxLength(11),
+      ]),
+      _disabilityKey: FormControl<String>(value: _disabilityKey, validators: [
+        Validators.required,
       ]),
     });
   }
@@ -1533,6 +1508,45 @@ class CustomIndividualDetailsPageState
         },
       ),
     );
+  }
+
+  void routeBasedOnFlow(
+      IndividualModel individual,
+      HouseholdMemberWrapper wrapper,
+      StackRouter router,
+      BuildContext context) {
+    final parent = context.router.parent() as StackRouter;
+    parent.popUntilRoot();
+    router.push(BeneficiaryWrapperRoute(wrapper: wrapper));
+
+    if (smcFlow && polioFlow) {
+      //route to eligibility checklist page first
+
+      router.push(BeneficiaryWrapperRoute(wrapper: wrapper, children: [
+        EligibilityChecklistViewRoute(
+            eligibilityAssessmentType: EligibilityAssessmentType.smc,
+            individual: individual)
+      ]));
+    } else if (polioFlow || onchoFlow) {
+      // route to normal beneficiary details page first
+      router.push(
+        BeneficiaryWrapperRoute(
+          wrapper: wrapper,
+          children: [
+            CustomBeneficiaryDetailsRoute(
+              individualSelected: individual,
+              eligibilityAssessmentType: EligibilityAssessmentType.smc,
+            )
+          ],
+        ),
+      );
+    }
+  }
+
+  bool validAgeForOncho(digits.DigitDOBAge age) {
+    final ageInMonths = (age.years * 12) + age.months;
+    var onchoValidAge = local_constants.Constants.onchoMinValidAgeInMonths;
+    return ageInMonths > onchoValidAge;
   }
 
   void getIdNumberIfExists(BeneficiaryRegistrationState state, FormGroup form) {

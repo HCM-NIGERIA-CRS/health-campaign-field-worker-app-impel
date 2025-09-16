@@ -125,6 +125,11 @@ class Constants {
   static const String childrenAFP = 'childrenAFP';
   static const String guineaWorm = 'guineaWorm';
   static const int dailyTarget = 40;
+  static const int onchoMinValidAgeInMonths = 60;
+  static const int smcMinValidAgeInMonths = 5;
+  static const int smcMaxValidAgeInMonths = 59;
+  static const int polioMaxValidAgeInMonths = 60;
+  static const int polioMinValidAgeInMonths = 0;
 
   static const String boundaryCode = "BoundaryCode";
   static const String supervisorName = "SupervisorName";

@@ -169,8 +169,14 @@ class HouseholdOverView {
   String get householdOverViewSMCAssessmentActionText =>
       'HOUSEHOLD_OVER_VIEW_SMC_ASSESSMENT_ACTION_TEXT';
 
+  String get householdOverViewDeliverActionText =>
+      'HOUSEHOLD_OVER_VIEW_DELIVER_ACTION_TEXT';
+
   String get householdOverViewRevisitAbsentText =>
       'HOUSEHOLD_OVER_VIEW_REVISIT_ABSENT_TEXT';
+
+  String get householdOverViewAdministerHeadText =>
+      'HOUSEHOLD_OVER_VIEW_ADMINISTER_HEAD_TEXT';
 
   String get householdOverViewVASAssessmentActionText =>
       'HOUSEHOLD_OVER_VIEW_VAS_ASSESSMENT_ACTION_TEXT';
@@ -252,6 +258,8 @@ class DeliverIntervention {
   String get ninetoElevenAgeRange => 'NINE_ELEVEN_AGE_RANGE';
   String get twelvetofiftyNineAgeRange => 'TWELVE_FIFTYNINE_AGE_RANGE';
   String get selectAgeRangeMessage => 'SELECT_AGE_RANGE';
+
+  String get disabilityLabel => 'DELIVER_INTERVENTION_DISABILITY_LABEL';
 }
 
 class Checklist {

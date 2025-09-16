@@ -9,5 +9,7 @@ enum UserActionEnums {
   @MappableValue("FIXED")
   fixed,
   @MappableValue("DAILY_PLAN")
-  dailyPlan;
+  dailyPlan,
+  @MappableValue("NON_COMPLIANCE")
+  nonCompliance;
 }

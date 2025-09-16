@@ -103,6 +103,19 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    CustomBeneficiaryDetailsHeadRoute.name: (routeData) {
+      final args = routeData.argsAs<CustomBeneficiaryDetailsHeadRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CustomBeneficiaryDetailsHeadPage(
+          eligibilityAssessmentType: args.eligibilityAssessmentType,
+          individualSelected: args.individualSelected,
+          isHead: args.isHead,
+          key: args.key,
+          appLocalizations: args.appLocalizations,
+        ),
+      );
+    },
     CustomBeneficiaryDetailsRoute.name: (routeData) {
       final args = routeData.argsAs<CustomBeneficiaryDetailsRouteArgs>();
       return AutoRoutePage<dynamic>(
@@ -110,7 +123,7 @@ abstract class _$AppRouter extends RootStackRouter {
         child: CustomBeneficiaryDetailsPage(
           eligibilityAssessmentType: args.eligibilityAssessmentType,
           individualSelected: args.individualSelected,
-          isRevisit: args.isRevisit,
+          isHead: args.isHead,
           key: args.key,
           appLocalizations: args.appLocalizations,
         ),
@@ -158,6 +171,20 @@ abstract class _$AppRouter extends RootStackRouter {
         child: CustomComplaintsInboxPage(
           key: args.key,
           appLocalizations: args.appLocalizations,
+        ),
+      );
+    },
+    CustomDeliverInterventionHeadRoute.name: (routeData) {
+      final args = routeData.argsAs<CustomDeliverInterventionHeadRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CustomDeliverInterventionHeadPage(
+          key: args.key,
+          appLocalizations: args.appLocalizations,
+          eligibilityAssessmentType: args.eligibilityAssessmentType,
+          selectedIndividual: args.selectedIndividual,
+          isRevisit: args.isRevisit,
+          isEditing: args.isEditing,
         ),
       );
     },
@@ -333,6 +360,18 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: CustomIndividualDetailsPage(
+          key: args.key,
+          appLocalizations: args.appLocalizations,
+          isHeadOfHousehold: args.isHeadOfHousehold,
+        ),
+      );
+    },
+    CustomIndividualDetailsPolioSMCRoute.name: (routeData) {
+      final args = routeData.argsAs<CustomIndividualDetailsPolioSMCRouteArgs>(
+          orElse: () => const CustomIndividualDetailsPolioSMCRouteArgs());
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CustomIndividualDetailsPolioSMCPage(
           key: args.key,
           appLocalizations: args.appLocalizations,
           isHeadOfHousehold: args.isHeadOfHousehold,
@@ -1264,13 +1303,67 @@ class CustomBeneficiaryAcknowledgementRouteArgs {
 }
 
 /// generated route for
+/// [CustomBeneficiaryDetailsHeadPage]
+class CustomBeneficiaryDetailsHeadRoute
+    extends PageRouteInfo<CustomBeneficiaryDetailsHeadRouteArgs> {
+  CustomBeneficiaryDetailsHeadRoute({
+    required EligibilityAssessmentType eligibilityAssessmentType,
+    IndividualModel? individualSelected,
+    bool? isHead,
+    Key? key,
+    RegistrationDeliveryLocalization? appLocalizations,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CustomBeneficiaryDetailsHeadRoute.name,
+          args: CustomBeneficiaryDetailsHeadRouteArgs(
+            eligibilityAssessmentType: eligibilityAssessmentType,
+            individualSelected: individualSelected,
+            isHead: isHead,
+            key: key,
+            appLocalizations: appLocalizations,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CustomBeneficiaryDetailsHeadRoute';
+
+  static const PageInfo<CustomBeneficiaryDetailsHeadRouteArgs> page =
+      PageInfo<CustomBeneficiaryDetailsHeadRouteArgs>(name);
+}
+
+class CustomBeneficiaryDetailsHeadRouteArgs {
+  const CustomBeneficiaryDetailsHeadRouteArgs({
+    required this.eligibilityAssessmentType,
+    this.individualSelected,
+    this.isHead,
+    this.key,
+    this.appLocalizations,
+  });
+
+  final EligibilityAssessmentType eligibilityAssessmentType;
+
+  final IndividualModel? individualSelected;
+
+  final bool? isHead;
+
+  final Key? key;
+
+  final RegistrationDeliveryLocalization? appLocalizations;
+
+  @override
+  String toString() {
+    return 'CustomBeneficiaryDetailsHeadRouteArgs{eligibilityAssessmentType: $eligibilityAssessmentType, individualSelected: $individualSelected, isHead: $isHead, key: $key, appLocalizations: $appLocalizations}';
+  }
+}
+
+/// generated route for
 /// [CustomBeneficiaryDetailsPage]
 class CustomBeneficiaryDetailsRoute
     extends PageRouteInfo<CustomBeneficiaryDetailsRouteArgs> {
   CustomBeneficiaryDetailsRoute({
     required EligibilityAssessmentType eligibilityAssessmentType,
     IndividualModel? individualSelected,
-    bool? isRevisit,
+    bool? isHead,
     Key? key,
     RegistrationDeliveryLocalization? appLocalizations,
     List<PageRouteInfo>? children,
@@ -1279,7 +1372,7 @@ class CustomBeneficiaryDetailsRoute
           args: CustomBeneficiaryDetailsRouteArgs(
             eligibilityAssessmentType: eligibilityAssessmentType,
             individualSelected: individualSelected,
-            isRevisit: isRevisit,
+            isHead: isHead,
             key: key,
             appLocalizations: appLocalizations,
           ),
@@ -1296,7 +1389,7 @@ class CustomBeneficiaryDetailsRouteArgs {
   const CustomBeneficiaryDetailsRouteArgs({
     required this.eligibilityAssessmentType,
     this.individualSelected,
-    this.isRevisit,
+    this.isHead,
     this.key,
     this.appLocalizations,
   });
@@ -1305,7 +1398,7 @@ class CustomBeneficiaryDetailsRouteArgs {
 
   final IndividualModel? individualSelected;
 
-  final bool? isRevisit;
+  final bool? isHead;
 
   final Key? key;
 
@@ -1313,7 +1406,7 @@ class CustomBeneficiaryDetailsRouteArgs {
 
   @override
   String toString() {
-    return 'CustomBeneficiaryDetailsRouteArgs{eligibilityAssessmentType: $eligibilityAssessmentType, individualSelected: $individualSelected, isRevisit: $isRevisit, key: $key, appLocalizations: $appLocalizations}';
+    return 'CustomBeneficiaryDetailsRouteArgs{eligibilityAssessmentType: $eligibilityAssessmentType, individualSelected: $individualSelected, isHead: $isHead, key: $key, appLocalizations: $appLocalizations}';
   }
 }
 
@@ -1470,6 +1563,65 @@ class CustomComplaintsInboxRouteArgs {
   @override
   String toString() {
     return 'CustomComplaintsInboxRouteArgs{key: $key, appLocalizations: $appLocalizations}';
+  }
+}
+
+/// generated route for
+/// [CustomDeliverInterventionHeadPage]
+class CustomDeliverInterventionHeadRoute
+    extends PageRouteInfo<CustomDeliverInterventionHeadRouteArgs> {
+  CustomDeliverInterventionHeadRoute({
+    Key? key,
+    RegistrationDeliveryLocalization? appLocalizations,
+    required EligibilityAssessmentType eligibilityAssessmentType,
+    IndividualModel? selectedIndividual,
+    bool? isRevisit,
+    bool isEditing = false,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CustomDeliverInterventionHeadRoute.name,
+          args: CustomDeliverInterventionHeadRouteArgs(
+            key: key,
+            appLocalizations: appLocalizations,
+            eligibilityAssessmentType: eligibilityAssessmentType,
+            selectedIndividual: selectedIndividual,
+            isRevisit: isRevisit,
+            isEditing: isEditing,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CustomDeliverInterventionHeadRoute';
+
+  static const PageInfo<CustomDeliverInterventionHeadRouteArgs> page =
+      PageInfo<CustomDeliverInterventionHeadRouteArgs>(name);
+}
+
+class CustomDeliverInterventionHeadRouteArgs {
+  const CustomDeliverInterventionHeadRouteArgs({
+    this.key,
+    this.appLocalizations,
+    required this.eligibilityAssessmentType,
+    this.selectedIndividual,
+    this.isRevisit,
+    this.isEditing = false,
+  });
+
+  final Key? key;
+
+  final RegistrationDeliveryLocalization? appLocalizations;
+
+  final EligibilityAssessmentType eligibilityAssessmentType;
+
+  final IndividualModel? selectedIndividual;
+
+  final bool? isRevisit;
+
+  final bool isEditing;
+
+  @override
+  String toString() {
+    return 'CustomDeliverInterventionHeadRouteArgs{key: $key, appLocalizations: $appLocalizations, eligibilityAssessmentType: $eligibilityAssessmentType, selectedIndividual: $selectedIndividual, isRevisit: $isRevisit, isEditing: $isEditing}';
   }
 }
 
@@ -2140,6 +2292,50 @@ class CustomIndividualDetailsRouteArgs {
   @override
   String toString() {
     return 'CustomIndividualDetailsRouteArgs{key: $key, appLocalizations: $appLocalizations, isHeadOfHousehold: $isHeadOfHousehold}';
+  }
+}
+
+/// generated route for
+/// [CustomIndividualDetailsPolioSMCPage]
+class CustomIndividualDetailsPolioSMCRoute
+    extends PageRouteInfo<CustomIndividualDetailsPolioSMCRouteArgs> {
+  CustomIndividualDetailsPolioSMCRoute({
+    Key? key,
+    RegistrationDeliveryLocalization? appLocalizations,
+    bool isHeadOfHousehold = false,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CustomIndividualDetailsPolioSMCRoute.name,
+          args: CustomIndividualDetailsPolioSMCRouteArgs(
+            key: key,
+            appLocalizations: appLocalizations,
+            isHeadOfHousehold: isHeadOfHousehold,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CustomIndividualDetailsPolioSMCRoute';
+
+  static const PageInfo<CustomIndividualDetailsPolioSMCRouteArgs> page =
+      PageInfo<CustomIndividualDetailsPolioSMCRouteArgs>(name);
+}
+
+class CustomIndividualDetailsPolioSMCRouteArgs {
+  const CustomIndividualDetailsPolioSMCRouteArgs({
+    this.key,
+    this.appLocalizations,
+    this.isHeadOfHousehold = false,
+  });
+
+  final Key? key;
+
+  final RegistrationDeliveryLocalization? appLocalizations;
+
+  final bool isHeadOfHousehold;
+
+  @override
+  String toString() {
+    return 'CustomIndividualDetailsPolioSMCRouteArgs{key: $key, appLocalizations: $appLocalizations, isHeadOfHousehold: $isHeadOfHousehold}';
   }
 }
 

@@ -118,6 +118,9 @@ import '../pages/transit_post/custom_transit_post_wrapper.dart';
 import '../pages/campaign_delivery_select.dart';
 
 import '../pages/daily_Implementation_plan/select_settlements.dart';
+import '../pages/beneficiary/check_eligibility/custom_deliver_intervention_head_page.dart';
+import '../pages/beneficiary/check_eligibility/custom_beneficiary_details_head_page.dart';
+import '../pages/registration_delivery/custom_individual_details_polio_smc.dart';
 
 part 'app_router.gr.dart';
 
@@ -398,9 +401,10 @@ class AppRouter extends _$AppRouter {
                   AutoRoute(
                       page: CustomIndividualDetailsRoute.page,
                       path: 'custom-individual-details'),
-                  // AutoRoute(
-                  //     page: HouseHoldDetailsRoute.page,
-                  //     path: 'household-details'),
+                  AutoRoute(
+                      page: CustomIndividualDetailsPolioSMCRoute.page,
+                      path: 'custom-individual-details-polio-smc'),
+
                   AutoRoute(
                       page: CustomHouseHoldDetailsRoute.page,
                       path: 'household-details'),
@@ -444,6 +448,10 @@ class AppRouter extends _$AppRouter {
                     page: CustomBeneficiaryDetailsRoute.page,
                     path: 'custom-beneficiary-details',
                   ),
+                  AutoRoute(
+                    page: CustomBeneficiaryDetailsHeadRoute.page,
+                    path: 'custom-beneficiary-details-head',
+                  ),
                   // RedirectRoute(
                   //   path: 'beneficiary-details',
                   //   redirectTo: 'custom-beneficiary-details',
@@ -451,6 +459,10 @@ class AppRouter extends _$AppRouter {
                   AutoRoute(
                     page: CustomDeliverInterventionRoute.page,
                     path: 'custom-deliver-intervention',
+                  ),
+                  AutoRoute(
+                    page: CustomDeliverInterventionHeadRoute.page,
+                    path: 'custom-deliver-intervention-head',
                   ),
                   // AutoRoute(
                   //   page: DeliverInterventionRoute.page,
