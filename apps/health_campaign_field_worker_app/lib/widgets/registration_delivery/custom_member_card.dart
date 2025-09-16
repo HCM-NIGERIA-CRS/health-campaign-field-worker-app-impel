@@ -204,6 +204,7 @@ class CustomMemberCard extends StatelessWidget {
   Widget actionButton(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.digitTextTheme(context);
+    // List<TaskModel>? smcTasks = _getSMCStatusData();
     final doseStatus = checkStatusSMC(tasks, context.selectedCycle);
 
     bool smcAssessmentPendingStatus =
@@ -214,6 +215,9 @@ class CustomMemberCard extends StatelessWidget {
 
     bool isBeneficiaryInEligibleSMC =
         checkBeneficiaryInEligibleSMC(tasks, context.selectedCycle);
+    final redosePendingStatus = smcAssessmentPendingStatus
+        ? true
+        : redosePending(tasks, context.selectedCycle);
 
     if ((isNotEligibleSMC || isBeneficiaryIneligible) && !doseStatus) {
       return const Offstage();
@@ -293,8 +297,120 @@ class CustomMemberCard extends StatelessWidget {
               }
             },
           ),
+        if (!(smcAssessmentPendingStatus) && redosePendingStatus && smcFlow)
+          DigitElevatedButton(
+            child: Center(
+              child: Text(
+                localizations.translate(
+                  i18_local.householdOverView.householdOverViewRedoseActionText,
+                ),
+                style: textTheme.headingM.copyWith(color: Colors.white),
+              ),
+            ),
+            onPressed: () async {
+              final bloc = context.read<HouseholdOverviewBloc>();
+              bloc.add(
+                HouseholdOverviewEvent.selectedIndividual(
+                  individualModel: individual,
+                ),
+              );
+
+              if ((tasks ?? []).isNotEmpty) {
+                TaskModel? successfulTask = tasks
+                    ?.where(
+                      (element) =>
+                          element.status ==
+                          Status.administeredSuccess.toValue(),
+                    )
+                    .lastOrNull;
+                if (redosePendingStatus) {
+                  final spaq1 = context.spaq1;
+                  final spaq2 = context.spaq2;
+
+                  int doseCount = double.parse(
+                    successfulTask?.resources?.first.quantity ?? "0",
+                  ).round();
+
+                  final value = variant
+                      .firstWhere(
+                        (element) =>
+                            element.id ==
+                            successfulTask!.resources!.first.productVariantId,
+                      )
+                      .sku;
+
+                  if (successfulTask != null &&
+                      value != null &&
+                      ((value.contains(
+                                Constants.spaq1,
+                              ) &&
+                              spaq1 > 0) ||
+                          (value.contains(
+                                Constants.spaq2,
+                              ) &&
+                              spaq2 > 0))) {
+                    context.router.push(
+                      RecordRedoseRoute(
+                        tasks: [successfulTask],
+                      ),
+                    );
+                  } else {
+                    DigitDialog.show(
+                      context,
+                      options: DigitDialogOptions(
+                        titleText: localizations.translate(
+                          i18_local.beneficiaryDetails.insufficientStockHeading,
+                        ),
+                        titleIcon: Icon(
+                          Icons.warning,
+                          color: DigitTheme.instance.colorScheme.error,
+                        ),
+                        contentText: (value == Constants.spaq1)
+                            ? "${localizations.translate(
+                                i18_local.beneficiaryDetails
+                                    .insufficientAZTStockMessageDelivery,
+                              )} \n ${localizations.translate(
+                                i18_local.beneficiaryDetails.spaq1DoseUnit,
+                              )}"
+                            : "${localizations.translate(
+                                i18_local.beneficiaryDetails
+                                    .insufficientAZTStockMessageDelivery,
+                              )} \n ${localizations.translate(
+                                i18_local.beneficiaryDetails.spaq2DoseUnit,
+                              )}",
+                        primaryAction: DigitDialogActions(
+                          label: localizations.translate(i18_local
+                              .beneficiaryDetails.backToHouseholdDetails),
+                          action: (ctx) {
+                            Navigator.of(
+                              ctx,
+                              rootNavigator: true,
+                            ).pop();
+                          },
+                        ),
+                      ),
+                    );
+                  }
+                }
+              }
+            },
+          ),
       ],
     );
+  }
+
+  List<TaskModel>? _getSMCStatusData() {
+    return tasks
+        ?.where((e) =>
+            e.additionalFields?.fields.firstWhereOrNull(
+              (element) =>
+                  element.key ==
+                      additional_fields_local.AdditionalFieldsType.deliveryType
+                          .toValue() &&
+                  element.value == EligibilityAssessmentStatus.smcDone.name,
+            ) !=
+            null)
+        .toList();
   }
 
   @override
