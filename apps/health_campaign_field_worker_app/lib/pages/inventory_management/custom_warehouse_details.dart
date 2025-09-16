@@ -88,51 +88,43 @@ class CustomWarehouseDetailsPageState
               final facilities = facilityState.whenOrNull(
                     fetched: (facilities, allfacilities) {
                       if (ctx.selectedProject.address?.boundaryType ==
-                          Constants.stateBoundaryLevel) {
-                        //TODO : change the role for the zonal facility
-                        if (isWareHouseMgr) {
-                          List<FacilityModel> filteredFacilities = facilities
-                              .where(
-                                (element) =>
-                                    element.usage == Constants.zonalFacility,
-                              )
-                              .toList();
-                          facilities = filteredFacilities.isEmpty
-                              ? facilities
-                              : filteredFacilities;
-                        } else {
-                          List<FacilityModel> filteredFacilities = facilities
-                              .where((element) =>
-                                  element.usage == Constants.stateFacility)
-                              .toList();
-                          facilities = filteredFacilities.isEmpty
-                              ? facilities
-                              : filteredFacilities;
-                        }
-                      } else if (ctx.selectedProject.address?.boundaryType ==
-                          Constants.lgaBoundaryLevel) {
-                        List<FacilityModel> filteredFacilities = facilities
-                            .where((element) =>
-                                element.usage == Constants.lgaFacility)
-                            .toList();
-                        facilities = filteredFacilities.isEmpty
-                            ? facilities
-                            : filteredFacilities;
-                      } else if (ctx.selectedProject.address?.boundaryType ==
-                          Constants.wardBoundaryLevel) {
-                        List<FacilityModel> filteredFacilities = facilities
-                            .where((element) =>
-                                element.usage == Constants.wardFacility)
-                            .toList();
-                        facilities = filteredFacilities.isEmpty
-                            ? facilities
-                            : filteredFacilities;
-                      } else {
+                              Constants.countryBoundaryLevel &&
+                          isWareHouseMgr) {
                         List<FacilityModel> filteredFacilities = facilities
                             .where(
                               (element) =>
-                                  element.usage == Constants.healthFacility,
+                                  element.usage == Constants.zonalWarehouse,
                             )
+                            .toList();
+                        facilities = filteredFacilities.isEmpty
+                            ? facilities
+                            : filteredFacilities;
+                      } else if (ctx.selectedProject.address?.boundaryType ==
+                              Constants.stateBoundaryLevel &&
+                          isWareHouseMgr) {
+                        List<FacilityModel> filteredFacilities = allfacilities
+                            .where((element) =>
+                                element.usage == Constants.stateWarehouse)
+                            .toList();
+                        facilities = filteredFacilities.isEmpty
+                            ? facilities
+                            : filteredFacilities;
+                      } else if (ctx.selectedProject.address?.boundaryType ==
+                              Constants.lgaBoundaryLevel &&
+                          isWareHouseMgr) {
+                        List<FacilityModel> filteredFacilities = allfacilities
+                            .where((element) =>
+                                element.usage == Constants.lgaWarehouse)
+                            .toList();
+                        facilities = filteredFacilities.isEmpty
+                            ? facilities
+                            : filteredFacilities;
+                      } else if (ctx.selectedProject.address?.boundaryType ==
+                              Constants.wardBoundaryLevel &&
+                          isWareHouseMgr) {
+                        List<FacilityModel> filteredFacilities = allfacilities
+                            .where((element) =>
+                                element.usage == Constants.wardWarehouse)
                             .toList();
                         facilities = filteredFacilities.isEmpty
                             ? facilities
@@ -287,9 +279,11 @@ class CustomWarehouseDetailsPageState
                                                     );
                                                     if ((InventorySingleton()
                                                                 .isWareHouseMgr &&
+                                                            !context
+                                                                .isStateCold &&
                                                             !context.isLGA &&
                                                             !context
-                                                                .isHealthFacilitySupervisor &&
+                                                                .isWardLevel &&
                                                             !context
                                                                 .isCommunityDistributor) ||
                                                         (recordStockBloc.state

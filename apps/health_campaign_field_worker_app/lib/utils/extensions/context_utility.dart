@@ -294,7 +294,9 @@ extension ContextUtilityExtensions on BuildContext {
     try {
       bool communityDistributor = loggedInUserRoles
           .where(
-            (role) => role.code == RolesType.communityDistributor.toValue(),
+            (role) =>
+                role.code == RolesType.distributor.toValue() ||
+                role.code == RolesType.communityDistributor.toValue(),
           )
           .toList()
           .isNotEmpty;
@@ -309,7 +311,43 @@ extension ContextUtilityExtensions on BuildContext {
     try {
       String? boundaryLevel = selectedProject.address?.boundaryType;
 
-      if (boundaryLevel == Constants.districtBoundaryLevel) {
+      if (boundaryLevel == Constants.lgaBoundaryLevel) {
+        bool isDownSyncEnabled = loggedInUserRoles
+            .where((role) => role.code == RolesType.warehouseManager.toValue())
+            .toList()
+            .isNotEmpty;
+
+        return isDownSyncEnabled;
+      }
+      return false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  bool get isStateCold {
+    try {
+      String? boundaryLevel = selectedProject.address?.boundaryType;
+
+      if (boundaryLevel == Constants.stateBoundaryLevel) {
+        bool isDownSyncEnabled = loggedInUserRoles
+            .where((role) => role.code == RolesType.warehouseManager.toValue())
+            .toList()
+            .isNotEmpty;
+
+        return isDownSyncEnabled;
+      }
+      return false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  bool get isWardLevel {
+    try {
+      String? boundaryLevel = selectedProject.address?.boundaryType;
+
+      if (boundaryLevel == Constants.wardBoundaryLevel) {
         bool isDownSyncEnabled = loggedInUserRoles
             .where((role) => role.code == RolesType.warehouseManager.toValue())
             .toList()

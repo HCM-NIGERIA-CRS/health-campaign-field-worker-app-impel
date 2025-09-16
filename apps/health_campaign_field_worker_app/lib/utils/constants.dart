@@ -110,11 +110,13 @@ class Constants {
   static const String centralFacility = 'Central Facility';
   static const String nationalWarehouse = 'National Warehouse';
   static const String wardWarehouse = 'Ward Warehouse';
-  static const String lgaWarehouse = 'Lga Warehouse';
+  static const String lgaWarehouse = 'LGA Warehouse';
+  static const String stateWarehouse = "State Warehouse";
   static const String stateBoundaryLevel = 'State';
+  static const String countryBoundaryLevel = "Country";
   static const String provinceBoundaryLevel = 'PROVINCE';
   static const String stateFacility = 'State Facility';
-  static const String zonalFacility = 'Zonal Warehouse';
+  static const String zonalWarehouse = 'Zonal Warehouse';
   static const String lgaFacility = 'LGA Facility'; // specific to smc
   static const String wardFacility = 'Ward Facility';
   static const int validMinAge = 3;
