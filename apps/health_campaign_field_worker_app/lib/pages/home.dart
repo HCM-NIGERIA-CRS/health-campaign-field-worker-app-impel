@@ -967,7 +967,7 @@ void showDIPDialog(
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (dipUserAction != null)
+              if (dipUserAction == null)
                 GestureDetector(
                   onTap: () {
                     context.router.push(SelectSettlementsRoute());
