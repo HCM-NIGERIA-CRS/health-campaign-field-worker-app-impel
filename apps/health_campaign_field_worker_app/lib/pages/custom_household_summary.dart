@@ -190,6 +190,7 @@ class CustomHouseholdSummaryPageState
                                   widget.householdNumber,
                                   beneficiaryType,
                                   widget.headName,
+                                  widget.reasonNonCompliance,
                                   false,
                                   latitude: widget.latitude,
                                   longitude: widget.longitude,

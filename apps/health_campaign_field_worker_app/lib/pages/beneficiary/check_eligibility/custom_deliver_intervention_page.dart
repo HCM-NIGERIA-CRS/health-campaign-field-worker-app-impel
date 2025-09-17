@@ -1338,7 +1338,7 @@ class CustomResourceBeneficiaryCardState
                             .deliverIntervention.quantityAdministratedLabel,
                       ),
                       child: DigitNumericFormInput(
-                        isDisabled: true,
+                        isDisabled: false,
                         minValue: 1,
                         step: 1,
                         initialValue: "1",

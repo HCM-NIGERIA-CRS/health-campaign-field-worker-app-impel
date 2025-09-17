@@ -1068,6 +1068,7 @@ class CustomIndividualDetailsPolioSMCPageState
     }
 
     final height = form.control(_heightKey).value as String? ?? "0";
+    final disability = form.control(_disabilityKey).value as String?;
 
     var individual = oldIndividual;
     individual ??= IndividualModel(
@@ -1091,7 +1092,13 @@ class CustomIndividualDetailsPolioSMCPageState
               ContextUtilityExtensions(context).millisecondsSinceEpoch(),
         ),
         additionalFields: IndividualAdditionalFields(
-            version: 1, fields: [AdditionalField("height", height)]));
+          version: 1,
+          fields: [
+            AdditionalField("height", height),
+            if (disability != null && disability.isNotEmpty)
+              AdditionalField("disability", disability),
+          ],
+        ));
 
     var name = individual.name;
     name ??= NameModel(
@@ -1169,12 +1176,37 @@ class CustomIndividualDetailsPolioSMCPageState
                 identifierType: IdentifierTypes.uniqueBeneficiaryID.toValue(),
               ),
             ],
+      additionalFields: _buildAdditionalFields(individual, height, disability),
     );
     //Info add uniqueBeneficiaryId as identifier in individualModel
     individual =
         setUniqueIdAsIdentifier(individual, context, generatedUniqueId);
 
     return individual;
+  }
+
+  IndividualAdditionalFields _buildAdditionalFields(
+    IndividualModel individual,
+    String height,
+    String? disability,
+  ) {
+    final existingFields = individual.additionalFields?.fields ?? [];
+    return IndividualAdditionalFields(
+      version: 1,
+      fields: existingFields.isEmpty
+          ? [
+              AdditionalField("height", height),
+              if (disability != null && disability.isNotEmpty)
+                AdditionalField("disability", disability)
+            ]
+          : [
+              ...existingFields.where((field) =>
+                  field.key != "height" && field.key != "disability"),
+              AdditionalField("height", height),
+              if (disability != null && disability.isNotEmpty)
+                AdditionalField("disability", disability)
+            ],
+    );
   }
 
   IndividualModel setUniqueIdAsIdentifier(IndividualModel individual,
@@ -1191,6 +1223,7 @@ class CustomIndividualDetailsPolioSMCPageState
 
       if (!uniqueIdIdentifierPresent) {
         updatedIdentifiers.add(IdentifierModel(
+          individualClientReferenceId: individual.clientReferenceId,
           clientReferenceId: individual.clientReferenceId,
           tenantId: RegistrationDeliverySingleton().tenantId,
           rowVersion: 1,
@@ -1218,6 +1251,7 @@ class CustomIndividualDetailsPolioSMCPageState
     } else if (updatedIdentifiers == null && uniqueId!.isNotEmpty) {
       individual = individual.copyWith(identifiers: [
         IdentifierModel(
+          individualClientReferenceId: individual.clientReferenceId,
           clientReferenceId: individual.clientReferenceId,
           tenantId: RegistrationDeliverySingleton().tenantId,
           rowVersion: 1,
