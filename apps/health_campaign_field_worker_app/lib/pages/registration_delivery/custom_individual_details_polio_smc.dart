@@ -376,12 +376,6 @@ class CustomIndividualDetailsPolioSMCPageState
                                           return;
                                         }
 
-                                        smcFlow = local_utils.isSMCFlow(age);
-                                        polioFlow =
-                                            local_utils.isPolioFlow(age);
-                                        onchoFlow =
-                                            local_utils.isOnchoFlow(age);
-
                                         final submit = await showDialog(
                                           context: context,
                                           builder: (ctx) => Popup(
@@ -827,18 +821,54 @@ class CustomIndividualDetailsPolioSMCPageState
                                               DateTime? value =
                                                   formControl.value;
                                               if (value == null) return;
-                                              digits.DigitDOBAge age =
-                                                  digits.DigitDateUtils
-                                                      .calculateAge(value);
+                                              // digits.DigitDOBAge age =
+                                              //     digits.DigitDateUtils
+                                              //         .calculateAge(value);
 
-                                              // show or hide fields based on age
-                                              bool validOnchoAge =
-                                                  validAgeForOncho(age);
+                                              final age =
+                                                  DigitDateUtils.calculateAge(
+                                                value,
+                                              );
 
-                                              setState(() {
-                                                hideFieldsBasedOnAge =
-                                                    validOnchoAge;
-                                              });
+                                              // // show or hide fields based on age
+
+                                              smcFlow =
+                                                  local_utils.isSMCFlow(age);
+                                              polioFlow =
+                                                  local_utils.isPolioFlow(age);
+                                              onchoFlow =
+                                                  local_utils.isOnchoFlow(age);
+
+                                              if (context.projectTypeCode ==
+                                                      ProjectTypes.oncho
+                                                          .toValue() &&
+                                                  onchoFlow) {
+                                                hideFieldsBasedOnAge = true;
+                                                form
+                                                    .control(_heightKey)
+                                                    .setValidators(
+                                                        [Validators.required],
+                                                        autoValidate: true);
+
+                                                form
+                                                    .control(_disabilityKey)
+                                                    .setValidators(
+                                                        [Validators.required],
+                                                        autoValidate: true);
+                                              } else {
+                                                hideFieldsBasedOnAge = false;
+                                                form
+                                                    .control(_heightKey)
+                                                    .setValidators([],
+                                                        autoValidate: true);
+
+                                                form
+                                                    .control(_disabilityKey)
+                                                    .setValidators([],
+                                                        autoValidate: true);
+                                              }
+
+                                              setState(() {});
 
                                               if ((age.years == 0 &&
                                                       age.months == 0) ||
@@ -999,6 +1029,11 @@ class CustomIndividualDetailsPolioSMCPageState
                                                       .translate(value),
                                               menuItems: const ["YES", "NO"],
                                               formControlName: _disabilityKey,
+                                              onChanged: (value) {
+                                                form
+                                                    .control(_disabilityKey)
+                                                    .value = value;
+                                              },
                                               validationMessages: {
                                                 'required': (object) =>
                                                     localizations.translate(i18
@@ -1262,9 +1297,7 @@ class CustomIndividualDetailsPolioSMCPageState
           validators: [Validators.required]),
       _heightKey: FormControl<String>(
         value: "0",
-        validators: context.projectTypeCode == ProjectTypes.oncho.toValue()
-            ? []
-            : [Validators.required],
+        validators: [Validators.required],
       ),
       _mobileNumberKey:
           FormControl<String>(value: individual?.mobileNumber, validators: [
