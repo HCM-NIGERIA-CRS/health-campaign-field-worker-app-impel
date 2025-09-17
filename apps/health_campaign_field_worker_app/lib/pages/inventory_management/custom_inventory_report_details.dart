@@ -121,7 +121,7 @@ class CustomInventoryReportDetailsPageState
 
   @override
   Widget build(BuildContext context) {
-    bool isWareHouseManager = InventorySingleton().isWareHouseMgr;
+    bool isWareHouseMgr = InventorySingleton().isWareHouseMgr;
 
     return BlocProvider<CustomInventoryReportBloc>(
       create: (context) => CustomInventoryReportBloc(
@@ -222,13 +222,15 @@ class CustomInventoryReportDetailsPageState
                                           ),
                                           builder: (context, state) {
                                             final facilities = state.whenOrNull(
-                                                  fetched: (facilities, _) {
+                                                  fetched: (facilities,
+                                                      allfacilities) {
                                                     if (ctx
-                                                            .selectedProject
-                                                            .address
-                                                            ?.boundaryType ==
-                                                        Constants
-                                                            .stateBoundaryLevel) {
+                                                                .selectedProject
+                                                                .address
+                                                                ?.boundaryType ==
+                                                            Constants
+                                                                .countryBoundaryLevel &&
+                                                        isWareHouseMgr) {
                                                       List<FacilityModel>
                                                           filteredFacilities =
                                                           facilities
@@ -237,7 +239,7 @@ class CustomInventoryReportDetailsPageState
                                                                     element
                                                                         .usage ==
                                                                     Constants
-                                                                        .stateFacility,
+                                                                        .zonalWarehouse,
                                                               )
                                                               .toList();
                                                       facilities =
@@ -245,17 +247,63 @@ class CustomInventoryReportDetailsPageState
                                                                   .isEmpty
                                                               ? facilities
                                                               : filteredFacilities;
-                                                    } else {
+                                                    } else if (ctx
+                                                                .selectedProject
+                                                                .address
+                                                                ?.boundaryType ==
+                                                            Constants
+                                                                .stateBoundaryLevel &&
+                                                        isWareHouseMgr) {
                                                       List<FacilityModel>
                                                           filteredFacilities =
-                                                          facilities
-                                                              .where(
-                                                                (element) =>
-                                                                    element
-                                                                        .usage ==
-                                                                    Constants
-                                                                        .healthFacility,
-                                                              )
+                                                          allfacilities
+                                                              .where((element) =>
+                                                                  element
+                                                                      .usage ==
+                                                                  Constants
+                                                                      .stateWarehouse)
+                                                              .toList();
+                                                      facilities =
+                                                          filteredFacilities
+                                                                  .isEmpty
+                                                              ? facilities
+                                                              : filteredFacilities;
+                                                    } else if (ctx
+                                                                .selectedProject
+                                                                .address
+                                                                ?.boundaryType ==
+                                                            Constants
+                                                                .lgaBoundaryLevel &&
+                                                        isWareHouseMgr) {
+                                                      List<FacilityModel>
+                                                          filteredFacilities =
+                                                          allfacilities
+                                                              .where((element) =>
+                                                                  element
+                                                                      .usage ==
+                                                                  Constants
+                                                                      .lgaWarehouse)
+                                                              .toList();
+                                                      facilities =
+                                                          filteredFacilities
+                                                                  .isEmpty
+                                                              ? facilities
+                                                              : filteredFacilities;
+                                                    } else if (ctx
+                                                                .selectedProject
+                                                                .address
+                                                                ?.boundaryType ==
+                                                            Constants
+                                                                .wardBoundaryLevel &&
+                                                        isWareHouseMgr) {
+                                                      List<FacilityModel>
+                                                          filteredFacilities =
+                                                          allfacilities
+                                                              .where((element) =>
+                                                                  element
+                                                                      .usage ==
+                                                                  Constants
+                                                                      .wardWarehouse)
                                                               .toList();
                                                       facilities =
                                                           filteredFacilities
