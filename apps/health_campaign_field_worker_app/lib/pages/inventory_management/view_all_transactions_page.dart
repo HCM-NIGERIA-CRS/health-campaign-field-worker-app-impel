@@ -50,8 +50,9 @@ class _ViewAllTransactionsScreenState extends State<ViewAllTransactionsScreen> {
     List<StockModel> result;
     List<StockModel> receivedResult;
     // check for valid user
-    if (context.isLGA ||
-        context.isHealthFacilitySupervisor ||
+    if (context.isStateCold ||
+        context.isLGA ||
+        context.isWardLevel ||
         InventorySingleton().isDistributor) {
       result = await repository.search(StockSearchModel(
           transactionType: [TransactionType.dispatched.toValue()],
