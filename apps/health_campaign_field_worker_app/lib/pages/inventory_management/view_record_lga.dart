@@ -18,6 +18,7 @@ import 'package:inventory_management/utils/utils.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:collection/collection.dart';
+import '../../utils/utils.dart';
 
 import '../../blocs/auth/auth.dart';
 import '../../router/app_router.dart';
@@ -279,7 +280,7 @@ class _ViewStockRecordsLGAPageState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    productName,
+                    localizations.translate(productName),
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -417,8 +418,8 @@ class _ViewStockRecordsLGAPageState
                   Row(
                     children: [
                       Expanded(
-                          child: Text(localizations.translate(i18_local
-                              .acknowledgementSuccess.mrnNumberLabel))),
+                          child: Text(localizations.translate(
+                              i18_local.stockDetails.mrnNumberLabel))),
                       Expanded(child: Text(widget.mrnNumber)),
                     ],
                   ),

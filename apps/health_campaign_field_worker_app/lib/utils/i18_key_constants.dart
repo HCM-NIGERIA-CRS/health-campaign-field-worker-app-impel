@@ -469,6 +469,20 @@ class HomeShowcase {
 class StockDetails {
   const StockDetails();
 
+  String get minNumberLabel => 'MIN_NUMBER_LABEL';
+  String get mrnNumberLabel => 'MRN_NUMBER_LABEL';
+  String get selectMINNumber => 'STOCK_DETAILS_SELECT_MIN_NUMBER';
+  String get selectMRNNumber => 'STOCK_DETAILS_SELECT_MRN_NUMBER';
+  String get noTransactionsFound => 'STOCK_DETAILS_NO_TRANSACTIONS_FOUND';
+  String get resource => 'STOCK_DETAILS_RESOURCE';
+  String get stockReceiptDetails => 'STOCK_DETAILS_STOCK_RECEIPT_DETAILS';
+  String get stockIssueDetails => 'STOCK_DETAILS_STOCK_ISSUE_DETAILS';
+  String get stockReturnDetails => 'STOCK_DETAILS_STOCK_RETURN_DETAILS';
+  String get waybillNumber => 'STOCK_DETAILS_WAYBILL_NUMBER';
+
+  String get blisters => 'STOCK_DETAILS_BLISTERS';
+  String get capsules => 'STOCK_DETAILS_CAPSULES';
+
   String get reconciliationCommentRequired => 'RECONCILIATION_COMMENT_REQUIRED';
 
   String get cddCodeLabel => 'CDD_CODE_LABEL';
@@ -979,6 +993,14 @@ class Home {
 
 class AcknowledgementSuccess {
   const AcknowledgementSuccess();
+
+  String get materialIssueHeading => "MATERIAL_ISSUE_HEADING";
+  String get materialReceiveHeading => "MATERIAL_RECEIVE_HEADING";
+  String get materialReturnHeading => "MATERIAL_RETURN_HEADING";
+
+  String get materialIssueDescription => "MATERIAL_ISSUE_DESCRIPTION";
+  String get materialReceiveDescription => "MATERIAL_RECEIVE_DESCRIPTION";
+  String get materialReturnDescription => "MATERIAL_RETURN_DESCRIPTION";
 
   String get mrrnNumberDescription => "MRRN_NUMBER_DESCRIPTION";
 

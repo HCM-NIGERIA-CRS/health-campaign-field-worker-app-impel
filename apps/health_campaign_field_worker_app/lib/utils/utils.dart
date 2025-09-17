@@ -200,6 +200,22 @@ List<String> extractAllSkus(List<ProductVariantModel> variants) {
   return variants.map((variant) => variant.sku).whereType<String>().toList();
 }
 
+String getStockRecordLabel(StockModel? stock) {
+  String label = i18_local.stockDetails.stockReceiptDetails;
+
+  if (stock != null) {
+    if (stock.transactionReason == "RETURNED") {
+      label = i18_local.stockDetails.stockReturnDetails;
+    } else if (stock.transactionType == "RECEIVED") {
+      label = i18_local.stockDetails.stockReceiptDetails;
+    } else if (stock.transactionType == "DISPATCHED") {
+      label = i18_local.stockDetails.stockIssueDetails;
+    }
+  }
+
+  return label;
+}
+
 String? formatBeneficiaryId(String? id) {
   if (id == null) return null;
   final buffer = StringBuffer();

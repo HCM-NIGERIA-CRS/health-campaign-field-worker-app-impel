@@ -20,6 +20,7 @@ import 'package:inventory_management/widgets/localized.dart';
 import 'package:inventory_management/widgets/back_navigation_help_header.dart';
 import '../../router/app_router.dart';
 import 'package:logger/logger.dart';
+import '../../utils/i18_key_constants.dart' as i18_local;
 
 import '../../widgets/custom_back_navigation.dart';
 
@@ -130,12 +131,18 @@ class CustomMinNumberPageState extends LocalizedState<CustomMinNumberPage> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: groupedEntries.isEmpty
-                    ? const Center(child: Text("No transactions found."))
+                    ? Center(
+                        child: Text(localizations.translate(
+                            i18_local.stockDetails.noTransactionsFound)))
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 16.0),
-                          Text("Select the MRN number",
+                          Text(
+                              localizations.translate(
+                                  widget.type == StockRecordEntryType.dispatch
+                                      ? i18_local.stockDetails.selectMINNumber
+                                      : i18_local.stockDetails.selectMRNNumber),
                               style: textTheme.headingL),
                           const SizedBox(height: 16.0),
                           SizedBox(
@@ -198,7 +205,7 @@ class CustomMinNumberPageState extends LocalizedState<CustomMinNumberPage> {
                                             (s.quantity ?? 0).toString();
 
                                         return {
-                                          'name': name,
+                                          'name': localizations.translate(name),
                                           'quantity': quantity,
                                         };
                                       }).toList(),
