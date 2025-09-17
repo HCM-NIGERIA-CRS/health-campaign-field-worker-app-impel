@@ -280,6 +280,26 @@ String customFormatAgeRange(String condition) {
     print('min: $min, max: $max');
     return '$min - $max months';
   }
+
+  final complexRegex = RegExp(
+      r'age\s*>\s*(\d+)\s*and\s*height\s*>\s*(\d+)\s*and\s*height\s*<\s*(\d+)',
+      caseSensitive: false);
+  final complexMatch = complexRegex.firstMatch(condition);
+
+  if (complexMatch != null && complexMatch.groupCount == 3) {
+    int ageMin = int.parse(complexMatch.group(1)!);
+    int heightMin = int.parse(complexMatch.group(2)!);
+    int heightMax = int.parse(complexMatch.group(3)!);
+
+    // Apply your +/-1 logic for height
+    int adjHeightMin = heightMin + 1;
+    int adjHeightMax = heightMax - 1;
+
+    return '$ageMin>age & $adjHeightMin-$adjHeightMax heights';
+  }
+  if (condition == "age>59andheight>199") {
+    return condition.replaceAll("and", " & ");
+  }
   return condition;
 }
 
