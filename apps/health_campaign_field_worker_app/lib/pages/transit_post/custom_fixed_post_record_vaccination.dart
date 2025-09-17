@@ -462,6 +462,11 @@ class CustomFixedPostRecordVaccinationPageState
                                               ? []
                                               : [heightSelected]));
 
+                              // set age range empty once selection done and event submitted
+                              setState(() {
+                                heightRangeSelected = '';
+                              });
+
                               context.router
                                   .push(const TransitPostAcknowledgmentRoute());
                             }

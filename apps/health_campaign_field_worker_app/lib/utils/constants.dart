@@ -116,6 +116,7 @@ class Constants {
   static const String pipeSeparator = '||';
   static const String consent = 'consent';
   static const String householdNumber = 'householdNumber';
+  static const String reasonForNonCompliance = 'reasonForNonCompliance';
 
   static const int mlPerBottle = 30;
   static const int apiCallLimit = 1000;
