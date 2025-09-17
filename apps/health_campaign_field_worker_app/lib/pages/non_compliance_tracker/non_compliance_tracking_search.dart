@@ -1,52 +1,42 @@
 import 'package:collection/collection.dart';
 import 'package:digit_components/widgets/digit_info_card.dart';
-import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/household_type.dart';
 import 'package:digit_data_model/models/entities/user_action.dart';
-import 'package:digit_scanner/blocs/scanner.dart';
 import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/services/location_bloc.dart';
 import 'package:digit_ui_components/theme/digit_extended_theme.dart';
 import 'package:digit_ui_components/widgets/atoms/digit_chip.dart';
 import 'package:digit_ui_components/widgets/atoms/digit_search_bar.dart';
-import 'package:digit_ui_components/widgets/atoms/pop_up_card.dart';
 import 'package:digit_ui_components/widgets/atoms/switch.dart';
 import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
-import 'package:digit_ui_components/widgets/molecules/show_pop_up.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:registration_delivery/blocs/app_localization.dart';
 import 'package:registration_delivery/blocs/unique_id/unique_id.dart';
 import 'package:registration_delivery/widgets/beneficiary/id_count_alert.dart';
+import '../../blocs/non_compliance/non_compliance_all_search.dart';
+import '../../blocs/non_compliance/non_compliance_search.dart';
 import '../../blocs/non_compliance/non_compliance_tracking.dart';
-import '../../blocs/registration_delivery/custom_beneficairy_registration.dart';
-import '../../models/mdms/service_registry/service_registry_model.dart';
 import '../../utils/constants.dart';
+import '../../utils/utils.dart';
 import '../../widgets/custom_back_navigation.dart';
 import 'package:registration_delivery/blocs/search_households/search_bloc_common_wrapper.dart';
 import 'package:registration_delivery/blocs/search_households/search_households.dart'
     as registration_delivery;
 
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
-import '../../utils/extensions/extensions.dart';
 import '../../blocs/search/individual_global_search_smc.dart';
 import '../../blocs/search/search_households_smc.dart'
     as searchHouseholdSMCBloc;
 import '../../utils/i18_key_constants.dart' as i18_local;
-import 'package:registration_delivery/models/entities/status.dart';
-import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
 import 'package:registration_delivery/utils/utils.dart';
-import 'package:registration_delivery/widgets/beneficiary/view_beneficiary_card.dart';
 import 'package:registration_delivery/widgets/localized.dart';
-import 'package:registration_delivery/widgets/status_filter/status_filter.dart';
 
 import '../../blocs/registration_delivery/custom_search_household.dart';
 import '../../router/app_router.dart';
 import '../../utils/search/global_search_parameters_smc.dart';
 import '../../widgets/non_compliance_tracking/non_compliance_beneficiary_card.dart';
 import '../../widgets/showcase/showcase_wrappers.dart';
-import '../../widgets/registration_delivery/custom_view_beneficiary_card.dart';
 
 @RoutePage()
 class NonComplianceTrackingSearchPage extends LocalizedStatefulWidget {
@@ -88,8 +78,10 @@ class _NonComplianceTrackingSearchPage
   void initState() {
     // Initialize the BlocWrapper with instances of SearchHouseholdsBloc, SearchMemberBloc, and ProximitySearchBloc
     context
-        .read<NonComplianceTrackingBloc>()
-        .add(const NonComplianceTrackingEvent.allSearch());
+        .read<NonComplianceAllSearchBloc>()
+        .add(NonComplianceAllSearchEvent.search(
+          beneficiaryTag: context.loggedInUserUuid,
+        ));
     context.read<LocationBloc>().add(const LoadLocationEvent());
     blocWrapper = context.read<SearchBlocWrapper>();
 
@@ -332,18 +324,18 @@ class _NonComplianceTrackingSearchPage
                             child: CircularProgressIndicator(),
                           ),
                         ),
-                      BlocBuilder<NonComplianceTrackingBloc,
-                          NonComplianceTrackingState>(
+                      BlocBuilder<NonComplianceAllSearchBloc,
+                          NonComplianceAllSearchState>(
                         builder: (context, nonComplianceState) {
                           if (nonComplianceState
-                              is NonComplianceTrackingAllSearchState) {
+                              is NonComplianceAllSearchCompleteState) {
                             Map<String, String?> statusMap = {};
                             List<UserActionModel> actions =
                                 nonComplianceState.nonComplianceUserAction ??
                                     [];
                             for (var element in actions) {
-                              if (element.beneficiaryTag != null) {
-                                statusMap[element.beneficiaryTag!] = element
+                              if (element.resourceTag != null) {
+                                statusMap[element.resourceTag!] = element
                                         .additionalFields?.fields
                                         .firstWhereOrNull(
                                             (e) => e.key == Constants.status)
@@ -359,8 +351,11 @@ class _NonComplianceTrackingSearchPage
                                 listener: (context, searchSMCstate) {},
                                 builder: (context, searchSMCstate) {
                                   if (searchSMCstate.loading) {
-                                    return const Center(
-                                        child: CircularProgressIndicator());
+                                    return const SliverFillRemaining(
+                                      child: Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    );
                                   } else {
                                     if (isChildAbsentEnabled &&
                                         searchSMCstate
@@ -398,14 +393,13 @@ class _NonComplianceTrackingSearchPage
                                                     "";
                                                 context
                                                     .read<
-                                                        NonComplianceTrackingBloc>()
+                                                        NonComplianceSearchBloc>()
                                                     .add(
-                                                      NonComplianceTrackingEvent
+                                                      NonComplianceSearchEvent
                                                           .search(
-                                                        beneficiaryTag: i
-                                                            .tasks
-                                                            ?.firstOrNull
-                                                            ?.clientReferenceId,
+                                                        beneficiaryTag: context
+                                                            .loggedInUserUuid,
+                                                        resourceTag: id,
                                                       ),
                                                     );
                                                 context.router.push(
@@ -414,8 +408,7 @@ class _NonComplianceTrackingSearchPage
                                                   userActionModel:
                                                       actions.firstWhereOrNull(
                                                     (element) =>
-                                                        element
-                                                            .beneficiaryTag ==
+                                                        element.resourceTag ==
                                                         id,
                                                   ),
                                                 ));
@@ -439,8 +432,11 @@ class _NonComplianceTrackingSearchPage
                                 listener: (context, searchSMCstate) {},
                                 builder: (context, searchSMCstate) {
                                   if (searchSMCstate.loading) {
-                                    return const Center(
-                                        child: CircularProgressIndicator());
+                                    return const SliverFillRemaining(
+                                      child: Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    );
                                   } else {
                                     if (isHouseNonCompliant &&
                                         searchSMCstate
@@ -481,12 +477,12 @@ class _NonComplianceTrackingSearchPage
                                                     ?.clientReferenceId;
                                                 context
                                                     .read<
-                                                        NonComplianceTrackingBloc>()
+                                                        NonComplianceSearchBloc>()
                                                     .add(
-                                                      NonComplianceTrackingEvent
-                                                          .search(
-                                                        beneficiaryTag: id,
-                                                      ),
+                                                      NonComplianceSearchEvent.search(
+                                                          beneficiaryTag: context
+                                                              .loggedInUserUuid,
+                                                          resourceTag: id),
                                                     );
                                                 context.router.push(
                                                     NonComplianceUpdateStatusRoute(
@@ -494,8 +490,7 @@ class _NonComplianceTrackingSearchPage
                                                   userActionModel:
                                                       actions.firstWhereOrNull(
                                                     (element) =>
-                                                        element
-                                                            .beneficiaryTag ==
+                                                        element.resourceTag ==
                                                         id,
                                                   ),
                                                 ));
@@ -630,7 +625,7 @@ class _NonComplianceTrackingSearchPage
       limit: isPagination
           ? blocWrapper.individualGlobalSearchBloc.state.limit
           : limit,
-      projectId: RegistrationDeliverySingleton().projectId!,
+      // projectId: RegistrationDeliverySingleton().projectId!,
     )));
   }
 
@@ -657,7 +652,7 @@ class _NonComplianceTrackingSearchPage
       limit: isPagination
           ? blocWrapper.individualGlobalSearchBloc.state.limit
           : limit,
-      projectId: RegistrationDeliverySingleton().projectId!,
+      // projectId: RegistrationDeliverySingleton().projectId!,
     )));
   }
 

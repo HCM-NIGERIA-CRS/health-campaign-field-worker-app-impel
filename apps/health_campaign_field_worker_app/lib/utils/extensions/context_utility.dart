@@ -102,10 +102,9 @@ extension ContextUtilityExtensions on BuildContext {
     final boundaryBloc = _get<BoundaryBloc>();
     final boundaryState = boundaryBloc.state;
 
-    final selectedWardBoundary = boundaryState.selectedBoundaryMap.entries
-        .where((element) => element.key == "Ward")
-        .firstOrNull
-        ?.value;
+    final selectedWardBoundary = boundaryState.boundaryList
+        .where((element) => element.label == "Settlement")
+        .firstOrNull;
 
     if (selectedWardBoundary == null) {
       throw AppException('No ward boundary is selected');

@@ -29,6 +29,8 @@ import 'blocs/daily_implementation_plan/dip_all_search.dart';
 import 'blocs/daily_implementation_plan/dip_search.dart';
 import 'blocs/inventory_management/stock_bloc.dart';
 import 'blocs/localization/localization.dart';
+import 'blocs/non_compliance/non_compliance_all_search.dart';
+import 'blocs/non_compliance/non_compliance_search.dart';
 import 'blocs/non_compliance/non_compliance_tracking.dart';
 import 'blocs/project/project.dart';
 import 'blocs/search/individual_global_search_smc.dart';
@@ -515,9 +517,6 @@ class MainApplicationState extends State<MainApplication>
                             customUserActionLocalRepository:
                                 CustomUserActionLocalRepository(widget.sql,
                                     UserActionOpLogManager(widget.isar)),
-                            userActionLocalRepository:
-                                UserActionLocalRepository(widget.sql,
-                                    UserActionOpLogManager(widget.isar)),
                           ),
                         ),
                         BlocProvider(
@@ -541,6 +540,28 @@ class MainApplicationState extends State<MainApplication>
                         BlocProvider(
                           create: (ctx) => NonComplianceTrackingBloc(
                             const NonComplianceTrackingState.init(),
+                            userActionLocalRepository:
+                                UserActionLocalRepository(widget.sql,
+                                    UserActionOpLogManager(widget.isar)),
+                            customUserActionLocalRepository:
+                                CustomUserActionLocalRepository(widget.sql,
+                                    UserActionOpLogManager(widget.isar)),
+                          ),
+                        ),
+                        BlocProvider(
+                          create: (ctx) => NonComplianceSearchBloc(
+                            const NonComplianceSearchState.init(),
+                            userActionLocalRepository:
+                                UserActionLocalRepository(widget.sql,
+                                    UserActionOpLogManager(widget.isar)),
+                            customUserActionLocalRepository:
+                                CustomUserActionLocalRepository(widget.sql,
+                                    UserActionOpLogManager(widget.isar)),
+                          ),
+                        ),
+                        BlocProvider(
+                          create: (ctx) => NonComplianceAllSearchBloc(
+                            const NonComplianceAllSearchState.init(),
                             userActionLocalRepository:
                                 UserActionLocalRepository(widget.sql,
                                     UserActionOpLogManager(widget.isar)),

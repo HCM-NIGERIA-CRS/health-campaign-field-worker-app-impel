@@ -30,12 +30,14 @@ class DipSearchBloc extends Bloc<DipSearchEvent, DipSearchState> {
       loading: true,
       selectedDipUserAction: null,
     ));
-    List<UserActionModel> vehicleUserActions =
+    List<UserActionModel> userActions =
         await customUserActionLocalRepository.searchUserAction(
-            beneficiaryTag: event.beneficiaryTag);
+      beneficiaryTag: event.beneficiaryTag,
+      action: "DAILY_PLAN",
+    );
     emit(DipSearchState.search(
       loading: false,
-      selectedDipUserAction: vehicleUserActions.firstOrNull,
+      selectedDipUserAction: userActions.firstOrNull,
     ));
   }
 

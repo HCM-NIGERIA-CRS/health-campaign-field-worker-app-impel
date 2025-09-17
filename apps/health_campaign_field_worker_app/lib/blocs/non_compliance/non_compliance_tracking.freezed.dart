@@ -16,51 +16,50 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$NonComplianceTrackingEvent {
+  UserActionModel? get nonComplianceUserAction =>
+      throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(UserActionModel? nonComplianceUserAction) create,
-    required TResult Function(String? beneficiaryTag) search,
-    required TResult Function() allSearch,
+    required TResult Function(UserActionModel? nonComplianceUserAction) update,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(UserActionModel? nonComplianceUserAction)? create,
-    TResult? Function(String? beneficiaryTag)? search,
-    TResult? Function()? allSearch,
+    TResult? Function(UserActionModel? nonComplianceUserAction)? update,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(UserActionModel? nonComplianceUserAction)? create,
-    TResult Function(String? beneficiaryTag)? search,
-    TResult Function()? allSearch,
+    TResult Function(UserActionModel? nonComplianceUserAction)? update,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(NonComplianceTrackingCreateEvent value) create,
-    required TResult Function(NonComplianceTrackingSearchEvent value) search,
-    required TResult Function(NonComplianceTrackingAllSearchEvent value)
-        allSearch,
+    required TResult Function(NonComplianceTrackingUpdateEvent value) update,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(NonComplianceTrackingCreateEvent value)? create,
-    TResult? Function(NonComplianceTrackingSearchEvent value)? search,
-    TResult? Function(NonComplianceTrackingAllSearchEvent value)? allSearch,
+    TResult? Function(NonComplianceTrackingUpdateEvent value)? update,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(NonComplianceTrackingCreateEvent value)? create,
-    TResult Function(NonComplianceTrackingSearchEvent value)? search,
-    TResult Function(NonComplianceTrackingAllSearchEvent value)? allSearch,
+    TResult Function(NonComplianceTrackingUpdateEvent value)? update,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $NonComplianceTrackingEventCopyWith<NonComplianceTrackingEvent>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -69,6 +68,8 @@ abstract class $NonComplianceTrackingEventCopyWith<$Res> {
           $Res Function(NonComplianceTrackingEvent) then) =
       _$NonComplianceTrackingEventCopyWithImpl<$Res,
           NonComplianceTrackingEvent>;
+  @useResult
+  $Res call({UserActionModel? nonComplianceUserAction});
 }
 
 /// @nodoc
@@ -81,14 +82,29 @@ class _$NonComplianceTrackingEventCopyWithImpl<$Res,
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? nonComplianceUserAction = freezed,
+  }) {
+    return _then(_value.copyWith(
+      nonComplianceUserAction: freezed == nonComplianceUserAction
+          ? _value.nonComplianceUserAction
+          : nonComplianceUserAction // ignore: cast_nullable_to_non_nullable
+              as UserActionModel?,
+    ) as $Val);
+  }
 }
 
 /// @nodoc
-abstract class _$$NonComplianceTrackingCreateEventImplCopyWith<$Res> {
+abstract class _$$NonComplianceTrackingCreateEventImplCopyWith<$Res>
+    implements $NonComplianceTrackingEventCopyWith<$Res> {
   factory _$$NonComplianceTrackingCreateEventImplCopyWith(
           _$NonComplianceTrackingCreateEventImpl value,
           $Res Function(_$NonComplianceTrackingCreateEventImpl) then) =
       __$$NonComplianceTrackingCreateEventImplCopyWithImpl<$Res>;
+  @override
   @useResult
   $Res call({UserActionModel? nonComplianceUserAction});
 }
@@ -156,8 +172,7 @@ class _$NonComplianceTrackingCreateEventImpl
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(UserActionModel? nonComplianceUserAction) create,
-    required TResult Function(String? beneficiaryTag) search,
-    required TResult Function() allSearch,
+    required TResult Function(UserActionModel? nonComplianceUserAction) update,
   }) {
     return create(nonComplianceUserAction);
   }
@@ -166,8 +181,7 @@ class _$NonComplianceTrackingCreateEventImpl
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(UserActionModel? nonComplianceUserAction)? create,
-    TResult? Function(String? beneficiaryTag)? search,
-    TResult? Function()? allSearch,
+    TResult? Function(UserActionModel? nonComplianceUserAction)? update,
   }) {
     return create?.call(nonComplianceUserAction);
   }
@@ -176,8 +190,7 @@ class _$NonComplianceTrackingCreateEventImpl
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(UserActionModel? nonComplianceUserAction)? create,
-    TResult Function(String? beneficiaryTag)? search,
-    TResult Function()? allSearch,
+    TResult Function(UserActionModel? nonComplianceUserAction)? update,
     required TResult orElse(),
   }) {
     if (create != null) {
@@ -190,9 +203,7 @@ class _$NonComplianceTrackingCreateEventImpl
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(NonComplianceTrackingCreateEvent value) create,
-    required TResult Function(NonComplianceTrackingSearchEvent value) search,
-    required TResult Function(NonComplianceTrackingAllSearchEvent value)
-        allSearch,
+    required TResult Function(NonComplianceTrackingUpdateEvent value) update,
   }) {
     return create(this);
   }
@@ -201,8 +212,7 @@ class _$NonComplianceTrackingCreateEventImpl
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(NonComplianceTrackingCreateEvent value)? create,
-    TResult? Function(NonComplianceTrackingSearchEvent value)? search,
-    TResult? Function(NonComplianceTrackingAllSearchEvent value)? allSearch,
+    TResult? Function(NonComplianceTrackingUpdateEvent value)? update,
   }) {
     return create?.call(this);
   }
@@ -211,8 +221,7 @@ class _$NonComplianceTrackingCreateEventImpl
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(NonComplianceTrackingCreateEvent value)? create,
-    TResult Function(NonComplianceTrackingSearchEvent value)? search,
-    TResult Function(NonComplianceTrackingAllSearchEvent value)? allSearch,
+    TResult Function(NonComplianceTrackingUpdateEvent value)? update,
     required TResult orElse(),
   }) {
     if (create != null) {
@@ -228,7 +237,9 @@ abstract class NonComplianceTrackingCreateEvent
           {final UserActionModel? nonComplianceUserAction}) =
       _$NonComplianceTrackingCreateEventImpl;
 
+  @override
   UserActionModel? get nonComplianceUserAction;
+  @override
   @JsonKey(ignore: true)
   _$$NonComplianceTrackingCreateEventImplCopyWith<
           _$NonComplianceTrackingCreateEventImpl>
@@ -236,103 +247,103 @@ abstract class NonComplianceTrackingCreateEvent
 }
 
 /// @nodoc
-abstract class _$$NonComplianceTrackingSearchEventImplCopyWith<$Res> {
-  factory _$$NonComplianceTrackingSearchEventImplCopyWith(
-          _$NonComplianceTrackingSearchEventImpl value,
-          $Res Function(_$NonComplianceTrackingSearchEventImpl) then) =
-      __$$NonComplianceTrackingSearchEventImplCopyWithImpl<$Res>;
+abstract class _$$NonComplianceTrackingUpdateEventImplCopyWith<$Res>
+    implements $NonComplianceTrackingEventCopyWith<$Res> {
+  factory _$$NonComplianceTrackingUpdateEventImplCopyWith(
+          _$NonComplianceTrackingUpdateEventImpl value,
+          $Res Function(_$NonComplianceTrackingUpdateEventImpl) then) =
+      __$$NonComplianceTrackingUpdateEventImplCopyWithImpl<$Res>;
+  @override
   @useResult
-  $Res call({String? beneficiaryTag});
+  $Res call({UserActionModel? nonComplianceUserAction});
 }
 
 /// @nodoc
-class __$$NonComplianceTrackingSearchEventImplCopyWithImpl<$Res>
+class __$$NonComplianceTrackingUpdateEventImplCopyWithImpl<$Res>
     extends _$NonComplianceTrackingEventCopyWithImpl<$Res,
-        _$NonComplianceTrackingSearchEventImpl>
-    implements _$$NonComplianceTrackingSearchEventImplCopyWith<$Res> {
-  __$$NonComplianceTrackingSearchEventImplCopyWithImpl(
-      _$NonComplianceTrackingSearchEventImpl _value,
-      $Res Function(_$NonComplianceTrackingSearchEventImpl) _then)
+        _$NonComplianceTrackingUpdateEventImpl>
+    implements _$$NonComplianceTrackingUpdateEventImplCopyWith<$Res> {
+  __$$NonComplianceTrackingUpdateEventImplCopyWithImpl(
+      _$NonComplianceTrackingUpdateEventImpl _value,
+      $Res Function(_$NonComplianceTrackingUpdateEventImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? beneficiaryTag = freezed,
+    Object? nonComplianceUserAction = freezed,
   }) {
-    return _then(_$NonComplianceTrackingSearchEventImpl(
-      beneficiaryTag: freezed == beneficiaryTag
-          ? _value.beneficiaryTag
-          : beneficiaryTag // ignore: cast_nullable_to_non_nullable
-              as String?,
+    return _then(_$NonComplianceTrackingUpdateEventImpl(
+      nonComplianceUserAction: freezed == nonComplianceUserAction
+          ? _value.nonComplianceUserAction
+          : nonComplianceUserAction // ignore: cast_nullable_to_non_nullable
+              as UserActionModel?,
     ));
   }
 }
 
 /// @nodoc
 
-class _$NonComplianceTrackingSearchEventImpl
-    implements NonComplianceTrackingSearchEvent {
-  const _$NonComplianceTrackingSearchEventImpl({this.beneficiaryTag});
+class _$NonComplianceTrackingUpdateEventImpl
+    implements NonComplianceTrackingUpdateEvent {
+  const _$NonComplianceTrackingUpdateEventImpl({this.nonComplianceUserAction});
 
   @override
-  final String? beneficiaryTag;
+  final UserActionModel? nonComplianceUserAction;
 
   @override
   String toString() {
-    return 'NonComplianceTrackingEvent.search(beneficiaryTag: $beneficiaryTag)';
+    return 'NonComplianceTrackingEvent.update(nonComplianceUserAction: $nonComplianceUserAction)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$NonComplianceTrackingSearchEventImpl &&
-            (identical(other.beneficiaryTag, beneficiaryTag) ||
-                other.beneficiaryTag == beneficiaryTag));
+            other is _$NonComplianceTrackingUpdateEventImpl &&
+            (identical(
+                    other.nonComplianceUserAction, nonComplianceUserAction) ||
+                other.nonComplianceUserAction == nonComplianceUserAction));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, beneficiaryTag);
+  int get hashCode => Object.hash(runtimeType, nonComplianceUserAction);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$NonComplianceTrackingSearchEventImplCopyWith<
-          _$NonComplianceTrackingSearchEventImpl>
-      get copyWith => __$$NonComplianceTrackingSearchEventImplCopyWithImpl<
-          _$NonComplianceTrackingSearchEventImpl>(this, _$identity);
+  _$$NonComplianceTrackingUpdateEventImplCopyWith<
+          _$NonComplianceTrackingUpdateEventImpl>
+      get copyWith => __$$NonComplianceTrackingUpdateEventImplCopyWithImpl<
+          _$NonComplianceTrackingUpdateEventImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(UserActionModel? nonComplianceUserAction) create,
-    required TResult Function(String? beneficiaryTag) search,
-    required TResult Function() allSearch,
+    required TResult Function(UserActionModel? nonComplianceUserAction) update,
   }) {
-    return search(beneficiaryTag);
+    return update(nonComplianceUserAction);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(UserActionModel? nonComplianceUserAction)? create,
-    TResult? Function(String? beneficiaryTag)? search,
-    TResult? Function()? allSearch,
+    TResult? Function(UserActionModel? nonComplianceUserAction)? update,
   }) {
-    return search?.call(beneficiaryTag);
+    return update?.call(nonComplianceUserAction);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(UserActionModel? nonComplianceUserAction)? create,
-    TResult Function(String? beneficiaryTag)? search,
-    TResult Function()? allSearch,
+    TResult Function(UserActionModel? nonComplianceUserAction)? update,
     required TResult orElse(),
   }) {
-    if (search != null) {
-      return search(beneficiaryTag);
+    if (update != null) {
+      return update(nonComplianceUserAction);
     }
     return orElse();
   }
@@ -341,164 +352,47 @@ class _$NonComplianceTrackingSearchEventImpl
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(NonComplianceTrackingCreateEvent value) create,
-    required TResult Function(NonComplianceTrackingSearchEvent value) search,
-    required TResult Function(NonComplianceTrackingAllSearchEvent value)
-        allSearch,
+    required TResult Function(NonComplianceTrackingUpdateEvent value) update,
   }) {
-    return search(this);
+    return update(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(NonComplianceTrackingCreateEvent value)? create,
-    TResult? Function(NonComplianceTrackingSearchEvent value)? search,
-    TResult? Function(NonComplianceTrackingAllSearchEvent value)? allSearch,
+    TResult? Function(NonComplianceTrackingUpdateEvent value)? update,
   }) {
-    return search?.call(this);
+    return update?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(NonComplianceTrackingCreateEvent value)? create,
-    TResult Function(NonComplianceTrackingSearchEvent value)? search,
-    TResult Function(NonComplianceTrackingAllSearchEvent value)? allSearch,
+    TResult Function(NonComplianceTrackingUpdateEvent value)? update,
     required TResult orElse(),
   }) {
-    if (search != null) {
-      return search(this);
+    if (update != null) {
+      return update(this);
     }
     return orElse();
   }
 }
 
-abstract class NonComplianceTrackingSearchEvent
+abstract class NonComplianceTrackingUpdateEvent
     implements NonComplianceTrackingEvent {
-  const factory NonComplianceTrackingSearchEvent(
-      {final String? beneficiaryTag}) = _$NonComplianceTrackingSearchEventImpl;
+  const factory NonComplianceTrackingUpdateEvent(
+          {final UserActionModel? nonComplianceUserAction}) =
+      _$NonComplianceTrackingUpdateEventImpl;
 
-  String? get beneficiaryTag;
+  @override
+  UserActionModel? get nonComplianceUserAction;
+  @override
   @JsonKey(ignore: true)
-  _$$NonComplianceTrackingSearchEventImplCopyWith<
-          _$NonComplianceTrackingSearchEventImpl>
+  _$$NonComplianceTrackingUpdateEventImplCopyWith<
+          _$NonComplianceTrackingUpdateEventImpl>
       get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$NonComplianceTrackingAllSearchEventImplCopyWith<$Res> {
-  factory _$$NonComplianceTrackingAllSearchEventImplCopyWith(
-          _$NonComplianceTrackingAllSearchEventImpl value,
-          $Res Function(_$NonComplianceTrackingAllSearchEventImpl) then) =
-      __$$NonComplianceTrackingAllSearchEventImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$NonComplianceTrackingAllSearchEventImplCopyWithImpl<$Res>
-    extends _$NonComplianceTrackingEventCopyWithImpl<$Res,
-        _$NonComplianceTrackingAllSearchEventImpl>
-    implements _$$NonComplianceTrackingAllSearchEventImplCopyWith<$Res> {
-  __$$NonComplianceTrackingAllSearchEventImplCopyWithImpl(
-      _$NonComplianceTrackingAllSearchEventImpl _value,
-      $Res Function(_$NonComplianceTrackingAllSearchEventImpl) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$NonComplianceTrackingAllSearchEventImpl
-    implements NonComplianceTrackingAllSearchEvent {
-  const _$NonComplianceTrackingAllSearchEventImpl();
-
-  @override
-  String toString() {
-    return 'NonComplianceTrackingEvent.allSearch()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$NonComplianceTrackingAllSearchEventImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(UserActionModel? nonComplianceUserAction) create,
-    required TResult Function(String? beneficiaryTag) search,
-    required TResult Function() allSearch,
-  }) {
-    return allSearch();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(UserActionModel? nonComplianceUserAction)? create,
-    TResult? Function(String? beneficiaryTag)? search,
-    TResult? Function()? allSearch,
-  }) {
-    return allSearch?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(UserActionModel? nonComplianceUserAction)? create,
-    TResult Function(String? beneficiaryTag)? search,
-    TResult Function()? allSearch,
-    required TResult orElse(),
-  }) {
-    if (allSearch != null) {
-      return allSearch();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(NonComplianceTrackingCreateEvent value) create,
-    required TResult Function(NonComplianceTrackingSearchEvent value) search,
-    required TResult Function(NonComplianceTrackingAllSearchEvent value)
-        allSearch,
-  }) {
-    return allSearch(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(NonComplianceTrackingCreateEvent value)? create,
-    TResult? Function(NonComplianceTrackingSearchEvent value)? search,
-    TResult? Function(NonComplianceTrackingAllSearchEvent value)? allSearch,
-  }) {
-    return allSearch?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(NonComplianceTrackingCreateEvent value)? create,
-    TResult Function(NonComplianceTrackingSearchEvent value)? search,
-    TResult Function(NonComplianceTrackingAllSearchEvent value)? allSearch,
-    required TResult orElse(),
-  }) {
-    if (allSearch != null) {
-      return allSearch(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class NonComplianceTrackingAllSearchEvent
-    implements NonComplianceTrackingEvent {
-  const factory NonComplianceTrackingAllSearchEvent() =
-      _$NonComplianceTrackingAllSearchEventImpl;
 }
 
 /// @nodoc
@@ -511,10 +405,7 @@ mixin _$NonComplianceTrackingState {
         create,
     required TResult Function(
             bool loading, UserActionModel? nonComplianceUserAction)
-        search,
-    required TResult Function(
-            bool loading, List<UserActionModel>? nonComplianceUserAction)
-        allSearch,
+        update,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -523,10 +414,7 @@ mixin _$NonComplianceTrackingState {
     TResult? Function(bool loading, UserActionModel? nonComplianceUserAction)?
         create,
     TResult? Function(bool loading, UserActionModel? nonComplianceUserAction)?
-        search,
-    TResult? Function(
-            bool loading, List<UserActionModel>? nonComplianceUserAction)?
-        allSearch,
+        update,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -535,10 +423,7 @@ mixin _$NonComplianceTrackingState {
     TResult Function(bool loading, UserActionModel? nonComplianceUserAction)?
         create,
     TResult Function(bool loading, UserActionModel? nonComplianceUserAction)?
-        search,
-    TResult Function(
-            bool loading, List<UserActionModel>? nonComplianceUserAction)?
-        allSearch,
+        update,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -546,25 +431,21 @@ mixin _$NonComplianceTrackingState {
   TResult map<TResult extends Object?>({
     required TResult Function(NonComplianceTrackingInitState value) init,
     required TResult Function(NonComplianceTrackingCreateState value) create,
-    required TResult Function(NonComplianceTrackingSearchState value) search,
-    required TResult Function(NonComplianceTrackingAllSearchState value)
-        allSearch,
+    required TResult Function(NonComplianceTrackingUpdateState value) update,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(NonComplianceTrackingInitState value)? init,
     TResult? Function(NonComplianceTrackingCreateState value)? create,
-    TResult? Function(NonComplianceTrackingSearchState value)? search,
-    TResult? Function(NonComplianceTrackingAllSearchState value)? allSearch,
+    TResult? Function(NonComplianceTrackingUpdateState value)? update,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(NonComplianceTrackingInitState value)? init,
     TResult Function(NonComplianceTrackingCreateState value)? create,
-    TResult Function(NonComplianceTrackingSearchState value)? search,
-    TResult Function(NonComplianceTrackingAllSearchState value)? allSearch,
+    TResult Function(NonComplianceTrackingUpdateState value)? update,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -639,10 +520,7 @@ class _$NonComplianceTrackingInitStateImpl
         create,
     required TResult Function(
             bool loading, UserActionModel? nonComplianceUserAction)
-        search,
-    required TResult Function(
-            bool loading, List<UserActionModel>? nonComplianceUserAction)
-        allSearch,
+        update,
   }) {
     return init();
   }
@@ -654,10 +532,7 @@ class _$NonComplianceTrackingInitStateImpl
     TResult? Function(bool loading, UserActionModel? nonComplianceUserAction)?
         create,
     TResult? Function(bool loading, UserActionModel? nonComplianceUserAction)?
-        search,
-    TResult? Function(
-            bool loading, List<UserActionModel>? nonComplianceUserAction)?
-        allSearch,
+        update,
   }) {
     return init?.call();
   }
@@ -669,10 +544,7 @@ class _$NonComplianceTrackingInitStateImpl
     TResult Function(bool loading, UserActionModel? nonComplianceUserAction)?
         create,
     TResult Function(bool loading, UserActionModel? nonComplianceUserAction)?
-        search,
-    TResult Function(
-            bool loading, List<UserActionModel>? nonComplianceUserAction)?
-        allSearch,
+        update,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -686,9 +558,7 @@ class _$NonComplianceTrackingInitStateImpl
   TResult map<TResult extends Object?>({
     required TResult Function(NonComplianceTrackingInitState value) init,
     required TResult Function(NonComplianceTrackingCreateState value) create,
-    required TResult Function(NonComplianceTrackingSearchState value) search,
-    required TResult Function(NonComplianceTrackingAllSearchState value)
-        allSearch,
+    required TResult Function(NonComplianceTrackingUpdateState value) update,
   }) {
     return init(this);
   }
@@ -698,8 +568,7 @@ class _$NonComplianceTrackingInitStateImpl
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(NonComplianceTrackingInitState value)? init,
     TResult? Function(NonComplianceTrackingCreateState value)? create,
-    TResult? Function(NonComplianceTrackingSearchState value)? search,
-    TResult? Function(NonComplianceTrackingAllSearchState value)? allSearch,
+    TResult? Function(NonComplianceTrackingUpdateState value)? update,
   }) {
     return init?.call(this);
   }
@@ -709,8 +578,7 @@ class _$NonComplianceTrackingInitStateImpl
   TResult maybeMap<TResult extends Object?>({
     TResult Function(NonComplianceTrackingInitState value)? init,
     TResult Function(NonComplianceTrackingCreateState value)? create,
-    TResult Function(NonComplianceTrackingSearchState value)? search,
-    TResult Function(NonComplianceTrackingAllSearchState value)? allSearch,
+    TResult Function(NonComplianceTrackingUpdateState value)? update,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -815,10 +683,7 @@ class _$NonComplianceTrackingCreateStateImpl
         create,
     required TResult Function(
             bool loading, UserActionModel? nonComplianceUserAction)
-        search,
-    required TResult Function(
-            bool loading, List<UserActionModel>? nonComplianceUserAction)
-        allSearch,
+        update,
   }) {
     return create(loading, nonComplianceUserAction);
   }
@@ -830,10 +695,7 @@ class _$NonComplianceTrackingCreateStateImpl
     TResult? Function(bool loading, UserActionModel? nonComplianceUserAction)?
         create,
     TResult? Function(bool loading, UserActionModel? nonComplianceUserAction)?
-        search,
-    TResult? Function(
-            bool loading, List<UserActionModel>? nonComplianceUserAction)?
-        allSearch,
+        update,
   }) {
     return create?.call(loading, nonComplianceUserAction);
   }
@@ -845,10 +707,7 @@ class _$NonComplianceTrackingCreateStateImpl
     TResult Function(bool loading, UserActionModel? nonComplianceUserAction)?
         create,
     TResult Function(bool loading, UserActionModel? nonComplianceUserAction)?
-        search,
-    TResult Function(
-            bool loading, List<UserActionModel>? nonComplianceUserAction)?
-        allSearch,
+        update,
     required TResult orElse(),
   }) {
     if (create != null) {
@@ -862,9 +721,7 @@ class _$NonComplianceTrackingCreateStateImpl
   TResult map<TResult extends Object?>({
     required TResult Function(NonComplianceTrackingInitState value) init,
     required TResult Function(NonComplianceTrackingCreateState value) create,
-    required TResult Function(NonComplianceTrackingSearchState value) search,
-    required TResult Function(NonComplianceTrackingAllSearchState value)
-        allSearch,
+    required TResult Function(NonComplianceTrackingUpdateState value) update,
   }) {
     return create(this);
   }
@@ -874,8 +731,7 @@ class _$NonComplianceTrackingCreateStateImpl
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(NonComplianceTrackingInitState value)? init,
     TResult? Function(NonComplianceTrackingCreateState value)? create,
-    TResult? Function(NonComplianceTrackingSearchState value)? search,
-    TResult? Function(NonComplianceTrackingAllSearchState value)? allSearch,
+    TResult? Function(NonComplianceTrackingUpdateState value)? update,
   }) {
     return create?.call(this);
   }
@@ -885,8 +741,7 @@ class _$NonComplianceTrackingCreateStateImpl
   TResult maybeMap<TResult extends Object?>({
     TResult Function(NonComplianceTrackingInitState value)? init,
     TResult Function(NonComplianceTrackingCreateState value)? create,
-    TResult Function(NonComplianceTrackingSearchState value)? search,
-    TResult Function(NonComplianceTrackingAllSearchState value)? allSearch,
+    TResult Function(NonComplianceTrackingUpdateState value)? update,
     required TResult orElse(),
   }) {
     if (create != null) {
@@ -912,23 +767,23 @@ abstract class NonComplianceTrackingCreateState
 }
 
 /// @nodoc
-abstract class _$$NonComplianceTrackingSearchStateImplCopyWith<$Res> {
-  factory _$$NonComplianceTrackingSearchStateImplCopyWith(
-          _$NonComplianceTrackingSearchStateImpl value,
-          $Res Function(_$NonComplianceTrackingSearchStateImpl) then) =
-      __$$NonComplianceTrackingSearchStateImplCopyWithImpl<$Res>;
+abstract class _$$NonComplianceTrackingUpdateStateImplCopyWith<$Res> {
+  factory _$$NonComplianceTrackingUpdateStateImplCopyWith(
+          _$NonComplianceTrackingUpdateStateImpl value,
+          $Res Function(_$NonComplianceTrackingUpdateStateImpl) then) =
+      __$$NonComplianceTrackingUpdateStateImplCopyWithImpl<$Res>;
   @useResult
   $Res call({bool loading, UserActionModel? nonComplianceUserAction});
 }
 
 /// @nodoc
-class __$$NonComplianceTrackingSearchStateImplCopyWithImpl<$Res>
+class __$$NonComplianceTrackingUpdateStateImplCopyWithImpl<$Res>
     extends _$NonComplianceTrackingStateCopyWithImpl<$Res,
-        _$NonComplianceTrackingSearchStateImpl>
-    implements _$$NonComplianceTrackingSearchStateImplCopyWith<$Res> {
-  __$$NonComplianceTrackingSearchStateImplCopyWithImpl(
-      _$NonComplianceTrackingSearchStateImpl _value,
-      $Res Function(_$NonComplianceTrackingSearchStateImpl) _then)
+        _$NonComplianceTrackingUpdateStateImpl>
+    implements _$$NonComplianceTrackingUpdateStateImplCopyWith<$Res> {
+  __$$NonComplianceTrackingUpdateStateImplCopyWithImpl(
+      _$NonComplianceTrackingUpdateStateImpl _value,
+      $Res Function(_$NonComplianceTrackingUpdateStateImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -937,7 +792,7 @@ class __$$NonComplianceTrackingSearchStateImplCopyWithImpl<$Res>
     Object? loading = null,
     Object? nonComplianceUserAction = freezed,
   }) {
-    return _then(_$NonComplianceTrackingSearchStateImpl(
+    return _then(_$NonComplianceTrackingUpdateStateImpl(
       loading: null == loading
           ? _value.loading
           : loading // ignore: cast_nullable_to_non_nullable
@@ -952,9 +807,9 @@ class __$$NonComplianceTrackingSearchStateImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$NonComplianceTrackingSearchStateImpl
-    implements NonComplianceTrackingSearchState {
-  const _$NonComplianceTrackingSearchStateImpl(
+class _$NonComplianceTrackingUpdateStateImpl
+    implements NonComplianceTrackingUpdateState {
+  const _$NonComplianceTrackingUpdateStateImpl(
       {this.loading = false, this.nonComplianceUserAction});
 
   @override
@@ -965,14 +820,14 @@ class _$NonComplianceTrackingSearchStateImpl
 
   @override
   String toString() {
-    return 'NonComplianceTrackingState.search(loading: $loading, nonComplianceUserAction: $nonComplianceUserAction)';
+    return 'NonComplianceTrackingState.update(loading: $loading, nonComplianceUserAction: $nonComplianceUserAction)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$NonComplianceTrackingSearchStateImpl &&
+            other is _$NonComplianceTrackingUpdateStateImpl &&
             (identical(other.loading, loading) || other.loading == loading) &&
             (identical(
                     other.nonComplianceUserAction, nonComplianceUserAction) ||
@@ -986,10 +841,10 @@ class _$NonComplianceTrackingSearchStateImpl
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$NonComplianceTrackingSearchStateImplCopyWith<
-          _$NonComplianceTrackingSearchStateImpl>
-      get copyWith => __$$NonComplianceTrackingSearchStateImplCopyWithImpl<
-          _$NonComplianceTrackingSearchStateImpl>(this, _$identity);
+  _$$NonComplianceTrackingUpdateStateImplCopyWith<
+          _$NonComplianceTrackingUpdateStateImpl>
+      get copyWith => __$$NonComplianceTrackingUpdateStateImplCopyWithImpl<
+          _$NonComplianceTrackingUpdateStateImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1000,12 +855,9 @@ class _$NonComplianceTrackingSearchStateImpl
         create,
     required TResult Function(
             bool loading, UserActionModel? nonComplianceUserAction)
-        search,
-    required TResult Function(
-            bool loading, List<UserActionModel>? nonComplianceUserAction)
-        allSearch,
+        update,
   }) {
-    return search(loading, nonComplianceUserAction);
+    return update(loading, nonComplianceUserAction);
   }
 
   @override
@@ -1015,12 +867,9 @@ class _$NonComplianceTrackingSearchStateImpl
     TResult? Function(bool loading, UserActionModel? nonComplianceUserAction)?
         create,
     TResult? Function(bool loading, UserActionModel? nonComplianceUserAction)?
-        search,
-    TResult? Function(
-            bool loading, List<UserActionModel>? nonComplianceUserAction)?
-        allSearch,
+        update,
   }) {
-    return search?.call(loading, nonComplianceUserAction);
+    return update?.call(loading, nonComplianceUserAction);
   }
 
   @override
@@ -1030,14 +879,11 @@ class _$NonComplianceTrackingSearchStateImpl
     TResult Function(bool loading, UserActionModel? nonComplianceUserAction)?
         create,
     TResult Function(bool loading, UserActionModel? nonComplianceUserAction)?
-        search,
-    TResult Function(
-            bool loading, List<UserActionModel>? nonComplianceUserAction)?
-        allSearch,
+        update,
     required TResult orElse(),
   }) {
-    if (search != null) {
-      return search(loading, nonComplianceUserAction);
+    if (update != null) {
+      return update(loading, nonComplianceUserAction);
     }
     return orElse();
   }
@@ -1047,11 +893,9 @@ class _$NonComplianceTrackingSearchStateImpl
   TResult map<TResult extends Object?>({
     required TResult Function(NonComplianceTrackingInitState value) init,
     required TResult Function(NonComplianceTrackingCreateState value) create,
-    required TResult Function(NonComplianceTrackingSearchState value) search,
-    required TResult Function(NonComplianceTrackingAllSearchState value)
-        allSearch,
+    required TResult Function(NonComplianceTrackingUpdateState value) update,
   }) {
-    return search(this);
+    return update(this);
   }
 
   @override
@@ -1059,10 +903,9 @@ class _$NonComplianceTrackingSearchStateImpl
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(NonComplianceTrackingInitState value)? init,
     TResult? Function(NonComplianceTrackingCreateState value)? create,
-    TResult? Function(NonComplianceTrackingSearchState value)? search,
-    TResult? Function(NonComplianceTrackingAllSearchState value)? allSearch,
+    TResult? Function(NonComplianceTrackingUpdateState value)? update,
   }) {
-    return search?.call(this);
+    return update?.call(this);
   }
 
   @override
@@ -1070,222 +913,27 @@ class _$NonComplianceTrackingSearchStateImpl
   TResult maybeMap<TResult extends Object?>({
     TResult Function(NonComplianceTrackingInitState value)? init,
     TResult Function(NonComplianceTrackingCreateState value)? create,
-    TResult Function(NonComplianceTrackingSearchState value)? search,
-    TResult Function(NonComplianceTrackingAllSearchState value)? allSearch,
+    TResult Function(NonComplianceTrackingUpdateState value)? update,
     required TResult orElse(),
   }) {
-    if (search != null) {
-      return search(this);
+    if (update != null) {
+      return update(this);
     }
     return orElse();
   }
 }
 
-abstract class NonComplianceTrackingSearchState
+abstract class NonComplianceTrackingUpdateState
     implements NonComplianceTrackingState {
-  const factory NonComplianceTrackingSearchState(
+  const factory NonComplianceTrackingUpdateState(
           {final bool loading,
           final UserActionModel? nonComplianceUserAction}) =
-      _$NonComplianceTrackingSearchStateImpl;
+      _$NonComplianceTrackingUpdateStateImpl;
 
   bool get loading;
   UserActionModel? get nonComplianceUserAction;
   @JsonKey(ignore: true)
-  _$$NonComplianceTrackingSearchStateImplCopyWith<
-          _$NonComplianceTrackingSearchStateImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$NonComplianceTrackingAllSearchStateImplCopyWith<$Res> {
-  factory _$$NonComplianceTrackingAllSearchStateImplCopyWith(
-          _$NonComplianceTrackingAllSearchStateImpl value,
-          $Res Function(_$NonComplianceTrackingAllSearchStateImpl) then) =
-      __$$NonComplianceTrackingAllSearchStateImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({bool loading, List<UserActionModel>? nonComplianceUserAction});
-}
-
-/// @nodoc
-class __$$NonComplianceTrackingAllSearchStateImplCopyWithImpl<$Res>
-    extends _$NonComplianceTrackingStateCopyWithImpl<$Res,
-        _$NonComplianceTrackingAllSearchStateImpl>
-    implements _$$NonComplianceTrackingAllSearchStateImplCopyWith<$Res> {
-  __$$NonComplianceTrackingAllSearchStateImplCopyWithImpl(
-      _$NonComplianceTrackingAllSearchStateImpl _value,
-      $Res Function(_$NonComplianceTrackingAllSearchStateImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? loading = null,
-    Object? nonComplianceUserAction = freezed,
-  }) {
-    return _then(_$NonComplianceTrackingAllSearchStateImpl(
-      loading: null == loading
-          ? _value.loading
-          : loading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      nonComplianceUserAction: freezed == nonComplianceUserAction
-          ? _value._nonComplianceUserAction
-          : nonComplianceUserAction // ignore: cast_nullable_to_non_nullable
-              as List<UserActionModel>?,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$NonComplianceTrackingAllSearchStateImpl
-    implements NonComplianceTrackingAllSearchState {
-  const _$NonComplianceTrackingAllSearchStateImpl(
-      {this.loading = false,
-      final List<UserActionModel>? nonComplianceUserAction})
-      : _nonComplianceUserAction = nonComplianceUserAction;
-
-  @override
-  @JsonKey()
-  final bool loading;
-  final List<UserActionModel>? _nonComplianceUserAction;
-  @override
-  List<UserActionModel>? get nonComplianceUserAction {
-    final value = _nonComplianceUserAction;
-    if (value == null) return null;
-    if (_nonComplianceUserAction is EqualUnmodifiableListView)
-      return _nonComplianceUserAction;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
-
-  @override
-  String toString() {
-    return 'NonComplianceTrackingState.allSearch(loading: $loading, nonComplianceUserAction: $nonComplianceUserAction)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$NonComplianceTrackingAllSearchStateImpl &&
-            (identical(other.loading, loading) || other.loading == loading) &&
-            const DeepCollectionEquality().equals(
-                other._nonComplianceUserAction, _nonComplianceUserAction));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, loading,
-      const DeepCollectionEquality().hash(_nonComplianceUserAction));
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$NonComplianceTrackingAllSearchStateImplCopyWith<
-          _$NonComplianceTrackingAllSearchStateImpl>
-      get copyWith => __$$NonComplianceTrackingAllSearchStateImplCopyWithImpl<
-          _$NonComplianceTrackingAllSearchStateImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() init,
-    required TResult Function(
-            bool loading, UserActionModel? nonComplianceUserAction)
-        create,
-    required TResult Function(
-            bool loading, UserActionModel? nonComplianceUserAction)
-        search,
-    required TResult Function(
-            bool loading, List<UserActionModel>? nonComplianceUserAction)
-        allSearch,
-  }) {
-    return allSearch(loading, nonComplianceUserAction);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? init,
-    TResult? Function(bool loading, UserActionModel? nonComplianceUserAction)?
-        create,
-    TResult? Function(bool loading, UserActionModel? nonComplianceUserAction)?
-        search,
-    TResult? Function(
-            bool loading, List<UserActionModel>? nonComplianceUserAction)?
-        allSearch,
-  }) {
-    return allSearch?.call(loading, nonComplianceUserAction);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? init,
-    TResult Function(bool loading, UserActionModel? nonComplianceUserAction)?
-        create,
-    TResult Function(bool loading, UserActionModel? nonComplianceUserAction)?
-        search,
-    TResult Function(
-            bool loading, List<UserActionModel>? nonComplianceUserAction)?
-        allSearch,
-    required TResult orElse(),
-  }) {
-    if (allSearch != null) {
-      return allSearch(loading, nonComplianceUserAction);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(NonComplianceTrackingInitState value) init,
-    required TResult Function(NonComplianceTrackingCreateState value) create,
-    required TResult Function(NonComplianceTrackingSearchState value) search,
-    required TResult Function(NonComplianceTrackingAllSearchState value)
-        allSearch,
-  }) {
-    return allSearch(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(NonComplianceTrackingInitState value)? init,
-    TResult? Function(NonComplianceTrackingCreateState value)? create,
-    TResult? Function(NonComplianceTrackingSearchState value)? search,
-    TResult? Function(NonComplianceTrackingAllSearchState value)? allSearch,
-  }) {
-    return allSearch?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(NonComplianceTrackingInitState value)? init,
-    TResult Function(NonComplianceTrackingCreateState value)? create,
-    TResult Function(NonComplianceTrackingSearchState value)? search,
-    TResult Function(NonComplianceTrackingAllSearchState value)? allSearch,
-    required TResult orElse(),
-  }) {
-    if (allSearch != null) {
-      return allSearch(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class NonComplianceTrackingAllSearchState
-    implements NonComplianceTrackingState {
-  const factory NonComplianceTrackingAllSearchState(
-          {final bool loading,
-          final List<UserActionModel>? nonComplianceUserAction}) =
-      _$NonComplianceTrackingAllSearchStateImpl;
-
-  bool get loading;
-  List<UserActionModel>? get nonComplianceUserAction;
-  @JsonKey(ignore: true)
-  _$$NonComplianceTrackingAllSearchStateImplCopyWith<
-          _$NonComplianceTrackingAllSearchStateImpl>
+  _$$NonComplianceTrackingUpdateStateImplCopyWith<
+          _$NonComplianceTrackingUpdateStateImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

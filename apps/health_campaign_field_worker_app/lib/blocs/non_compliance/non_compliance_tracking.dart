@@ -4,10 +4,6 @@ import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/user_action.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:registration_delivery/blocs/search_households/search_households.dart';
-import 'package:registration_delivery/models/entities/status.dart';
-import 'package:registration_delivery/models/entities/task.dart';
-import 'package:registration_delivery/utils/typedefs.dart';
 import 'package:registration_delivery/utils/utils.dart';
 import 'package:transit_post/data/repositories/local/user_action.dart';
 
@@ -28,8 +24,7 @@ class NonComplianceTrackingBloc
     required this.customUserActionLocalRepository,
   }) {
     on(_handleCreate);
-    on(_handleSearch);
-    on(_handleAllSearch);
+    on(_handleUpdate);
   }
 
   FutureOr<void> _handleCreate(
@@ -62,33 +57,35 @@ class NonComplianceTrackingBloc
     } catch (e) {}
   }
 
-  FutureOr<void> _handleSearch(
-    NonComplianceTrackingSearchEvent event,
+  FutureOr<void> _handleUpdate(
+    NonComplianceTrackingUpdateEvent event,
     NonComplianceTrackingEmitter emit,
   ) async {
-    List<UserActionModel> nonComplianceUserActions =
-        await customUserActionLocalRepository.searchUserAction(
-      beneficiaryTag: event.beneficiaryTag,
-      action: "NON_COMPLIANCE",
-    );
-    emit(NonComplianceTrackingState.search(
-      loading: false,
-      nonComplianceUserAction: nonComplianceUserActions.firstOrNull,
-    ));
-  }
-
-  FutureOr<void> _handleAllSearch(
-    NonComplianceTrackingAllSearchEvent event,
-    NonComplianceTrackingEmitter emit,
-  ) async {
-    List<UserActionModel> nonComplianceUserActions =
-        await customUserActionLocalRepository.searchUserAction(
-      action: "NON_COMPLIANCE",
-    );
-    emit(NonComplianceTrackingState.allSearch(
-      loading: false,
-      nonComplianceUserAction: nonComplianceUserActions,
-    ));
+    emit(const NonComplianceTrackingState.create(loading: true));
+    UserActionModel? nonComplianceUserAction = event.nonComplianceUserAction;
+    try {
+      nonComplianceUserAction = nonComplianceUserAction?.copyWith(
+        clientAuditDetails: ClientAuditDetails(
+            createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
+            createdTime: DateTime.now().millisecondsSinceEpoch,
+            lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid!,
+            lastModifiedTime: DateTime.now().millisecondsSinceEpoch),
+        auditDetails: AuditDetails(
+            createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
+            createdTime: DateTime.now().millisecondsSinceEpoch,
+            lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid!,
+            lastModifiedTime: DateTime.now().millisecondsSinceEpoch),
+      );
+      // create the userAction model with trip action as start
+      if (nonComplianceUserAction != null) {
+        await customUserActionLocalRepository
+            .updateUserAction(nonComplianceUserAction);
+        emit(NonComplianceTrackingState.update(
+          loading: false,
+          nonComplianceUserAction: nonComplianceUserAction,
+        ));
+      }
+    } catch (e) {}
   }
 }
 
@@ -97,11 +94,9 @@ class NonComplianceTrackingEvent with _$NonComplianceTrackingEvent {
   const factory NonComplianceTrackingEvent.create(
           {UserActionModel? nonComplianceUserAction}) =
       NonComplianceTrackingCreateEvent;
-  const factory NonComplianceTrackingEvent.search({
-    String? beneficiaryTag,
-  }) = NonComplianceTrackingSearchEvent;
-  const factory NonComplianceTrackingEvent.allSearch() =
-      NonComplianceTrackingAllSearchEvent;
+  const factory NonComplianceTrackingEvent.update(
+          {UserActionModel? nonComplianceUserAction}) =
+      NonComplianceTrackingUpdateEvent;
 }
 
 @freezed
@@ -112,12 +107,8 @@ class NonComplianceTrackingState with _$NonComplianceTrackingState {
     @Default(false) bool loading,
     UserActionModel? nonComplianceUserAction,
   }) = NonComplianceTrackingCreateState;
-  const factory NonComplianceTrackingState.search({
+  const factory NonComplianceTrackingState.update({
     @Default(false) bool loading,
     UserActionModel? nonComplianceUserAction,
-  }) = NonComplianceTrackingSearchState;
-  const factory NonComplianceTrackingState.allSearch({
-    @Default(false) bool loading,
-    List<UserActionModel>? nonComplianceUserAction,
-  }) = NonComplianceTrackingAllSearchState;
+  }) = NonComplianceTrackingUpdateState;
 }

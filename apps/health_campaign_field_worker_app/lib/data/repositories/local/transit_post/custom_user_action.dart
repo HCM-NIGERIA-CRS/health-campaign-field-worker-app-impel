@@ -31,25 +31,46 @@ class CustomUserActionLocalRepository extends UserActionLocalRepository {
   //   });
   // }
 
-  // FutureOr<void> updateUserAction(
-  //   UserActionModel entity, {
-  //   bool createOpLog = true,
-  //   DataOperation dataOperation = DataOperation.update,
-  // }) async {
-  //   return retryLocalCallOperation(() async {
-  //     await sql.batch((batch) {
-  //       batch.update(
-  //         sql.userAction,
-  //         entity.companion,
-  //         where: (table) => table.clientReferenceId.equals(
-  //           entity.clientReferenceId,
-  //         ),
-  //       );
-  //     });
+  FutureOr<void> createUserAction(
+    UserActionModel entity, {
+    bool createOpLog = true,
+    DataOperation dataOperation = DataOperation.create,
+  }) async {
+    return retryLocalCallOperation(() async {
+      await sql.batch((batch) {
+        batch.insert(
+          sql.userAction,
+          entity.companion,
+          mode: InsertMode.insertOrReplace,
+        );
+      });
 
-  //     await super.update(entity, createOpLog: createOpLog);
-  //   });
-  // }
+      await super.create(
+        entity,
+        createOpLog: createOpLog,
+      );
+    });
+  }
+
+  FutureOr<void> updateUserAction(
+    UserActionModel entity, {
+    bool createOpLog = true,
+    DataOperation dataOperation = DataOperation.update,
+  }) async {
+    return retryLocalCallOperation(() async {
+      await sql.batch((batch) {
+        batch.update(
+          sql.userAction,
+          entity.companion,
+          where: (table) => table.clientReferenceId.equals(
+            entity.clientReferenceId,
+          ),
+        );
+      });
+
+      await super.update(entity, createOpLog: createOpLog);
+    });
+  }
 
   FutureOr<void> bulkStockCreate(
     List<UserActionModel> entities,
@@ -73,6 +94,7 @@ class CustomUserActionLocalRepository extends UserActionLocalRepository {
   FutureOr<List<UserActionModel>> searchUserAction(
       {String? action,
       String? beneficiaryTag,
+      String? resourceTag,
       String? additionalFieldfilterParam,
       String? clientReferenceId}) {
     return retryLocalCallOperation<List<UserActionModel>>(() async {
@@ -99,6 +121,10 @@ class CustomUserActionLocalRepository extends UserActionLocalRepository {
                     const Constant(true),
                   if (beneficiaryTag != null)
                     sql.userAction.beneficiaryTag.isIn([beneficiaryTag])
+                  else
+                    const Constant(true),
+                  if (resourceTag != null)
+                    sql.userAction.resourceTag.isIn([resourceTag])
                   else
                     const Constant(true),
                   // if (query.isPermanent != null)
