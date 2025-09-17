@@ -1295,10 +1295,7 @@ class CustomIndividualDetailsPolioSMCPageState
       _genderKey: FormControl<String>(
           value: getGenderOptions(individual),
           validators: [Validators.required]),
-      _heightKey: FormControl<String>(
-        value: "0",
-        validators: [Validators.required],
-      ),
+      _heightKey: FormControl<String>(),
       _mobileNumberKey:
           FormControl<String>(value: individual?.mobileNumber, validators: [
         Validators.delegate((validator) =>
@@ -1306,9 +1303,7 @@ class CustomIndividualDetailsPolioSMCPageState
         Validators.minLength(11),
         Validators.maxLength(11),
       ]),
-      _disabilityKey: FormControl<String>(value: _disabilityKey, validators: [
-        Validators.required,
-      ]),
+      _disabilityKey: FormControl<String>(),
     });
   }
 

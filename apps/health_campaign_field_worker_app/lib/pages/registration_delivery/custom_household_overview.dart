@@ -352,11 +352,8 @@ class _CustomHouseholdOverviewPageState
                                                   state.householdMemberWrapper
                                                       .household);
 
-                                          final childrenAbsentCount =
-                                              getValueForTheKey(
-                                                  Constants.childrenAbsent,
-                                                  state.householdMemberWrapper
-                                                      .household);
+                                          final totalMemberInHousehold =
+                                              totalMemberCount(childrenCount);
 
                                           if (RegistrationDeliverySingleton()
                                                   .householdType ==
@@ -422,21 +419,14 @@ class _CustomHouseholdOverviewPageState
                                                           .locality
                                                           ?.code ??
                                                       i18.common.coreCommonNA),
-                                                  // localizations.translate(
-                                                  //   i18.deliverIntervention
-                                                  //       .memberCountText,
-                                                  // ): state
-                                                  //     .householdMemberWrapper
-                                                  //     .household
-                                                  //     ?.memberCount,
+                                                  localizations.translate(
+                                                    i18.deliverIntervention
+                                                        .memberCountText,
+                                                  ): totalMemberInHousehold,
                                                   localizations.translate(
                                                     i18.householdDetails
                                                         .noOfChildrenBelow5YearsLabel,
                                                   ): childrenCount,
-                                                  localizations.translate(
-                                                    i18_local.householdDetails
-                                                        .noOfChildrenAbsentLabel,
-                                                  ): childrenAbsentCount,
                                                   if (shouldShowStatus)
                                                     localizations.translate(i18
                                                             .beneficiaryDetails

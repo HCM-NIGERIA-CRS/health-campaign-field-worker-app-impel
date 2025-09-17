@@ -447,6 +447,23 @@ dynamic getValueForTheKey(String key, HouseholdModel? householdModel) {
   return object == null ? object : object.value;
 }
 
+int totalMemberCount(dynamic childrenCount) {
+  // return 1 for head of the family
+  // childrenCount can be null, int, String, double
+  if (childrenCount == null) {
+    return 1;
+  } else {
+    if (childrenCount is String) {
+      return (int.tryParse(childrenCount) ?? 0) + 1;
+    } else if (childrenCount is int) {
+      return childrenCount + 1;
+    } else if (childrenCount is double) {
+      return childrenCount.toInt() + 1;
+    }
+  }
+  return 1;
+}
+
 Map<String, dynamic>? customValidMobileNumber(
   AbstractControl<dynamic> control,
 ) {
