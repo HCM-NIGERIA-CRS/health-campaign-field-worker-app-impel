@@ -26,11 +26,11 @@ import '../../utils/constants.dart';
 import '../../utils/extensions/extensions.dart';
 
 @RoutePage()
-class ViewStockRecordsLGAPage extends LocalizedStatefulWidget {
+class ReceiveStockPage extends LocalizedStatefulWidget {
   final String mrnNumber;
   final List<StockModel> stockRecords;
 
-  const ViewStockRecordsLGAPage({
+  const ReceiveStockPage({
     super.key,
     super.appLocalizations,
     required this.mrnNumber,
@@ -38,12 +38,10 @@ class ViewStockRecordsLGAPage extends LocalizedStatefulWidget {
   });
 
   @override
-  State<ViewStockRecordsLGAPage> createState() =>
-      _ViewStockRecordsLGAPageState();
+  State<ReceiveStockPage> createState() => _ViewStockRecordsLGAPageState();
 }
 
-class _ViewStockRecordsLGAPageState
-    extends LocalizedState<ViewStockRecordsLGAPage>
+class _ViewStockRecordsLGAPageState extends LocalizedState<ReceiveStockPage>
     with SingleTickerProviderStateMixin {
   late final List<FormGroup> _forms;
   late TabController _tabController;
