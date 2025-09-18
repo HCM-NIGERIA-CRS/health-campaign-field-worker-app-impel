@@ -6,6 +6,7 @@ import 'package:digit_ui_components/widgets/molecules/show_pop_up.dart';
 import 'package:registration_delivery/blocs/app_localization.dart';
 import 'package:registration_delivery/blocs/search_households/search_households.dart';
 import 'package:registration_delivery/blocs/unique_id/unique_id.dart';
+import 'package:registration_delivery/models/entities/project_beneficiary.dart';
 import 'package:registration_delivery/widgets/beneficiary/id_count_alert.dart';
 // import 'package:digit_components/utils/date_utils.dart' as digits;
 import '../../blocs/app_initialization/app_initialization.dart';
@@ -198,11 +199,23 @@ class CustomIndividualDetailsPolioSMCPageState
 
                       if (householdMemberWrapper != null) {
                         if (individualCaptured != null) {
+                          // info get the relevant project beneficiary here
+                          final projectBeneficiaryAddMember =
+                              householdMemberWrapper
+                                  .projectBeneficiaries
+                                  ?.where((e) =>
+                                      e.beneficiaryClientReferenceId ==
+                                      individualCaptured!.clientReferenceId)
+                                  .toSet();
                           // assumption add individual here is used for creating child,
                           // if invalid age send to overview no checklist
 
-                          routeBasedOnFlow(individualCaptured!,
-                              householdMemberWrapper!, router, context);
+                          routeBasedOnFlow(
+                              individualCaptured!,
+                              projectBeneficiaryAddMember?.first,
+                              householdMemberWrapper!,
+                              router,
+                              context);
                         } else {
                           (router.parent() as StackRouter).maybePop();
                           router.popUntil((route) =>
@@ -1643,6 +1656,7 @@ class CustomIndividualDetailsPolioSMCPageState
 
   void routeBasedOnFlow(
       IndividualModel individual,
+      ProjectBeneficiaryModel? projectBeneficiaryAddMember,
       HouseholdMemberWrapper wrapper,
       StackRouter router,
       BuildContext context) {
@@ -1656,6 +1670,8 @@ class CustomIndividualDetailsPolioSMCPageState
       router.push(BeneficiaryWrapperRoute(wrapper: wrapper, children: [
         EligibilityChecklistViewRoute(
           eligibilityAssessmentType: EligibilityAssessmentType.smc,
+          projectBeneficiaryClientReferenceId:
+              projectBeneficiaryAddMember?.clientReferenceId,
           individual: individual,
           showBackButton: false,
         )

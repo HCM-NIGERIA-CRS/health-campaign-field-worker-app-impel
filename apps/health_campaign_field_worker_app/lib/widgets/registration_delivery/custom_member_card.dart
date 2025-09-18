@@ -288,6 +288,8 @@ class CustomMemberCard extends StatelessWidget {
               if (smcFlow && polioFlow) {
                 context.router.push(EligibilityChecklistViewRoute(
                   eligibilityAssessmentType: EligibilityAssessmentType.smc,
+                  projectBeneficiaryClientReferenceId:
+                      projectBeneficiaryClientReferenceId,
                   individual: individual,
                   showBackButton: false,
                 ));

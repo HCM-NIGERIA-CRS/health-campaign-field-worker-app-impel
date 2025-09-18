@@ -162,18 +162,7 @@ bool checkBeneficiaryReferredSMC(
   }
   var successfulTask = tasks!
       .where(
-        (element) =>
-            element.status == Status.beneficiaryReferred.toValue() &&
-            element.additionalFields?.fields.firstWhereOrNull(
-                  (e) =>
-                      e.key ==
-                          additional_fields_local
-                              .AdditionalFieldsType.deliveryType
-                              .toValue() &&
-                      e.value == EligibilityAssessmentStatus.smcDone.name,
-                ) !=
-                null,
-      )
+          (element) => element.status == Status.beneficiaryReferred.toValue())
       .lastOrNull;
 
   final successfulTaskCreatedTime =
@@ -199,20 +188,8 @@ bool checkBeneficiaryInEligibleSMC(
     return false;
   }
   var successfulTask = tasks!
-      .where(
-        (element) =>
-            element.status ==
-                status_local.Status.beneficiaryInEligible.toValue() &&
-            element.additionalFields?.fields.firstWhereOrNull(
-                  (e) =>
-                      e.key ==
-                          additional_fields_local
-                              .AdditionalFieldsType.deliveryType
-                              .toValue() &&
-                      e.value == EligibilityAssessmentStatus.smcDone.name,
-                ) !=
-                null,
-      )
+      .where((element) =>
+          element.status == status_local.Status.beneficiaryInEligible.toValue())
       .lastOrNull;
 
   final successfulTaskCreatedTime =
