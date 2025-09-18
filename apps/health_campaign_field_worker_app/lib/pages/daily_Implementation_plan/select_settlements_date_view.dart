@@ -69,7 +69,9 @@ class _SelectSettlementsDateViewState
                   List<dynamic> settlementsData =
                       selectedSettlementsDateAdditionalField == null
                           ? []
-                          : selectedSettlementsDateAdditionalField.first.value
+                          : json
+                                  .decode(selectedSettlementsDateAdditionalField
+                                      .first.value)
                                   .map((e) {
                                 return SettlementModel.fromJson(json.decode(e));
                               }).toList() ??

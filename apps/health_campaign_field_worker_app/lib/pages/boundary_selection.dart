@@ -185,9 +185,8 @@ class _BoundarySelectionPageState
                                             .read<BeneficiaryDownSyncBloc>()
                                             .add(
                                               DownSyncCheckTotalCountEvent(
-                                                projectId: context.isWFP
-                                                    ? null
-                                                    : context.projectId,
+                                                projectId: context.projectId,
+                                                useProjectId: !context.isWFP,
                                                 boundaryCode: selectedBoundary!
                                                     .value!.code
                                                     .toString(),

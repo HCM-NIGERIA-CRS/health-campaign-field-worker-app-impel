@@ -234,6 +234,7 @@ abstract class _$AppRouter extends RootStackRouter {
           key: args.key,
           appLocalizations: args.appLocalizations,
           eligibilityAssessmentType: args.eligibilityAssessmentType,
+          selectedIndividual: args.selectedIndividual,
         ),
       );
     },
@@ -581,6 +582,7 @@ abstract class _$AppRouter extends RootStackRouter {
           appLocalizations: args.appLocalizations,
           enableBackToSearch: args.enableBackToSearch,
           eligibilityAssessmentType: args.eligibilityAssessmentType,
+          individual: args.individual,
         ),
       );
     },
@@ -1764,6 +1766,7 @@ class CustomDoseAdministeredRoute
     Key? key,
     RegistrationDeliveryLocalization? appLocalizations,
     required EligibilityAssessmentType eligibilityAssessmentType,
+    required IndividualModel? selectedIndividual,
     List<PageRouteInfo>? children,
   }) : super(
           CustomDoseAdministeredRoute.name,
@@ -1771,6 +1774,7 @@ class CustomDoseAdministeredRoute
             key: key,
             appLocalizations: appLocalizations,
             eligibilityAssessmentType: eligibilityAssessmentType,
+            selectedIndividual: selectedIndividual,
           ),
           initialChildren: children,
         );
@@ -1786,6 +1790,7 @@ class CustomDoseAdministeredRouteArgs {
     this.key,
     this.appLocalizations,
     required this.eligibilityAssessmentType,
+    required this.selectedIndividual,
   });
 
   final Key? key;
@@ -1794,9 +1799,11 @@ class CustomDoseAdministeredRouteArgs {
 
   final EligibilityAssessmentType eligibilityAssessmentType;
 
+  final IndividualModel? selectedIndividual;
+
   @override
   String toString() {
-    return 'CustomDoseAdministeredRouteArgs{key: $key, appLocalizations: $appLocalizations, eligibilityAssessmentType: $eligibilityAssessmentType}';
+    return 'CustomDoseAdministeredRouteArgs{key: $key, appLocalizations: $appLocalizations, eligibilityAssessmentType: $eligibilityAssessmentType, selectedIndividual: $selectedIndividual}';
   }
 }
 
@@ -3061,6 +3068,7 @@ class CustomSplashAcknowledgementRoute
     RegistrationDeliveryLocalization? appLocalizations,
     bool? enableBackToSearch,
     required EligibilityAssessmentType eligibilityAssessmentType,
+    required IndividualModel? individual,
     List<PageRouteInfo>? children,
   }) : super(
           CustomSplashAcknowledgementRoute.name,
@@ -3069,6 +3077,7 @@ class CustomSplashAcknowledgementRoute
             appLocalizations: appLocalizations,
             enableBackToSearch: enableBackToSearch,
             eligibilityAssessmentType: eligibilityAssessmentType,
+            individual: individual,
           ),
           initialChildren: children,
         );
@@ -3085,6 +3094,7 @@ class CustomSplashAcknowledgementRouteArgs {
     this.appLocalizations,
     this.enableBackToSearch,
     required this.eligibilityAssessmentType,
+    required this.individual,
   });
 
   final Key? key;
@@ -3095,9 +3105,11 @@ class CustomSplashAcknowledgementRouteArgs {
 
   final EligibilityAssessmentType eligibilityAssessmentType;
 
+  final IndividualModel? individual;
+
   @override
   String toString() {
-    return 'CustomSplashAcknowledgementRouteArgs{key: $key, appLocalizations: $appLocalizations, enableBackToSearch: $enableBackToSearch, eligibilityAssessmentType: $eligibilityAssessmentType}';
+    return 'CustomSplashAcknowledgementRouteArgs{key: $key, appLocalizations: $appLocalizations, enableBackToSearch: $enableBackToSearch, eligibilityAssessmentType: $eligibilityAssessmentType, individual: $individual}';
   }
 }
 

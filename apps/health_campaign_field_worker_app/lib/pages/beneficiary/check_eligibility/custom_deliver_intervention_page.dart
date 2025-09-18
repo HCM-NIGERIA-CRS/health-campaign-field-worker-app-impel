@@ -257,6 +257,7 @@ class CustomDeliverInterventionPageState
       context.router.push(
         CustomSplashAcknowledgementRoute(
             enableBackToSearch: false,
+            individual: widget.selectedIndividual,
             eligibilityAssessmentType: widget.eligibilityAssessmentType),
       );
     } else {

@@ -166,10 +166,10 @@ class _SelectSettlementsPageState
                                         if (state.settlementData != null)
                                           AdditionalField(
                                               Constants.data,
-                                              state.settlementData!
+                                              json.encode(state.settlementData!
                                                   .map((e) =>
                                                       json.encode(e.toJson()))
-                                                  .toList()),
+                                                  .toList())),
                                       ]));
 
                               context.read<DailyImplementationPlanBloc>().add(
