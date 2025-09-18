@@ -774,6 +774,8 @@ class CustomDeliverInterventionPageState
                                                       eligibilityAssessmentType:
                                                           widget
                                                               .eligibilityAssessmentType,
+                                                      productVariants:
+                                                          productVariants,
                                                       cardIndex: _controllers
                                                           .indexOf(e),
                                                       totalItems:
@@ -1268,6 +1270,7 @@ class CustomResourceBeneficiaryCard extends LocalizedStatefulWidget {
   final FormGroup form;
   final int totalItems;
   final EligibilityAssessmentType eligibilityAssessmentType;
+  final List<DeliveryProductVariant>? productVariants;
 
   const CustomResourceBeneficiaryCard({
     super.key,
@@ -1277,6 +1280,7 @@ class CustomResourceBeneficiaryCard extends LocalizedStatefulWidget {
     required this.form,
     required this.totalItems,
     required this.eligibilityAssessmentType,
+    this.productVariants,
   });
 
   @override
@@ -1298,6 +1302,20 @@ class CustomResourceBeneficiaryCardState
               final selectedVariant = widget.form
                   .control('resourceDelivered.${widget.cardIndex}')
                   .value as ProductVariantModel?;
+
+              final doseQuantity = widget.productVariants
+                      ?.firstWhereOrNull(
+                          (e) => e.productVariantId == selectedVariant?.id)
+                      ?.quantity
+                      .toString() ??
+                  "1";
+
+              // set the quantity in the form for the selected variant
+
+              widget.form
+                  .control('quantityDistributed.${widget.cardIndex}')
+                  .value = int.tryParse(doseQuantity) ?? 1;
+
               return Column(
                 children: [
                   LabeledField(
@@ -1339,10 +1357,9 @@ class CustomResourceBeneficiaryCardState
                             .deliverIntervention.quantityAdministratedLabel,
                       ),
                       child: DigitNumericFormInput(
-                        isDisabled: false,
-                        minValue: 1,
+                        isDisabled: true,
                         step: 1,
-                        initialValue: "1",
+                        initialValue: doseQuantity,
                         onChange: (value) {
                           widget.form
                               .control(
