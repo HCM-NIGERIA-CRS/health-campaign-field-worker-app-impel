@@ -29,6 +29,7 @@ import 'package:registration_delivery/utils/utils.dart';
 import 'package:registration_delivery/models/entities/additional_fields_type.dart';
 import 'package:registration_delivery/models/entities/status.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
+import 'package:registration_delivery/widgets/beneficiary/resource_beneficiary_card.dart';
 import 'package:registration_delivery/widgets/component_wrapper/product_variant_bloc_wrapper.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 
@@ -205,7 +206,7 @@ class CustomDeliverInterventionPageState
           ),
         );
 
-    await handleSubmit(context, deliverInterventionState);
+    await handleSubmit(context, deliverInterventionState, selectedIndividual);
   }
 
   void handleLocationState(
@@ -242,9 +243,9 @@ class CustomDeliverInterventionPageState
   }
 
   Future<void> handleSubmit(
-    BuildContext context,
-    DeliverInterventionState deliverState,
-  ) async {
+      BuildContext context,
+      DeliverInterventionState deliverState,
+      IndividualModel? individual) async {
     ProjectTypeModel? projectTypeModel = RegistrationDeliverySingleton()
         .selectedProject
         ?.additionalDetails
@@ -272,6 +273,7 @@ class CustomDeliverInterventionPageState
       );
       context.router.popAndPush(
         CustomHouseholdAcknowledgementRoute(
+          individualModel: individual,
           enableViewHousehold: true,
           isAddChild: true,
           eligibilityAssessmentType: widget.eligibilityAssessmentType,
@@ -774,6 +776,8 @@ class CustomDeliverInterventionPageState
                                                       eligibilityAssessmentType:
                                                           widget
                                                               .eligibilityAssessmentType,
+                                                      productVariants:
+                                                          productVariants,
                                                       cardIndex: _controllers
                                                           .indexOf(e),
                                                       totalItems:
@@ -1268,6 +1272,7 @@ class CustomResourceBeneficiaryCard extends LocalizedStatefulWidget {
   final FormGroup form;
   final int totalItems;
   final EligibilityAssessmentType eligibilityAssessmentType;
+  final List<DeliveryProductVariant>? productVariants;
 
   const CustomResourceBeneficiaryCard({
     super.key,
@@ -1277,6 +1282,7 @@ class CustomResourceBeneficiaryCard extends LocalizedStatefulWidget {
     required this.form,
     required this.totalItems,
     required this.eligibilityAssessmentType,
+    this.productVariants,
   });
 
   @override
@@ -1298,6 +1304,20 @@ class CustomResourceBeneficiaryCardState
               final selectedVariant = widget.form
                   .control('resourceDelivered.${widget.cardIndex}')
                   .value as ProductVariantModel?;
+
+              final doseQuantity = widget.productVariants
+                      ?.firstWhereOrNull(
+                          (e) => e.productVariantId == selectedVariant?.id)
+                      ?.quantity
+                      .toString() ??
+                  "1";
+
+              // set the quantity in the form for the selected variant
+
+              widget.form
+                  .control('quantityDistributed.${widget.cardIndex}')
+                  .value = int.tryParse(doseQuantity) ?? 1;
+
               return Column(
                 children: [
                   LabeledField(
@@ -1339,10 +1359,9 @@ class CustomResourceBeneficiaryCardState
                             .deliverIntervention.quantityAdministratedLabel,
                       ),
                       child: DigitNumericFormInput(
-                        isDisabled: false,
-                        minValue: 1,
+                        isDisabled: true,
                         step: 1,
-                        initialValue: "1",
+                        initialValue: doseQuantity,
                         onChange: (value) {
                           widget.form
                               .control(

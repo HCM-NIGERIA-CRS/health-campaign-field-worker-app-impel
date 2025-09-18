@@ -94,20 +94,20 @@ class CustomMemberCard extends StatelessWidget {
         checkBeneficiaryInEligibleSMC(tasks, context.selectedCycle);
 
     final theme = Theme.of(context);
-    if (isHead &&
-        !isDelivered &&
-        (context.projectTypeCode == ProjectTypes.oncho.toValue())) {
-      return Align(
-        alignment: Alignment.centerLeft,
-        child: DigitIconButton(
-          icon: Icons.info_rounded,
-          iconSize: 20,
-          iconText: localizations.translate(Status.notVisited.toValue()),
-          iconTextColor: theme.colorScheme.error,
-          iconColor: theme.colorScheme.error,
-        ),
-      );
-    }
+    // if (isHead &&
+    //     !isDelivered &&
+    //     (context.projectTypeCode == ProjectTypes.oncho.toValue())) {
+    //   return Align(
+    //     alignment: Alignment.centerLeft,
+    //     child: DigitIconButton(
+    //       icon: Icons.info_rounded,
+    //       iconSize: 20,
+    //       iconText: localizations.translate(Status.notVisited.toValue()),
+    //       iconTextColor: theme.colorScheme.error,
+    //       iconColor: theme.colorScheme.error,
+    //     ),
+    //   );
+    // }
     if ((isDelivered ||
         isBeneficiaryReferredSMC ||
         isBeneficiaryInEligibleSMC)) {
@@ -263,8 +263,11 @@ class CustomMemberCard extends StatelessWidget {
               child: Text(
                 localizations.translate(
                   isBeneficiaryAbsent
-                      ? i18_local
-                          .householdOverView.householdOverViewRevisitAbsentText
+                      ? isHead
+                          ? i18_local.householdOverView
+                              .householdOverViewRevisitAbsentHeadText
+                          : i18_local.householdOverView
+                              .householdOverViewRevisitAbsentText
                       : smcFlow
                           ? i18_local.householdOverView
                               .householdOverViewSMCAssessmentActionText
@@ -285,7 +288,10 @@ class CustomMemberCard extends StatelessWidget {
               if (smcFlow && polioFlow) {
                 context.router.push(EligibilityChecklistViewRoute(
                   eligibilityAssessmentType: EligibilityAssessmentType.smc,
+                  projectBeneficiaryClientReferenceId:
+                      projectBeneficiaryClientReferenceId,
                   individual: individual,
+                  showBackButton: false,
                 ));
                 //route to eligibility checklist page first
               } else if (polioFlow || onchoFlow) {
@@ -324,73 +330,65 @@ class CustomMemberCard extends StatelessWidget {
                     )
                     .lastOrNull;
                 if (redosePendingStatus) {
-                  final spaq1 = context.spaq1;
-                  final spaq2 = context.spaq2;
+                  // final spaq1 = context.spaq1;
+                  // final spaq2 = context.spaq2;
 
-                  int doseCount = double.parse(
-                    successfulTask?.resources?.first.quantity ?? "0",
-                  ).round();
+                  // int doseCount = double.parse(
+                  //   successfulTask?.resources?.first.quantity ?? "0",
+                  // ).round();
 
-                  final value = variant
-                      .firstWhere(
-                        (element) =>
-                            element.id ==
-                            successfulTask!.resources!.first.productVariantId,
-                      )
-                      .sku;
+                  // final value = variant
+                  //     .firstWhere(
+                  //       (element) =>
+                  //           element.id ==
+                  //           successfulTask!.resources!.first.productVariantId,
+                  //     )
+                  //     .sku;
 
-                  if (successfulTask != null &&
-                      value != null &&
-                      ((value.contains(
-                                Constants.spaq1,
-                              ) &&
-                              spaq1 > 0) ||
-                          (value.contains(
-                                Constants.spaq2,
-                              ) &&
-                              spaq2 > 0))) {
+                  if (successfulTask != null) {
                     context.router.push(
                       RecordRedoseRoute(
                         tasks: [successfulTask],
                       ),
                     );
-                  } else {
-                    DigitDialog.show(
-                      context,
-                      options: DigitDialogOptions(
-                        titleText: localizations.translate(
-                          i18_local.beneficiaryDetails.insufficientStockHeading,
-                        ),
-                        titleIcon: Icon(
-                          Icons.warning,
-                          color: DigitTheme.instance.colorScheme.error,
-                        ),
-                        contentText: (value == Constants.spaq1)
-                            ? "${localizations.translate(
-                                i18_local.beneficiaryDetails
-                                    .insufficientAZTStockMessageDelivery,
-                              )} \n ${localizations.translate(
-                                i18_local.beneficiaryDetails.spaq1DoseUnit,
-                              )}"
-                            : "${localizations.translate(
-                                i18_local.beneficiaryDetails
-                                    .insufficientAZTStockMessageDelivery,
-                              )} \n ${localizations.translate(
-                                i18_local.beneficiaryDetails.spaq2DoseUnit,
-                              )}",
-                        primaryAction: DigitDialogActions(
-                          label: localizations.translate(i18_local
-                              .beneficiaryDetails.backToHouseholdDetails),
-                          action: (ctx) {
-                            Navigator.of(
-                              ctx,
-                              rootNavigator: true,
-                            ).pop();
-                          },
-                        ),
-                      ),
-                    );
                   }
+                  // else {
+                  //   DigitDialog.show(
+                  //     context,
+                  //     options: DigitDialogOptions(
+                  //       titleText: localizations.translate(
+                  //         i18_local.beneficiaryDetails.insufficientStockHeading,
+                  //       ),
+                  //       titleIcon: Icon(
+                  //         Icons.warning,
+                  //         color: DigitTheme.instance.colorScheme.error,
+                  //       ),
+                  //       contentText: (value == Constants.spaq1)
+                  //           ? "${localizations.translate(
+                  //               i18_local.beneficiaryDetails
+                  //                   .insufficientAZTStockMessageDelivery,
+                  //             )} \n ${localizations.translate(
+                  //               i18_local.beneficiaryDetails.spaq1DoseUnit,
+                  //             )}"
+                  //           : "${localizations.translate(
+                  //               i18_local.beneficiaryDetails
+                  //                   .insufficientAZTStockMessageDelivery,
+                  //             )} \n ${localizations.translate(
+                  //               i18_local.beneficiaryDetails.spaq2DoseUnit,
+                  //             )}",
+                  //       primaryAction: DigitDialogActions(
+                  //         label: localizations.translate(i18_local
+                  //             .beneficiaryDetails.backToHouseholdDetails),
+                  //         action: (ctx) {
+                  //           Navigator.of(
+                  //             ctx,
+                  //             rootNavigator: true,
+                  //           ).pop();
+                  //         },
+                  //       ),
+                  //     ),
+                  //   );
+                  // }
                 }
               }
             },

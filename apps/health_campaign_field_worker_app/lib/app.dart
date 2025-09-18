@@ -468,7 +468,7 @@ class MainApplicationState extends State<MainApplication>
                         ),
                         BlocProvider(
                           create: (context) => ProductVariantBloc(
-                            const ProductVariantEmptyState(),
+                            const ProductVariantLoadingState(),
                             context.repository<ProductVariantModel,
                                 ProductVariantSearchModel>(),
                             context.repository<ProjectResourceModel,

@@ -492,7 +492,7 @@ class CustomTransitPostRecordVaccinationPageState
             "${localizations.translate(i18.transitPost.doseLabel)} $count",
             cellKey: "Dose$count"),
       );
-      tableData.add(DigitTableData(resource.productVariantId,
+      tableData.add(DigitTableData(resource.name ?? resource.productVariantId,
           cellKey: resource.name ?? resource.productVariantId));
 
       finalTableRow.add(DigitTableRow(tableRow: tableData));

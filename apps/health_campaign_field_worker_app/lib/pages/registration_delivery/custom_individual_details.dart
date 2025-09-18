@@ -687,7 +687,8 @@ class CustomIndividualDetailsPageState
                                                   false,
                                                   isAddIndividual,
                                                 );
-                                                context.router.maybePop();
+                                                //context.router.maybePop();
+                                                Navigator.of(context).pop();
                                               }
                                             },
                                             addMember: (

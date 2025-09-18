@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:collection/collection.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:digit_components/widgets/atoms/digit_reactive_dropdown.dart';
@@ -6,6 +8,7 @@ import 'package:digit_ui_components/widgets/molecules/show_pop_up.dart';
 import 'package:registration_delivery/blocs/app_localization.dart';
 import 'package:registration_delivery/blocs/search_households/search_households.dart';
 import 'package:registration_delivery/blocs/unique_id/unique_id.dart';
+import 'package:registration_delivery/models/entities/project_beneficiary.dart';
 import 'package:registration_delivery/widgets/beneficiary/id_count_alert.dart';
 // import 'package:digit_components/utils/date_utils.dart' as digits;
 import '../../blocs/app_initialization/app_initialization.dart';
@@ -198,11 +201,23 @@ class CustomIndividualDetailsPolioSMCPageState
 
                       if (householdMemberWrapper != null) {
                         if (individualCaptured != null) {
+                          // info get the relevant project beneficiary here
+                          final projectBeneficiaryAddMember =
+                              householdMemberWrapper
+                                  .projectBeneficiaries
+                                  ?.where((e) =>
+                                      e.beneficiaryClientReferenceId ==
+                                      individualCaptured!.clientReferenceId)
+                                  .toSet();
                           // assumption add individual here is used for creating child,
                           // if invalid age send to overview no checklist
 
-                          routeBasedOnFlow(individualCaptured!,
-                              householdMemberWrapper!, router, context);
+                          routeBasedOnFlow(
+                              individualCaptured!,
+                              projectBeneficiaryAddMember?.first,
+                              householdMemberWrapper!,
+                              router,
+                              context);
                         } else {
                           (router.parent() as StackRouter).maybePop();
                           router.popUntil((route) =>
@@ -593,7 +608,9 @@ class CustomIndividualDetailsPolioSMCPageState
                                                   false,
                                                   isAddIndividual,
                                                 );
-                                                context.router.maybePop();
+
+                                                //context.router.maybePop();
+                                                Navigator.of(context).pop();
                                               }
                                             },
                                             addMember: (
@@ -926,40 +943,109 @@ class CustomIndividualDetailsPolioSMCPageState
                                           },
                                         ),
                                         // enable only when projectType oncho
-                                        Offstage(
-                                          offstage: !hideFieldsBasedOnAge,
-                                          child: Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                              kPadding / 2,
-                                              0,
-                                              kPadding / 2,
-                                              0,
-                                            ),
-                                            child: DigitTextFormField(
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              isRequired: true,
-                                              formControlName: _heightKey,
-                                              inputFormatters: [
-                                                FilteringTextInputFormatter
-                                                    .allow(
-                                                  RegExp("[0-9]"),
-                                                ),
-                                              ],
-                                              label: localizations.translate(
-                                                i18.individualDetails
-                                                    .heightLabelText,
+                                        ReactiveFormConsumer(
+                                            builder: (context, form, child) {
+                                          final dob = form
+                                              .control(_dobKey)
+                                              .value as DateTime?;
+                                          final DigitDOBAgeConvertor age;
+
+                                          if (dob != null) {
+                                            age = DigitDateUtils.calculateAge(
+                                                dob);
+
+                                            smcFlow =
+                                                local_utils.isSMCFlow(age);
+                                            polioFlow =
+                                                local_utils.isPolioFlow(age);
+                                            onchoFlow =
+                                                local_utils.isOnchoFlow(age);
+
+                                            if (context.projectTypeCode ==
+                                                    ProjectTypes.oncho
+                                                        .toValue() &&
+                                                onchoFlow) {
+                                              hideFieldsBasedOnAge = true;
+                                              form
+                                                  .control(_heightKey)
+                                                  .setValidators(
+                                                      [Validators.required],
+                                                      autoValidate: true);
+
+                                              form
+                                                  .control(_disabilityKey)
+                                                  .setValidators(
+                                                      [Validators.required],
+                                                      autoValidate: true);
+                                            } else {
+                                              hideFieldsBasedOnAge = false;
+                                              form.control(_heightKey).value =
+                                                  null;
+                                              form
+                                                  .control(_heightKey)
+                                                  .setValidators([],
+                                                      autoValidate: true);
+                                              form
+                                                  .control(_disabilityKey)
+                                                  .value = null;
+
+                                              form
+                                                  .control(_disabilityKey)
+                                                  .setValidators([],
+                                                      autoValidate: true);
+                                            }
+                                          } else {
+                                            // Default: if dob is null, just show the field
+                                            hideFieldsBasedOnAge = true;
+                                            form
+                                                .control(_heightKey)
+                                                .setValidators(
+                                                    [Validators.required],
+                                                    autoValidate: true);
+
+                                            form
+                                                .control(_disabilityKey)
+                                                .setValidators(
+                                                    [Validators.required],
+                                                    autoValidate: true);
+                                          }
+
+                                          return Offstage(
+                                            offstage: !hideFieldsBasedOnAge,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                kPadding / 2,
+                                                0,
+                                                kPadding / 2,
+                                                0,
                                               ),
-                                              maxLength: 3,
-                                              validationMessages: {
-                                                'required': (object) =>
-                                                    localizations.translate(i18
-                                                        .common
-                                                        .corecommonRequired),
-                                              },
+                                              child: DigitTextFormField(
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                isRequired: true,
+                                                formControlName: _heightKey,
+                                                inputFormatters: [
+                                                  FilteringTextInputFormatter
+                                                      .allow(
+                                                    RegExp("[0-9]"),
+                                                  ),
+                                                ],
+                                                label: localizations.translate(
+                                                  i18.individualDetails
+                                                      .heightLabelText,
+                                                ),
+                                                maxLength: 3,
+                                                validationMessages: {
+                                                  'required': (object) =>
+                                                      localizations.translate(i18
+                                                          .common
+                                                          .corecommonRequired),
+                                                },
+                                              ),
                                             ),
-                                          ),
-                                        ),
+                                          );
+                                        }),
                                         individualDetailsShowcaseData.mobile
                                             .buildWith(
                                           child: Offstage(
@@ -1008,41 +1094,110 @@ class CustomIndividualDetailsPolioSMCPageState
                                             ),
                                           ),
                                         ),
-                                        Offstage(
-                                          offstage: !hideFieldsBasedOnAge,
-                                          child: Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                              kPadding / 2,
-                                              0,
-                                              kPadding / 2,
-                                              0,
-                                            ),
-                                            child:
-                                                DigitReactiveDropdown<String>(
-                                              label: localizations.translate(
-                                                i18_local.deliverIntervention
-                                                    .disabilityLabel,
+
+                                        ReactiveFormConsumer(
+                                            builder: (context, form, child) {
+                                          final dob = form
+                                              .control(_dobKey)
+                                              .value as DateTime?;
+                                          final DigitDOBAgeConvertor age;
+
+                                          if (dob != null) {
+                                            age = DigitDateUtils.calculateAge(
+                                                dob);
+
+                                            smcFlow =
+                                                local_utils.isSMCFlow(age);
+                                            polioFlow =
+                                                local_utils.isPolioFlow(age);
+                                            onchoFlow =
+                                                local_utils.isOnchoFlow(age);
+
+                                            if (context.projectTypeCode ==
+                                                    ProjectTypes.oncho
+                                                        .toValue() &&
+                                                onchoFlow) {
+                                              hideFieldsBasedOnAge = true;
+                                              form
+                                                  .control(_heightKey)
+                                                  .setValidators(
+                                                      [Validators.required],
+                                                      autoValidate: true);
+
+                                              form
+                                                  .control(_disabilityKey)
+                                                  .setValidators(
+                                                      [Validators.required],
+                                                      autoValidate: true);
+                                            } else {
+                                              hideFieldsBasedOnAge = false;
+                                              form.control(_heightKey).value =
+                                                  null;
+                                              form
+                                                  .control(_heightKey)
+                                                  .setValidators([],
+                                                      autoValidate: true);
+                                              form
+                                                  .control(_disabilityKey)
+                                                  .value = null;
+                                              form
+                                                  .control(_disabilityKey)
+                                                  .setValidators([],
+                                                      autoValidate: true);
+                                            }
+                                          } else {
+                                            // Default: if dob is null, just show the field
+                                            hideFieldsBasedOnAge = true;
+                                            form
+                                                .control(_heightKey)
+                                                .setValidators(
+                                                    [Validators.required],
+                                                    autoValidate: true);
+
+                                            form
+                                                .control(_disabilityKey)
+                                                .setValidators(
+                                                    [Validators.required],
+                                                    autoValidate: true);
+                                          }
+
+                                          return Offstage(
+                                            offstage: !hideFieldsBasedOnAge,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                kPadding / 2,
+                                                0,
+                                                kPadding / 2,
+                                                0,
                                               ),
-                                              isRequired: true,
-                                              valueMapper: (value) =>
-                                                  localizations
-                                                      .translate(value),
-                                              menuItems: const ["YES", "NO"],
-                                              formControlName: _disabilityKey,
-                                              onChanged: (value) {
-                                                form
-                                                    .control(_disabilityKey)
-                                                    .value = value;
-                                              },
-                                              validationMessages: {
-                                                'required': (object) =>
-                                                    localizations.translate(i18
-                                                        .common
-                                                        .corecommonRequired),
-                                              },
+                                              child:
+                                                  DigitReactiveDropdown<String>(
+                                                label: localizations.translate(
+                                                  i18_local.deliverIntervention
+                                                      .disabilityLabel,
+                                                ),
+                                                isRequired: true,
+                                                valueMapper: (value) =>
+                                                    localizations
+                                                        .translate(value),
+                                                menuItems: const ["YES", "NO"],
+                                                formControlName: _disabilityKey,
+                                                onChanged: (value) {
+                                                  form
+                                                      .control(_disabilityKey)
+                                                      .value = value;
+                                                },
+                                                validationMessages: {
+                                                  'required': (object) =>
+                                                      localizations.translate(i18
+                                                          .common
+                                                          .corecommonRequired),
+                                                },
+                                              ),
                                             ),
-                                          ),
-                                        ),
+                                          );
+                                        }),
                                       ]),
                                 ])),
                           ],
@@ -1329,7 +1484,14 @@ class CustomIndividualDetailsPolioSMCPageState
       _genderKey: FormControl<String>(
           value: getGenderOptions(individual),
           validators: [Validators.required]),
-      _heightKey: FormControl<String>(),
+      _heightKey: FormControl<String>(
+          value: individual?.additionalFields?.fields
+                  .firstWhere(
+                    (e) => e.key == "height",
+                    orElse: () => const AdditionalField("height", ""),
+                  )
+                  .value ??
+              ""),
       _mobileNumberKey:
           FormControl<String>(value: individual?.mobileNumber, validators: [
         Validators.delegate((validator) =>
@@ -1337,7 +1499,18 @@ class CustomIndividualDetailsPolioSMCPageState
         Validators.minLength(11),
         Validators.maxLength(11),
       ]),
-      _disabilityKey: FormControl<String>(),
+      _disabilityKey: FormControl<String>(
+        value: ["YES", "NO"].firstWhereOrNull(
+          (element) =>
+              element.toLowerCase() ==
+              (individual?.additionalFields?.fields
+                      ?.firstWhereOrNull((e) => e.key == "disability")
+                      ?.value
+                      ?.toString()
+                      .toLowerCase() ??
+                  "no"),
+        ),
+      ),
     });
   }
 
@@ -1574,6 +1747,7 @@ class CustomIndividualDetailsPolioSMCPageState
 
   void routeBasedOnFlow(
       IndividualModel individual,
+      ProjectBeneficiaryModel? projectBeneficiaryAddMember,
       HouseholdMemberWrapper wrapper,
       StackRouter router,
       BuildContext context) {
@@ -1586,8 +1760,12 @@ class CustomIndividualDetailsPolioSMCPageState
 
       router.push(BeneficiaryWrapperRoute(wrapper: wrapper, children: [
         EligibilityChecklistViewRoute(
-            eligibilityAssessmentType: EligibilityAssessmentType.smc,
-            individual: individual)
+          eligibilityAssessmentType: EligibilityAssessmentType.smc,
+          projectBeneficiaryClientReferenceId:
+              projectBeneficiaryAddMember?.clientReferenceId,
+          individual: individual,
+          showBackButton: false,
+        )
       ]));
     } else if (polioFlow || onchoFlow) {
       // route to normal beneficiary details page first
