@@ -231,6 +231,42 @@ class CustomBeneficiaryDetailsPageState
                                                               .selectedIndividual,
                                                         ),
                                                       );
+
+                                                      final currentCycle =
+                                                          deliverState.cycle >=
+                                                                  0
+                                                              ? deliverState
+                                                                  .cycle
+                                                              : 0;
+
+                                                      // Calculate the current dose. If deliverInterventionState.dose is negative, set it to 0.
+                                                      final currentDose =
+                                                          deliverState.dose >= 0
+                                                              ? deliverState
+                                                                  .dose
+                                                              : 0;
+
+                                                      final items =
+                                                          RegistrationDeliverySingleton()
+                                                                  .projectType!
+                                                                  .cycles?[
+                                                                      currentCycle -
+                                                                          1]
+                                                                  .deliveries?[
+                                                              currentDose - 1];
+
+                                                      DeliveryDoseCriteria?
+                                                          deliveryCriteria =
+                                                          getProductVariant(
+                                                              items,
+                                                              state.selectedIndividual ??
+                                                                  widget
+                                                                      .individualSelected,
+                                                              state
+                                                                  .householdMemberWrapper
+                                                                  .household,
+                                                              context)["criteria"];
+
                                                       showCustomPopup(
                                                         context: context,
                                                         builder: (popUpContext) =>
@@ -258,9 +294,16 @@ class CustomBeneficiaryDetailsPageState
                                                                 ],
                                                                 actions: [
                                                                   DigitButton(
-                                                                      label: localizations.translate(i18
-                                                                          .beneficiaryDetails
-                                                                          .ctaProceed),
+                                                                      label: localizations.translate((deliveryCriteria !=
+                                                                                  null &&
+                                                                              deliveryCriteria.condition !=
+                                                                                  null)
+                                                                          ? i18
+                                                                              .beneficiaryDetails
+                                                                              .ctaProceed
+                                                                          : i18
+                                                                              .common
+                                                                              .coreCommonGoback),
                                                                       onPressed:
                                                                           () {
                                                                         Navigator
@@ -312,6 +355,11 @@ class CustomBeneficiaryDetailsPageState
                                                                             CustomDeliverInterventionRoute(
                                                                                 eligibilityAssessmentType: widget.eligibilityAssessmentType,
                                                                                 selectedIndividual: widget.individualSelected),
+                                                                          );
+                                                                        } else {
+                                                                          router
+                                                                              .push(
+                                                                            CustomHouseholdOverviewRoute(),
                                                                           );
                                                                         }
                                                                       },
