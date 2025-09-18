@@ -130,7 +130,8 @@ class CustomDoseAdministeredPageState
       ];
     }
 
-    getProductVariants(DeliverInterventionState deliveryInterventionState,
+    List<DeliveryProductVariant>? getProductVariants(
+        DeliverInterventionState deliveryInterventionState,
         HouseholdOverviewState state) {
       var result = (fetchProductVariant(
           RegistrationDeliverySingleton()
@@ -142,8 +143,8 @@ class CustomDoseAdministeredPageState
           state.selectedIndividual ?? widget.selectedIndividual,
           state.householdMemberWrapper.household,
           context: context));
-
-      return result;
+      DeliveryDoseCriteria? criteria = result["criteria"];
+      return criteria?.productVariants;
     }
 
     return ProductVariantBlocWrapper(
@@ -234,8 +235,7 @@ class CustomDoseAdministeredPageState
                                           resources: getProductVariants(
                                             deliveryInterventionState,
                                             overViewBloc,
-                                          )["criteria"]
-                                              ?.productVariants
+                                          )
                                               ?.map((variant) =>
                                                   TaskResourceModel(
                                                     clientReferenceId:

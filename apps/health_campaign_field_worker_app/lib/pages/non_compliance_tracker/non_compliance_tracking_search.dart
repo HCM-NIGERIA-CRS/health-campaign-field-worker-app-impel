@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:digit_components/widgets/digit_info_card.dart';
+import 'package:digit_data_model/models/entities/beneficiary_type.dart';
 import 'package:digit_data_model/models/entities/household_type.dart';
 import 'package:digit_data_model/models/entities/user_action.dart';
 import 'package:digit_ui_components/digit_components.dart';
@@ -12,11 +13,15 @@ import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:registration_delivery/blocs/search_households/individual_global_search.dart';
+import 'package:registration_delivery/blocs/search_households/search_households.dart';
 import 'package:registration_delivery/blocs/unique_id/unique_id.dart';
+import 'package:registration_delivery/utils/global_search_parameters.dart';
 import 'package:registration_delivery/widgets/beneficiary/id_count_alert.dart';
 import '../../blocs/non_compliance/non_compliance_all_search.dart';
 import '../../blocs/non_compliance/non_compliance_search.dart';
 import '../../blocs/non_compliance/non_compliance_tracking.dart';
+import '../../blocs/search/non_compliance_search.dart';
 import '../../utils/constants.dart';
 import '../../utils/utils.dart';
 import '../../widgets/custom_back_navigation.dart';
@@ -61,11 +66,7 @@ class _NonComplianceTrackingSearchPage
   int limit = 10;
   RegExp pattern = RegExp(r'^\d{9}$');
 
-  bool _isProgressDialogVisible = false;
-  final ProgressDialog _progressDialog = ProgressDialog();
-
-  double lat = 0.0;
-  double long = 0.0;
+  Coordinate? location;
   List<String> selectedFilters = [];
 
   searchHouseholdSMCBloc.SearchHouseholdsSMCState searchHouseholdsSMCState =
@@ -86,7 +87,7 @@ class _NonComplianceTrackingSearchPage
     blocWrapper = context.read<SearchBlocWrapper>();
 
     context
-        .read<IndividualGlobalSearchSMCBloc>()
+        .read<NonComplianceIndividualSearchBloc>()
         .add(const searchHouseholdSMCBloc.SearchHouseholdsSMCEvent.clear());
     super.initState();
   }
@@ -102,122 +103,124 @@ class _NonComplianceTrackingSearchPage
     final theme = Theme.of(context);
     final textTheme = theme.digitTextTheme(context);
 
-    return KeyboardVisibilityBuilder(
-        builder: (context, isKeyboardVisible) => Scaffold(
-            body: NotificationListener<ScrollNotification>(
-              onNotification: (scrollNotification) {
-                if (scrollNotification is ScrollUpdateNotification) {
-                  final metrics = scrollNotification.metrics;
-                  if (metrics.atEdge && metrics.pixels != 0) {
-                    // triggerGlobalSearchEvent(isPagination: true);
-                  }
-                }
-                return true;
-              },
-              child: BlocBuilder<CustomSearchHouseholdsBloc,
-                  CustomSearchHouseholdsState>(
-                builder: (context, searchHouseholdsState) {
-                  return ScrollableContent(
-                    header: const Column(children: [
-                      CustomBackNavigationHelpHeaderWidget(
-                        showHelp: false,
-                      ),
-                    ]),
-                    slivers: [
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.all(spacer2),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(spacer2),
-                                child: Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    localizations.translate(i18_local
-                                        .common.nonComplianceTrackingLabel),
-                                    style: textTheme.headingXl.copyWith(
-                                      color: theme.colorTheme.text.primary,
-                                    ),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                ),
-                              ),
-                              Row(
+    return BlocBuilder<LocationBloc, LocationState>(
+      builder: (context, locationState) {
+        location = Coordinate(locationState.latitude, locationState.longitude);
+        return BlocBuilder<IndividualGlobalSearchBloc, SearchHouseholdsState>(
+          builder: (context, searchHouseholdsState) {
+            return KeyboardVisibilityBuilder(
+                builder: (context, isKeyboardVisible) => Scaffold(
+                    body: NotificationListener<ScrollNotification>(
+                      onNotification: (scrollNotification) {
+                        if (scrollNotification is ScrollUpdateNotification) {
+                          final metrics = scrollNotification.metrics;
+                          if (metrics.atEdge && metrics.pixels != 0) {
+                            // triggerGlobalSearchEvent(isPagination: true);
+                          }
+                        }
+                        return true;
+                      },
+                      child: ScrollableContent(
+                        header: const Column(children: [
+                          CustomBackNavigationHelpHeaderWidget(
+                            showHelp: false,
+                          ),
+                        ]),
+                        slivers: [
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.all(spacer2),
+                              child: Column(
                                 children: [
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(spacer2),
-                                        child: DigitSwitch(
-                                          value: isChildAbsentEnabled,
-                                          onChanged: (value) {
-                                            searchController.clear();
-                                            context
-                                                .read<
-                                                    IndividualGlobalSearchSMCBloc>()
-                                                .add(const searchHouseholdSMCBloc
-                                                    .SearchHouseholdsSMCEvent.clear());
-                                            setState(() {
-                                              isChildAbsentEnabled = value;
-
-                                              isHouseNonCompliant = false;
-                                              searchController.clear();
-                                              blocWrapper.clearEvent();
-                                            });
-
-                                            if (isChildAbsentEnabled) {
-                                              searchAbsentChild();
-                                            }
-                                          },
-                                        ),
-                                      ),
-                                      Text(
+                                  Padding(
+                                    padding: const EdgeInsets.all(spacer2),
+                                    child: Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(
                                         localizations.translate(i18_local
-                                            .individualDetails
-                                            .absentSearchTextLabel),
+                                            .common.nonComplianceTrackingLabel),
+                                        style: textTheme.headingXl.copyWith(
+                                          color: theme.colorTheme.text.primary,
+                                        ),
+                                        textAlign: TextAlign.left,
                                       ),
-                                    ],
+                                    ),
                                   ),
                                   Row(
                                     children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(spacer2),
-                                        child: DigitSwitch(
-                                          value: isHouseNonCompliant,
-                                          onChanged: (value) {
-                                            searchController.clear();
-                                            context
-                                                .read<
-                                                    IndividualGlobalSearchSMCBloc>()
-                                                .add(const searchHouseholdSMCBloc
-                                                    .SearchHouseholdsSMCEvent.clear());
-                                            setState(() {
-                                              isHouseNonCompliant = value;
-                                              isChildAbsentEnabled = false;
+                                      Row(
+                                        children: [
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.all(spacer2),
+                                            child: DigitSwitch(
+                                              value: isChildAbsentEnabled,
+                                              onChanged: (value) {
+                                                searchController.clear();
+                                                context
+                                                    .read<
+                                                        NonComplianceIndividualSearchBloc>()
+                                                    .add(const searchHouseholdSMCBloc
+                                                        .SearchHouseholdsSMCEvent.clear());
+                                                setState(() {
+                                                  isChildAbsentEnabled = value;
 
-                                              searchController.clear();
-                                              blocWrapper.clearEvent();
-                                            });
+                                                  isHouseNonCompliant = false;
+                                                  searchController.clear();
+                                                  blocWrapper.clearEvent();
+                                                });
 
-                                            if (isHouseNonCompliant) {
-                                              searchNonCompliantHouse();
-                                            }
-                                          },
-                                        ),
+                                                if (isChildAbsentEnabled) {
+                                                  searchBeneficiary();
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                          Text(
+                                            localizations.translate(i18_local
+                                                .individualDetails
+                                                .absentSearchTextLabel),
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        localizations.translate(i18_local
-                                            .individualDetails
-                                            .nonCompliantHouseSearchTextLabel),
-                                      ),
+                                      Row(
+                                        children: [
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.all(spacer2),
+                                            child: DigitSwitch(
+                                              value: isHouseNonCompliant,
+                                              onChanged: (value) {
+                                                searchController.clear();
+                                                context
+                                                    .read<
+                                                        NonComplianceIndividualSearchBloc>()
+                                                    .add(const searchHouseholdSMCBloc
+                                                        .SearchHouseholdsSMCEvent.clear());
+                                                setState(() {
+                                                  isHouseNonCompliant = value;
+                                                  isChildAbsentEnabled = false;
+
+                                                  searchController.clear();
+                                                  blocWrapper.clearEvent();
+                                                });
+
+                                                if (isHouseNonCompliant) {
+                                                  searchBeneficiary();
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                          Text(
+                                            localizations.translate(i18_local
+                                                .individualDetails
+                                                .nonCompliantHouseSearchTextLabel),
+                                          ),
+                                        ],
+                                      )
                                     ],
-                                  )
-                                ],
-                              ),
-                              BlocBuilder<LocationBloc, LocationState>(
-                                builder: (context, locationState) {
-                                  return Column(
+                                  ),
+                                  Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -241,310 +244,176 @@ class _NonComplianceTrackingSearchPage
                                                     ),
                                           textCapitalization:
                                               TextCapitalization.words,
-                                          onChanged: (value) {},
+                                          onChanged: (value) {
+                                            context
+                                                .read<
+                                                    NonComplianceIndividualSearchBloc>()
+                                                .add(const searchHouseholdSMCBloc
+                                                    .SearchHouseholdsSMCEvent.clear());
+                                            setState(() {
+                                              blocWrapper.clearEvent();
+                                            });
+                                            if (value.trim().length >= 3) {
+                                              searchBeneficiaryName(
+                                                nameSearch: value.trim(),
+                                              );
+                                            }
+                                          },
                                         ),
                                       ),
-                                      selectedFilters.isNotEmpty
-                                          ? Align(
-                                              alignment: Alignment.topLeft,
-                                              child: SizedBox(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.06,
-                                                child: ListView.builder(
-                                                    shrinkWrap: true,
-                                                    scrollDirection:
-                                                        Axis.horizontal,
-                                                    itemCount:
-                                                        selectedFilters.length,
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      return Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(spacer1),
-                                                        child: DigitChip(
-                                                          label:
-                                                              '${localizations.translate(getStatus(selectedFilters[index]))}'
-                                                              ' (${searchHouseholdsState.totalResults})',
-                                                          capitalizedFirstLetter:
-                                                              false,
-                                                          onItemDelete: () {
-                                                            setState(() {
-                                                              selectedFilters.remove(
-                                                                  selectedFilters[
-                                                                      index]);
-                                                            });
-
-                                                            // triggerGlobalSearchEvent();
-                                                          },
-                                                        ),
-                                                      );
-                                                    }),
-                                              ),
-                                            )
-                                          : const Offstage(),
                                     ],
-                                  );
-                                },
-                              ),
-                              if (searchHouseholdsState.resultsNotFound &&
-                                  !searchHouseholdsState.loading)
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: spacer2,
-                                      top: spacer2,
-                                      right: spacer2),
-                                  child: InfoCard(
-                                    type: InfoType.info,
-                                    description:
-                                        (RegistrationDeliverySingleton()
-                                                    .householdType ==
-                                                HouseholdType.community)
-                                            ? localizations.translate(i18
-                                                .searchBeneficiary.clfInfoTitle)
-                                            : localizations.translate(
-                                                i18_local.searchBeneficiary
-                                                    .beneficiaryInfoDescription,
-                                              ),
-                                    title: localizations.translate(
-                                      i18.searchBeneficiary
-                                          .beneficiaryInfoTitle,
-                                    ),
                                   ),
-                                ),
-                            ],
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      if (searchHouseholdsState.loading)
-                        const SliverFillRemaining(
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
-                      BlocBuilder<NonComplianceAllSearchBloc,
-                          NonComplianceAllSearchState>(
-                        builder: (context, nonComplianceState) {
-                          if (nonComplianceState
-                              is NonComplianceAllSearchCompleteState) {
-                            Map<String, String?> statusMap = {};
-                            List<UserActionModel> actions =
-                                nonComplianceState.nonComplianceUserAction ??
-                                    [];
-                            for (var element in actions) {
-                              if (element.resourceTag != null) {
-                                statusMap[element.resourceTag!] = element
-                                        .additionalFields?.fields
-                                        .firstWhereOrNull(
-                                            (e) => e.key == Constants.status)
-                                        ?.value ??
-                                    null;
+                          BlocBuilder<NonComplianceAllSearchBloc,
+                              NonComplianceAllSearchState>(
+                            builder: (context, nonComplianceState) {
+                              if (nonComplianceState
+                                  is NonComplianceAllSearchCompleteState) {
+                                Map<String, String?> statusMap = {};
+                                List<UserActionModel> actions =
+                                    nonComplianceState
+                                            .nonComplianceUserAction ??
+                                        [];
+                                for (var element in actions) {
+                                  if (element.resourceTag != null) {
+                                    statusMap[element.resourceTag!] = element
+                                            .additionalFields?.fields
+                                            .firstWhereOrNull((e) =>
+                                                e.key == Constants.status)
+                                            ?.value ??
+                                        null;
+                                  }
+                                }
+
+                                return BlocBuilder<
+                                    NonComplianceIndividualSearchBloc,
+                                    searchHouseholdSMCBloc
+                                    .SearchHouseholdsSMCState>(
+                                  builder: (context, searchSMCState) {
+                                    if (searchSMCState.loading) {
+                                      return const SliverFillRemaining(
+                                        child: Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      );
+                                    } else {
+                                      if (isHouseNonCompliant &&
+                                          searchSMCState
+                                              .householdMembers.isEmpty) {
+                                        return SliverList(
+                                            delegate:
+                                                SliverChildBuilderDelegate(
+                                                    (ctx, index) {
+                                          return DigitInfoCard(
+                                            description:
+                                                localizations.translate(
+                                              i18_local.searchBeneficiary
+                                                  .beneficiaryInfoDescription,
+                                            ),
+                                            title: localizations.translate(
+                                              i18.searchBeneficiary
+                                                  .beneficiaryInfoTitle,
+                                            ),
+                                          );
+                                        }, childCount: 1));
+                                      }
+                                      return SliverList(
+                                        delegate: SliverChildBuilderDelegate(
+                                          (ctx, index) {
+                                            final i = searchSMCState
+                                                .householdMembers[index];
+                                            return Container(
+                                              margin: const EdgeInsets.only(
+                                                  bottom: kPadding),
+                                              child:
+                                                  NonComplianceBeneficiaryCard(
+                                                currentLocation: location,
+                                                householdMember: i,
+                                                status: statusMap[i
+                                                    .tasks
+                                                    ?.firstOrNull
+                                                    ?.clientReferenceId],
+                                                onOpenPressed: () async {
+                                                  var id = i.tasks?.firstOrNull
+                                                      ?.clientReferenceId;
+                                                  context
+                                                      .read<
+                                                          NonComplianceSearchBloc>()
+                                                      .add(
+                                                        NonComplianceSearchEvent
+                                                            .search(
+                                                                beneficiaryTag:
+                                                                    context
+                                                                        .loggedInUserUuid,
+                                                                resourceTag:
+                                                                    id),
+                                                      );
+                                                  context.router.push(
+                                                      NonComplianceUpdateStatusRoute(
+                                                    householdMember: i,
+                                                    userActionModel: actions
+                                                        .firstWhereOrNull(
+                                                      (element) =>
+                                                          element.resourceTag ==
+                                                          id,
+                                                    ),
+                                                  ));
+                                                },
+                                              ),
+                                            );
+                                          },
+                                          childCount: searchSMCState
+                                              .householdMembers.length,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                );
                               }
-                            }
-                            if (isChildAbsentEnabled) {
-                              BlocConsumer<
-                                  IndividualGlobalSearchSMCBloc,
-                                  searchHouseholdSMCBloc
-                                  .SearchHouseholdsSMCState>(
-                                listener: (context, searchSMCstate) {},
-                                builder: (context, searchSMCstate) {
-                                  if (searchSMCstate.loading) {
-                                    return const SliverFillRemaining(
-                                      child: Center(
-                                        child: CircularProgressIndicator(),
-                                      ),
-                                    );
-                                  } else {
-                                    if (isChildAbsentEnabled &&
-                                        searchSMCstate
-                                            .householdMembers.isEmpty) {
-                                      return SliverList(
-                                          delegate: SliverChildBuilderDelegate(
-                                              (ctx, index) {
-                                        return DigitInfoCard(
-                                          description: localizations.translate(
-                                            i18_local.searchBeneficiary
-                                                .beneficiaryInfoDescription,
-                                          ),
-                                          title: localizations.translate(
-                                            i18.searchBeneficiary
-                                                .beneficiaryInfoTitle,
-                                          ),
-                                        );
-                                      }, childCount: 1));
-                                    }
-                                    return SliverList(
-                                      delegate: SliverChildBuilderDelegate(
-                                        (ctx, index) {
-                                          final i = searchSMCstate
-                                              .householdMembers[index];
-                                          return Container(
-                                            margin: const EdgeInsets.only(
-                                                bottom: kPadding),
-                                            child: NonComplianceBeneficiaryCard(
-                                              currentLocation:
-                                                  Coordinate(lat, long),
-                                              householdMember: i,
-                                              onOpenPressed: () async {
-                                                String id = i.tasks?.firstOrNull
-                                                        ?.clientReferenceId ??
-                                                    "";
-                                                context
-                                                    .read<
-                                                        NonComplianceSearchBloc>()
-                                                    .add(
-                                                      NonComplianceSearchEvent
-                                                          .search(
-                                                        beneficiaryTag: context
-                                                            .loggedInUserUuid,
-                                                        resourceTag: id,
-                                                      ),
-                                                    );
-                                                context.router.push(
-                                                    NonComplianceUpdateStatusRoute(
-                                                  householdMember: i,
-                                                  userActionModel:
-                                                      actions.firstWhereOrNull(
-                                                    (element) =>
-                                                        element.resourceTag ==
-                                                        id,
-                                                  ),
-                                                ));
-                                              },
-                                            ),
-                                          );
-                                        },
-                                        childCount: searchSMCstate
-                                            .householdMembers.length,
-                                      ),
-                                    );
-                                  }
-                                },
-                              );
-                            }
-                            if (isHouseNonCompliant) {
-                              return BlocConsumer<
-                                  IndividualGlobalSearchSMCBloc,
-                                  searchHouseholdSMCBloc
-                                  .SearchHouseholdsSMCState>(
-                                listener: (context, searchSMCstate) {},
-                                builder: (context, searchSMCstate) {
-                                  if (searchSMCstate.loading) {
-                                    return const SliverFillRemaining(
-                                      child: Center(
-                                        child: CircularProgressIndicator(),
-                                      ),
-                                    );
-                                  } else {
-                                    if (isHouseNonCompliant &&
-                                        searchSMCstate
-                                            .householdMembers.isEmpty) {
-                                      return SliverList(
-                                          delegate: SliverChildBuilderDelegate(
-                                              (ctx, index) {
-                                        return DigitInfoCard(
-                                          description: localizations.translate(
-                                            i18_local.searchBeneficiary
-                                                .beneficiaryInfoDescription,
-                                          ),
-                                          title: localizations.translate(
-                                            i18.searchBeneficiary
-                                                .beneficiaryInfoTitle,
-                                          ),
-                                        );
-                                      }, childCount: 1));
-                                    }
-                                    return SliverList(
-                                      delegate: SliverChildBuilderDelegate(
-                                        (ctx, index) {
-                                          final i = searchSMCstate
-                                              .householdMembers[index];
-                                          return Container(
-                                            margin: const EdgeInsets.only(
-                                                bottom: kPadding),
-                                            child: NonComplianceBeneficiaryCard(
-                                              currentLocation:
-                                                  Coordinate(lat, long),
-                                              householdMember: i,
-                                              status: statusMap[i
-                                                  .tasks
-                                                  ?.firstOrNull
-                                                  ?.clientReferenceId],
-                                              onOpenPressed: () async {
-                                                var id = i.tasks?.firstOrNull
-                                                    ?.clientReferenceId;
-                                                context
-                                                    .read<
-                                                        NonComplianceSearchBloc>()
-                                                    .add(
-                                                      NonComplianceSearchEvent.search(
-                                                          beneficiaryTag: context
-                                                              .loggedInUserUuid,
-                                                          resourceTag: id),
-                                                    );
-                                                context.router.push(
-                                                    NonComplianceUpdateStatusRoute(
-                                                  householdMember: i,
-                                                  userActionModel:
-                                                      actions.firstWhereOrNull(
-                                                    (element) =>
-                                                        element.resourceTag ==
-                                                        id,
-                                                  ),
-                                                ));
-                                              },
-                                            ),
-                                          );
-                                        },
-                                        childCount: searchSMCstate
-                                            .householdMembers.length,
-                                      ),
-                                    );
-                                  }
-                                },
-                              );
-                            }
-                          }
-                          return SliverList(
-                              delegate:
-                                  SliverChildBuilderDelegate((ctx, index) {
-                            return const SizedBox.shrink();
-                          }, childCount: 0));
-                        },
+                              return SliverList(
+                                  delegate:
+                                      SliverChildBuilderDelegate((ctx, index) {
+                                return const SizedBox.shrink();
+                              }, childCount: 0));
+                            },
+                          ),
+                        ],
                       ),
-                    ],
-                  );
-                },
-              ),
-            ),
-            bottomNavigationBar: Offstage(
-              offstage: RegistrationDeliverySingleton().householdType ==
-                      HouseholdType.community &&
-                  searchController.text.length < 3,
-              child: BlocBuilder<CustomSearchHouseholdsBloc,
-                      CustomSearchHouseholdsState>(
-                  builder: (context, searchHouseholdsState) {
-                return DigitCard(
-                  margin: const EdgeInsets.only(top: spacer2),
-                  padding: const EdgeInsets.all(spacer2),
-                  children: [
-                    DigitButton(
-                      capitalizeLetters: false,
-                      label: localizations.translate(i18.common.coreCommonHome),
-                      mainAxisSize: MainAxisSize.max,
-                      type: DigitButtonType.primary,
-                      size: DigitButtonSize.large,
-                      isDisabled: false,
-                      onPressed: () {
-                        context.router.maybePop();
-                      },
                     ),
-                  ],
-                );
-              }),
-            )));
+                    bottomNavigationBar: Offstage(
+                      offstage: RegistrationDeliverySingleton().householdType ==
+                              HouseholdType.community &&
+                          searchController.text.length < 3,
+                      child: BlocBuilder<CustomSearchHouseholdsBloc,
+                              CustomSearchHouseholdsState>(
+                          builder: (context, searchHouseholdsState) {
+                        return DigitCard(
+                          margin: const EdgeInsets.only(top: spacer2),
+                          padding: const EdgeInsets.all(spacer2),
+                          children: [
+                            DigitButton(
+                              capitalizeLetters: false,
+                              label: localizations
+                                  .translate(i18.common.coreCommonHome),
+                              mainAxisSize: MainAxisSize.max,
+                              type: DigitButtonType.primary,
+                              size: DigitButtonSize.large,
+                              isDisabled: false,
+                              onPressed: () {
+                                context.router.maybePop();
+                              },
+                            ),
+                          ],
+                        );
+                      }),
+                    )));
+          },
+        );
+      },
+    );
   }
 
   getFilterIconNLabel() {
@@ -555,32 +424,6 @@ class _NonComplianceTrackingSearchPage
       'icon': Icons.filter_alt
     };
   }
-
-  // void searchByBeneficiaryId(
-  //     {bool isPagination = false, String beneficiaryId = ""}) {
-  //   final individualglobalsearchSMC =
-  //       context.read<IndividualGlobalSearchSMCBloc>();
-  //   individualglobalsearchSMC
-  //       .add(searchHouseholdSMCBloc.IndividualGlobalSearchSMCEvent(
-  //           globalSearchParams: GlobalSearchParametersSMC(
-  //     isProximityEnabled: isProximityEnabled,
-  //     latitude: lat,
-  //     longitude: long,
-  //     maxRadius: RegistrationDeliverySingleton().maxRadius,
-  //     nameSearch: "",
-  //     beneficiaryId: beneficiaryId,
-  //     isChildAbsentEnabled: false,
-  //     isHouseNonCompliant: isHouseNonCompliant,
-  //     filter: selectedFilters,
-  //     offset: isPagination
-  //         ? blocWrapper.individualGlobalSearchBloc.state.offset
-  //         : offset,
-  //     limit: isPagination
-  //         ? blocWrapper.individualGlobalSearchBloc.state.limit
-  //         : limit,
-  //     projectId: RegistrationDeliverySingleton().projectId!,
-  //   )));
-  // }
 
   bool isBeneficiaryIdValid(String value) {
     if (value.trim().length != Constants.beneficiaryIdLength) return false;
@@ -602,19 +445,20 @@ class _NonComplianceTrackingSearchPage
     return isValid;
   }
 
-  void searchAbsentChild({
+  void searchBeneficiary({
     bool isPagination = false,
+    String nameSearch = "",
   }) {
-    final individualglobalsearchSMC =
-        context.read<IndividualGlobalSearchSMCBloc>();
-    individualglobalsearchSMC
+    final individualGlobalSearchSMC =
+        context.read<NonComplianceIndividualSearchBloc>();
+    individualGlobalSearchSMC
         .add(searchHouseholdSMCBloc.IndividualGlobalSearchSMCEvent(
             globalSearchParams: GlobalSearchParametersSMC(
       isProximityEnabled: false,
-      latitude: lat,
-      longitude: long,
+      latitude: location?.latitude,
+      longitude: location?.longitude,
       maxRadius: RegistrationDeliverySingleton().maxRadius,
-      nameSearch: "",
+      nameSearch: nameSearch,
       beneficiaryId: "",
       isChildAbsentEnabled: isChildAbsentEnabled,
       isHouseNonCompliant: isHouseNonCompliant,
@@ -625,38 +469,56 @@ class _NonComplianceTrackingSearchPage
       limit: isPagination
           ? blocWrapper.individualGlobalSearchBloc.state.limit
           : limit,
-      // projectId: RegistrationDeliverySingleton().projectId!,
-    )));
-  }
-
-  void searchNonCompliantHouse({
-    bool isPagination = false,
-  }) {
-    final individualglobalsearchSMC =
-        context.read<IndividualGlobalSearchSMCBloc>();
-    individualglobalsearchSMC
-        .add(searchHouseholdSMCBloc.IndividualGlobalSearchSMCEvent(
-            globalSearchParams: GlobalSearchParametersSMC(
-      isProximityEnabled: false,
-      latitude: lat,
-      longitude: long,
-      maxRadius: RegistrationDeliverySingleton().maxRadius,
-      nameSearch: "",
-      beneficiaryId: "",
-      isChildAbsentEnabled: isChildAbsentEnabled,
-      isHouseNonCompliant: isHouseNonCompliant,
-      filter: selectedFilters,
-      offset: isPagination
-          ? blocWrapper.individualGlobalSearchBloc.state.offset
-          : offset,
-      limit: isPagination
-          ? blocWrapper.individualGlobalSearchBloc.state.limit
-          : limit,
-      // projectId: RegistrationDeliverySingleton().projectId!,
     )));
   }
 
   void fetchBeneficiaryIdCount() {
     context.read<UniqueIdBloc>().add(const UniqueIdEvent.fetchIdCount());
+  }
+
+  void searchBeneficiaryName({
+    bool isPagination = false,
+    String nameSearch = "",
+  }) {
+    if (!isPagination) {
+      blocWrapper.clearEvent();
+    }
+    if (RegistrationDeliverySingleton().beneficiaryType ==
+        BeneficiaryType.individual) {
+      blocWrapper.individualGlobalSearchBloc
+          .add(SearchHouseholdsEvent.individualGlobalSearch(
+              globalSearchParams: GlobalSearchParameters(
+        isProximityEnabled: false,
+        latitude: location?.latitude,
+        longitude: location?.longitude,
+        maxRadius: RegistrationDeliverySingleton().maxRadius,
+        nameSearch: nameSearch,
+        filter: [],
+        offset: isPagination
+            ? blocWrapper.houseHoldGlobalSearchBloc.state.offset
+            : offset,
+        limit: isPagination
+            ? blocWrapper.houseHoldGlobalSearchBloc.state.limit
+            : limit,
+      )));
+    } else {
+      blocWrapper.houseHoldGlobalSearchBloc
+          .add(SearchHouseholdsEvent.houseHoldGlobalSearch(
+              globalSearchParams: GlobalSearchParameters(
+        projectId: RegistrationDeliverySingleton().projectId,
+        isProximityEnabled: false,
+        latitude: location?.latitude,
+        longitude: location?.longitude,
+        maxRadius: RegistrationDeliverySingleton().maxRadius,
+        nameSearch: nameSearch,
+        filter: [],
+        offset: isPagination
+            ? blocWrapper.houseHoldGlobalSearchBloc.state.offset
+            : offset,
+        limit: isPagination
+            ? blocWrapper.houseHoldGlobalSearchBloc.state.limit
+            : limit,
+      )));
+    }
   }
 }

@@ -34,6 +34,7 @@ import 'blocs/non_compliance/non_compliance_search.dart';
 import 'blocs/non_compliance/non_compliance_tracking.dart';
 import 'blocs/project/project.dart';
 import 'blocs/search/individual_global_search_smc.dart';
+import 'blocs/search/non_compliance_search.dart';
 import 'blocs/search/search_households_smc.dart';
 import 'blocs/summary_report/custom_distribution_summary_report.dart';
 import 'data/local_store/app_shared_preferences.dart';
@@ -330,6 +331,29 @@ class MainApplicationState extends State<MainApplication>
                                         IndividualGlobalSearchSMCRepository>(),
                                 houseHoldGlobalSearchRepository: context
                                     .read<HouseHoldGlobalSearchRepository>())),
+                        BlocProvider(
+                            create: (_) => NonComplianceIndividualSearchBloc(
+                                userUid: RegistrationDeliverySingleton()
+                                    .loggedInUserUuid!,
+                                projectId:
+                                    RegistrationDeliverySingleton().projectId!,
+                                individual: individual,
+                                householdMember: householdMember,
+                                household: household,
+                                projectBeneficiary: projectBeneficiary,
+                                taskDataRepository: task,
+                                beneficiaryType: RegistrationDeliverySingleton()
+                                    .beneficiaryType!,
+                                sideEffectDataRepository: sideEffect,
+                                addressRepository: context
+                                    .read<RegistrationDeliveryAddressRepo>(),
+                                referralDataRepository: referral,
+                                individualGlobalSearchSMCRepository:
+                                    context.read<
+                                        IndividualGlobalSearchSMCRepository>(),
+                                houseHoldGlobalSearchRepository: context
+                                    .read<HouseHoldGlobalSearchRepository>())),
+
                         BlocProvider(
                           create: (localizationModulesList != null &&
                                   firstLanguage != null)
