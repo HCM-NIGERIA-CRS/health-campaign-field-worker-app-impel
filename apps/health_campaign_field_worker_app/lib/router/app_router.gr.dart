@@ -300,6 +300,7 @@ abstract class _$AppRouter extends RootStackRouter {
           enableViewHousehold: args.enableViewHousehold,
           isAddChild: args.isAddChild,
           eligibilityAssessmentType: args.eligibilityAssessmentType,
+          individualModel: args.individualModel,
         ),
       );
     },
@@ -2000,6 +2001,7 @@ class CustomHouseholdAcknowledgementRoute
     bool? enableViewHousehold,
     bool? isAddChild,
     required EligibilityAssessmentType eligibilityAssessmentType,
+    IndividualModel? individualModel,
     List<PageRouteInfo>? children,
   }) : super(
           CustomHouseholdAcknowledgementRoute.name,
@@ -2009,6 +2011,7 @@ class CustomHouseholdAcknowledgementRoute
             enableViewHousehold: enableViewHousehold,
             isAddChild: isAddChild,
             eligibilityAssessmentType: eligibilityAssessmentType,
+            individualModel: individualModel,
           ),
           initialChildren: children,
         );
@@ -2026,6 +2029,7 @@ class CustomHouseholdAcknowledgementRouteArgs {
     this.enableViewHousehold,
     this.isAddChild,
     required this.eligibilityAssessmentType,
+    this.individualModel,
   });
 
   final Key? key;
@@ -2038,9 +2042,11 @@ class CustomHouseholdAcknowledgementRouteArgs {
 
   final EligibilityAssessmentType eligibilityAssessmentType;
 
+  final IndividualModel? individualModel;
+
   @override
   String toString() {
-    return 'CustomHouseholdAcknowledgementRouteArgs{key: $key, appLocalizations: $appLocalizations, enableViewHousehold: $enableViewHousehold, isAddChild: $isAddChild, eligibilityAssessmentType: $eligibilityAssessmentType}';
+    return 'CustomHouseholdAcknowledgementRouteArgs{key: $key, appLocalizations: $appLocalizations, enableViewHousehold: $enableViewHousehold, isAddChild: $isAddChild, eligibilityAssessmentType: $eligibilityAssessmentType, individualModel: $individualModel}';
   }
 }
 
