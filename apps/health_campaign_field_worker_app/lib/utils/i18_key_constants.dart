@@ -511,6 +511,7 @@ class StockDetails {
 
   String get transportTypeLabel => 'STOCK_DETAILS_TYPE_OF_TRANSPORT_LABEL';
   String get statusVvmLabel => 'STOCK_DETAILS_STATUS_OF_VVM';
+  String get statusIvmLabel => 'STOCK_DETAILS_STATUS_OF_IVM';
   String get manufacturerLabel => 'STOCK_DETAILS_STATUS_OF_MANUFACTURER_LABEL';
   String get expireDateLabel => 'STOCK_DETAILS_EXPIRE_DATE_LABEL';
 

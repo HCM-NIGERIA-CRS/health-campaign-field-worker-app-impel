@@ -266,6 +266,7 @@ class _ViewStockRecordsLGAPageState extends LocalizedState<ReceiveStockPage>
             .value
             ?.toString() ??
         '';
+    bool isWareHouseMgr = InventorySingleton().isWareHouseMgr;
 
     return ReactiveForm(
       formGroup: _forms[index],
@@ -292,30 +293,85 @@ class _ViewStockRecordsLGAPageState extends LocalizedState<ReceiveStockPage>
                     ),
                   ),
                   const SizedBox(height: 12),
-                  InputField(
-                    type: InputType.text,
-                    label: localizations.translate(
-                        i18_local.inventoryReportDetails.waybillNumberText),
-                    initialValue: stock.wayBillNumber ?? '',
-                    isDisabled: true,
-                    readOnly: true,
-                  ),
+                  if (isWareHouseMgr)
+                    InputField(
+                      type: InputType.text,
+                      label: localizations
+                          .translate(i18_local.stockDetails.statusIvmLabel),
+                      initialValue: stock.additionalFields?.fields
+                              .firstWhere(
+                                (field) => field.key == 'statusVvm',
+                                orElse: () => AdditionalField('statusVvm', ''),
+                              )
+                              .value
+                              ?.toString() ??
+                          '',
+                      isDisabled: true,
+                      readOnly: true,
+                    ),
                   const SizedBox(height: 12),
-                  InputField(
-                    type: InputType.text,
-                    label: localizations.translate(
-                        i18_local.inventoryReportDetails.batchNumberText),
-                    initialValue: stock.additionalFields?.fields
-                            .firstWhere(
-                              (field) => field.key == 'batchNumber',
-                              orElse: () => AdditionalField('batchNumber', ''),
-                            )
-                            .value
-                            ?.toString() ??
-                        '',
-                    isDisabled: true,
-                    readOnly: true,
-                  ),
+                  if (isWareHouseMgr)
+                    InputField(
+                      type: InputType.text,
+                      label: localizations.translate(
+                          i18_local.stockDetails.voucherSerialNumberLabel),
+                      initialValue: stock.wayBillNumber ?? '',
+                      isDisabled: true,
+                      readOnly: true,
+                    ),
+                  const SizedBox(height: 12),
+                  if (isWareHouseMgr)
+                    InputField(
+                      type: InputType.text,
+                      label: localizations
+                          .translate(i18_local.stockDetails.manufacturerLabel),
+                      initialValue: stock.additionalFields?.fields
+                              .firstWhere(
+                                (field) => field.key == 'manufacturer',
+                                orElse: () =>
+                                    AdditionalField('manufacturer', ''),
+                              )
+                              .value
+                              ?.toString() ??
+                          '',
+                      isDisabled: true,
+                      readOnly: true,
+                    ),
+                  const SizedBox(height: 12),
+                  if (isWareHouseMgr)
+                    InputField(
+                      type: InputType.text,
+                      label: localizations.translate(
+                          i18_local.inventoryReportDetails.batchNumberText),
+                      initialValue: stock.additionalFields?.fields
+                              .firstWhere(
+                                (field) => field.key == 'batchNumber',
+                                orElse: () =>
+                                    AdditionalField('batchNumber', ''),
+                              )
+                              .value
+                              ?.toString() ??
+                          '',
+                      isDisabled: true,
+                      readOnly: true,
+                    ),
+                  const SizedBox(height: 12),
+                  if (isWareHouseMgr)
+                    InputField(
+                      type: InputType.date,
+                      label: localizations
+                          .translate(i18_local.stockDetails.expireDateLabel),
+                      initialValue: stock.additionalFields?.fields
+                              .firstWhere(
+                                (field) => field.key == 'expireDate',
+                                orElse: () => AdditionalField('expireDate', ''),
+                              )
+                              .value
+                              ?.toString() ??
+                          '',
+                      isDisabled: true,
+                      readOnly: true,
+                    ),
                   const SizedBox(height: 12),
                   InputField(
                     type: InputType.text,
