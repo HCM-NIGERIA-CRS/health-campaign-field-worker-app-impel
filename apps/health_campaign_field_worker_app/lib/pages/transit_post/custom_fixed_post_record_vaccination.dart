@@ -348,59 +348,50 @@ class CustomFixedPostRecordVaccinationPageState
                             value: onchoBeneficiaryCount.toString(),
                           )
                         ]),
-                        DigitCard(
-                          margin: const EdgeInsets.all(spacer2),
-                          children: [
-                            Text(
-                              localizations.translate(
-                                i18_local.deliverIntervention.selectHeightRange,
-                              ),
-                              style: textTheme.headingL.copyWith(
-                                  color: theme.colorTheme.text.primary),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                  kPadding, 0, kPadding, 0),
-                              child: BlocBuilder<AppInitializationBloc,
-                                  AppInitializationState>(
-                                builder: (context, state) {
-                                  if (state is! AppInitialized) {
-                                    return const Offstage();
-                                  }
+                        Text(
+                          localizations.translate(
+                            i18_local.deliverIntervention.selectHeightRange,
+                          ),
+                          style: textTheme.headingL
+                              .copyWith(color: theme.colorTheme.text.primary),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                              kPadding, 0, kPadding, 0),
+                          child: BlocBuilder<AppInitializationBloc,
+                              AppInitializationState>(
+                            builder: (context, state) {
+                              if (state is! AppInitialized) {
+                                return const Offstage();
+                              }
 
-                                  final heightRangeOptions = state
-                                          .appConfiguration
-                                          .heightRangeOptions ??
+                              final heightRangeOptions =
+                                  state.appConfiguration.heightRangeOptions ??
                                       <HeightRangeOptions>[];
 
-                                  return FormField(
-                                      autovalidateMode:
-                                          AutovalidateMode.onUserInteraction,
-                                      builder: (context) {
-                                        return RadioList(
-                                          radioDigitButtons: heightRangeOptions
-                                              .map((element) =>
-                                                  RadioButtonModel(
-                                                      code: element.code,
-                                                      name: localizations
-                                                          .translate(
-                                                              element.code)))
-                                              .toList(),
-                                          groupValue: heightRangeSelected ?? '',
-                                          onChanged: (value) {
-                                            if (value.code.isNotEmpty) {
-                                              setState(() {
-                                                heightRangeSelected =
-                                                    value.code;
-                                              });
-                                            }
-                                          },
-                                        );
-                                      });
-                                },
-                              ),
-                            )
-                          ],
+                              return FormField(
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  builder: (context) {
+                                    return RadioList(
+                                      radioDigitButtons: heightRangeOptions
+                                          .map((element) => RadioButtonModel(
+                                              code: element.code,
+                                              name: localizations
+                                                  .translate(element.code)))
+                                          .toList(),
+                                      groupValue: heightRangeSelected ?? '',
+                                      onChanged: (value) {
+                                        if (value.code.isNotEmpty) {
+                                          setState(() {
+                                            heightRangeSelected = value.code;
+                                          });
+                                        }
+                                      },
+                                    );
+                                  });
+                            },
+                          ),
                         ),
                         DigitButton(
                           label: localizations.translate(
@@ -651,7 +642,7 @@ class CustomFixedPostRecordVaccinationPageState
             "${localizations.translate(i18.transitPost.doseLabel)} $count",
             cellKey: "Dose$count"),
       );
-      tableData.add(DigitTableData(resource.productVariantId,
+      tableData.add(DigitTableData(resource?.name ?? resource.productVariantId,
           cellKey: resource.name ?? resource.productVariantId));
 
       finalTableRow.add(DigitTableRow(tableRow: tableData));
