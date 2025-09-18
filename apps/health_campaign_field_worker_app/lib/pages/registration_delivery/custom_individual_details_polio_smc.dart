@@ -885,8 +885,6 @@ class CustomIndividualDetailsPolioSMCPageState
                                                         autoValidate: true);
                                               }
 
-                                              setState(() {});
-
                                               if ((age.years == 0 &&
                                                       age.months == 0) ||
                                                   age.months > 11 ||
