@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:collection/collection.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:digit_components/widgets/atoms/digit_reactive_dropdown.dart';
@@ -951,12 +953,48 @@ class CustomIndividualDetailsPolioSMCPageState
                                                         .toValue() &&
                                                 onchoFlow) {
                                               hideFieldsBasedOnAge = true;
+                                              form
+                                                  .control(_heightKey)
+                                                  .setValidators(
+                                                      [Validators.required],
+                                                      autoValidate: true);
+
+                                              form
+                                                  .control(_disabilityKey)
+                                                  .setValidators(
+                                                      [Validators.required],
+                                                      autoValidate: true);
                                             } else {
                                               hideFieldsBasedOnAge = false;
+                                              form.control(_heightKey).value =
+                                                  null;
+                                              form
+                                                  .control(_heightKey)
+                                                  .setValidators([],
+                                                      autoValidate: true);
+                                              form
+                                                  .control(_disabilityKey)
+                                                  .value = null;
+
+                                              form
+                                                  .control(_disabilityKey)
+                                                  .setValidators([],
+                                                      autoValidate: true);
                                             }
                                           } else {
                                             // Default: if dob is null, just show the field
                                             hideFieldsBasedOnAge = true;
+                                            form
+                                                .control(_heightKey)
+                                                .setValidators(
+                                                    [Validators.required],
+                                                    autoValidate: true);
+
+                                            form
+                                                .control(_disabilityKey)
+                                                .setValidators(
+                                                    [Validators.required],
+                                                    autoValidate: true);
                                           }
 
                                           return Offstage(
@@ -1067,12 +1105,47 @@ class CustomIndividualDetailsPolioSMCPageState
                                                         .toValue() &&
                                                 onchoFlow) {
                                               hideFieldsBasedOnAge = true;
+                                              form
+                                                  .control(_heightKey)
+                                                  .setValidators(
+                                                      [Validators.required],
+                                                      autoValidate: true);
+
+                                              form
+                                                  .control(_disabilityKey)
+                                                  .setValidators(
+                                                      [Validators.required],
+                                                      autoValidate: true);
                                             } else {
                                               hideFieldsBasedOnAge = false;
+                                              form.control(_heightKey).value =
+                                                  null;
+                                              form
+                                                  .control(_heightKey)
+                                                  .setValidators([],
+                                                      autoValidate: true);
+                                              form
+                                                  .control(_disabilityKey)
+                                                  .value = null;
+                                              form
+                                                  .control(_disabilityKey)
+                                                  .setValidators([],
+                                                      autoValidate: true);
                                             }
                                           } else {
                                             // Default: if dob is null, just show the field
                                             hideFieldsBasedOnAge = true;
+                                            form
+                                                .control(_heightKey)
+                                                .setValidators(
+                                                    [Validators.required],
+                                                    autoValidate: true);
+
+                                            form
+                                                .control(_disabilityKey)
+                                                .setValidators(
+                                                    [Validators.required],
+                                                    autoValidate: true);
                                           }
 
                                           return Offstage(
@@ -1398,7 +1471,14 @@ class CustomIndividualDetailsPolioSMCPageState
       _genderKey: FormControl<String>(
           value: getGenderOptions(individual),
           validators: [Validators.required]),
-      _heightKey: FormControl<String>(),
+      _heightKey: FormControl<String>(
+          value: individual?.additionalFields?.fields
+                  .firstWhere(
+                    (e) => e.key == "height",
+                    orElse: () => const AdditionalField("height", ""),
+                  )
+                  .value ??
+              ""),
       _mobileNumberKey:
           FormControl<String>(value: individual?.mobileNumber, validators: [
         Validators.delegate((validator) =>
@@ -1406,7 +1486,18 @@ class CustomIndividualDetailsPolioSMCPageState
         Validators.minLength(11),
         Validators.maxLength(11),
       ]),
-      _disabilityKey: FormControl<String>(),
+      _disabilityKey: FormControl<String>(
+        value: ["YES", "NO"].firstWhereOrNull(
+          (element) =>
+              element.toLowerCase() ==
+              (individual?.additionalFields?.fields
+                      ?.firstWhereOrNull((e) => e.key == "disability")
+                      ?.value
+                      ?.toString()
+                      .toLowerCase() ??
+                  "no"),
+        ),
+      ),
     });
   }
 
