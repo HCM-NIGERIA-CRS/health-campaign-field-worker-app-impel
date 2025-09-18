@@ -253,7 +253,7 @@ class _ViewStockRecordsPageState extends LocalizedState<ViewStockRecordsPage>
                       InputField(
                         type: InputType.text,
                         label: localizations.translate(
-                          i18_local.stockDetails.statusIvmLabel,
+                          i18_local.stockDetails.statusVvmLabel,
                         ),
                         initialValue: statusVvm,
                         isDisabled: true,
