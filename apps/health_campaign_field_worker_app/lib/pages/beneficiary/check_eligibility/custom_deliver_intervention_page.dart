@@ -206,7 +206,7 @@ class CustomDeliverInterventionPageState
           ),
         );
 
-    await handleSubmit(context, deliverInterventionState);
+    await handleSubmit(context, deliverInterventionState, selectedIndividual);
   }
 
   void handleLocationState(
@@ -243,9 +243,9 @@ class CustomDeliverInterventionPageState
   }
 
   Future<void> handleSubmit(
-    BuildContext context,
-    DeliverInterventionState deliverState,
-  ) async {
+      BuildContext context,
+      DeliverInterventionState deliverState,
+      IndividualModel? individual) async {
     ProjectTypeModel? projectTypeModel = RegistrationDeliverySingleton()
         .selectedProject
         ?.additionalDetails
@@ -272,6 +272,7 @@ class CustomDeliverInterventionPageState
       );
       context.router.popAndPush(
         CustomHouseholdAcknowledgementRoute(
+          individualModel: individual,
           enableViewHousehold: true,
           isAddChild: true,
           eligibilityAssessmentType: widget.eligibilityAssessmentType,

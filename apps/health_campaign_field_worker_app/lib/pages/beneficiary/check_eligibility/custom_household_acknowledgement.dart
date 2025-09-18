@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:digit_data_model/data/local_store/sql_store/tables/individual.dart';
+import 'package:digit_data_model/models/entities/individual.dart';
+//import 'package:digit_data_model/data_model.dart';
 import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/widgets/molecules/panel_cards.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +27,7 @@ class CustomHouseholdAcknowledgementPage extends LocalizedStatefulWidget {
   final bool? enableViewHousehold;
   final EligibilityAssessmentType eligibilityAssessmentType;
   final bool? isAddChild;
+  final IndividualModel? individualModel;
 
   const CustomHouseholdAcknowledgementPage({
     super.key,
@@ -32,6 +35,7 @@ class CustomHouseholdAcknowledgementPage extends LocalizedStatefulWidget {
     this.enableViewHousehold,
     this.isAddChild,
     required this.eligibilityAssessmentType,
+    this.individualModel,
   });
 
   @override
@@ -47,7 +51,9 @@ class CustomHouseholdAcknowledgementPageState
   }) {
     if (!isAddChild) return null;
 
-    final beneficiary = householdMember?.members?.lastOrNull;
+    final beneficiary = (widget.individualModel != null)
+        ? widget.individualModel
+        : householdMember?.members?.lastOrNull;
     final beneficiaryId = beneficiary?.identifiers
         ?.lastWhereOrNull(
           (e) =>
