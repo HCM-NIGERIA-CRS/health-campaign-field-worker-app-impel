@@ -297,7 +297,7 @@ class _ViewStockRecordsLGAPageState extends LocalizedState<ReceiveStockPage>
                     InputField(
                       type: InputType.text,
                       label: localizations
-                          .translate(i18_local.stockDetails.statusIvmLabel),
+                          .translate(i18_local.stockDetails.statusVvmLabel),
                       initialValue: stock.additionalFields?.fields
                               .firstWhere(
                                 (field) => field.key == 'statusVvm',
