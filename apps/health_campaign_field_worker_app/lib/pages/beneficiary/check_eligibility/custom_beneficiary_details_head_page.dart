@@ -173,6 +173,9 @@ class CustomBeneficiaryDetailsHeadPageState
               return BlocBuilder<ProductVariantBloc, ProductVariantState>(
                 builder: (context, productState) {
                   return productState.maybeWhen(
+                      loading: () => const Center(
+                            child: CircularProgressIndicator(),
+                          ),
                       orElse: () => const Offstage(),
                       fetched: (productVariantsValue) {
                         final variant = productState.whenOrNull(
