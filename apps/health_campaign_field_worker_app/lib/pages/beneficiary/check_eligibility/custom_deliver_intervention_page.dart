@@ -29,6 +29,7 @@ import 'package:registration_delivery/utils/utils.dart';
 import 'package:registration_delivery/models/entities/additional_fields_type.dart';
 import 'package:registration_delivery/models/entities/status.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
+import 'package:registration_delivery/widgets/beneficiary/resource_beneficiary_card.dart';
 import 'package:registration_delivery/widgets/component_wrapper/product_variant_bloc_wrapper.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 
