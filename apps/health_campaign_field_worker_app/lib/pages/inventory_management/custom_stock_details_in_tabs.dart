@@ -145,9 +145,8 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
           'materialNoteNumber': FormControl<String>(value: _sharedMRN),
           _transactionReasonKey: FormControl<String>(),
           _voucherSerialNumberKey: FormControl<String>(
-            validators: (InventorySingleton().isWareHouseMgr ||
-                    (context.isHealthFacilitySupervisor &&
-                        entryType != StockRecordEntryType.dispatch))
+            validators: (InventorySingleton().isWareHouseMgr &&
+                    entryType != StockRecordEntryType.returned)
                 ? [
                     Validators.minLength(2),
                     Validators.maxLength(200),
@@ -158,7 +157,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
           _statusVvmKey: FormControl<String>(),
           _manufacturerKey: FormControl<String>(),
           _stockDamageKey: FormControl<int>(
-              validators: ((context.isWarehouseManager &&
+              validators: ((InventorySingleton().isWareHouseMgr &&
                           entryType == StockRecordEntryType.returned) ||
                       context.isCommunityDistributor &&
                           entryType == StockRecordEntryType.dispatch)
@@ -169,7 +168,8 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                     ]
                   : []),
           _emptyVialsKey: FormControl<int>(
-              validators: context.isWardLevel
+              validators: context.isWardLevel &&
+                      entryType == StockRecordEntryType.returned
                   ? [
                       Validators.number(),
                       Validators.required,
@@ -177,7 +177,8 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                     ]
                   : []),
           _unusableVvmfirst: FormControl<int>(
-              validators: context.isWardLevel
+              validators: context.isWardLevel &&
+                      entryType == StockRecordEntryType.returned
                   ? [
                       Validators.number(),
                       Validators.required,
@@ -185,7 +186,8 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                     ]
                   : []),
           _unusableVvmSecond: FormControl<int>(
-              validators: context.isWardLevel
+              validators: context.isWardLevel &&
+                      entryType == StockRecordEntryType.returned
                   ? [
                       Validators.number(),
                       Validators.required,
@@ -193,8 +195,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                     ]
                   : []),
           _transactionQuantityKey: FormControl<int>(
-              validators: (InventorySingleton().isWareHouseMgr ||
-                      context.isHealthFacilitySupervisor)
+              validators: (InventorySingleton().isWareHouseMgr)
                   ? [
                       Validators.number(),
                       Validators.required,
@@ -716,7 +717,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                             );
                           }),
                     if ((entryType == StockRecordEntryType.returned &&
-                            !context.isWarehouseManager) ||
+                            context.isWarehouseManager) ||
                         (entryType == StockRecordEntryType.dispatch &&
                             context.isCommunityDistributor))
                       ReactiveWrapperField(
@@ -1051,13 +1052,13 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
             AdditionalField('expireDate', form.control(_expireDateKey).value),
           if (form.control(_emptyVialsKey).value != null)
             AdditionalField(
-                'damageQuantity', form.control(_emptyVialsKey).value),
+                'emptyVialsQuantity', form.control(_emptyVialsKey).value),
           if (form.control(_unusableVvmfirst).value != null)
             AdditionalField(
-                'damageQuantity', form.control(_unusableVvmfirst).value),
+                'unusableVvmfirst', form.control(_unusableVvmfirst).value),
           if (form.control(_unusableVvmSecond).value != null)
             AdditionalField(
-                'damageQuantity', form.control(_unusableVvmSecond).value),
+                'unusableVvmSecond', form.control(_unusableVvmSecond).value),
         ],
       ),
     );
