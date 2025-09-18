@@ -286,6 +286,7 @@ class CustomMemberCard extends StatelessWidget {
                 context.router.push(EligibilityChecklistViewRoute(
                   eligibilityAssessmentType: EligibilityAssessmentType.smc,
                   individual: individual,
+                  showBackButton: false,
                 ));
                 //route to eligibility checklist page first
               } else if (polioFlow || onchoFlow) {

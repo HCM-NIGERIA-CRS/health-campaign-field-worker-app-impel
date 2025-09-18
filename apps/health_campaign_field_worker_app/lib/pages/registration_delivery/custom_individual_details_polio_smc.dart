@@ -1586,8 +1586,10 @@ class CustomIndividualDetailsPolioSMCPageState
 
       router.push(BeneficiaryWrapperRoute(wrapper: wrapper, children: [
         EligibilityChecklistViewRoute(
-            eligibilityAssessmentType: EligibilityAssessmentType.smc,
-            individual: individual)
+          eligibilityAssessmentType: EligibilityAssessmentType.smc,
+          individual: individual,
+          showBackButton: false,
+        )
       ]));
     } else if (polioFlow || onchoFlow) {
       // route to normal beneficiary details page first
