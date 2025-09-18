@@ -163,8 +163,9 @@ class CustomViewBeneficiaryCardState
               : DateTime.now(),
         ).months;
 
+        // Todo : cover the case where polio project type is there
         final isNotEligible =
-            isHead && context.projectTypeCode == ProjectTypes.oncho.toValue()
+            context.projectTypeCode == ProjectTypes.oncho.toValue()
                 ? false
                 : !checkEligibilityForAgeAndSideEffect(
                     DigitDOBAgeConvertor(
@@ -414,22 +415,33 @@ class CustomViewBeneficiaryCardState
                 rows: tableData ?? [],
               ),
             ),
-            Container(
-              height: 24,
-              margin: const EdgeInsets.all(4),
-              child: Center(
-                child: IconButton(
-                  padding: EdgeInsets.zero,
-                  icon: Icon(
-                    isCardExpanded
-                        ? Icons.keyboard_arrow_up
-                        : Icons.keyboard_arrow_down,
-                    size: 24,
+            // Todo : verify this condition once again , not showing expand icon for non compliant household,
+            //as no proper individual info present at this moment
+            if (getStatus(
+                    tasks ?? [],
+                    householdMember.projectBeneficiaries ?? [],
+                    RegistrationDeliverySingleton().beneficiaryType ==
+                            BeneficiaryType.individual
+                        ? isNotEligible
+                        : false,
+                    isBeneficiaryRefused) !=
+                Status.administeredFailed.toValue())
+              Container(
+                height: 24,
+                margin: const EdgeInsets.all(4),
+                child: Center(
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    icon: Icon(
+                      isCardExpanded
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down,
+                      size: 24,
+                    ),
+                    onPressed: () => isCardExpanded = !isCardExpanded,
                   ),
-                  onPressed: () => isCardExpanded = !isCardExpanded,
                 ),
               ),
-            ),
           ]
         ]);
   }
