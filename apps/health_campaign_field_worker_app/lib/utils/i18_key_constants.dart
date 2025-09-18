@@ -479,7 +479,10 @@ class StockDetails {
   String get stockIssueDetails => 'STOCK_DETAILS_STOCK_ISSUE_DETAILS';
   String get stockReturnDetails => 'STOCK_DETAILS_STOCK_RETURN_DETAILS';
   String get waybillNumber => 'STOCK_DETAILS_WAYBILL_NUMBER';
-
+  String get damageStockLabel => 'STOCK_DETAILS_DAMAGE_QUANTITY';
+  String get emptyVialsLabel => 'STOCK_DETAILS_EMPTY_OPENED_VIALS_LABEL';
+  String get unusableVvmfirst => 'UNUSABLE_VVM_THREE_FOURTH_VIALS_LABEL';
+  String get unusableVvmSecond => 'UNUSABLE_VVM_FIRST_SECOND_VIALS_LABEL';
   String get blisters => 'STOCK_DETAILS_BLISTERS';
   String get capsules => 'STOCK_DETAILS_CAPSULES';
 
