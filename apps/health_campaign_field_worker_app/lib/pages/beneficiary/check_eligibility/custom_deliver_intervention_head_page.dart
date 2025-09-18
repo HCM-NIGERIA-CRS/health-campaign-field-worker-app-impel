@@ -1183,6 +1183,9 @@ class CustomResourceBeneficiaryCardState
       BlocBuilder<ProductVariantBloc, ProductVariantState>(
         builder: (context, productState) {
           return productState.maybeWhen(
+            loading: () => const Center(
+              child: CircularProgressIndicator(),
+            ),
             orElse: () => const Offstage(),
             fetched: (productVariants) {
               final selectedVariant = widget.form
