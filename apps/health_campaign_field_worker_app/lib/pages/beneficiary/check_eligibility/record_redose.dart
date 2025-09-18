@@ -550,12 +550,16 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                                                                 context.router
                                                                     .push(
                                                                   CustomHouseholdAcknowledgementRoute(
-                                                                    enableViewHousehold:
-                                                                        true,
-                                                                    eligibilityAssessmentType:
-                                                                        EligibilityAssessmentType
-                                                                            .smc,
-                                                                  ),
+                                                                      individualModel:
+                                                                          householdOverviewState
+                                                                              .selectedIndividual,
+                                                                      enableViewHousehold:
+                                                                          true,
+                                                                      eligibilityAssessmentType:
+                                                                          EligibilityAssessmentType
+                                                                              .smc,
+                                                                      isAddChild:
+                                                                          true),
                                                                 ),
                                                               });
                                                         }
