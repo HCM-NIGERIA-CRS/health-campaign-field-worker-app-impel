@@ -1171,7 +1171,7 @@ class _CustomSearchBeneficiaryPageState
                       String descriptionText = localizations.translate(i18_local
                           .beneficiaryDetails.insufficientStockMessage);
 
-//TODO:we need to make this dynamic to fetch product variant sku
+//TODO:we need to make this dynamic to fetch product variant sku or update the latest product sku with count '0'
                       if (skuCounts.isEmpty) {
                         skuCounts = {
                           Constants.polioVariant: 0,
@@ -1189,7 +1189,8 @@ class _CustomSearchBeneficiaryPageState
                       bool hasAvailableStock = skuCounts.values
                           .any((productCount) => productCount > 0);
 
-                      if (hasAvailableStock) {
+                      if (true) {
+                        // remove the stock validation , if needed then add condition , if(hasAvailableStock) {}
                         FocusManager.instance.primaryFocus?.unfocus();
 
                         searchController.clear();

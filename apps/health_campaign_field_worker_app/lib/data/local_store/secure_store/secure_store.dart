@@ -23,7 +23,10 @@ class LocalSecureStore {
   static const polioKey = "Polio - nOPV, bOPV";
   static const measlesKey = "Measles - MRV";
 
-  List<String> keysToKeep = [polioKey, measlesKey];
+  List<String> keysToKeep = [
+    polioKey,
+    measlesKey
+  ]; // TODO : add the latest product sku key to prevent the delete
 
   final storage = const FlutterSecureStorage();
 

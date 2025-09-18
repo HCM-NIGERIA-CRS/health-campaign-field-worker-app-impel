@@ -608,6 +608,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                               emptyItemText: localizations.translate(
                                 i18.common.noMatchFound,
                               ),
+                              // TODO : add the mdms data for statusVVM
                               items: transportTypes.map((type) {
                                 return DropdownItem(
                                   name: localizations.translate(type.name),
@@ -667,6 +668,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                               emptyItemText: localizations.translate(
                                 i18.common.noMatchFound,
                               ),
+                              //TODO : Add mdms data for manufacturer
                               items: transportTypes.map((type) {
                                 return DropdownItem(
                                   name: localizations.translate(type.name),
