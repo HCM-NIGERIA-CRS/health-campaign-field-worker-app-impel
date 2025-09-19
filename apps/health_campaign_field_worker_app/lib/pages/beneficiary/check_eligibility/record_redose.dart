@@ -167,8 +167,7 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                       List<DeliveryProductVariant>? productVariants =
                           projectTypeModel?.cycles?.isNotEmpty == true
                               ? getProductVariants(deliveryInterventionstate,
-                                      householdOverviewState)['criteria']
-                                  ?.productVariants
+                                  householdOverviewState)
                               : projectTypeModel?.resources
                                   ?.map((r) => DeliveryProductVariant(
                                       productVariantId: r.productVariantId))
@@ -217,6 +216,7 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                               return ReactiveFormBuilder(
                                 form: () => buildForm(
                                   context,
+                                  // TODO : verify this ,removed any other resource apart from spaq
                                   productVariants,
                                   variant,
                                 ),
@@ -684,7 +684,7 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
 
                                                     final deliveryCommentOptions = state
                                                             .appConfiguration
-                                                            .deliveryCommentOptions ??
+                                                            .redoseDeliveryCommentsOptions ??
                                                         <DeliveryCommentOptions>[];
 
                                                     // return DigitReactiveDropdown<
@@ -1086,7 +1086,8 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
     return task;
   }
 
-  getProductVariants(DeliverInterventionState deliveryInterventionState,
+  List<DeliveryProductVariant>? getProductVariants(
+      DeliverInterventionState deliveryInterventionState,
       HouseholdOverviewState state) {
     var result = (fetchProductVariant(
         RegistrationDeliverySingleton()
@@ -1099,7 +1100,13 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
         state.householdMemberWrapper.household,
         context: context));
 
-    return result;
+    List<DeliveryProductVariant> variants =
+        result['criteria']?.productVariants ?? [];
+
+    return variants
+        .where(
+            (variant) => variant.productVariantId != "PVAR-2025-07-24-000001")
+        .toList();
   }
 
 // This method builds a form used for delivering interventions.
@@ -1131,9 +1138,7 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                     overViewbloc,
                   ) !=
                   null
-              ? getProductVariants(bloc, overViewbloc)['criteria']
-                  .productVariants
-                  .length
+              ? getProductVariants(bloc, overViewbloc)?.length ?? 0
               : 0;
 
       _controllers.addAll(List.generate(r, (index) => index)

@@ -1430,6 +1430,8 @@ class BeneficiaryDetails {
 
   String get dialogContent => 'DIP_DIALOG_CONTENT';
 
+  String get beneficiaryHeight => "BENEFICIARY_HEIGHT_LABEL";
+
   String get noResourceFound => "NO_RESOURCE_FOUND";
 
   String get validationForExcessStockReturn =>

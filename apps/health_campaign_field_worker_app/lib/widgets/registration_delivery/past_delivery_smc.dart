@@ -83,6 +83,9 @@ Widget buildTableContentSMC(
       ),
     );
   } else {
+    final msg = customFormatAgeRange(getProductVariant(
+            item, individualModel, householdModel, context)!['criteria']
+        .condition!);
     return Container(
       padding: const EdgeInsets.only(
         left: spacer2,
@@ -102,7 +105,9 @@ Widget buildTableContentSMC(
               fraction: 2.5,
               element: {
                 localizations.translate(
-                  i18.beneficiaryDetails.beneficiaryAge,
+                  msg.contains("height")
+                      ? i18_local.beneficiaryDetails.beneficiaryHeight
+                      : i18.beneficiaryDetails.beneficiaryAge,
                 ): getProductVariant(item, individualModel, householdModel,
                             context)['criteria'] !=
                         null

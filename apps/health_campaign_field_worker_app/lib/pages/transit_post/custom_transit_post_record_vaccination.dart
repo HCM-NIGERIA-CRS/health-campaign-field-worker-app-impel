@@ -506,11 +506,12 @@ class CustomTransitPostRecordVaccinationPageState
   ) {
     if (resources == null || resources.isEmpty) return [];
 
+    // not filtering resources which are not needed on post
     return resources
         .whereNot((resource) =>
             resource.productVariantId == "PVAR-2025-09-01-000022" ||
             resource.productVariantId == "PVAR-2025-09-01-000021" ||
-            resource.productVariantId == "PVAR-2025-09-01-000023")
+            resource.productVariantId == "PVAR-2025-09-04-000023")
         .toList();
   }
 }
