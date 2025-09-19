@@ -802,7 +802,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
   FutureOr<void> downloadUserActionDataBasedOnRole(
     String? boundaryType,
   ) async {
-    if (context.isWFP) {
+    if (context.isDistributor || context.isWFP) {
       List<UserActionModel> userActionModelDownloaded =
           await downloadUserActions(UserActionSearchModel());
       await (userActionLocalRepository as CustomUserActionLocalRepository)
