@@ -1,15 +1,11 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/user_action.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:registration_delivery/utils/utils.dart';
-import 'package:transit_post/data/repositories/local/user_action.dart';
 
 import '../../data/repositories/local/transit_post/custom_user_action.dart';
-import '../../models/settlement/settlement_model.dart';
 
 part 'dip_search.freezed.dart';
 
@@ -34,12 +30,14 @@ class DipSearchBloc extends Bloc<DipSearchEvent, DipSearchState> {
       loading: true,
       selectedDipUserAction: null,
     ));
-    List<UserActionModel> vehicleUserActions =
+    List<UserActionModel> userActions =
         await customUserActionLocalRepository.searchUserAction(
-            clientReferenceId: event.clientReferenceId);
+      beneficiaryTag: event.beneficiaryTag,
+      action: "DAILY_PLAN",
+    );
     emit(DipSearchState.search(
       loading: false,
-      selectedDipUserAction: vehicleUserActions.firstOrNull,
+      selectedDipUserAction: userActions.firstOrNull,
     ));
   }
 
@@ -57,7 +55,7 @@ class DipSearchBloc extends Bloc<DipSearchEvent, DipSearchState> {
 @freezed
 class DipSearchEvent with _$DipSearchEvent {
   const factory DipSearchEvent.search({
-    String? clientReferenceId,
+    String? beneficiaryTag,
   }) = DipSearchSettlementEvent;
 
   const factory DipSearchEvent.clearSearch() = DipSearchSettlementClearEvent;

@@ -234,6 +234,7 @@ abstract class _$AppRouter extends RootStackRouter {
           key: args.key,
           appLocalizations: args.appLocalizations,
           eligibilityAssessmentType: args.eligibilityAssessmentType,
+          selectedIndividual: args.selectedIndividual,
         ),
       );
     },
@@ -582,6 +583,7 @@ abstract class _$AppRouter extends RootStackRouter {
           appLocalizations: args.appLocalizations,
           enableBackToSearch: args.enableBackToSearch,
           eligibilityAssessmentType: args.eligibilityAssessmentType,
+          individual: args.individual,
         ),
       );
     },
@@ -809,6 +811,17 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const NonComplianceTrackingWrapperPage(),
       );
     },
+    NonComplianceUpdateStatusRoute.name: (routeData) {
+      final args = routeData.argsAs<NonComplianceUpdateStatusRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: NonComplianceUpdateStatusPage(
+          key: args.key,
+          householdMember: args.householdMember,
+          userActionModel: args.userActionModel,
+        ),
+      );
+    },
     ProfileRoute.name: (routeData) {
       final args = routeData.argsAs<ProfileRouteArgs>(
           orElse: () => const ProfileRouteArgs());
@@ -868,12 +881,6 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const SelectSettlementsDatePage(),
-      );
-    },
-    SelectSettlementsDateViewListRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const SelectSettlementsDateViewListPage(),
       );
     },
     SelectSettlementsDateViewRoute.name: (routeData) {
@@ -1760,6 +1767,7 @@ class CustomDoseAdministeredRoute
     Key? key,
     RegistrationDeliveryLocalization? appLocalizations,
     required EligibilityAssessmentType eligibilityAssessmentType,
+    required IndividualModel? selectedIndividual,
     List<PageRouteInfo>? children,
   }) : super(
           CustomDoseAdministeredRoute.name,
@@ -1767,6 +1775,7 @@ class CustomDoseAdministeredRoute
             key: key,
             appLocalizations: appLocalizations,
             eligibilityAssessmentType: eligibilityAssessmentType,
+            selectedIndividual: selectedIndividual,
           ),
           initialChildren: children,
         );
@@ -1782,6 +1791,7 @@ class CustomDoseAdministeredRouteArgs {
     this.key,
     this.appLocalizations,
     required this.eligibilityAssessmentType,
+    required this.selectedIndividual,
   });
 
   final Key? key;
@@ -1790,9 +1800,11 @@ class CustomDoseAdministeredRouteArgs {
 
   final EligibilityAssessmentType eligibilityAssessmentType;
 
+  final IndividualModel? selectedIndividual;
+
   @override
   String toString() {
-    return 'CustomDoseAdministeredRouteArgs{key: $key, appLocalizations: $appLocalizations, eligibilityAssessmentType: $eligibilityAssessmentType}';
+    return 'CustomDoseAdministeredRouteArgs{key: $key, appLocalizations: $appLocalizations, eligibilityAssessmentType: $eligibilityAssessmentType, selectedIndividual: $selectedIndividual}';
   }
 }
 
@@ -3062,6 +3074,7 @@ class CustomSplashAcknowledgementRoute
     RegistrationDeliveryLocalization? appLocalizations,
     bool? enableBackToSearch,
     required EligibilityAssessmentType eligibilityAssessmentType,
+    required IndividualModel? individual,
     List<PageRouteInfo>? children,
   }) : super(
           CustomSplashAcknowledgementRoute.name,
@@ -3070,6 +3083,7 @@ class CustomSplashAcknowledgementRoute
             appLocalizations: appLocalizations,
             enableBackToSearch: enableBackToSearch,
             eligibilityAssessmentType: eligibilityAssessmentType,
+            individual: individual,
           ),
           initialChildren: children,
         );
@@ -3086,6 +3100,7 @@ class CustomSplashAcknowledgementRouteArgs {
     this.appLocalizations,
     this.enableBackToSearch,
     required this.eligibilityAssessmentType,
+    required this.individual,
   });
 
   final Key? key;
@@ -3096,9 +3111,11 @@ class CustomSplashAcknowledgementRouteArgs {
 
   final EligibilityAssessmentType eligibilityAssessmentType;
 
+  final IndividualModel? individual;
+
   @override
   String toString() {
-    return 'CustomSplashAcknowledgementRouteArgs{key: $key, appLocalizations: $appLocalizations, enableBackToSearch: $enableBackToSearch, eligibilityAssessmentType: $eligibilityAssessmentType}';
+    return 'CustomSplashAcknowledgementRouteArgs{key: $key, appLocalizations: $appLocalizations, enableBackToSearch: $enableBackToSearch, eligibilityAssessmentType: $eligibilityAssessmentType, individual: $individual}';
   }
 }
 
@@ -3886,6 +3903,50 @@ class NonComplianceTrackingWrapperRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [NonComplianceUpdateStatusPage]
+class NonComplianceUpdateStatusRoute
+    extends PageRouteInfo<NonComplianceUpdateStatusRouteArgs> {
+  NonComplianceUpdateStatusRoute({
+    Key? key,
+    required HouseholdMemberWrapper householdMember,
+    required UserActionModel? userActionModel,
+    List<PageRouteInfo>? children,
+  }) : super(
+          NonComplianceUpdateStatusRoute.name,
+          args: NonComplianceUpdateStatusRouteArgs(
+            key: key,
+            householdMember: householdMember,
+            userActionModel: userActionModel,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'NonComplianceUpdateStatusRoute';
+
+  static const PageInfo<NonComplianceUpdateStatusRouteArgs> page =
+      PageInfo<NonComplianceUpdateStatusRouteArgs>(name);
+}
+
+class NonComplianceUpdateStatusRouteArgs {
+  const NonComplianceUpdateStatusRouteArgs({
+    this.key,
+    required this.householdMember,
+    required this.userActionModel,
+  });
+
+  final Key? key;
+
+  final HouseholdMemberWrapper householdMember;
+
+  final UserActionModel? userActionModel;
+
+  @override
+  String toString() {
+    return 'NonComplianceUpdateStatusRouteArgs{key: $key, householdMember: $householdMember, userActionModel: $userActionModel}';
+  }
+}
+
+/// generated route for
 /// [ProfilePage]
 class ProfileRoute extends PageRouteInfo<ProfileRouteArgs> {
   ProfileRoute({
@@ -4096,20 +4157,6 @@ class SelectSettlementsDateRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'SelectSettlementsDateRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [SelectSettlementsDateViewListPage]
-class SelectSettlementsDateViewListRoute extends PageRouteInfo<void> {
-  const SelectSettlementsDateViewListRoute({List<PageRouteInfo>? children})
-      : super(
-          SelectSettlementsDateViewListRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'SelectSettlementsDateViewListRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

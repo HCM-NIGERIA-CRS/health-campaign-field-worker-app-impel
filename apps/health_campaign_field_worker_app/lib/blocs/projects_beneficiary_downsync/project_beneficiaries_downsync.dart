@@ -16,6 +16,7 @@ import 'package:sync_service/sync_service_lib.dart';
 import '../../data/local_store/no_sql/schema/app_configuration.dart';
 import '../../data/local_store/secure_store/secure_store.dart';
 import '../../data/repositories/remote/bandwidth_check.dart';
+import '../../data/repositories/remote/downsync.dart';
 import '../../models/downsync/downsync.dart';
 import '../../utils/background_service.dart';
 import '../../utils/environment_config.dart';
@@ -123,7 +124,9 @@ class BeneficiaryDownSyncBloc
           : existingDownSyncData.first.lastSyncedTime;
 
       //To get the server totalCount,
-      final initialResults = await downSyncRemoteRepository.downSync(
+      final initialResults =
+          await (downSyncRemoteRepository as DownsyncRemoteRepository)
+              .customDownSync(
         DownsyncSearchModel(
           locality: event.boundaryCode,
           offset: existingDownSyncData.firstOrNull?.offset ?? 0,
@@ -133,6 +136,7 @@ class BeneficiaryDownSyncBloc
           tenantId: envConfig.variables.tenantId,
           projectId: event.projectId,
         ),
+        useProjectId: event.useProjectId,
       );
       if (initialResults.isNotEmpty) {
         // Current response from server is String, Expecting it to be int
@@ -286,7 +290,8 @@ class BeneficiaryDownSyncEvent with _$BeneficiaryDownSyncEvent {
   }) = DownSyncBeneficiaryEvent;
 
   const factory BeneficiaryDownSyncEvent.checkForData({
-    required String projectId,
+    required String? projectId,
+    required bool? useProjectId,
     required String boundaryCode,
     required int pendingSyncCount,
     required int batchSize,

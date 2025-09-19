@@ -18,19 +18,19 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$DipSearchEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String? clientReferenceId) search,
+    required TResult Function(String? beneficiaryTag) search,
     required TResult Function() clearSearch,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String? clientReferenceId)? search,
+    TResult? Function(String? beneficiaryTag)? search,
     TResult? Function()? clearSearch,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String? clientReferenceId)? search,
+    TResult Function(String? beneficiaryTag)? search,
     TResult Function()? clearSearch,
     required TResult orElse(),
   }) =>
@@ -81,7 +81,7 @@ abstract class _$$DipSearchSettlementEventImplCopyWith<$Res> {
           $Res Function(_$DipSearchSettlementEventImpl) then) =
       __$$DipSearchSettlementEventImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String? clientReferenceId});
+  $Res call({String? beneficiaryTag});
 }
 
 /// @nodoc
@@ -96,12 +96,12 @@ class __$$DipSearchSettlementEventImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? clientReferenceId = freezed,
+    Object? beneficiaryTag = freezed,
   }) {
     return _then(_$DipSearchSettlementEventImpl(
-      clientReferenceId: freezed == clientReferenceId
-          ? _value.clientReferenceId
-          : clientReferenceId // ignore: cast_nullable_to_non_nullable
+      beneficiaryTag: freezed == beneficiaryTag
+          ? _value.beneficiaryTag
+          : beneficiaryTag // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }
@@ -110,14 +110,14 @@ class __$$DipSearchSettlementEventImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$DipSearchSettlementEventImpl implements DipSearchSettlementEvent {
-  const _$DipSearchSettlementEventImpl({this.clientReferenceId});
+  const _$DipSearchSettlementEventImpl({this.beneficiaryTag});
 
   @override
-  final String? clientReferenceId;
+  final String? beneficiaryTag;
 
   @override
   String toString() {
-    return 'DipSearchEvent.search(clientReferenceId: $clientReferenceId)';
+    return 'DipSearchEvent.search(beneficiaryTag: $beneficiaryTag)';
   }
 
   @override
@@ -125,12 +125,12 @@ class _$DipSearchSettlementEventImpl implements DipSearchSettlementEvent {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$DipSearchSettlementEventImpl &&
-            (identical(other.clientReferenceId, clientReferenceId) ||
-                other.clientReferenceId == clientReferenceId));
+            (identical(other.beneficiaryTag, beneficiaryTag) ||
+                other.beneficiaryTag == beneficiaryTag));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, clientReferenceId);
+  int get hashCode => Object.hash(runtimeType, beneficiaryTag);
 
   @JsonKey(ignore: true)
   @override
@@ -142,30 +142,30 @@ class _$DipSearchSettlementEventImpl implements DipSearchSettlementEvent {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String? clientReferenceId) search,
+    required TResult Function(String? beneficiaryTag) search,
     required TResult Function() clearSearch,
   }) {
-    return search(clientReferenceId);
+    return search(beneficiaryTag);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String? clientReferenceId)? search,
+    TResult? Function(String? beneficiaryTag)? search,
     TResult? Function()? clearSearch,
   }) {
-    return search?.call(clientReferenceId);
+    return search?.call(beneficiaryTag);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String? clientReferenceId)? search,
+    TResult Function(String? beneficiaryTag)? search,
     TResult Function()? clearSearch,
     required TResult orElse(),
   }) {
     if (search != null) {
-      return search(clientReferenceId);
+      return search(beneficiaryTag);
     }
     return orElse();
   }
@@ -203,10 +203,10 @@ class _$DipSearchSettlementEventImpl implements DipSearchSettlementEvent {
 }
 
 abstract class DipSearchSettlementEvent implements DipSearchEvent {
-  const factory DipSearchSettlementEvent({final String? clientReferenceId}) =
+  const factory DipSearchSettlementEvent({final String? beneficiaryTag}) =
       _$DipSearchSettlementEventImpl;
 
-  String? get clientReferenceId;
+  String? get beneficiaryTag;
   @JsonKey(ignore: true)
   _$$DipSearchSettlementEventImplCopyWith<_$DipSearchSettlementEventImpl>
       get copyWith => throw _privateConstructorUsedError;
@@ -255,7 +255,7 @@ class _$DipSearchSettlementClearEventImpl
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String? clientReferenceId) search,
+    required TResult Function(String? beneficiaryTag) search,
     required TResult Function() clearSearch,
   }) {
     return clearSearch();
@@ -264,7 +264,7 @@ class _$DipSearchSettlementClearEventImpl
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String? clientReferenceId)? search,
+    TResult? Function(String? beneficiaryTag)? search,
     TResult? Function()? clearSearch,
   }) {
     return clearSearch?.call();
@@ -273,7 +273,7 @@ class _$DipSearchSettlementClearEventImpl
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String? clientReferenceId)? search,
+    TResult Function(String? beneficiaryTag)? search,
     TResult Function()? clearSearch,
     required TResult orElse(),
   }) {

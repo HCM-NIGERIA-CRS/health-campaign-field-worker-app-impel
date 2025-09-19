@@ -50,6 +50,8 @@ const transitFixedPost = TransitFixedPost();
 class Common {
   const Common();
   String get nonComplianceTrackingLabel => 'NON_COMPLIANCE_TRACKING_LABEL';
+  String get nonComplianceUpdateStatusLabel =>
+      'NON_COMPLIANCE_UPDATE_STATUS_LABEL';
 
   String get coreCommonContinue => 'CORE_COMMON_CONTINUE';
   String get coreCommonWarning => 'CORE_COMMON_WARNING';
@@ -787,7 +789,7 @@ class CaregiverConsent {
 class DailyImplementationFlow {
   const DailyImplementationFlow();
 
-  String get dip => 'DIP_LABEL';
+  String get dip => 'TEAM_1_DIP_LABEL';
   String get obrRound => 'OBR_ROUND_LABEL';
   String get selectBoundaryLabel => 'SELECT_BOUNDARY_HEADING_LABEL';
   String get dateOfEntry => 'SELECT_DATE_OF_ENTRY';

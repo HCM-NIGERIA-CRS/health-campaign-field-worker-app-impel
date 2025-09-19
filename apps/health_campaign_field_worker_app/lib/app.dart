@@ -29,8 +29,12 @@ import 'blocs/daily_implementation_plan/dip_all_search.dart';
 import 'blocs/daily_implementation_plan/dip_search.dart';
 import 'blocs/inventory_management/stock_bloc.dart';
 import 'blocs/localization/localization.dart';
+import 'blocs/non_compliance/non_compliance_all_search.dart';
+import 'blocs/non_compliance/non_compliance_search.dart';
+import 'blocs/non_compliance/non_compliance_tracking.dart';
 import 'blocs/project/project.dart';
 import 'blocs/search/individual_global_search_smc.dart';
+import 'blocs/search/non_compliance_search.dart';
 import 'blocs/search/search_households_smc.dart';
 import 'blocs/summary_report/custom_distribution_summary_report.dart';
 import 'data/local_store/app_shared_preferences.dart';
@@ -328,6 +332,29 @@ class MainApplicationState extends State<MainApplication>
                                 houseHoldGlobalSearchRepository: context
                                     .read<HouseHoldGlobalSearchRepository>())),
                         BlocProvider(
+                            create: (_) => NonComplianceIndividualSearchBloc(
+                                userUid: RegistrationDeliverySingleton()
+                                    .loggedInUserUuid!,
+                                projectId:
+                                    RegistrationDeliverySingleton().projectId!,
+                                individual: individual,
+                                householdMember: householdMember,
+                                household: household,
+                                projectBeneficiary: projectBeneficiary,
+                                taskDataRepository: task,
+                                beneficiaryType: RegistrationDeliverySingleton()
+                                    .beneficiaryType!,
+                                sideEffectDataRepository: sideEffect,
+                                addressRepository: context
+                                    .read<RegistrationDeliveryAddressRepo>(),
+                                referralDataRepository: referral,
+                                individualGlobalSearchSMCRepository:
+                                    context.read<
+                                        IndividualGlobalSearchSMCRepository>(),
+                                houseHoldGlobalSearchRepository: context
+                                    .read<HouseHoldGlobalSearchRepository>())),
+
+                        BlocProvider(
                           create: (localizationModulesList != null &&
                                   firstLanguage != null)
                               ? (context) => LocalizationBloc(
@@ -421,6 +448,12 @@ class MainApplicationState extends State<MainApplication>
                             stockRemoteRepository: ctx.read<
                                 RemoteRepository<StockModel,
                                     StockSearchModel>>(),
+                            userActionLocalRepository: ctx.read<
+                                LocalRepository<UserActionModel,
+                                    UserActionSearchModel>>(),
+                            userActionRemoteRepository: ctx.read<
+                                RemoteRepository<UserActionModel,
+                                    UserActionSearchModel>>(),
                             attendanceLogLocalRepository: ctx.read<
                                 LocalRepository<AttendanceLogModel,
                                     AttendanceLogSearchModel>>(),
@@ -508,9 +541,6 @@ class MainApplicationState extends State<MainApplication>
                             customUserActionLocalRepository:
                                 CustomUserActionLocalRepository(widget.sql,
                                     UserActionOpLogManager(widget.isar)),
-                            userActionLocalRepository:
-                                UserActionLocalRepository(widget.sql,
-                                    UserActionOpLogManager(widget.isar)),
                           ),
                         ),
                         BlocProvider(
@@ -522,9 +552,43 @@ class MainApplicationState extends State<MainApplication>
                           ),
                         ),
 
+                        // BlocProvider(
+                        //   create: (ctx) => DipAllSearchBloc(
+                        //     const DipAllSearchState.init(),
+                        //     customUserActionLocalRepository:
+                        //         CustomUserActionLocalRepository(widget.sql,
+                        //             UserActionOpLogManager(widget.isar)),
+                        //   ),
+                        // ),
+
                         BlocProvider(
-                          create: (ctx) => DipAllSearchBloc(
-                            const DipAllSearchState.init(),
+                          create: (ctx) => NonComplianceTrackingBloc(
+                            const NonComplianceTrackingState.init(),
+                            userActionLocalRepository:
+                                UserActionLocalRepository(widget.sql,
+                                    UserActionOpLogManager(widget.isar)),
+                            customUserActionLocalRepository:
+                                CustomUserActionLocalRepository(widget.sql,
+                                    UserActionOpLogManager(widget.isar)),
+                          ),
+                        ),
+                        BlocProvider(
+                          create: (ctx) => NonComplianceSearchBloc(
+                            const NonComplianceSearchState.init(),
+                            userActionLocalRepository:
+                                UserActionLocalRepository(widget.sql,
+                                    UserActionOpLogManager(widget.isar)),
+                            customUserActionLocalRepository:
+                                CustomUserActionLocalRepository(widget.sql,
+                                    UserActionOpLogManager(widget.isar)),
+                          ),
+                        ),
+                        BlocProvider(
+                          create: (ctx) => NonComplianceAllSearchBloc(
+                            const NonComplianceAllSearchState.init(),
+                            userActionLocalRepository:
+                                UserActionLocalRepository(widget.sql,
+                                    UserActionOpLogManager(widget.isar)),
                             customUserActionLocalRepository:
                                 CustomUserActionLocalRepository(widget.sql,
                                     UserActionOpLogManager(widget.isar)),

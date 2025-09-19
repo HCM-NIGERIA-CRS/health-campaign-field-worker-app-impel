@@ -102,10 +102,9 @@ extension ContextUtilityExtensions on BuildContext {
     final boundaryBloc = _get<BoundaryBloc>();
     final boundaryState = boundaryBloc.state;
 
-    final selectedWardBoundary = boundaryState.selectedBoundaryMap.entries
-        .where((element) => element.key == "Ward")
-        .firstOrNull
-        ?.value;
+    final selectedWardBoundary = boundaryState.boundaryList
+        .where((element) => element.label == "Settlement")
+        .firstOrNull;
 
     if (selectedWardBoundary == null) {
       throw AppException('No ward boundary is selected');
@@ -175,6 +174,22 @@ extension ContextUtilityExtensions on BuildContext {
       bool isDistributorUser = loggedInUserRoles
           .where(
             (role) => role.code == RolesType.distributor.toValue(),
+          )
+          .toList()
+          .isNotEmpty;
+
+      return isDistributorUser;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  bool get isWFP {
+    return true;
+    try {
+      bool isDistributorUser = loggedInUserRoles
+          .where(
+            (role) => role.code == RolesType.teamSupervisor.toValue(),
           )
           .toList()
           .isNotEmpty;

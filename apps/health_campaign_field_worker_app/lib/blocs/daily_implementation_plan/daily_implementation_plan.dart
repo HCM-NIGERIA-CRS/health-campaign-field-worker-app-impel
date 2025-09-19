@@ -18,12 +18,10 @@ typedef DailyImplementationPlanEmitter = Emitter<DailyImplementationPlanState>;
 class DailyImplementationPlanBloc
     extends Bloc<DailyImplementationPlanEvent, DailyImplementationPlanState> {
   final CustomUserActionLocalRepository customUserActionLocalRepository;
-  final UserActionLocalRepository userActionLocalRepository;
 
   DailyImplementationPlanBloc(
     super.initialState, {
     required this.customUserActionLocalRepository,
-    required this.userActionLocalRepository,
   }) {
     on(_selectSettlement);
     on(_selectSettlementDate);
@@ -90,7 +88,7 @@ class DailyImplementationPlanBloc
             lastModifiedTime: DateTime.now().millisecondsSinceEpoch),
       );
       // create the userAction model with trip action as start
-      await userActionLocalRepository.create(dipActionModel);
+      await customUserActionLocalRepository.createUserAction(dipActionModel);
       emit(DailyImplementationPlanState.create(
         loading: false,
         dipUserAction: dipActionModel,

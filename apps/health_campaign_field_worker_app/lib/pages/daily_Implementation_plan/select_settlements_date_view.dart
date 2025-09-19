@@ -9,6 +9,7 @@ import 'package:digit_ui_components/widgets/atoms/text_block.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_campaign_field_worker_app/widgets/reports/readonly_pluto_grid.dart';
+import 'package:intl/intl.dart';
 import 'package:inventory_management/widgets/localized.dart';
 import 'package:registration_delivery/widgets/showcase/showcase_wrappers.dart';
 
@@ -68,11 +69,20 @@ class _SelectSettlementsDateViewState
                   List<dynamic> settlementsData =
                       selectedSettlementsDateAdditionalField == null
                           ? []
-                          : selectedSettlementsDateAdditionalField.first.value
+                          : json
+                                  .decode(selectedSettlementsDateAdditionalField
+                                      .first.value)
                                   .map((e) {
                                 return SettlementModel.fromJson(json.decode(e));
                               }).toList() ??
                               [];
+
+                  DateTime? date = dipUserActionModel == null
+                      ? null
+                      : DateTime.fromMillisecondsSinceEpoch(
+                          dipUserActionModel.timestamp);
+                  String monthYear =
+                      date == null ? '' : DateFormat('MMM yyyy').format(date);
 
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -80,15 +90,15 @@ class _SelectSettlementsDateViewState
                     children: [
                       DigitTextBlock(
                         padding: EdgeInsets.zero,
-                        heading:
-                            "Team 1 ${localizations.translate(i18.dailyImplementationFlow.dip)}",
+                        heading: localizations
+                            .translate(i18.dailyImplementationFlow.dip),
                         headingStyle: textTheme.headingXl
                             .copyWith(color: theme.colorTheme.text.primary),
                       ),
                       DigitTextBlock(
                         padding: EdgeInsets.zero,
                         heading:
-                            "May 2024 ${localizations.translate(i18.dailyImplementationFlow.obrRound)}",
+                            "$monthYear ${localizations.translate(i18.dailyImplementationFlow.obrRound)}",
                         headingStyle: textTheme.headingXS
                             .copyWith(color: theme.colorTheme.text.primary),
                       ),

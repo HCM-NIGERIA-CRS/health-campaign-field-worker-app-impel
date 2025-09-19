@@ -136,6 +136,9 @@ class Constants {
   static const String supervisorName = "SupervisorName";
   static const String data = "Data";
 
+  static const String status = "Status";
+  static const String intervenedBy = "IntervenedBy";
+
   // for stock validation
 
   static const String spaq1 = "SPAQ 1";
@@ -340,6 +343,19 @@ class Constants {
   static List<KeyValue> yesNo = [
     KeyValue('CORE_COMMON_YES', true),
     KeyValue('CORE_COMMON_NO', false),
+  ];
+
+  static List<String> statusOptions = [
+    'Resolved, Pending Vaccination',
+    'Open',
+    'Escalated',
+  ];
+
+  static List<String> intervenedByOptions = [
+    'Traditional Leader',
+    'Religious Leader',
+    'Community Influence',
+    'Others (LGA Team, Monitors, etc)',
   ];
 
   void setInitialDataOfPackages() {

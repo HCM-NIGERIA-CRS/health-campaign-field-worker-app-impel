@@ -1,5 +1,7 @@
 import 'package:complaints/blocs/localization/app_localization.dart';
+import 'package:digit_data_model/models/entities/user_action.dart';
 import 'package:digit_scanner/blocs/app_localization.dart';
+import 'package:registration_delivery/blocs/search_households/search_households.dart';
 import 'package:survey_form/router/survey_form_router.dart';
 import 'package:attendance_management/router/attendance_router.dart';
 import 'package:attendance_management/router/attendance_router.gm.dart';
@@ -45,6 +47,7 @@ import '../pages/inventory_management/qr_scanner.dart';
 import '../pages/inventory_management/view_record_lga.dart';
 import '../pages/non_compliance_tracker/non_compliance_tracking_search.dart';
 import '../pages/non_compliance_tracker/non_compliance_tracking_wrapper.dart';
+import '../pages/non_compliance_tracker/non_compliance_update_status.dart';
 import '../pages/registration_delivery/custom_complaints_details.dart';
 import '../pages/boundary_selection.dart';
 import '../pages/home.dart';
@@ -166,6 +169,10 @@ class AppRouter extends _$AppRouter {
                 page: NonComplianceTrackingSearchRoute.page,
                 path: 'non-compliance-tracking-search',
                 initial: true,
+              ),
+              AutoRoute(
+                page: NonComplianceUpdateStatusRoute.page,
+                path: 'non-compliance-update-status',
               )
             ]),
         AutoRoute(page: BeneficiaryIdDownSyncRoute.page),
@@ -217,10 +224,10 @@ class AppRouter extends _$AppRouter {
           page: SelectSettlementsDateViewRoute.page,
           path: 'select-settlements-date-view',
         ),
-        AutoRoute(
-          page: SelectSettlementsDateViewListRoute.page,
-          path: 'select-settlements-date-view-list',
-        ),
+        // AutoRoute(
+        //   page: SelectSettlementsDateViewListRoute.page,
+        //   path: 'select-settlements-date-view-list',
+        // ),
 
         // Attendance Route
         AutoRoute(

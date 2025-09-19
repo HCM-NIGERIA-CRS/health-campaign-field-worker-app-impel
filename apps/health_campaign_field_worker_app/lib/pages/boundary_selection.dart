@@ -186,6 +186,7 @@ class _BoundarySelectionPageState
                                             .add(
                                               DownSyncCheckTotalCountEvent(
                                                 projectId: context.projectId,
+                                                useProjectId: !context.isWFP,
                                                 boundaryCode: selectedBoundary!
                                                     .value!.code
                                                     .toString(),
@@ -502,9 +503,10 @@ class _BoundarySelectionPageState
 
                                                 if (context.mounted) {
                                                   if (isOnline &&
-                                                      isDistributor &&
-                                                      Constants
-                                                          .isDownSyncEnabled) {
+                                                          (isDistributor &&
+                                                              Constants
+                                                                  .isDownSyncEnabled) ||
+                                                      context.isWFP) {
                                                     context
                                                         .read<
                                                             BeneficiaryDownSyncBloc>()
