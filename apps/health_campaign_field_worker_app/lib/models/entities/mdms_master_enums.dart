@@ -33,6 +33,8 @@ enum MasterEnums {
   idTypes,
   @MappableValue("DELIVERY_COMMENT_OPTIONS_POPULATOR")
   deliveryComments,
+  @MappableValue("DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR")
+  redoseDeliveryComments,
   @MappableValue("USER_ACTION_DAILY_PLAN")
   dipConfig,
   @MappableValue("BACKEND_INTERFACE")

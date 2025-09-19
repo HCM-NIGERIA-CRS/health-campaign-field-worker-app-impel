@@ -122,6 +122,11 @@ _$HCMWrapperModelImpl _$$HCMWrapperModelImplFromJson(
       idTypeOptions: (json['ID_TYPE_OPTIONS_POPULATOR'] as List<dynamic>)
           .map((e) => IdTypeOptions.fromJson(e as Map<String, dynamic>))
           .toList(),
+      redoseDeliveryCommentsOptions:
+          (json['DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR'] as List<dynamic>)
+              .map((e) =>
+                  DeliveryCommentOptions.fromJson(e as Map<String, dynamic>))
+              .toList(),
       deliveryCommentOptions: (json['DELIVERY_COMMENT_OPTIONS_POPULATOR']
               as List<dynamic>)
           .map(
@@ -190,6 +195,8 @@ Map<String, dynamic> _$$HCMWrapperModelImplToJson(
       'BACKGROUND_SERVICE_CONFIG': instance.backgroundServiceConfig,
       'CHECKLIST_TYPES': instance.checklistTypes,
       'ID_TYPE_OPTIONS_POPULATOR': instance.idTypeOptions,
+      'DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR':
+          instance.redoseDeliveryCommentsOptions,
       'DELIVERY_COMMENT_OPTIONS_POPULATOR': instance.deliveryCommentOptions,
       'AGE_RANGE_OPTIONS': instance.ageRangeOptions,
       'HEIGHT_RANGE_OPTIONS': instance.heightRangeOptions,

@@ -305,6 +305,15 @@ class MdmsRepository {
       return deliveryCommentOption;
     }).toList();
 
+    final List<DeliveryCommentOptions>? redoseDeliveryCommentOptions =
+        element?.redoseDeliveryCommentsOptions.map((element) {
+      final redoseDeliveryCommentOption = DeliveryCommentOptions()
+        ..name = element.name
+        ..code = element.code;
+
+      return redoseDeliveryCommentOption;
+    }).toList();
+
     final List<AgeRangeOptions>? ageRangeOptions =
         element?.ageRangeOptions.map((element) {
       final ageRangeOption = AgeRangeOptions()
@@ -368,6 +377,8 @@ class MdmsRepository {
     appConfiguration.idTypeOptions = idTypeOptions;
     appConfiguration.privacyPolicyConfig = privacyPolicy;
     appConfiguration.deliveryCommentOptions = deliveryCommentOptions;
+    appConfiguration.redoseDeliveryCommentsOptions =
+        redoseDeliveryCommentOptions;
     appConfiguration.ageRangeOptions = ageRangeOptions;
     appConfiguration.heightRangeOptions = heightRangeOptions;
     appConfiguration.dailyPlanConfigs = dailyPlanConfigs;

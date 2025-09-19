@@ -81,6 +81,8 @@ class HCMWrapperModel with _$HCMWrapperModel {
     required List<CheckListTypes> checklistTypes,
     @JsonKey(name: 'ID_TYPE_OPTIONS_POPULATOR')
     required List<IdTypeOptions> idTypeOptions,
+    @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR')
+    required List<DeliveryCommentOptions> redoseDeliveryCommentsOptions,
     @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_POPULATOR')
     required List<DeliveryCommentOptions> deliveryCommentOptions,
     @JsonKey(name: 'AGE_RANGE_OPTIONS')

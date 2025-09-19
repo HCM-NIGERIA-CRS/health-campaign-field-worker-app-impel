@@ -217,7 +217,13 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                               return ReactiveFormBuilder(
                                 form: () => buildForm(
                                   context,
-                                  productVariants,
+                                  // TODO : verify this ,removed any other resource apart from spaq
+                                  productVariants
+                                          ?.where((variant) =>
+                                              variant.productVariantId !=
+                                              "PVAR-2025-07-24-000001")
+                                          .toList() ??
+                                      [],
                                   variant,
                                 ),
                                 builder: (context, form, child) {
@@ -684,7 +690,7 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
 
                                                     final deliveryCommentOptions = state
                                                             .appConfiguration
-                                                            .deliveryCommentOptions ??
+                                                            .redoseDeliveryCommentsOptions ??
                                                         <DeliveryCommentOptions>[];
 
                                                     // return DigitReactiveDropdown<

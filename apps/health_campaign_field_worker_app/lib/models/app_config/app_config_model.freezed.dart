@@ -941,6 +941,9 @@ mixin _$HCMWrapperModel {
   List<CheckListTypes> get checklistTypes => throw _privateConstructorUsedError;
   @JsonKey(name: 'ID_TYPE_OPTIONS_POPULATOR')
   List<IdTypeOptions> get idTypeOptions => throw _privateConstructorUsedError;
+  @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR')
+  List<DeliveryCommentOptions> get redoseDeliveryCommentsOptions =>
+      throw _privateConstructorUsedError;
   @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_POPULATOR')
   List<DeliveryCommentOptions> get deliveryCommentOptions =>
       throw _privateConstructorUsedError;
@@ -1018,6 +1021,8 @@ abstract class $HCMWrapperModelCopyWith<$Res> {
       @JsonKey(name: 'CHECKLIST_TYPES') List<CheckListTypes> checklistTypes,
       @JsonKey(name: 'ID_TYPE_OPTIONS_POPULATOR')
       List<IdTypeOptions> idTypeOptions,
+      @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR')
+      List<DeliveryCommentOptions> redoseDeliveryCommentsOptions,
       @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_POPULATOR')
       List<DeliveryCommentOptions> deliveryCommentOptions,
       @JsonKey(name: 'AGE_RANGE_OPTIONS') List<AgeRangeOptions> ageRangeOptions,
@@ -1068,6 +1073,7 @@ class _$HCMWrapperModelCopyWithImpl<$Res, $Val extends HCMWrapperModel>
     Object? backgroundServiceConfig = freezed,
     Object? checklistTypes = null,
     Object? idTypeOptions = null,
+    Object? redoseDeliveryCommentsOptions = null,
     Object? deliveryCommentOptions = null,
     Object? ageRangeOptions = null,
     Object? heightRangeOptions = null,
@@ -1123,6 +1129,10 @@ class _$HCMWrapperModelCopyWithImpl<$Res, $Val extends HCMWrapperModel>
           ? _value.idTypeOptions
           : idTypeOptions // ignore: cast_nullable_to_non_nullable
               as List<IdTypeOptions>,
+      redoseDeliveryCommentsOptions: null == redoseDeliveryCommentsOptions
+          ? _value.redoseDeliveryCommentsOptions
+          : redoseDeliveryCommentsOptions // ignore: cast_nullable_to_non_nullable
+              as List<DeliveryCommentOptions>,
       deliveryCommentOptions: null == deliveryCommentOptions
           ? _value.deliveryCommentOptions
           : deliveryCommentOptions // ignore: cast_nullable_to_non_nullable
@@ -1216,6 +1226,8 @@ abstract class _$$HCMWrapperModelImplCopyWith<$Res>
       @JsonKey(name: 'CHECKLIST_TYPES') List<CheckListTypes> checklistTypes,
       @JsonKey(name: 'ID_TYPE_OPTIONS_POPULATOR')
       List<IdTypeOptions> idTypeOptions,
+      @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR')
+      List<DeliveryCommentOptions> redoseDeliveryCommentsOptions,
       @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_POPULATOR')
       List<DeliveryCommentOptions> deliveryCommentOptions,
       @JsonKey(name: 'AGE_RANGE_OPTIONS') List<AgeRangeOptions> ageRangeOptions,
@@ -1264,6 +1276,7 @@ class __$$HCMWrapperModelImplCopyWithImpl<$Res>
     Object? backgroundServiceConfig = freezed,
     Object? checklistTypes = null,
     Object? idTypeOptions = null,
+    Object? redoseDeliveryCommentsOptions = null,
     Object? deliveryCommentOptions = null,
     Object? ageRangeOptions = null,
     Object? heightRangeOptions = null,
@@ -1319,6 +1332,10 @@ class __$$HCMWrapperModelImplCopyWithImpl<$Res>
           ? _value._idTypeOptions
           : idTypeOptions // ignore: cast_nullable_to_non_nullable
               as List<IdTypeOptions>,
+      redoseDeliveryCommentsOptions: null == redoseDeliveryCommentsOptions
+          ? _value._redoseDeliveryCommentsOptions
+          : redoseDeliveryCommentsOptions // ignore: cast_nullable_to_non_nullable
+              as List<DeliveryCommentOptions>,
       deliveryCommentOptions: null == deliveryCommentOptions
           ? _value._deliveryCommentOptions
           : deliveryCommentOptions // ignore: cast_nullable_to_non_nullable
@@ -1409,6 +1426,8 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
       required final List<CheckListTypes> checklistTypes,
       @JsonKey(name: 'ID_TYPE_OPTIONS_POPULATOR')
       required final List<IdTypeOptions> idTypeOptions,
+      @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR')
+      required final List<DeliveryCommentOptions> redoseDeliveryCommentsOptions,
       @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_POPULATOR')
       required final List<DeliveryCommentOptions> deliveryCommentOptions,
       @JsonKey(name: 'AGE_RANGE_OPTIONS')
@@ -1451,6 +1470,7 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
         _backgroundServiceConfig = backgroundServiceConfig,
         _checklistTypes = checklistTypes,
         _idTypeOptions = idTypeOptions,
+        _redoseDeliveryCommentsOptions = redoseDeliveryCommentsOptions,
         _deliveryCommentOptions = deliveryCommentOptions,
         _ageRangeOptions = ageRangeOptions,
         _heightRangeOptions = heightRangeOptions,
@@ -1558,6 +1578,16 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
     if (_idTypeOptions is EqualUnmodifiableListView) return _idTypeOptions;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_idTypeOptions);
+  }
+
+  final List<DeliveryCommentOptions> _redoseDeliveryCommentsOptions;
+  @override
+  @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR')
+  List<DeliveryCommentOptions> get redoseDeliveryCommentsOptions {
+    if (_redoseDeliveryCommentsOptions is EqualUnmodifiableListView)
+      return _redoseDeliveryCommentsOptions;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_redoseDeliveryCommentsOptions);
   }
 
   final List<DeliveryCommentOptions> _deliveryCommentOptions;
@@ -1735,7 +1765,7 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
 
   @override
   String toString() {
-    return 'HCMWrapperModel(appConfig: $appConfig, bandWidthBatchSize: $bandWidthBatchSize, downSyncBandWidthBatchSize: $downSyncBandWidthBatchSize, beneficiaryIdConfig: $beneficiaryIdConfig, householdDeletionReasonOptions: $householdDeletionReasonOptions, householdMemberDeletionReasonOptions: $householdMemberDeletionReasonOptions, backgroundServiceConfig: $backgroundServiceConfig, checklistTypes: $checklistTypes, idTypeOptions: $idTypeOptions, deliveryCommentOptions: $deliveryCommentOptions, ageRangeOptions: $ageRangeOptions, heightRangeOptions: $heightRangeOptions, dailyPlanConfigs: $dailyPlanConfigs, nonComplianceReasons: $nonComplianceReasons, backendInterface: $backendInterface, callSupportOptions: $callSupportOptions, transportTypes: $transportTypes, symptomsTypeList: $symptomsTypeList, searchHouseHoldFilters: $searchHouseHoldFilters, searchCLFFilters: $searchCLFFilters, referralReasonList: $referralReasonList, houseStructureTypes: $houseStructureTypes, refusalReasons: $refusalReasons, firebaseConfig: $firebaseConfig, transitPostType: $transitPostType)';
+    return 'HCMWrapperModel(appConfig: $appConfig, bandWidthBatchSize: $bandWidthBatchSize, downSyncBandWidthBatchSize: $downSyncBandWidthBatchSize, beneficiaryIdConfig: $beneficiaryIdConfig, householdDeletionReasonOptions: $householdDeletionReasonOptions, householdMemberDeletionReasonOptions: $householdMemberDeletionReasonOptions, backgroundServiceConfig: $backgroundServiceConfig, checklistTypes: $checklistTypes, idTypeOptions: $idTypeOptions, redoseDeliveryCommentsOptions: $redoseDeliveryCommentsOptions, deliveryCommentOptions: $deliveryCommentOptions, ageRangeOptions: $ageRangeOptions, heightRangeOptions: $heightRangeOptions, dailyPlanConfigs: $dailyPlanConfigs, nonComplianceReasons: $nonComplianceReasons, backendInterface: $backendInterface, callSupportOptions: $callSupportOptions, transportTypes: $transportTypes, symptomsTypeList: $symptomsTypeList, searchHouseHoldFilters: $searchHouseHoldFilters, searchCLFFilters: $searchCLFFilters, referralReasonList: $referralReasonList, houseStructureTypes: $houseStructureTypes, refusalReasons: $refusalReasons, firebaseConfig: $firebaseConfig, transitPostType: $transitPostType)';
   }
 
   @override
@@ -1764,6 +1794,9 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
                 .equals(other._checklistTypes, _checklistTypes) &&
             const DeepCollectionEquality()
                 .equals(other._idTypeOptions, _idTypeOptions) &&
+            const DeepCollectionEquality().equals(
+                other._redoseDeliveryCommentsOptions,
+                _redoseDeliveryCommentsOptions) &&
             const DeepCollectionEquality().equals(
                 other._deliveryCommentOptions, _deliveryCommentOptions) &&
             const DeepCollectionEquality()
@@ -1812,6 +1845,7 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
         const DeepCollectionEquality().hash(_backgroundServiceConfig),
         const DeepCollectionEquality().hash(_checklistTypes),
         const DeepCollectionEquality().hash(_idTypeOptions),
+        const DeepCollectionEquality().hash(_redoseDeliveryCommentsOptions),
         const DeepCollectionEquality().hash(_deliveryCommentOptions),
         const DeepCollectionEquality().hash(_ageRangeOptions),
         const DeepCollectionEquality().hash(_heightRangeOptions),
@@ -1865,6 +1899,8 @@ abstract class _HCMWrapperModel implements HCMWrapperModel {
       required final List<CheckListTypes> checklistTypes,
       @JsonKey(name: 'ID_TYPE_OPTIONS_POPULATOR')
       required final List<IdTypeOptions> idTypeOptions,
+      @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR')
+      required final List<DeliveryCommentOptions> redoseDeliveryCommentsOptions,
       @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_POPULATOR')
       required final List<DeliveryCommentOptions> deliveryCommentOptions,
       @JsonKey(name: 'AGE_RANGE_OPTIONS')
@@ -1928,6 +1964,9 @@ abstract class _HCMWrapperModel implements HCMWrapperModel {
   @override
   @JsonKey(name: 'ID_TYPE_OPTIONS_POPULATOR')
   List<IdTypeOptions> get idTypeOptions;
+  @override
+  @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR')
+  List<DeliveryCommentOptions> get redoseDeliveryCommentsOptions;
   @override
   @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_POPULATOR')
   List<DeliveryCommentOptions> get deliveryCommentOptions;

@@ -642,7 +642,9 @@ class _HomePageState extends LocalizedState<HomePage> {
       i18.home.manageStockLabel,
       i18.home.stockReconciliationLabel,
       i18.home.viewReportsLabel,
-      i18.home.viewSummaryReportsLabel,
+      // hide the summary report feature
+      // TODO : should be done via role action
+      // i18.home.viewSummaryReportsLabel,
       i18.home.syncDataLabel,
       i18.home.fileComplaint,
       i18.home.beneficiaryIdLabel,
