@@ -33,7 +33,7 @@ class DownsyncRemoteRepository
             queryParameters: {
               'offset': offSet ?? 0,
               'limit': limit ?? 100,
-              'useProjectId': useProjectId,
+              if (useProjectId != null) 'useProjectId': useProjectId,
               'tenantId': DigitDataModelSingleton().tenantId,
               if (query.isDeleted ?? false) 'includeDeleted': query.isDeleted,
             },

@@ -112,14 +112,16 @@ class NonComplianceIndividualSearchBloc extends SearchHouseholdsSMCBloc {
       referralsList = tasksRelated[2];
 
       await _processHouseholdEntries(
-          householdMembers,
-          householdList,
-          individualsList,
-          projectBeneficiariesList,
-          taskList,
-          sideEffectsList,
-          referralsList,
-          containers);
+        householdMembers,
+        householdList,
+        individualsList,
+        projectBeneficiariesList,
+        taskList,
+        sideEffectsList,
+        referralsList,
+        containers,
+        event.globalSearchParams.nameSearch,
+      );
     } else if (event.globalSearchParams.filter!.isNotEmpty &&
         event.globalSearchParams.filter != null) {
       late List<String> listOfBeneficiaries = [];
@@ -208,6 +210,7 @@ class NonComplianceIndividualSearchBloc extends SearchHouseholdsSMCBloc {
         sideEffectsList,
         referralsList,
         containers,
+        event.globalSearchParams.nameSearch,
       );
     } else if (event.globalSearchParams.isChildAbsentEnabled != null &&
         event.globalSearchParams.isChildAbsentEnabled!) {
@@ -290,6 +293,7 @@ class NonComplianceIndividualSearchBloc extends SearchHouseholdsSMCBloc {
         sideEffectsList,
         referralsList,
         containers,
+        event.globalSearchParams.nameSearch,
       );
     } else if (event.globalSearchParams.isHouseNonCompliant != null &&
         event.globalSearchParams.isHouseNonCompliant!) {
@@ -372,6 +376,7 @@ class NonComplianceIndividualSearchBloc extends SearchHouseholdsSMCBloc {
         sideEffectsList,
         referralsList,
         containers,
+        event.globalSearchParams.nameSearch,
       );
     } else {
       late List<String> individualClientReferenceIds = [];
@@ -430,7 +435,8 @@ class NonComplianceIndividualSearchBloc extends SearchHouseholdsSMCBloc {
           taskList,
           sideEffectsList,
           referralsList,
-          containers);
+          containers,
+          event.globalSearchParams.nameSearch);
     }
 
     emit(state.copyWith(
@@ -445,14 +451,16 @@ class NonComplianceIndividualSearchBloc extends SearchHouseholdsSMCBloc {
   }
 
   _processHouseholdEntries(
-      List<HouseholdMemberModel> householdMembers,
-      List<HouseholdModel> householdList,
-      List<IndividualModel> individualsList,
-      List<ProjectBeneficiaryModel> projectBeneficiariesList,
-      List<TaskModel> taskList,
-      List<SideEffectModel> sideEffectsList,
-      List<ReferralModel> referralsList,
-      List<HouseholdMemberWrapper> containers) async {
+    List<HouseholdMemberModel> householdMembers,
+    List<HouseholdModel> householdList,
+    List<IndividualModel> individualsList,
+    List<ProjectBeneficiaryModel> projectBeneficiariesList,
+    List<TaskModel> taskList,
+    List<SideEffectModel> sideEffectsList,
+    List<ReferralModel> referralsList,
+    List<HouseholdMemberWrapper> containers,
+    String? searchedName,
+  ) async {
     // Group household members by household client reference ID
     final groupedHouseholdsMembers = householdMembers
         .groupListsBy((element) => element.householdClientReferenceId);
@@ -511,6 +519,11 @@ class NonComplianceIndividualSearchBloc extends SearchHouseholdsSMCBloc {
 
       // Skip if no head of household or no filtered beneficiaries
       if (head == null) continue;
+
+      if (filteredIndividuals
+          .where((e) => (e.name?.givenName ?? e.name?.familyName ?? "")
+              .contains(searchedName.toString()))
+          .isEmpty) continue; //TODO: fix the name search with family name
 
       // Add household member wrapper to containers
       containers.add(
