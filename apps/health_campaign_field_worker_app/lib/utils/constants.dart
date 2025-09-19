@@ -147,6 +147,12 @@ class Constants {
   static const String blueVAS = "Blue VAS";
   static const String redVAS = "Red VAS";
 
+  static const String polioProductVariantId = 'PVAR-2025-05-08-000001';
+  static const String measlesProductVariantId = 'PVAR-2025-05-08-000001';
+  static const String onchoProductVariantId = 'PVAR-2025-05-08-000001';
+  static const String spaq1ProductVariantId = 'PVAR-2025-05-08-000001';
+  static const String spaq2ProductVariantId = 'PVAR-2025-05-08-000001';
+
   static const String productVariantId1 = 'PVAR-2025-05-08-000001';
   static const String productVariantId2 = 'PVAR-2025-05-08-000002';
 

@@ -635,7 +635,7 @@ class _HomePageState extends LocalizedState<HomePage> {
       i18.home.dailyImplementationPlanLabel,
       i18.home.campaignDeliverySelection,
       i18.home.nonComplianceTracking,
-      i18.home.mySurveyForm,
+      // i18.home.mySurveyForm,
       i18.home.manageAttendanceLabel,
       i18.home.beneficiaryReferralLabel,
       // i18.home.beneficiaryLabel,
