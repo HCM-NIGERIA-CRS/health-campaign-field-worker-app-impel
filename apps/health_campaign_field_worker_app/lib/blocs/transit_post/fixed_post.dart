@@ -12,20 +12,15 @@ import '../../data/repositories/local/transit_post/custom_user_action.dart';
 part 'fixed_post.freezed.dart';
 
 typedef FixedPostEmitter = Emitter<FixedPostState>;
-typedef UserActionRemoteRepository
-    = DataRepository<UserActionModel, UserActionSearchModel>;
 
 class FixedPostBloc extends Bloc<FixedPostEvent, FixedPostState> {
   final UserActionLocalRepository userActionLocalRepository;
   final CustomUserActionLocalRepository customUserActionLocalRepository;
 
-  final UserActionRemoteRepository userActionRemoteRepository;
-
   FixedPostBloc(
     super.initialState, {
     required this.userActionLocalRepository,
     required this.customUserActionLocalRepository,
-    required this.userActionRemoteRepository,
   }) {
     on(_handleFixedPostSelection);
     on(_handleDeliveryCount);

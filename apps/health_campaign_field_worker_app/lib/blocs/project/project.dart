@@ -29,6 +29,7 @@ import '../../data/repositories/local/inventory_management/custom_stock.dart';
 import '../../data/repositories/local/transit_post/custom_user_action.dart';
 import '../../data/repositories/remote/bandwidth_check.dart';
 import '../../data/repositories/remote/mdms.dart';
+import '../../data/repositories/remote/transit_post/custom_user_action.dart';
 import '../../models/app_config/app_config_model.dart';
 import '../../models/auth/auth_model.dart';
 import '../../models/entities/roles_type.dart';
@@ -817,8 +818,9 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     var offset = 0;
     var initialLimit = Constants.apiCallLimit;
 
-    final userActionModels = await userActionRemoteRepository
-        .search(userActionSearchModel, limit: initialLimit, offSet: offset);
+    final userActionModels =
+        await (userActionRemoteRepository as CustomUserActionRemoteRepository)
+            .search(userActionSearchModel, limit: initialLimit, offSet: offset);
 
     return userActionModels;
   }

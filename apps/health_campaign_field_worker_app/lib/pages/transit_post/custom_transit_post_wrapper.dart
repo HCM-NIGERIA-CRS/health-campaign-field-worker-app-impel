@@ -49,9 +49,6 @@ class CustomTransitPostWrapperPage extends StatelessWidget {
                     context.read<CustomUserActionLocalRepository>(),
                 userActionLocalRepository:
                     context.read<UserActionLocalRepository>(),
-                userActionRemoteRepository:
-                    context.repository<UserActionModel, UserActionSearchModel>(
-                        context),
               );
             },
             lazy: false,
@@ -64,9 +61,6 @@ class CustomTransitPostWrapperPage extends StatelessWidget {
                     context.read<UserActionLocalRepository>(),
                 customUserActionLocalRepository:
                     context.read<CustomUserActionLocalRepository>(),
-                userActionRemoteRepository:
-                    context.repository<UserActionModel, UserActionSearchModel>(
-                        context),
               );
             },
             lazy: false,

@@ -30,6 +30,7 @@ import '../data/local_store/no_sql/schema/row_versions.dart';
 import '../data/local_store/no_sql/schema/service_registry.dart';
 import '../data/repositories/local/inventory_management/custom_stock.dart';
 import '../data/repositories/remote/downsync.dart';
+import '../data/repositories/remote/transit_post/custom_user_action.dart';
 import '../data/sync_registry.dart';
 import '../data/sync_service_mapper.dart';
 import '../firebase_options.dart';
@@ -318,7 +319,7 @@ class Constants {
         if (value == DataModelType.service)
           ServiceRemoteRepository(dio, actionMap: actions),
         if (value == DataModelType.userAction)
-          UserActionRemoteRepository(dio, actionMap: actions),
+          CustomUserActionRemoteRepository(dio, actionMap: actions),
       ]);
     }
 

@@ -197,7 +197,9 @@ class BeneficiaryDownSyncBloc
           if (offset < totalCount) {
             emit(BeneficiaryDownSyncState.inProgress(offset, totalCount));
             //Make the batch API call
-            final downSyncResults = await downSyncRemoteRepository.downSync(
+            final downSyncResults =
+                await (downSyncRemoteRepository as DownsyncRemoteRepository)
+                    .customDownSync(
               DownsyncSearchModel(
                 locality: event.boundaryCode,
                 offset: offset,
@@ -208,6 +210,7 @@ class BeneficiaryDownSyncBloc
                 lastSyncedTime: lastSyncedTime,
                 isDeleted: true,
               ),
+              useProjectId: false,
             );
             // check if the API response is there or it failed
             if (downSyncResults.isNotEmpty) {
