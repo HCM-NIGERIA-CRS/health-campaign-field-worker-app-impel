@@ -265,12 +265,11 @@ bool validateStockSubmission({
 }
 
 String customFormatAgeRange(String condition) {
+  // Case 1: Matches patterns like "20<ageandage<30"
   final regex =
       RegExp(r'(\d+)\s*<\s*ageandage\s*<\s*(\d+)', caseSensitive: false);
   final match = regex.firstMatch(condition);
   if (match != null && match.groupCount == 2) {
-    // final min = match.group(1);
-    // final max = match.group(2);
     int min = int.parse(match.group(1)!);
     int max = int.parse(match.group(2)!);
 
@@ -281,6 +280,7 @@ String customFormatAgeRange(String condition) {
     return '$min - $max months';
   }
 
+  // Case 2: Matches "age>59andheight>140andheight<159"
   final complexRegex = RegExp(
       r'age\s*>\s*(\d+)\s*and\s*height\s*>\s*(\d+)\s*and\s*height\s*<\s*(\d+)',
       caseSensitive: false);
@@ -291,17 +291,21 @@ String customFormatAgeRange(String condition) {
     int heightMin = int.parse(complexMatch.group(2)!);
     int heightMax = int.parse(complexMatch.group(3)!);
 
-    // Apply your +/-1 logic for height
+    // Adjust height by +/- 1
     int adjHeightMin = heightMin + 1;
     int adjHeightMax = heightMax - 1;
 
-    // return '$ageMin>age & $adjHeightMin-$adjHeightMax heights';
     return '$adjHeightMin-$adjHeightMax heights';
   }
-  if (condition == "age>59andheight>199") {
-    // return condition.replaceAll("and", " & ");
-    return condition.replaceAll("age>59and", "");
+
+  // Case 3: If condition starts with age but we only want height part
+  final ageHeightRegex =
+      RegExp(r'age\s*>\s*\d+\s*and\s*(height.*)', caseSensitive: false);
+  final ageHeightMatch = ageHeightRegex.firstMatch(condition);
+  if (ageHeightMatch != null) {
+    return ageHeightMatch.group(1)!; // return only height part
   }
+
   return condition;
 }
 
