@@ -185,16 +185,15 @@ extension ContextUtilityExtensions on BuildContext {
   }
 
   bool get isWFP {
-    return true;
     try {
-      bool isDistributorUser = loggedInUserRoles
+      bool isWardFocalPoint = loggedInUserRoles
           .where(
-            (role) => role.code == RolesType.teamSupervisor.toValue(),
+            (role) => role.code == RolesType.wardFocalPoint.toValue(),
           )
           .toList()
           .isNotEmpty;
 
-      return isDistributorUser;
+      return isWardFocalPoint;
     } catch (_) {
       return false;
     }
