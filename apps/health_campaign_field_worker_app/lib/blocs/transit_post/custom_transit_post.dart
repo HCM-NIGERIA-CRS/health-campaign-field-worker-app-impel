@@ -12,20 +12,16 @@ import '../../data/repositories/local/transit_post/custom_user_action.dart';
 part 'custom_transit_post.freezed.dart';
 
 typedef CustomTransitPostEmitter = Emitter<CustomTransitPostState>;
-typedef UserActionRemoteRepository
-    = DataRepository<UserActionModel, UserActionSearchModel>;
 
 class CustomTransitPostBloc
     extends Bloc<CustomTransitPostEvent, CustomTransitPostState> {
   final CustomUserActionLocalRepository customUserActionLocalRepository;
   final UserActionLocalRepository userActionLocalRepository;
-  final UserActionRemoteRepository userActionRemoteRepository;
 
   CustomTransitPostBloc(
     super.initialState, {
     required this.customUserActionLocalRepository,
     required this.userActionLocalRepository,
-    required this.userActionRemoteRepository,
   }) {
     on(_handleTransitPostSelection);
     on(_handleDeliveryCount);
