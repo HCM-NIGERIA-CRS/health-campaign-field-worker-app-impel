@@ -1,10 +1,11 @@
 import 'dart:convert';
 
-import 'package:digit_data_model/data/local_store/sql_store/tables/user_action.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/user_action.dart';
+import 'package:digit_ui_components/enum/app_enums.dart';
 import 'package:digit_ui_components/theme/digit_extended_theme.dart';
 import 'package:digit_ui_components/theme/spacers.dart';
+import 'package:digit_ui_components/widgets/atoms/digit_button.dart';
 import 'package:digit_ui_components/widgets/atoms/text_block.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +14,6 @@ import 'package:intl/intl.dart';
 import 'package:inventory_management/widgets/localized.dart';
 import 'package:registration_delivery/widgets/showcase/showcase_wrappers.dart';
 
-import '../../blocs/daily_implementation_plan/daily_implementation_plan.dart';
 import '../../blocs/daily_implementation_plan/dip_search.dart';
 import '../../models/settlement/settlement_model.dart';
 import '../../router/app_router.dart';
@@ -130,7 +130,20 @@ class _SelectSettlementsDateViewState
                               ]),
                           ]),
                         ),
-                      )
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: DigitButton(
+                          type: DigitButtonType.primary,
+                          size: DigitButtonSize.large,
+                          mainAxisSize: MainAxisSize.max,
+                          onPressed: () async {
+                            context.router.maybePop();
+                          },
+                          label: localizations
+                              .translate(i18.common.coreCommonFinish),
+                        ),
+                      ),
                     ],
                   );
                 }
