@@ -32,6 +32,7 @@ import '../data/repositories/local/transit_post/custom_user_action.dart';
 import '../data/repositories/oplog.dart';
 import '../data/repositories/remote/auth.dart';
 import '../data/repositories/remote/downsync.dart';
+import '../data/repositories/remote/transit_post/custom_user_action.dart';
 import '../models/downsync/downsync.dart';
 import 'package:inventory_management/inventory_management.dart';
 import 'package:registration_delivery/registration_delivery.dart';
@@ -593,7 +594,8 @@ class NetworkManagerProviderWrapper extends StatelessWidget {
         if (value == DataModelType.userAction)
           RepositoryProvider<
               RemoteRepository<UserActionModel, UserActionSearchModel>>(
-            create: (_) => UserActionRemoteRepository(dio, actionMap: actions),
+            create: (_) =>
+                CustomUserActionRemoteRepository(dio, actionMap: actions),
           ),
       ]);
     }
