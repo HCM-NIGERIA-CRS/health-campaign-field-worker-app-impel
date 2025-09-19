@@ -295,10 +295,12 @@ String customFormatAgeRange(String condition) {
     int adjHeightMin = heightMin + 1;
     int adjHeightMax = heightMax - 1;
 
-    return '$ageMin>age & $adjHeightMin-$adjHeightMax heights';
+    // return '$ageMin>age & $adjHeightMin-$adjHeightMax heights';
+    return '$adjHeightMin-$adjHeightMax heights';
   }
   if (condition == "age>59andheight>199") {
-    return condition.replaceAll("and", " & ");
+    // return condition.replaceAll("and", " & ");
+    return condition.replaceAll("age>59and", "");
   }
   return condition;
 }

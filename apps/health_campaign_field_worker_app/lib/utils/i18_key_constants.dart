@@ -1421,6 +1421,8 @@ class IndividualDetails {
 class BeneficiaryDetails {
   const BeneficiaryDetails();
 
+  String get beneficiaryHeight => "BENEFICIARY_HEIGHT_LABEL";
+
   String get noResourceFound => "NO_RESOURCE_FOUND";
 
   String get validationForExcessStockReturn =>
