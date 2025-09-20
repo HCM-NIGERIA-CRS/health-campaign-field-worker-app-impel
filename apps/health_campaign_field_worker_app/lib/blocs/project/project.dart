@@ -806,7 +806,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
       List<UserActionModel> userActionModelDownloaded =
           await downloadUserActions(UserActionSearchModel());
       await (userActionLocalRepository as CustomUserActionLocalRepository)
-          .bulkStockCreate(userActionModelDownloaded);
+          .bulkUserActionCreate(userActionModelDownloaded);
     }
   }
 
