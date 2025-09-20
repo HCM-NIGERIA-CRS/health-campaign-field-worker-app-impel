@@ -147,6 +147,9 @@ class Constants {
   static const String blueVAS = "Blue VAS";
   static const String redVAS = "Red VAS";
 
+  static const String dipAction = "DAILY_PLAN";
+  static const String nonComplianceAction = "NON_COMPLIANCE";
+
   static const String smcFlow = "smcFlow";
   static const String polioFlow = "polioFlow";
   static const String measlesFlow = "measlesFlow";

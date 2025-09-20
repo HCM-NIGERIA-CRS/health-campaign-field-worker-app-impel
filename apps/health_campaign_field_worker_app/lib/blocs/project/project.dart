@@ -805,8 +805,22 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     if (context.isDistributor || context.isWFP) {
       List<UserActionModel> userActionModelDownloaded =
           await downloadUserActions(UserActionSearchModel());
-      await (userActionLocalRepository as CustomUserActionLocalRepository)
-          .bulkUserActionCreate(userActionModelDownloaded);
+      if (context.isDistributor) {
+        List<UserActionModel> filteredUserActionModelDownloaded =
+            userActionModelDownloaded
+                .where((element) => element.action == Constants.dipAction)
+                .toList();
+        await (userActionLocalRepository as CustomUserActionLocalRepository)
+            .bulkUserActionCreate(filteredUserActionModelDownloaded);
+      } else if (context.isWFP) {
+        List<UserActionModel> filteredUserActionModelDownloaded =
+            userActionModelDownloaded
+                .where((element) =>
+                    element.action == Constants.nonComplianceAction)
+                .toList();
+        await (userActionLocalRepository as CustomUserActionLocalRepository)
+            .bulkUserActionCreate(filteredUserActionModelDownloaded);
+      }
     }
   }
 
