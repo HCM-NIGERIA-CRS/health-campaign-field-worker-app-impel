@@ -33,12 +33,14 @@ import 'package:registration_delivery/models/entities/status.dart';
 import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
 import 'package:registration_delivery/utils/utils.dart';
+import '../../blocs/registration_delivery/current_flow.dart';
 import '../../blocs/registration_delivery/custom_search_household.dart'
     as customSearchHouseholdBloc;
 import '../../models/entities/project_types.dart';
 import '../../utils/utils.dart';
 import '../../utils/date_utils.dart' as digits;
 import '../../utils/i18_key_constants.dart' as i18_local;
+import '../../utils/constants.dart' as local_constants;
 import '../../widgets/custom_back_navigation.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 import 'package:registration_delivery/widgets/member_card/member_card.dart';
@@ -686,6 +688,24 @@ class _CustomHouseholdOverviewPageState
                                             final smcFlow = isSMCFlow(age);
                                             final polioFlow = isPolioFlow(age);
                                             final onchoFlow = isOnchoFlow(age);
+
+                                            context.read<CurrentFlowBloc>().add(
+                                                  CurrentFlowEvent.set(
+                                                      currentFlows: {
+                                                        if (smcFlow)
+                                                          local_constants
+                                                              .Constants
+                                                              .smcFlow,
+                                                        if (polioFlow)
+                                                          local_constants
+                                                              .Constants
+                                                              .polioFlow,
+                                                        if (onchoFlow)
+                                                          local_constants
+                                                              .Constants
+                                                              .onchoFlow,
+                                                      }),
+                                                );
 
                                             return BlocBuilder<
                                                 ProductVariantBloc,
