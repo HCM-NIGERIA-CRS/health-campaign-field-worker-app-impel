@@ -104,13 +104,21 @@ class Constants {
   static const String reDoseQuantityKey = 'reDoseQuantity';
   static const String healthFacility = 'Health Facility';
   static const String lgaBoundaryLevel = 'LGA';
+  static const String wardBoundaryLevel = 'Ward';
   static const String districtBoundaryLevel = 'DISTRICT';
   static const String provincialBoundaryLevel = 'Provincia';
   static const String centralFacility = 'Central Facility';
+  static const String nationalWarehouse = 'National Warehouse';
+  static const String wardWarehouse = 'Ward Warehouse';
+  static const String lgaWarehouse = 'LGA Warehouse';
+  static const String stateWarehouse = "State Warehouse";
   static const String stateBoundaryLevel = 'State';
+  static const String countryBoundaryLevel = "Country";
   static const String provinceBoundaryLevel = 'PROVINCE';
   static const String stateFacility = 'State Facility';
+  static const String zonalWarehouse = 'Zonal Warehouse';
   static const String lgaFacility = 'LGA Facility'; // specific to smc
+  static const String wardFacility = 'Ward Facility';
   static const int validMinAge = 3;
   static const int validMaxAge = 59;
   static const String pipeSeparator = '||';
@@ -141,6 +149,7 @@ class Constants {
   static const String productVariantId2 = 'PVAR-2025-05-08-000002';
 
   static const String polioVariant = 'Polio - nOPV, bOPV';
+  static const String measlesVariant = 'Measles - MRV';
 
   // todo enable before cycle2
   static const bool isDownSyncEnabled = false;

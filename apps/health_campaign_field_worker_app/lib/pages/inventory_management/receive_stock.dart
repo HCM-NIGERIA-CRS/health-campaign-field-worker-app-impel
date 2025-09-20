@@ -18,6 +18,7 @@ import 'package:inventory_management/utils/utils.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:collection/collection.dart';
+import '../../utils/utils.dart';
 
 import '../../blocs/auth/auth.dart';
 import '../../router/app_router.dart';
@@ -25,11 +26,11 @@ import '../../utils/constants.dart';
 import '../../utils/extensions/extensions.dart';
 
 @RoutePage()
-class ViewStockRecordsLGAPage extends LocalizedStatefulWidget {
+class ReceiveStockPage extends LocalizedStatefulWidget {
   final String mrnNumber;
   final List<StockModel> stockRecords;
 
-  const ViewStockRecordsLGAPage({
+  const ReceiveStockPage({
     super.key,
     super.appLocalizations,
     required this.mrnNumber,
@@ -37,18 +38,20 @@ class ViewStockRecordsLGAPage extends LocalizedStatefulWidget {
   });
 
   @override
-  State<ViewStockRecordsLGAPage> createState() =>
-      _ViewStockRecordsLGAPageState();
+  State<ReceiveStockPage> createState() => _ViewStockRecordsLGAPageState();
 }
 
-class _ViewStockRecordsLGAPageState
-    extends LocalizedState<ViewStockRecordsLGAPage>
+class _ViewStockRecordsLGAPageState extends LocalizedState<ReceiveStockPage>
     with SingleTickerProviderStateMixin {
   late final List<FormGroup> _forms;
   late TabController _tabController;
+  List<String> skuList = [];
 
   @override
   void initState() {
+    context
+        .read<AuthBloc>()
+        .add(const AuthUpdateProductSkuCountsEvent(skuCountUpdates: {}));
     super.initState();
     _forms = widget.stockRecords
         .map((_) => FormGroup({
@@ -220,24 +223,26 @@ class _ViewStockRecordsLGAPageState
             .value
             .toString());
 
-        int spaq1Count = 0;
-        int spaq2Count = 0;
+        Map<String, int> skuCounts = context
+            .getAllProductSkuCounts()
+            .map((key, value) => MapEntry(key, value));
+
+        // int spaq1Count = 0;
+        // int spaq2Count = 0;
+        if (skuCounts.isNotEmpty) {
+          skuList = skuCounts.keys.toList();
+        }
 
         String productName = stock.additionalFields?.fields
             .firstWhereOrNull((element) => element.key == "productName")
             ?.value;
 
-        if (productName == Constants.spaq1) {
-          spaq1Count = totalQty;
-        } else if (productName == Constants.spaq2) {
-          spaq2Count = totalQty;
+        if (skuList.contains(productName)) {
+          skuCounts[productName] = (skuCounts[productName] ?? 0) + totalQty;
         }
         context.read<AuthBloc>().add(
-              AuthAddSpaqCountsEvent(
-                spaq1Count: spaq1Count,
-                spaq2Count: spaq2Count,
-                blueVasCount: 0,
-                redVasCount: 0,
+              AuthUpdateProductSkuCountsEvent(
+                skuCountUpdates: skuCounts,
               ),
             );
       }
@@ -261,6 +266,7 @@ class _ViewStockRecordsLGAPageState
             .value
             ?.toString() ??
         '';
+    bool isWareHouseMgr = InventorySingleton().isWareHouseMgr;
 
     return ReactiveForm(
       formGroup: _forms[index],
@@ -273,7 +279,7 @@ class _ViewStockRecordsLGAPageState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    productName,
+                    localizations.translate(productName),
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -287,30 +293,85 @@ class _ViewStockRecordsLGAPageState
                     ),
                   ),
                   const SizedBox(height: 12),
-                  InputField(
-                    type: InputType.text,
-                    label: localizations.translate(
-                        i18_local.inventoryReportDetails.waybillNumberText),
-                    initialValue: stock.wayBillNumber ?? '',
-                    isDisabled: true,
-                    readOnly: true,
-                  ),
+                  if (isWareHouseMgr)
+                    InputField(
+                      type: InputType.text,
+                      label: localizations
+                          .translate(i18_local.stockDetails.statusVvmLabel),
+                      initialValue: stock.additionalFields?.fields
+                              .firstWhere(
+                                (field) => field.key == 'statusVvm',
+                                orElse: () => AdditionalField('statusVvm', ''),
+                              )
+                              .value
+                              ?.toString() ??
+                          '',
+                      isDisabled: true,
+                      readOnly: true,
+                    ),
                   const SizedBox(height: 12),
-                  InputField(
-                    type: InputType.text,
-                    label: localizations.translate(
-                        i18_local.inventoryReportDetails.batchNumberText),
-                    initialValue: stock.additionalFields?.fields
-                            .firstWhere(
-                              (field) => field.key == 'batchNumber',
-                              orElse: () => AdditionalField('batchNumber', ''),
-                            )
-                            .value
-                            ?.toString() ??
-                        '',
-                    isDisabled: true,
-                    readOnly: true,
-                  ),
+                  if (isWareHouseMgr)
+                    InputField(
+                      type: InputType.text,
+                      label: localizations.translate(
+                          i18_local.stockDetails.voucherSerialNumberLabel),
+                      initialValue: stock.wayBillNumber ?? '',
+                      isDisabled: true,
+                      readOnly: true,
+                    ),
+                  const SizedBox(height: 12),
+                  if (isWareHouseMgr)
+                    InputField(
+                      type: InputType.text,
+                      label: localizations
+                          .translate(i18_local.stockDetails.manufacturerLabel),
+                      initialValue: stock.additionalFields?.fields
+                              .firstWhere(
+                                (field) => field.key == 'manufacturer',
+                                orElse: () =>
+                                    AdditionalField('manufacturer', ''),
+                              )
+                              .value
+                              ?.toString() ??
+                          '',
+                      isDisabled: true,
+                      readOnly: true,
+                    ),
+                  const SizedBox(height: 12),
+                  if (isWareHouseMgr)
+                    InputField(
+                      type: InputType.text,
+                      label: localizations.translate(
+                          i18_local.inventoryReportDetails.batchNumberText),
+                      initialValue: stock.additionalFields?.fields
+                              .firstWhere(
+                                (field) => field.key == 'batchNumber',
+                                orElse: () =>
+                                    AdditionalField('batchNumber', ''),
+                              )
+                              .value
+                              ?.toString() ??
+                          '',
+                      isDisabled: true,
+                      readOnly: true,
+                    ),
+                  const SizedBox(height: 12),
+                  if (isWareHouseMgr)
+                    InputField(
+                      type: InputType.date,
+                      label: localizations
+                          .translate(i18_local.stockDetails.expireDateLabel),
+                      initialValue: stock.additionalFields?.fields
+                              .firstWhere(
+                                (field) => field.key == 'expireDate',
+                                orElse: () => AdditionalField('expireDate', ''),
+                              )
+                              .value
+                              ?.toString() ??
+                          '',
+                      isDisabled: true,
+                      readOnly: true,
+                    ),
                   const SizedBox(height: 12),
                   InputField(
                     type: InputType.text,
@@ -411,8 +472,8 @@ class _ViewStockRecordsLGAPageState
                   Row(
                     children: [
                       Expanded(
-                          child: Text(localizations.translate(i18_local
-                              .acknowledgementSuccess.mrnNumberLabel))),
+                          child: Text(localizations.translate(
+                              i18_local.stockDetails.mrnNumberLabel))),
                       Expanded(child: Text(widget.mrnNumber)),
                     ],
                   ),

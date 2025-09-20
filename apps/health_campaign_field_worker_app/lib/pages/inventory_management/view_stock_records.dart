@@ -5,13 +5,12 @@ import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/widgets/atoms/input_wrapper.dart';
 import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory_management/blocs/record_stock.dart';
 import 'package:inventory_management/models/entities/stock.dart';
 import 'package:inventory_management/utils/i18_key_constants.dart' as i18;
 import 'package:inventory_management/utils/utils.dart';
 import 'package:registration_delivery/widgets/localized.dart';
-
+import '../../utils/i18_key_constants.dart' as i18_local;
 import '../../utils/extensions/extensions.dart';
 import '../../utils/utils.dart';
 
@@ -56,7 +55,7 @@ class _ViewStockRecordsPageState extends LocalizedState<ViewStockRecordsPage>
       appBar: AppBar(
         bottom: TabBar(
           labelColor: Colors.white,
-          indicator: BoxDecoration(
+          indicator: const BoxDecoration(
             border: Border(
               left: BorderSide(color: Colors.orange),
               right: BorderSide(color: Colors.orange),
@@ -69,14 +68,14 @@ class _ViewStockRecordsPageState extends LocalizedState<ViewStockRecordsPage>
           isScrollable: true,
           tabs: widget.stockRecords
               .map((stock) => Tab(
-                    text: stock.additionalFields?.fields
+                    text: localizations.translate(stock.additionalFields?.fields
                             .firstWhere(
                               (field) => field.key == 'productName',
                               orElse: () => AdditionalField('productName', ''),
                             )
                             .value
                             ?.toString() ??
-                        '',
+                        ''),
                   ))
               .toList(),
         ),
@@ -89,8 +88,6 @@ class _ViewStockRecordsPageState extends LocalizedState<ViewStockRecordsPage>
   }
 
   Widget _buildStockRecordTab(StockModel stock) {
-    final senderIdToShowOnTab = stock.senderId;
-
     String? partialQuantity = stock.additionalFields?.fields
         .firstWhereOrNull((e) => e.key == "partialBlistersReturned")
         ?.value
@@ -108,7 +105,67 @@ class _ViewStockRecordsPageState extends LocalizedState<ViewStockRecordsPage>
         )
         .value;
 
-    String? wayBillNumber = stock.wayBillNumber;
+    String? voucherSerialNumber = stock.wayBillNumber;
+    String? statusVvm = stock.additionalFields?.fields
+            .firstWhere(
+              (field) => field.key == 'statusVvm',
+              orElse: () => AdditionalField('statusVvm', ''),
+            )
+            .value
+            ?.toString() ??
+        '';
+    String? manufacturer = stock.additionalFields?.fields
+            .firstWhere(
+              (field) => field.key == 'manufacturer',
+              orElse: () => AdditionalField('manufacturer', ''),
+            )
+            .value
+            ?.toString() ??
+        '';
+    String? expireDate = stock.additionalFields?.fields
+            .firstWhere(
+              (field) => field.key == 'expireDate',
+              orElse: () => AdditionalField('expireDate', ''),
+            )
+            .value
+            ?.toString() ??
+        '';
+    String? entryType = stock.transactionType;
+    String? stockDamage = stock.additionalFields?.fields
+            .firstWhere(
+              (field) => field.key == 'damageQuantity',
+              orElse: () => AdditionalField('damageQuantity', ''),
+            )
+            .value
+            ?.toString() ??
+        '';
+
+    String? emptyVialsQuantity = stock.additionalFields?.fields
+            .firstWhere(
+              (field) => field.key == 'emptyVialsQuantity',
+              orElse: () => AdditionalField('emptyVialsQuantity', ''),
+            )
+            .value
+            ?.toString() ??
+        '';
+
+    String? unusableVvmFirstQuantity = stock.additionalFields?.fields
+            .firstWhere(
+              (field) => field.key == 'unusableVvmfirst',
+              orElse: () => AdditionalField('unusableVvmfirst', ''),
+            )
+            .value
+            ?.toString() ??
+        '';
+
+    String? unusableVvmsecondQuantity = stock.additionalFields?.fields
+            .firstWhere(
+              (field) => field.key == 'unusableVvmSecond',
+              orElse: () => AdditionalField('unusableVvmSecond', ''),
+            )
+            .value
+            ?.toString() ??
+        '';
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -121,24 +178,32 @@ class _ViewStockRecordsPageState extends LocalizedState<ViewStockRecordsPage>
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Stock Receipt Details',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  Text(
+                    localizations.translate(getStockRecordLabel(stock)),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      const Expanded(child: Text('MRN Number')),
+                      Expanded(
+                          child: Text(localizations.translate(
+                              (stock.transactionType == "RECEIVED" ||
+                                      stock.transactionReason == "RETURNED")
+                                  ? i18_local.stockDetails.mrnNumberLabel
+                                  : i18_local.stockDetails.minNumberLabel))),
                       Expanded(child: Text(widget.mrnNumber)),
                     ],
                   ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Expanded(child: Text('Resource')),
+                      Expanded(
+                          child: Text(localizations
+                              .translate(i18_local.stockDetails.resource))),
                       Expanded(
                         child: Text(
-                          stock.additionalFields?.fields
+                          localizations.translate(stock.additionalFields?.fields
                                   .firstWhere(
                                     (field) => field.key == 'productName',
                                     orElse: () =>
@@ -146,7 +211,7 @@ class _ViewStockRecordsPageState extends LocalizedState<ViewStockRecordsPage>
                                   )
                                   .value
                                   ?.toString() ??
-                              '',
+                              ''),
                         ),
                       ),
                     ],
@@ -183,34 +248,132 @@ class _ViewStockRecordsPageState extends LocalizedState<ViewStockRecordsPage>
                   ),
                   const SizedBox(height: 12),
                   if (InventorySingleton().isDistributor != true) ...[
-                    // Waybill Number
-                    if (wayBillNumber != null && wayBillNumber.isNotEmpty)
+                    //status of vvm
+                    if (statusVvm != null && statusVvm.isNotEmpty)
                       InputField(
                         type: InputType.text,
-                        label: 'Waybill Number *',
-                        initialValue: wayBillNumber,
+                        label: localizations.translate(
+                          i18_local.stockDetails.statusVvmLabel,
+                        ),
+                        initialValue: statusVvm,
                         isDisabled: true,
                         readOnly: true,
                       ),
-                    if (wayBillNumber != null && wayBillNumber.isNotEmpty)
+                    if (statusVvm != null && statusVvm.isNotEmpty)
+                      const SizedBox(height: 12),
+                    // voucher serial number
+                    if (voucherSerialNumber != null &&
+                        voucherSerialNumber.isNotEmpty)
+                      InputField(
+                        type: InputType.text,
+                        label: localizations.translate(
+                          i18_local.stockDetails.voucherSerialNumberLabel,
+                        ),
+                        initialValue: voucherSerialNumber,
+                        isDisabled: true,
+                        readOnly: true,
+                      ),
+                    if (voucherSerialNumber != null &&
+                        voucherSerialNumber.isNotEmpty)
+                      const SizedBox(height: 12),
+
+                    //manufacturer
+                    if (manufacturer != null && manufacturer.isNotEmpty)
+                      InputField(
+                        type: InputType.text,
+                        label: localizations.translate(
+                          i18_local.stockDetails.manufacturerLabel,
+                        ),
+                        initialValue: manufacturer,
+                        isDisabled: true,
+                        readOnly: true,
+                      ),
+                    if (manufacturer != null && manufacturer.isNotEmpty)
                       const SizedBox(height: 12),
                     // Batch Number
                     if (batchNumber != null && batchNumber.isNotEmpty)
                       InputField(
                         type: InputType.text,
-                        label: 'Batch Number',
+                        label: localizations.translate(
+                            i18_local.inventoryReportDetails.batchNumberText),
                         initialValue: batchNumber,
                         isDisabled: true,
                         readOnly: true,
                       ),
                     if (batchNumber != null && batchNumber.isNotEmpty)
                       const SizedBox(height: 12),
+
+                    //expire date
+                    if (expireDate != null && expireDate.isNotEmpty)
+                      InputField(
+                        type: InputType.text,
+                        label: localizations.translate(
+                          i18_local.stockDetails.expireDateLabel,
+                        ),
+                        initialValue: expireDate,
+                        isDisabled: true,
+                        readOnly: true,
+                      ),
+                    if (expireDate != null) const SizedBox(height: 12),
+
+                    //stock damage quantity
+                    if (stockDamage.isNotEmpty && entryType == "RECEIVED")
+                      InputField(
+                        type: InputType.text,
+                        label: localizations.translate(
+                          i18_local.stockDetails.damageStockLabel,
+                        ),
+                        initialValue: stockDamage,
+                        isDisabled: true,
+                        readOnly: true,
+                      ),
+                    if (stockDamage != null) const SizedBox(height: 12),
+                  ],
+                  if (context.isWardLevel && entryType == "RECEIVED") ...[
+                    //empty vials quantity
+                    if (emptyVialsQuantity.isNotEmpty)
+                      InputField(
+                        type: InputType.text,
+                        label: localizations.translate(
+                          i18_local.stockDetails.emptyVialsLabel,
+                        ),
+                        initialValue: emptyVialsQuantity,
+                        isDisabled: true,
+                        readOnly: true,
+                      ),
+                    if (emptyVialsQuantity != null) const SizedBox(height: 12),
+                    //unusable VVM type 3 & 4
+                    if (unusableVvmFirstQuantity.isNotEmpty)
+                      InputField(
+                        type: InputType.text,
+                        label: localizations.translate(
+                          i18_local.stockDetails.unusableVvmfirst,
+                        ),
+                        initialValue: unusableVvmFirstQuantity,
+                        isDisabled: true,
+                        readOnly: true,
+                      ),
+                    if (unusableVvmFirstQuantity != null)
+                      const SizedBox(height: 12),
+                    //unusable VVM type 1 & 2
+                    if (unusableVvmsecondQuantity.isNotEmpty)
+                      InputField(
+                        type: InputType.text,
+                        label: localizations.translate(
+                          i18_local.stockDetails.unusableVvmSecond,
+                        ),
+                        initialValue: unusableVvmsecondQuantity,
+                        isDisabled: true,
+                        readOnly: true,
+                      ),
+                    if (unusableVvmsecondQuantity != null)
+                      const SizedBox(height: 12),
                   ],
 
                   // Quantity
                   InputField(
                     type: InputType.text,
-                    label: 'Quantity *',
+                    label: 'Quantity ',
                     initialValue: stock.quantity ?? '',
                     isDisabled: true,
                     readOnly: true,

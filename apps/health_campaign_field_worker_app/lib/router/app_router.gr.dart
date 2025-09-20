@@ -648,17 +648,6 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
-    CustomTransactionalDetailsRoute.name: (routeData) {
-      final args = routeData.argsAs<CustomTransactionalDetailsRouteArgs>(
-          orElse: () => const CustomTransactionalDetailsRouteArgs());
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: CustomTransactionalDetailsPage(
-          key: args.key,
-          appLocalizations: args.appLocalizations,
-        ),
-      );
-    },
     CustomTransitPostRecordVaccinationRoute.name: (routeData) {
       final args =
           routeData.argsAs<CustomTransitPostRecordVaccinationRouteArgs>();
@@ -795,6 +784,18 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    ReceiveStockRoute.name: (routeData) {
+      final args = routeData.argsAs<ReceiveStockRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: ReceiveStockPage(
+          key: args.key,
+          appLocalizations: args.appLocalizations,
+          mrnNumber: args.mrnNumber,
+          stockRecords: args.stockRecords,
+        ),
+      );
+    },
     RecordRedoseRoute.name: (routeData) {
       final args = routeData.argsAs<RecordRedoseRouteArgs>();
       return AutoRoutePage<dynamic>(
@@ -868,18 +869,6 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: ViewStockRecordsCDDPage(
-          key: args.key,
-          appLocalizations: args.appLocalizations,
-          mrnNumber: args.mrnNumber,
-          stockRecords: args.stockRecords,
-        ),
-      );
-    },
-    ViewStockRecordsLGARoute.name: (routeData) {
-      final args = routeData.argsAs<ViewStockRecordsLGARouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: ViewStockRecordsLGAPage(
           key: args.key,
           appLocalizations: args.appLocalizations,
           mrnNumber: args.mrnNumber,
@@ -3253,45 +3242,6 @@ class CustomSurveyformRouteArgs {
 }
 
 /// generated route for
-/// [CustomTransactionalDetailsPage]
-class CustomTransactionalDetailsRoute
-    extends PageRouteInfo<CustomTransactionalDetailsRouteArgs> {
-  CustomTransactionalDetailsRoute({
-    Key? key,
-    InventoryLocalization? appLocalizations,
-    List<PageRouteInfo>? children,
-  }) : super(
-          CustomTransactionalDetailsRoute.name,
-          args: CustomTransactionalDetailsRouteArgs(
-            key: key,
-            appLocalizations: appLocalizations,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'CustomTransactionalDetailsRoute';
-
-  static const PageInfo<CustomTransactionalDetailsRouteArgs> page =
-      PageInfo<CustomTransactionalDetailsRouteArgs>(name);
-}
-
-class CustomTransactionalDetailsRouteArgs {
-  const CustomTransactionalDetailsRouteArgs({
-    this.key,
-    this.appLocalizations,
-  });
-
-  final Key? key;
-
-  final InventoryLocalization? appLocalizations;
-
-  @override
-  String toString() {
-    return 'CustomTransactionalDetailsRouteArgs{key: $key, appLocalizations: $appLocalizations}';
-  }
-}
-
-/// generated route for
 /// [CustomTransitPostRecordVaccinationPage]
 class CustomTransitPostRecordVaccinationRoute
     extends PageRouteInfo<CustomTransitPostRecordVaccinationRouteArgs> {
@@ -3767,6 +3717,54 @@ class QRScannerRouteArgs {
 }
 
 /// generated route for
+/// [ReceiveStockPage]
+class ReceiveStockRoute extends PageRouteInfo<ReceiveStockRouteArgs> {
+  ReceiveStockRoute({
+    Key? key,
+    RegistrationDeliveryLocalization? appLocalizations,
+    required String mrnNumber,
+    required List<StockModel> stockRecords,
+    List<PageRouteInfo>? children,
+  }) : super(
+          ReceiveStockRoute.name,
+          args: ReceiveStockRouteArgs(
+            key: key,
+            appLocalizations: appLocalizations,
+            mrnNumber: mrnNumber,
+            stockRecords: stockRecords,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'ReceiveStockRoute';
+
+  static const PageInfo<ReceiveStockRouteArgs> page =
+      PageInfo<ReceiveStockRouteArgs>(name);
+}
+
+class ReceiveStockRouteArgs {
+  const ReceiveStockRouteArgs({
+    this.key,
+    this.appLocalizations,
+    required this.mrnNumber,
+    required this.stockRecords,
+  });
+
+  final Key? key;
+
+  final RegistrationDeliveryLocalization? appLocalizations;
+
+  final String mrnNumber;
+
+  final List<StockModel> stockRecords;
+
+  @override
+  String toString() {
+    return 'ReceiveStockRouteArgs{key: $key, appLocalizations: $appLocalizations, mrnNumber: $mrnNumber, stockRecords: $stockRecords}';
+  }
+}
+
+/// generated route for
 /// [RecordRedosePage]
 class RecordRedoseRoute extends PageRouteInfo<RecordRedoseRouteArgs> {
   RecordRedoseRoute({
@@ -4031,55 +4029,6 @@ class ViewStockRecordsCDDRouteArgs {
   @override
   String toString() {
     return 'ViewStockRecordsCDDRouteArgs{key: $key, appLocalizations: $appLocalizations, mrnNumber: $mrnNumber, stockRecords: $stockRecords}';
-  }
-}
-
-/// generated route for
-/// [ViewStockRecordsLGAPage]
-class ViewStockRecordsLGARoute
-    extends PageRouteInfo<ViewStockRecordsLGARouteArgs> {
-  ViewStockRecordsLGARoute({
-    Key? key,
-    RegistrationDeliveryLocalization? appLocalizations,
-    required String mrnNumber,
-    required List<StockModel> stockRecords,
-    List<PageRouteInfo>? children,
-  }) : super(
-          ViewStockRecordsLGARoute.name,
-          args: ViewStockRecordsLGARouteArgs(
-            key: key,
-            appLocalizations: appLocalizations,
-            mrnNumber: mrnNumber,
-            stockRecords: stockRecords,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'ViewStockRecordsLGARoute';
-
-  static const PageInfo<ViewStockRecordsLGARouteArgs> page =
-      PageInfo<ViewStockRecordsLGARouteArgs>(name);
-}
-
-class ViewStockRecordsLGARouteArgs {
-  const ViewStockRecordsLGARouteArgs({
-    this.key,
-    this.appLocalizations,
-    required this.mrnNumber,
-    required this.stockRecords,
-  });
-
-  final Key? key;
-
-  final RegistrationDeliveryLocalization? appLocalizations;
-
-  final String mrnNumber;
-
-  final List<StockModel> stockRecords;
-
-  @override
-  String toString() {
-    return 'ViewStockRecordsLGARouteArgs{key: $key, appLocalizations: $appLocalizations, mrnNumber: $mrnNumber, stockRecords: $stockRecords}';
   }
 }
 

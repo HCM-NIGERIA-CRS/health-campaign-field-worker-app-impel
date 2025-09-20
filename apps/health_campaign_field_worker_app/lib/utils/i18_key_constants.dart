@@ -471,6 +471,23 @@ class HomeShowcase {
 class StockDetails {
   const StockDetails();
 
+  String get minNumberLabel => 'MIN_NUMBER_LABEL';
+  String get mrnNumberLabel => 'MRN_NUMBER_LABEL';
+  String get selectMINNumber => 'STOCK_DETAILS_SELECT_MIN_NUMBER';
+  String get selectMRNNumber => 'STOCK_DETAILS_SELECT_MRN_NUMBER';
+  String get noTransactionsFound => 'STOCK_DETAILS_NO_TRANSACTIONS_FOUND';
+  String get resource => 'STOCK_DETAILS_RESOURCE';
+  String get stockReceiptDetails => 'STOCK_DETAILS_STOCK_RECEIPT_DETAILS';
+  String get stockIssueDetails => 'STOCK_DETAILS_STOCK_ISSUE_DETAILS';
+  String get stockReturnDetails => 'STOCK_DETAILS_STOCK_RETURN_DETAILS';
+  String get waybillNumber => 'STOCK_DETAILS_WAYBILL_NUMBER';
+  String get damageStockLabel => 'STOCK_DETAILS_DAMAGE_QUANTITY';
+  String get emptyVialsLabel => 'STOCK_DETAILS_EMPTY_OPENED_VIALS_LABEL';
+  String get unusableVvmfirst => 'UNUSABLE_VVM_THREE_FOURTH_VIALS_LABEL';
+  String get unusableVvmSecond => 'UNUSABLE_VVM_FIRST_SECOND_VIALS_LABEL';
+  String get blisters => 'STOCK_DETAILS_BLISTERS';
+  String get capsules => 'STOCK_DETAILS_CAPSULES';
+
   String get reconciliationCommentRequired => 'RECONCILIATION_COMMENT_REQUIRED';
 
   String get cddCodeLabel => 'CDD_CODE_LABEL';
@@ -495,6 +512,10 @@ class StockDetails {
   }
 
   String get transportTypeLabel => 'STOCK_DETAILS_TYPE_OF_TRANSPORT_LABEL';
+  String get statusVvmLabel => 'STOCK_DETAILS_STATUS_OF_VVM';
+  String get statusIvmLabel => 'STOCK_DETAILS_STATUS_OF_IVM';
+  String get manufacturerLabel => 'STOCK_DETAILS_STATUS_OF_MANUFACTURER_LABEL';
+  String get expireDateLabel => 'STOCK_DETAILS_EXPIRE_DATE_LABEL';
 
   String get quantityUnusedReturnedLabel =>
       'STOCK_DETAILS_UNUSED_QUANTITY_RETURNED';
@@ -512,6 +533,8 @@ class StockDetails {
 
   String get recordStockReturnedDescription =>
       'STOCK_DETAILS_RECORD_STOCK_RETURNED_DESCRIPTION';
+
+  String get voucherSerialNumberLabel => 'STOCK_DETAILS_VOUCHER_SERIAL_NUMBER';
 }
 
 class StockReconciliationDetails {
@@ -986,6 +1009,14 @@ class Home {
 class AcknowledgementSuccess {
   const AcknowledgementSuccess();
 
+  String get materialIssueHeading => "MATERIAL_ISSUE_HEADING";
+  String get materialReceiveHeading => "MATERIAL_RECEIVE_HEADING";
+  String get materialReturnHeading => "MATERIAL_RETURN_HEADING";
+
+  String get materialIssueDescription => "MATERIAL_ISSUE_DESCRIPTION";
+  String get materialReceiveDescription => "MATERIAL_RECEIVE_DESCRIPTION";
+  String get materialReturnDescription => "MATERIAL_RETURN_DESCRIPTION";
+
   String get mrrnNumberDescription => "MRRN_NUMBER_DESCRIPTION";
 
   String get mrrnNumberHeading => "MRRN_NUMBER_HEADING";
@@ -1434,6 +1465,7 @@ class BeneficiaryDetails {
   String get beneficiaryDoseUnit => 'BENEFICIARY_DETAILS_DOSE_UNIT';
   String get spaq1DoseUnit => 'SPAQ1_STOCK_ZERO';
   String get spaq2DoseUnit => 'SPAQ2_STOCK_ZERO';
+  String get productSkuCountUnit => 'PRODUCT_SKU_STOCK_ZERO';
 
   String get beneficiarysDetailsLabelText => 'BENEFICIARY_DETAILS_LABEL_TEXT';
   String get beneficiarysDetailsEditIconLabelText =>

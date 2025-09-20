@@ -30,6 +30,7 @@ import '../../blocs/search/individual_global_search_smc.dart';
 import '../../blocs/search/search_households_smc.dart'
     as searchHouseholdSMCBloc;
 import '../../utils/i18_key_constants.dart' as i18_local;
+import '../../utils/constants.dart';
 import 'package:registration_delivery/models/entities/status.dart';
 import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
 import 'package:registration_delivery/utils/utils.dart';
@@ -1164,22 +1165,33 @@ class _CustomSearchBeneficiaryPageState
                     size: DigitButtonSize.large,
                     isDisabled: false,
                     onPressed: () {
-                      int spaq1 = context.spaq1;
-                      int spaq2 = context.spaq2;
+                      Map<String, int> skuCounts = context
+                          .getAllProductSkuCounts()
+                          .map((key, value) => MapEntry(key, value));
 
                       String descriptionText = localizations.translate(i18_local
                           .beneficiaryDetails.insufficientStockMessage);
 
-                      if (spaq1 == 0) {
-                        descriptionText +=
-                            "\n ${localizations.translate(i18_local.beneficiaryDetails.spaq1DoseUnit)}";
-                      }
-                      if (spaq2 == 0) {
-                        descriptionText +=
-                            "\n ${localizations.translate(i18_local.beneficiaryDetails.spaq2DoseUnit)}";
+//TODO:we need to make this dynamic to fetch product variant sku or update the latest product sku with count '0'
+                      if (skuCounts.isEmpty) {
+                        skuCounts = {
+                          Constants.polioVariant: 0,
+                          Constants.measlesVariant: 0
+                        };
                       }
 
-                      if ((spaq1 > 0 || spaq2 > 0) || true) {
+                      skuCounts.forEach((productSku, productCount) {
+                        print("Checking $productSku: count = $productCount");
+                        if ((productCount == 0)) {
+                          descriptionText +=
+                              "\n  $productSku ${localizations.translate(i18_local.beneficiaryDetails.productSkuCountUnit)}";
+                        }
+                      });
+                      bool hasAvailableStock = skuCounts.values
+                          .any((productCount) => productCount > 0);
+
+                      if (true) {
+                        // remove the stock validation , if needed then add condition , if(hasAvailableStock) {}
                         FocusManager.instance.primaryFocus?.unfocus();
 
                         searchController.clear();

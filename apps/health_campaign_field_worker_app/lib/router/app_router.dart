@@ -42,12 +42,12 @@ import '../pages/daily_Implementation_plan/select_settlements_date_view.dart';
 import '../pages/daily_Implementation_plan/select_settlements_date_view_list.dart';
 import '../pages/inventory_management/custom_inventory_facility_selection.dart';
 import '../pages/inventory_management/qr_scanner.dart';
-import '../pages/inventory_management/view_record_lga.dart';
+import '../pages/inventory_management/receive_stock.dart';
 import '../pages/registration_delivery/custom_complaints_details.dart';
 import '../pages/boundary_selection.dart';
 import '../pages/home.dart';
 import '../pages/inventory_management/custom_manage_stock.dart';
-import '../pages/inventory_management/custom_transactional_details.dart';
+// import '../pages/inventory_management/custom_transactional_details.dart';
 import '../pages/inventory_management/custom_inventory_report_selection.dart';
 import '../pages/inventory_management/custom_stock_details.dart';
 import '../pages/inventory_management/custom_stock_reconciliation.dart';
@@ -169,7 +169,7 @@ class AppRouter extends _$AppRouter {
           path: 'qr-scanner',
         ),
         AutoRoute(
-          page: ViewStockRecordsLGARoute.page,
+          page: ReceiveStockRoute.page,
           path: 'custom-stock-view-lga',
         ),
         AutoRoute(
@@ -591,10 +591,10 @@ class AppRouter extends _$AppRouter {
               path: 'details',
               redirectTo: 'custom-details',
             ),
-            AutoRoute(
-              page: CustomTransactionalDetailsRoute.page,
-              path: 'custom-transaction-details',
-            ),
+            // AutoRoute(
+            //   page: CustomTransactionalDetailsRoute.page,
+            //   path: 'custom-transaction-details',
+            // ),
             AutoRoute(
               page: ViewAllTransactionsRoute.page,
               path: 'custom-all-transactions',

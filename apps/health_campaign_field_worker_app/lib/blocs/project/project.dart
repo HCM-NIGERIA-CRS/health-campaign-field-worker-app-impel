@@ -712,12 +712,12 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
 
     // info : assumption both roles will not be assigned to user
 
-    if (userRoles.contains(RolesType.healthFacilitySupervisor.toValue())) {
-      // final receiverIds = projectFacilities.map((e) => e.facilityId).toList();
+    if (userRoles.contains(RolesType.warehouseManager.toValue()) &&
+        boundaryType == Constants.stateBoundaryLevel) {
       List<String> receiverIds =
           projectFacilities.map((e) => e.facilityId).toList();
       receiverIds = receiverIds
-          .where((e) => facilityIdUsageMap[e] == Constants.healthFacility)
+          .where((e) => facilityIdUsageMap[e] == Constants.stateWarehouse)
           .toList();
       final stockSearchModel = StockSearchModel(
         receiverId: receiverIds,
@@ -725,15 +725,15 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
       );
       final stockEntriesDownloaded =
           await downloadStockEntries(stockSearchModel);
-      // info : create entries in the local repository
 
+      // info : create entries in the local repository
       await createStockDownloadedEntries(stockEntriesDownloaded);
     } else if (userRoles.contains(RolesType.warehouseManager.toValue()) &&
-        boundaryType == Constants.districtBoundaryLevel) {
+        boundaryType == Constants.lgaBoundaryLevel) {
       List<String> receiverIds =
           projectFacilities.map((e) => e.facilityId).toList();
       receiverIds = receiverIds
-          .where((e) => facilityIdUsageMap[e] == Constants.lgaFacility)
+          .where((e) => facilityIdUsageMap[e] == Constants.lgaWarehouse)
           .toList();
       final stockSearchModel = StockSearchModel(
         receiverId: receiverIds,
@@ -744,7 +744,24 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
 
       // info : create entries in the local repository
       await createStockDownloadedEntries(stockEntriesDownloaded);
-    } else if (userRoles.contains(RolesType.communityDistributor.toValue())) {
+    } else if (userRoles.contains(RolesType.warehouseManager.toValue()) &&
+        boundaryType == Constants.wardBoundaryLevel) {
+      List<String> receiverIds =
+          projectFacilities.map((e) => e.facilityId).toList();
+      receiverIds = receiverIds
+          .where((e) => facilityIdUsageMap[e] == Constants.wardWarehouse)
+          .toList();
+      final stockSearchModel = StockSearchModel(
+        receiverId: receiverIds,
+        transactionType: [TransactionType.dispatched.toValue()],
+      );
+      final stockEntriesDownloaded =
+          await downloadStockEntries(stockSearchModel);
+
+      // info : create entries in the local repository
+      await createStockDownloadedEntries(stockEntriesDownloaded);
+    } else if (userRoles.contains(RolesType.communityDistributor.toValue()) ||
+        userRoles.contains(RolesType.distributor.toValue())) {
       final receiverIds = [context.loggedInUserUuid];
       final stockSearchModel = StockSearchModel(
         receiverId: receiverIds,

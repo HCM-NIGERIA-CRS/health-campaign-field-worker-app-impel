@@ -23,7 +23,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:registration_delivery/models/entities/deliver_strategy_type.dart';
 import 'package:registration_delivery/registration_delivery.dart';
 import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
-import 'package:registration_delivery/utils/extensions/extensions.dart';
+// import 'package:registration_delivery/utils/extensions/extensions.dart';
 import 'package:registration_delivery/utils/utils.dart';
 
 import 'package:registration_delivery/models/entities/additional_fields_type.dart';
@@ -36,6 +36,7 @@ import '../../../blocs/app_initialization/app_initialization.dart';
 import '../../../data/local_store/no_sql/schema/app_configuration.dart';
 import '../../../router/app_router.dart';
 import '../../../utils/app_enums.dart';
+import '../../../utils/extensions/extensions.dart';
 import '../../../utils/i18_key_constants.dart' as i18_local;
 import '../../../models/entities/additional_fields_type.dart'
     as additional_fields_local;
@@ -90,6 +91,9 @@ class CustomDeliverInterventionPageState
   @override
   void initState() {
     context.read<LocationBloc>().add(const LoadLocationEvent());
+    context
+        .read<AuthBloc>()
+        .add(const AuthUpdateProductSkuCountsEvent(skuCountUpdates: {}));
     super.initState();
   }
 
@@ -154,27 +158,17 @@ class CustomDeliverInterventionPageState
         (((form.control(_quantityDistributedKey) as FormArray).value)?[0])
             .toString();
 
-    int spaq1 = 0;
-    int spaq2 = 0;
-    int blueVas = 0;
-    int redVas = 0;
+    Map<String, int> skuCounts = context
+        .getAllProductSkuCounts()
+        .map((key, value) => MapEntry(key, value));
 
-    if (productvariantList!.first?.sku! == Constants.spaq1) {
-      spaq1 = int.parse(qty) * -1;
-    } else if (productvariantList!.first?.sku! == Constants.spaq2) {
-      spaq2 = int.parse(qty) * -1;
-    } else if (productvariantList!.first?.sku! == Constants.blueVAS) {
-      blueVas = int.parse(qty) * -1;
-    } else {
-      redVas = int.parse(qty) * -1;
-    }
+    skuCounts.containsKey(productvariantList!.first?.sku!)
+        ? skuCounts[productvariantList!.first!.sku!] = int.parse(qty) * -1
+        : 0;
 
     context.read<AuthBloc>().add(
-          AuthAddSpaqCountsEvent(
-            spaq1Count: spaq1,
-            spaq2Count: spaq2,
-            blueVasCount: blueVas,
-            redVasCount: redVas,
+          AuthUpdateProductSkuCountsEvent(
+            skuCountUpdates: skuCounts,
           ),
         );
 
