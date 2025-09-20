@@ -259,18 +259,7 @@ class CustomDeliverInterventionPageState
         ?.additionalDetails
         ?.projectType;
 
-    if (deliverState.futureDeliveries != null &&
-        deliverState.futureDeliveries!.isNotEmpty &&
-        projectTypeModel?.cycles?.isNotEmpty == true &&
-        currentFlows.contains(Constants.smcFlow)) {
-      context.router.popUntilRouteWithName(BeneficiaryWrapperRoute.name);
-      context.router.push(
-        CustomSplashAcknowledgementRoute(
-            enableBackToSearch: false,
-            individual: widget.selectedIndividual,
-            eligibilityAssessmentType: widget.eligibilityAssessmentType),
-      );
-    } else {
+    if (isAbsent) {
       final reloadState = context.read<HouseholdOverviewBloc>();
 
       reloadState.add(
@@ -288,6 +277,37 @@ class CustomDeliverInterventionPageState
           eligibilityAssessmentType: widget.eligibilityAssessmentType,
         ),
       );
+    } else {
+      if (deliverState.futureDeliveries != null &&
+          deliverState.futureDeliveries!.isNotEmpty &&
+          projectTypeModel?.cycles?.isNotEmpty == true &&
+          currentFlows.contains(Constants.smcFlow)) {
+        context.router.popUntilRouteWithName(BeneficiaryWrapperRoute.name);
+        context.router.push(
+          CustomSplashAcknowledgementRoute(
+              enableBackToSearch: false,
+              individual: widget.selectedIndividual,
+              eligibilityAssessmentType: widget.eligibilityAssessmentType),
+        );
+      } else {
+        final reloadState = context.read<HouseholdOverviewBloc>();
+
+        reloadState.add(
+          HouseholdOverviewReloadEvent(
+            projectId: RegistrationDeliverySingleton().projectId!,
+            projectBeneficiaryType:
+                RegistrationDeliverySingleton().beneficiaryType!,
+          ),
+        );
+        context.router.popAndPush(
+          CustomHouseholdAcknowledgementRoute(
+            individualModel: individual,
+            enableViewHousehold: true,
+            isAddChild: true,
+            eligibilityAssessmentType: widget.eligibilityAssessmentType,
+          ),
+        );
+      }
     }
   }
 

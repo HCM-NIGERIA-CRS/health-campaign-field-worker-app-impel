@@ -216,7 +216,9 @@ class CustomFixedPostRecordVaccinationPageState
                                           : i18_local.transitFixedPost
                                               .fixedPostnameLabel,
                                     ),
-                                    value: fixedPostState.fixedPostName)
+                                    value: localizations.translate(
+                                        fixedPostState.fixedPostName ??
+                                            i18_local.common.coreCommonNA))
                               ])
                         ]),
                   ),
