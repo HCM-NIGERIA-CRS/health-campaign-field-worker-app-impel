@@ -42,6 +42,7 @@ class EligibilityChecklistViewPage extends LocalizedStatefulWidget {
   final String? projectBeneficiaryClientReferenceId;
   final EligibilityAssessmentType eligibilityAssessmentType;
   final bool? showBackButton;
+  final AddressModel? addressModelCaptured;
 
   const EligibilityChecklistViewPage({
     super.key,
@@ -49,6 +50,7 @@ class EligibilityChecklistViewPage extends LocalizedStatefulWidget {
     this.individual,
     this.projectBeneficiaryClientReferenceId,
     this.showBackButton,
+    this.addressModelCaptured,
     required this.eligibilityAssessmentType,
     super.appLocalizations,
   });
@@ -580,6 +582,8 @@ class _EligibilityChecklistViewPage
                                           projectBeneficiaryClientReferenceId ??
                                               "",
                                       individual: widget.individual!,
+                                      addressModelCaptured:
+                                          widget.addressModelCaptured,
                                       referralReasons: referralReasons,
                                     ));
                                   } else {

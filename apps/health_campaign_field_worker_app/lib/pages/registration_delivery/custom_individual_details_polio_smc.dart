@@ -105,6 +105,9 @@ class CustomIndividualDetailsPolioSMCPageState
   // info capture add memberIndividual which can be passed to eligibility
   IndividualModel? individualCaptured;
 
+  // capturing address to pass onto refer page
+  AddressModel? addressModelCaptured;
+
   final beneficiaryType = RegistrationDeliverySingleton().beneficiaryType!;
   Set<String>? beneficiaryId;
 
@@ -626,6 +629,9 @@ class CustomIndividualDetailsPolioSMCPageState
                                                 generatedUniqueId:
                                                     generatedUniqueId,
                                               );
+
+                                              addressModelCaptured =
+                                                  addressModel;
 
                                               if (context.mounted) {
                                                 final scannerBloc = context
@@ -1762,6 +1768,7 @@ class CustomIndividualDetailsPolioSMCPageState
           projectBeneficiaryClientReferenceId:
               projectBeneficiaryAddMember?.clientReferenceId,
           individual: individual,
+          addressModelCaptured: addressModelCaptured,
           showBackButton: false,
         )
       ]));
