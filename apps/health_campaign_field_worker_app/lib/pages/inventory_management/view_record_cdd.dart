@@ -52,7 +52,7 @@ class _ViewStockRecordsCDDPageState
   void initState() {
     context
         .read<AuthBloc>()
-        .add(const AuthUpdateProductSkuCountsEvent(skuCountUpdates: {}));
+        .add(const AuthUpdateProductCountsEvent(skuCountUpdates: {}));
     super.initState();
     _forms = widget.stockRecords
         .map((_) => FormGroup({
@@ -239,7 +239,7 @@ class _ViewStockRecordsCDDPageState
           skuCounts[productName] = (skuCounts[productName] ?? 0) + totalQty;
         }
         context.read<AuthBloc>().add(
-              AuthUpdateProductSkuCountsEvent(
+              AuthUpdateProductCountsEvent(
                 skuCountUpdates: skuCounts,
               ),
             );

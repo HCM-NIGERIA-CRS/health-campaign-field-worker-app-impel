@@ -152,7 +152,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   FutureOr<void> _onUpdateProductSkuCounts(
-    AuthUpdateProductSkuCountsEvent event,
+    AuthUpdateProductCountsEvent event,
     AuthEmitter emit,
   ) async {
     // emit(const AuthLoadingState());
@@ -175,7 +175,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
       }
 
-      localSecureStore.setProductSkuCounts(currentCounts);
+      localSecureStore.setProductCounts(currentCounts);
 
       final accessToken = await localSecureStore.accessToken;
       final refreshToken = await localSecureStore.refreshToken;
@@ -214,9 +214,9 @@ class AuthEvent with _$AuthEvent {
     required String tenantId,
   }) = AuthLoginEvent;
 
-  const factory AuthEvent.updateProductSkuCounts({
+  const factory AuthEvent.updateProductCounts({
     Map<String, int>? skuCountUpdates,
-  }) = AuthUpdateProductSkuCountsEvent;
+  }) = AuthUpdateProductCountsEvent;
 
   const factory AuthEvent.autoLogin({
     required String tenantId,

@@ -21,7 +21,7 @@ mixin _$AuthEvent {
     required TResult Function(String userId, String password, String tenantId)
         login,
     required TResult Function(Map<String, int>? skuCountUpdates)
-        updateProductSkuCounts,
+        updateProductCounts,
     required TResult Function(String tenantId) autoLogin,
     required TResult Function() logout,
   }) =>
@@ -29,8 +29,7 @@ mixin _$AuthEvent {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String userId, String password, String tenantId)? login,
-    TResult? Function(Map<String, int>? skuCountUpdates)?
-        updateProductSkuCounts,
+    TResult? Function(Map<String, int>? skuCountUpdates)? updateProductCounts,
     TResult? Function(String tenantId)? autoLogin,
     TResult? Function()? logout,
   }) =>
@@ -38,7 +37,7 @@ mixin _$AuthEvent {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String userId, String password, String tenantId)? login,
-    TResult Function(Map<String, int>? skuCountUpdates)? updateProductSkuCounts,
+    TResult Function(Map<String, int>? skuCountUpdates)? updateProductCounts,
     TResult Function(String tenantId)? autoLogin,
     TResult Function()? logout,
     required TResult orElse(),
@@ -47,8 +46,8 @@ mixin _$AuthEvent {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(AuthLoginEvent value) login,
-    required TResult Function(AuthUpdateProductSkuCountsEvent value)
-        updateProductSkuCounts,
+    required TResult Function(AuthUpdateProductCountsEvent value)
+        updateProductCounts,
     required TResult Function(AuthAutoLoginEvent value) autoLogin,
     required TResult Function(AuthLogoutEvent value) logout,
   }) =>
@@ -56,8 +55,7 @@ mixin _$AuthEvent {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AuthLoginEvent value)? login,
-    TResult? Function(AuthUpdateProductSkuCountsEvent value)?
-        updateProductSkuCounts,
+    TResult? Function(AuthUpdateProductCountsEvent value)? updateProductCounts,
     TResult? Function(AuthAutoLoginEvent value)? autoLogin,
     TResult? Function(AuthLogoutEvent value)? logout,
   }) =>
@@ -65,8 +63,7 @@ mixin _$AuthEvent {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AuthLoginEvent value)? login,
-    TResult Function(AuthUpdateProductSkuCountsEvent value)?
-        updateProductSkuCounts,
+    TResult Function(AuthUpdateProductCountsEvent value)? updateProductCounts,
     TResult Function(AuthAutoLoginEvent value)? autoLogin,
     TResult Function(AuthLogoutEvent value)? logout,
     required TResult orElse(),
@@ -178,7 +175,7 @@ class _$AuthLoginEventImpl implements AuthLoginEvent {
     required TResult Function(String userId, String password, String tenantId)
         login,
     required TResult Function(Map<String, int>? skuCountUpdates)
-        updateProductSkuCounts,
+        updateProductCounts,
     required TResult Function(String tenantId) autoLogin,
     required TResult Function() logout,
   }) {
@@ -189,8 +186,7 @@ class _$AuthLoginEventImpl implements AuthLoginEvent {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String userId, String password, String tenantId)? login,
-    TResult? Function(Map<String, int>? skuCountUpdates)?
-        updateProductSkuCounts,
+    TResult? Function(Map<String, int>? skuCountUpdates)? updateProductCounts,
     TResult? Function(String tenantId)? autoLogin,
     TResult? Function()? logout,
   }) {
@@ -201,7 +197,7 @@ class _$AuthLoginEventImpl implements AuthLoginEvent {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String userId, String password, String tenantId)? login,
-    TResult Function(Map<String, int>? skuCountUpdates)? updateProductSkuCounts,
+    TResult Function(Map<String, int>? skuCountUpdates)? updateProductCounts,
     TResult Function(String tenantId)? autoLogin,
     TResult Function()? logout,
     required TResult orElse(),
@@ -216,8 +212,8 @@ class _$AuthLoginEventImpl implements AuthLoginEvent {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(AuthLoginEvent value) login,
-    required TResult Function(AuthUpdateProductSkuCountsEvent value)
-        updateProductSkuCounts,
+    required TResult Function(AuthUpdateProductCountsEvent value)
+        updateProductCounts,
     required TResult Function(AuthAutoLoginEvent value) autoLogin,
     required TResult Function(AuthLogoutEvent value) logout,
   }) {
@@ -228,8 +224,7 @@ class _$AuthLoginEventImpl implements AuthLoginEvent {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AuthLoginEvent value)? login,
-    TResult? Function(AuthUpdateProductSkuCountsEvent value)?
-        updateProductSkuCounts,
+    TResult? Function(AuthUpdateProductCountsEvent value)? updateProductCounts,
     TResult? Function(AuthAutoLoginEvent value)? autoLogin,
     TResult? Function(AuthLogoutEvent value)? logout,
   }) {
@@ -240,8 +235,7 @@ class _$AuthLoginEventImpl implements AuthLoginEvent {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AuthLoginEvent value)? login,
-    TResult Function(AuthUpdateProductSkuCountsEvent value)?
-        updateProductSkuCounts,
+    TResult Function(AuthUpdateProductCountsEvent value)? updateProductCounts,
     TResult Function(AuthAutoLoginEvent value)? autoLogin,
     TResult Function(AuthLogoutEvent value)? logout,
     required TResult orElse(),
@@ -268,22 +262,22 @@ abstract class AuthLoginEvent implements AuthEvent {
 }
 
 /// @nodoc
-abstract class _$$AuthUpdateProductSkuCountsEventImplCopyWith<$Res> {
-  factory _$$AuthUpdateProductSkuCountsEventImplCopyWith(
-          _$AuthUpdateProductSkuCountsEventImpl value,
-          $Res Function(_$AuthUpdateProductSkuCountsEventImpl) then) =
-      __$$AuthUpdateProductSkuCountsEventImplCopyWithImpl<$Res>;
+abstract class _$$AuthUpdateProductCountsEventImplCopyWith<$Res> {
+  factory _$$AuthUpdateProductCountsEventImplCopyWith(
+          _$AuthUpdateProductCountsEventImpl value,
+          $Res Function(_$AuthUpdateProductCountsEventImpl) then) =
+      __$$AuthUpdateProductCountsEventImplCopyWithImpl<$Res>;
   @useResult
   $Res call({Map<String, int>? skuCountUpdates});
 }
 
 /// @nodoc
-class __$$AuthUpdateProductSkuCountsEventImplCopyWithImpl<$Res>
-    extends _$AuthEventCopyWithImpl<$Res, _$AuthUpdateProductSkuCountsEventImpl>
-    implements _$$AuthUpdateProductSkuCountsEventImplCopyWith<$Res> {
-  __$$AuthUpdateProductSkuCountsEventImplCopyWithImpl(
-      _$AuthUpdateProductSkuCountsEventImpl _value,
-      $Res Function(_$AuthUpdateProductSkuCountsEventImpl) _then)
+class __$$AuthUpdateProductCountsEventImplCopyWithImpl<$Res>
+    extends _$AuthEventCopyWithImpl<$Res, _$AuthUpdateProductCountsEventImpl>
+    implements _$$AuthUpdateProductCountsEventImplCopyWith<$Res> {
+  __$$AuthUpdateProductCountsEventImplCopyWithImpl(
+      _$AuthUpdateProductCountsEventImpl _value,
+      $Res Function(_$AuthUpdateProductCountsEventImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -291,7 +285,7 @@ class __$$AuthUpdateProductSkuCountsEventImplCopyWithImpl<$Res>
   $Res call({
     Object? skuCountUpdates = freezed,
   }) {
-    return _then(_$AuthUpdateProductSkuCountsEventImpl(
+    return _then(_$AuthUpdateProductCountsEventImpl(
       skuCountUpdates: freezed == skuCountUpdates
           ? _value._skuCountUpdates
           : skuCountUpdates // ignore: cast_nullable_to_non_nullable
@@ -302,9 +296,9 @@ class __$$AuthUpdateProductSkuCountsEventImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$AuthUpdateProductSkuCountsEventImpl
-    implements AuthUpdateProductSkuCountsEvent {
-  const _$AuthUpdateProductSkuCountsEventImpl(
+class _$AuthUpdateProductCountsEventImpl
+    implements AuthUpdateProductCountsEvent {
+  const _$AuthUpdateProductCountsEventImpl(
       {final Map<String, int>? skuCountUpdates})
       : _skuCountUpdates = skuCountUpdates;
 
@@ -320,14 +314,14 @@ class _$AuthUpdateProductSkuCountsEventImpl
 
   @override
   String toString() {
-    return 'AuthEvent.updateProductSkuCounts(skuCountUpdates: $skuCountUpdates)';
+    return 'AuthEvent.updateProductCounts(skuCountUpdates: $skuCountUpdates)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$AuthUpdateProductSkuCountsEventImpl &&
+            other is _$AuthUpdateProductCountsEventImpl &&
             const DeepCollectionEquality()
                 .equals(other._skuCountUpdates, _skuCountUpdates));
   }
@@ -339,10 +333,10 @@ class _$AuthUpdateProductSkuCountsEventImpl
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$AuthUpdateProductSkuCountsEventImplCopyWith<
-          _$AuthUpdateProductSkuCountsEventImpl>
-      get copyWith => __$$AuthUpdateProductSkuCountsEventImplCopyWithImpl<
-          _$AuthUpdateProductSkuCountsEventImpl>(this, _$identity);
+  _$$AuthUpdateProductCountsEventImplCopyWith<
+          _$AuthUpdateProductCountsEventImpl>
+      get copyWith => __$$AuthUpdateProductCountsEventImplCopyWithImpl<
+          _$AuthUpdateProductCountsEventImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -350,36 +344,35 @@ class _$AuthUpdateProductSkuCountsEventImpl
     required TResult Function(String userId, String password, String tenantId)
         login,
     required TResult Function(Map<String, int>? skuCountUpdates)
-        updateProductSkuCounts,
+        updateProductCounts,
     required TResult Function(String tenantId) autoLogin,
     required TResult Function() logout,
   }) {
-    return updateProductSkuCounts(skuCountUpdates);
+    return updateProductCounts(skuCountUpdates);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String userId, String password, String tenantId)? login,
-    TResult? Function(Map<String, int>? skuCountUpdates)?
-        updateProductSkuCounts,
+    TResult? Function(Map<String, int>? skuCountUpdates)? updateProductCounts,
     TResult? Function(String tenantId)? autoLogin,
     TResult? Function()? logout,
   }) {
-    return updateProductSkuCounts?.call(skuCountUpdates);
+    return updateProductCounts?.call(skuCountUpdates);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String userId, String password, String tenantId)? login,
-    TResult Function(Map<String, int>? skuCountUpdates)? updateProductSkuCounts,
+    TResult Function(Map<String, int>? skuCountUpdates)? updateProductCounts,
     TResult Function(String tenantId)? autoLogin,
     TResult Function()? logout,
     required TResult orElse(),
   }) {
-    if (updateProductSkuCounts != null) {
-      return updateProductSkuCounts(skuCountUpdates);
+    if (updateProductCounts != null) {
+      return updateProductCounts(skuCountUpdates);
     }
     return orElse();
   }
@@ -388,52 +381,50 @@ class _$AuthUpdateProductSkuCountsEventImpl
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(AuthLoginEvent value) login,
-    required TResult Function(AuthUpdateProductSkuCountsEvent value)
-        updateProductSkuCounts,
+    required TResult Function(AuthUpdateProductCountsEvent value)
+        updateProductCounts,
     required TResult Function(AuthAutoLoginEvent value) autoLogin,
     required TResult Function(AuthLogoutEvent value) logout,
   }) {
-    return updateProductSkuCounts(this);
+    return updateProductCounts(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AuthLoginEvent value)? login,
-    TResult? Function(AuthUpdateProductSkuCountsEvent value)?
-        updateProductSkuCounts,
+    TResult? Function(AuthUpdateProductCountsEvent value)? updateProductCounts,
     TResult? Function(AuthAutoLoginEvent value)? autoLogin,
     TResult? Function(AuthLogoutEvent value)? logout,
   }) {
-    return updateProductSkuCounts?.call(this);
+    return updateProductCounts?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AuthLoginEvent value)? login,
-    TResult Function(AuthUpdateProductSkuCountsEvent value)?
-        updateProductSkuCounts,
+    TResult Function(AuthUpdateProductCountsEvent value)? updateProductCounts,
     TResult Function(AuthAutoLoginEvent value)? autoLogin,
     TResult Function(AuthLogoutEvent value)? logout,
     required TResult orElse(),
   }) {
-    if (updateProductSkuCounts != null) {
-      return updateProductSkuCounts(this);
+    if (updateProductCounts != null) {
+      return updateProductCounts(this);
     }
     return orElse();
   }
 }
 
-abstract class AuthUpdateProductSkuCountsEvent implements AuthEvent {
-  const factory AuthUpdateProductSkuCountsEvent(
+abstract class AuthUpdateProductCountsEvent implements AuthEvent {
+  const factory AuthUpdateProductCountsEvent(
           {final Map<String, int>? skuCountUpdates}) =
-      _$AuthUpdateProductSkuCountsEventImpl;
+      _$AuthUpdateProductCountsEventImpl;
 
   Map<String, int>? get skuCountUpdates;
   @JsonKey(ignore: true)
-  _$$AuthUpdateProductSkuCountsEventImplCopyWith<
-          _$AuthUpdateProductSkuCountsEventImpl>
+  _$$AuthUpdateProductCountsEventImplCopyWith<
+          _$AuthUpdateProductCountsEventImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -506,7 +497,7 @@ class _$AuthAutoLoginEventImpl implements AuthAutoLoginEvent {
     required TResult Function(String userId, String password, String tenantId)
         login,
     required TResult Function(Map<String, int>? skuCountUpdates)
-        updateProductSkuCounts,
+        updateProductCounts,
     required TResult Function(String tenantId) autoLogin,
     required TResult Function() logout,
   }) {
@@ -517,8 +508,7 @@ class _$AuthAutoLoginEventImpl implements AuthAutoLoginEvent {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String userId, String password, String tenantId)? login,
-    TResult? Function(Map<String, int>? skuCountUpdates)?
-        updateProductSkuCounts,
+    TResult? Function(Map<String, int>? skuCountUpdates)? updateProductCounts,
     TResult? Function(String tenantId)? autoLogin,
     TResult? Function()? logout,
   }) {
@@ -529,7 +519,7 @@ class _$AuthAutoLoginEventImpl implements AuthAutoLoginEvent {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String userId, String password, String tenantId)? login,
-    TResult Function(Map<String, int>? skuCountUpdates)? updateProductSkuCounts,
+    TResult Function(Map<String, int>? skuCountUpdates)? updateProductCounts,
     TResult Function(String tenantId)? autoLogin,
     TResult Function()? logout,
     required TResult orElse(),
@@ -544,8 +534,8 @@ class _$AuthAutoLoginEventImpl implements AuthAutoLoginEvent {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(AuthLoginEvent value) login,
-    required TResult Function(AuthUpdateProductSkuCountsEvent value)
-        updateProductSkuCounts,
+    required TResult Function(AuthUpdateProductCountsEvent value)
+        updateProductCounts,
     required TResult Function(AuthAutoLoginEvent value) autoLogin,
     required TResult Function(AuthLogoutEvent value) logout,
   }) {
@@ -556,8 +546,7 @@ class _$AuthAutoLoginEventImpl implements AuthAutoLoginEvent {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AuthLoginEvent value)? login,
-    TResult? Function(AuthUpdateProductSkuCountsEvent value)?
-        updateProductSkuCounts,
+    TResult? Function(AuthUpdateProductCountsEvent value)? updateProductCounts,
     TResult? Function(AuthAutoLoginEvent value)? autoLogin,
     TResult? Function(AuthLogoutEvent value)? logout,
   }) {
@@ -568,8 +557,7 @@ class _$AuthAutoLoginEventImpl implements AuthAutoLoginEvent {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AuthLoginEvent value)? login,
-    TResult Function(AuthUpdateProductSkuCountsEvent value)?
-        updateProductSkuCounts,
+    TResult Function(AuthUpdateProductCountsEvent value)? updateProductCounts,
     TResult Function(AuthAutoLoginEvent value)? autoLogin,
     TResult Function(AuthLogoutEvent value)? logout,
     required TResult orElse(),
@@ -632,7 +620,7 @@ class _$AuthLogoutEventImpl implements AuthLogoutEvent {
     required TResult Function(String userId, String password, String tenantId)
         login,
     required TResult Function(Map<String, int>? skuCountUpdates)
-        updateProductSkuCounts,
+        updateProductCounts,
     required TResult Function(String tenantId) autoLogin,
     required TResult Function() logout,
   }) {
@@ -643,8 +631,7 @@ class _$AuthLogoutEventImpl implements AuthLogoutEvent {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String userId, String password, String tenantId)? login,
-    TResult? Function(Map<String, int>? skuCountUpdates)?
-        updateProductSkuCounts,
+    TResult? Function(Map<String, int>? skuCountUpdates)? updateProductCounts,
     TResult? Function(String tenantId)? autoLogin,
     TResult? Function()? logout,
   }) {
@@ -655,7 +642,7 @@ class _$AuthLogoutEventImpl implements AuthLogoutEvent {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String userId, String password, String tenantId)? login,
-    TResult Function(Map<String, int>? skuCountUpdates)? updateProductSkuCounts,
+    TResult Function(Map<String, int>? skuCountUpdates)? updateProductCounts,
     TResult Function(String tenantId)? autoLogin,
     TResult Function()? logout,
     required TResult orElse(),
@@ -670,8 +657,8 @@ class _$AuthLogoutEventImpl implements AuthLogoutEvent {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(AuthLoginEvent value) login,
-    required TResult Function(AuthUpdateProductSkuCountsEvent value)
-        updateProductSkuCounts,
+    required TResult Function(AuthUpdateProductCountsEvent value)
+        updateProductCounts,
     required TResult Function(AuthAutoLoginEvent value) autoLogin,
     required TResult Function(AuthLogoutEvent value) logout,
   }) {
@@ -682,8 +669,7 @@ class _$AuthLogoutEventImpl implements AuthLogoutEvent {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AuthLoginEvent value)? login,
-    TResult? Function(AuthUpdateProductSkuCountsEvent value)?
-        updateProductSkuCounts,
+    TResult? Function(AuthUpdateProductCountsEvent value)? updateProductCounts,
     TResult? Function(AuthAutoLoginEvent value)? autoLogin,
     TResult? Function(AuthLogoutEvent value)? logout,
   }) {
@@ -694,8 +680,7 @@ class _$AuthLogoutEventImpl implements AuthLogoutEvent {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AuthLoginEvent value)? login,
-    TResult Function(AuthUpdateProductSkuCountsEvent value)?
-        updateProductSkuCounts,
+    TResult Function(AuthUpdateProductCountsEvent value)? updateProductCounts,
     TResult Function(AuthAutoLoginEvent value)? autoLogin,
     TResult Function(AuthLogoutEvent value)? logout,
     required TResult orElse(),

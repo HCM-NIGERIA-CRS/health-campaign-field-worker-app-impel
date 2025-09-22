@@ -91,7 +91,7 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
   void initState() {
     context
         .read<AuthBloc>()
-        .add(const AuthUpdateProductSkuCountsEvent(skuCountUpdates: {}));
+        .add(const AuthUpdateProductCountsEvent(skuCountUpdates: {}));
     super.initState();
   }
 
@@ -426,11 +426,11 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                                                                       productVariantId)
                                                                   .firstOrNull;
 
-                                                          // var quantityIndex =
-                                                          //     productvariantList
-                                                          //         .indexOf(
-                                                          //   productVariant,
-                                                          // );
+                                                          var quantityIndex =
+                                                              productvariantList
+                                                                  .indexOf(
+                                                            productVariant,
+                                                          );
 
                                                           final quantity = quantityIndex <
                                                                   0
@@ -469,7 +469,7 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                                                           context
                                                               .read<AuthBloc>()
                                                               .add(
-                                                                AuthUpdateProductSkuCountsEvent(
+                                                                AuthUpdateProductCountsEvent(
                                                                   skuCountUpdates:
                                                                       skuCounts,
                                                                 ),

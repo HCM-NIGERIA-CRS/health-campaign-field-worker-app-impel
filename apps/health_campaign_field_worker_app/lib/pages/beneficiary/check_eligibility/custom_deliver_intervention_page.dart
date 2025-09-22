@@ -97,7 +97,7 @@ class CustomDeliverInterventionPageState
     context.read<LocationBloc>().add(const LoadLocationEvent());
     context
         .read<AuthBloc>()
-        .add(const AuthUpdateProductSkuCountsEvent(skuCountUpdates: {}));
+        .add(const AuthUpdateProductCountsEvent(skuCountUpdates: {}));
     super.initState();
   }
 
@@ -197,7 +197,7 @@ class CustomDeliverInterventionPageState
         : 0;
 
     context.read<AuthBloc>().add(
-          AuthUpdateProductSkuCountsEvent(
+          AuthUpdateProductCountsEvent(
             skuCountUpdates: skuCounts,
           ),
         );

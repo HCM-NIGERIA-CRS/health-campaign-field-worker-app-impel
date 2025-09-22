@@ -195,7 +195,7 @@ performBackgroundService({
   }
 }
 
-List<String> extractAllSkus(List<ProductVariantModel> variants) {
+List<String> extractAllProductCounts(List<ProductVariantModel> variants) {
   return variants.map((variant) => variant.sku).whereType<String>().toList();
 }
 

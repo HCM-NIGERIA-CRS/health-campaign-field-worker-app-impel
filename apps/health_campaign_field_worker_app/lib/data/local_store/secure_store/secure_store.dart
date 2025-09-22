@@ -156,62 +156,69 @@ class LocalSecureStore {
 
   Future<Map<String, int>> getAllProductSkuCounts(
       List<ProductVariantModel> selectedProducts) async {
-    final userBody = await storage.read(key: userObjectKey);
-    if (userBody == null) return {};
-
     try {
-      final user = UserRequestModel.fromJson(json.decode(userBody));
-
-      final skuKeys = extractAllSkus(selectedProducts);
-
+      List<String> productCountKeys = extractAllProductCounts(selectedProducts);
       final Map<String, int> result = {};
 
-      for (final key in skuKeys) {
-        final skuMapString = await storage.read(key: key);
-        result[key] = 0;
-        if (skuMapString != null) {
-          try {
-            final Map<String, dynamic> skuMap = json.decode(skuMapString);
-            if (skuMap[user.uuid] != null) {
-              result[key] = skuMap[user.uuid] as int;
-            }
-          } catch (_) {}
-        }
+      for (final key in productCountKeys) {
+        final productCount = await getProductCounts(key);
+        result[key] = productCount;
       }
-
       return result;
     } catch (_) {
       return {};
     }
   }
 
-  Future<void> setProductSkuCounts(Map<String, int> skuCounts) async {
+  Future<int> getProductCounts(String productCountKey) async {
+    final userBody = await storage.read(key: userObjectKey);
+    if (userBody == null) return 0;
+    final localStorageStringMap =
+        await storage.read(key: Constants.productCounts);
+    if (localStorageStringMap == null) return 0;
+    try {
+      final user = UserRequestModel.fromJson(json.decode(userBody));
+      final userUUID = user.uuid;
+      final localStorageMap =
+          json.decode(localStorageStringMap) as Map<String, dynamic>;
+      if (localStorageMap[userUUID] != null) {
+        final productCountMap =
+            localStorageMap[userUUID] as Map<String, dynamic>;
+        final totalCount = productCountMap[productCountKey] ?? 0;
+        return totalCount;
+      }
+      return 0;
+    } catch (_) {
+      return 0;
+    }
+  }
+
+  Future<void> setProductCounts(Map<String, int> productCounts) async {
     final userBody = await storage.read(key: userObjectKey);
     if (userBody == null) return;
 
     try {
       final user = UserRequestModel.fromJson(json.decode(userBody));
+      final userUUID = user.uuid;
 
-      for (final entry in skuCounts.entries) {
-        final skuKey = entry.key;
-        final count = entry.value;
+      Map<String, int> skuCounts = {};
 
-        final skuMapString = await storage.read(key: skuKey);
-        Map<String, dynamic> skuMap = {};
+      for (final entry in productCounts.entries) {
+        final productCountKey = entry.key;
+        final productCount = entry.value;
 
-        if (skuMapString != null) {
-          try {
-            skuMap = json.decode(skuMapString);
-          } catch (_) {}
-        }
-
-        skuMap[user.uuid] = count;
-
-        await storage.write(
-          key: skuKey,
-          value: json.encode(skuMap),
-        );
+        skuCounts[productCountKey] = productCount;
       }
+
+      Map<String, dynamic> skuCountsWithUUID = {userUUID: skuCounts};
+
+      await storage.write(
+        key: Constants.productCounts,
+        value: json.encode(skuCountsWithUUID),
+      );
+      final localStorageStringMap =
+          await storage.read(key: Constants.productCounts);
+      print("");
     } catch (_) {
       return;
     }
@@ -300,7 +307,7 @@ class LocalSecureStore {
     List<String> allKeys = allValues.keys.toList();
 
     List<String> keysToDelete =
-        allKeys.where((key) => !keysToKeep.contains(key)).toList();
+        allKeys.where((key) => key != Constants.productCounts).toList();
 
     for (String key in keysToDelete) {
       await storage.delete(key: key);

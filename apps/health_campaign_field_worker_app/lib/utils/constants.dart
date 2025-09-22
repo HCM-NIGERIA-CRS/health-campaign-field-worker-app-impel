@@ -148,6 +148,8 @@ class Constants {
   static const String status = "Status";
   static const String intervenedBy = "IntervenedBy";
 
+  static const String productCounts = "productCounts";
+
   // for stock validation
 
   static const String spaq1 = "SPAQ 1";
