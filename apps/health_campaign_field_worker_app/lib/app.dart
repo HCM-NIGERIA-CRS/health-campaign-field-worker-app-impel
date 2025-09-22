@@ -33,6 +33,7 @@ import 'blocs/non_compliance/non_compliance_all_search.dart';
 import 'blocs/non_compliance/non_compliance_search.dart';
 import 'blocs/non_compliance/non_compliance_tracking.dart';
 import 'blocs/project/project.dart';
+import 'blocs/registration_delivery/current_flow.dart';
 import 'blocs/search/individual_global_search_smc.dart';
 import 'blocs/search/non_compliance_search.dart';
 import 'blocs/search/search_households_smc.dart';
@@ -592,6 +593,11 @@ class MainApplicationState extends State<MainApplication>
                             customUserActionLocalRepository:
                                 CustomUserActionLocalRepository(widget.sql,
                                     UserActionOpLogManager(widget.isar)),
+                          ),
+                        ),
+                        BlocProvider(
+                          create: (ctx) => CurrentFlowBloc(
+                            const CurrentFlowState.set(),
                           ),
                         ),
                         BlocProvider(

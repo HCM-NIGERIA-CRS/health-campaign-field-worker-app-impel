@@ -12,6 +12,7 @@ import 'package:registration_delivery/models/entities/project_beneficiary.dart';
 import 'package:registration_delivery/widgets/beneficiary/id_count_alert.dart';
 // import 'package:digit_components/utils/date_utils.dart' as digits;
 import '../../blocs/app_initialization/app_initialization.dart';
+import '../../blocs/registration_delivery/current_flow.dart';
 import '../../models/entities/project_types.dart';
 import '../../utils/date_utils.dart' as digits;
 import 'package:digit_components/widgets/atoms/digit_toaster.dart';
@@ -36,6 +37,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:registration_delivery/utils/constants.dart';
 import 'package:registration_delivery/utils/extensions/extensions.dart';
 
+import '../../utils/constants.dart' as local_constants;
 import 'package:registration_delivery/blocs/household_overview/household_overview.dart';
 import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
@@ -861,6 +863,26 @@ class CustomIndividualDetailsPolioSMCPageState
                                                   local_utils.isPolioFlow(age);
                                               onchoFlow =
                                                   local_utils.isOnchoFlow(age);
+
+                                              context
+                                                  .read<CurrentFlowBloc>()
+                                                  .add(
+                                                    CurrentFlowEvent.set(
+                                                        currentFlows: {
+                                                          if (smcFlow)
+                                                            local_constants
+                                                                .Constants
+                                                                .smcFlow,
+                                                          if (polioFlow)
+                                                            local_constants
+                                                                .Constants
+                                                                .polioFlow,
+                                                          if (onchoFlow)
+                                                            local_constants
+                                                                .Constants
+                                                                .onchoFlow,
+                                                        }),
+                                                  );
 
                                               if (context.projectTypeCode ==
                                                       ProjectTypes.oncho

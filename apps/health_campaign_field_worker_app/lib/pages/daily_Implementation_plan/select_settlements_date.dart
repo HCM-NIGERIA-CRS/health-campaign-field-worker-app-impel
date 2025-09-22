@@ -1,14 +1,16 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:digit_components/widgets/atoms/digit_toaster.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/user_action.dart';
-import 'package:digit_data_model/utils/utils.dart';
 import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/services/location_bloc.dart';
 import 'package:digit_ui_components/theme/digit_extended_theme.dart';
 import 'package:digit_ui_components/utils/component_utils.dart';
+import 'package:digit_ui_components/widgets/atoms/pop_up_card.dart';
 import 'package:digit_ui_components/widgets/atoms/text_block.dart';
+import 'package:digit_ui_components/widgets/molecules/show_pop_up.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -22,6 +24,7 @@ import '../../utils/utils.dart';
 import '../../widgets/custom_back_navigation.dart';
 import '../../widgets/localized.dart';
 import '../../utils/i18_key_constants.dart' as i18;
+import '../../utils/i18_key_constants.dart' as i18_local;
 
 @RoutePage()
 class SelectSettlementsDatePage extends LocalizedStatefulWidget {
@@ -96,90 +99,147 @@ class _SelectSettlementsPageState
                           settlements: state.selectedSettlements ?? [],
                           settlementData: state.settlementData ?? [],
                         ),
-                        Spacer(),
+                        const Spacer(),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: DigitButton(
                             type: DigitButtonType.primary,
                             size: DigitButtonSize.large,
                             mainAxisSize: MainAxisSize.max,
-                            onPressed: () {
+                            onPressed: () async {
                               for (var element
                                   in state.selectedSettlements ?? []) {
                                 if (state.settlementData?.firstWhereOrNull(
                                         (e) => e.boundaryCode == element) ==
                                     null) {
-                                  DigitComponentsUtils.showDialog(
+                                  await DigitToast.show(
                                     context,
-                                    localizations.translate(i18
-                                        .dailyImplementationFlow
-                                        .selectDateForAllSettlements),
-                                    DialogType.failed,
+                                    options: DigitToastOptions(
+                                      localizations.translate(i18
+                                          .dailyImplementationFlow
+                                          .selectDateForAllSettlements),
+                                      true,
+                                      theme,
+                                    ),
                                   );
+
                                   return;
                                 }
                               }
-                              var clientReferenceId = IdGen.i.identifier;
-                              var startTime =
-                                  DateTime.now().millisecondsSinceEpoch;
-                              if (latitude == null ||
-                                  longitude == null ||
-                                  locationAccuracy == null) {
-                                if (context.mounted) {
-                                  DigitComponentsUtils.showDialog(
-                                    context,
-                                    localizations.translate(
-                                        i18.common.locationCapturing),
-                                    DialogType.inProgress,
-                                  );
-                                }
-                                return;
-                              }
-                              UserActionModel tripBookAction = UserActionModel(
-                                  latitude: latitude,
-                                  longitude: longitude,
-                                  locationAccuracy: locationAccuracy,
-                                  clientReferenceId: clientReferenceId,
-                                  beneficiaryTag: context.loggedInUserUuid,
-                                  isSync: true,
-                                  timestamp: state.date ?? startTime,
-                                  tenantId:
-                                      RegistrationDeliverySingleton().tenantId,
-                                  projectId: RegistrationDeliverySingleton()
-                                      .projectId!,
-                                  boundaryCode: RegistrationDeliverySingleton()
-                                          .boundary
-                                          ?.code! ??
-                                      "",
-                                  action: "DAILY_PLAN",
-                                  additionalFields: UserActionAdditionalFields(
-                                      version: 1,
-                                      fields: [
-                                        if (state.administrativeUnit != null)
-                                          AdditionalField(
-                                              Constants.boundaryCode,
-                                              state.administrativeUnit),
-                                        if (state.wfpSupervisor != null)
-                                          AdditionalField(
-                                              Constants.supervisorName,
-                                              state.wfpSupervisor),
-                                        if (state.settlementData != null)
-                                          AdditionalField(
-                                              Constants.data,
-                                              json.encode(state.settlementData!
-                                                  .map((e) =>
-                                                      json.encode(e.toJson()))
-                                                  .toList())),
-                                      ]));
-
-                              context.read<DailyImplementationPlanBloc>().add(
-                                    DailyImplementationPlanEvent.handleCreate(
-                                      dipUserAction: tripBookAction,
+                              final submit = await showCustomPopup(
+                                context: context,
+                                builder: (popupContext) => Popup(
+                                  title: localizations.translate(
+                                    i18_local.beneficiaryDetails.dialogTitle,
+                                  ),
+                                  onOutsideTap: () {
+                                    Navigator.of(popupContext).pop(false);
+                                  },
+                                  description: localizations.translate(
+                                    i18_local.beneficiaryDetails.dialogContent,
+                                  ),
+                                  type: PopUpType.simple,
+                                  actions: [
+                                    DigitButton(
+                                      label: localizations.translate(
+                                        i18.common.coreCommonSubmit,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(
+                                          popupContext,
+                                          rootNavigator: true,
+                                        ).pop(true);
+                                      },
+                                      type: DigitButtonType.primary,
+                                      size: DigitButtonSize.large,
                                     ),
-                                  );
+                                    DigitButton(
+                                      label: localizations.translate(
+                                        i18.common.coreCommonCancel,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(
+                                          popupContext,
+                                          rootNavigator: true,
+                                        ).pop(false);
+                                      },
+                                      type: DigitButtonType.secondary,
+                                      size: DigitButtonSize.large,
+                                    ),
+                                  ],
+                                ),
+                              ) as bool;
+                              if (submit ?? false) {
+                                var clientReferenceId = IdGen.i.identifier;
+                                var startTime =
+                                    DateTime.now().millisecondsSinceEpoch;
+                                if (latitude == null ||
+                                    longitude == null ||
+                                    locationAccuracy == null) {
+                                  if (context.mounted) {
+                                    DigitComponentsUtils.showDialog(
+                                      context,
+                                      localizations.translate(
+                                          i18.common.locationCapturing),
+                                      DialogType.inProgress,
+                                    );
+                                  }
+                                  return;
+                                }
+                                UserActionModel tripBookAction =
+                                    UserActionModel(
+                                        latitude: latitude,
+                                        longitude: longitude,
+                                        locationAccuracy: locationAccuracy,
+                                        clientReferenceId: clientReferenceId,
+                                        beneficiaryTag:
+                                            context.loggedInUserUuid,
+                                        isSync: true,
+                                        timestamp: state.date ?? startTime,
+                                        tenantId:
+                                            RegistrationDeliverySingleton()
+                                                .tenantId,
+                                        projectId:
+                                            RegistrationDeliverySingleton()
+                                                .projectId!,
+                                        boundaryCode:
+                                            RegistrationDeliverySingleton()
+                                                    .boundary
+                                                    ?.code! ??
+                                                "",
+                                        action: "DAILY_PLAN",
+                                        additionalFields:
+                                            UserActionAdditionalFields(
+                                                version: 1,
+                                                fields: [
+                                              if (state.administrativeUnit !=
+                                                  null)
+                                                AdditionalField(
+                                                    Constants.boundaryCode,
+                                                    state.administrativeUnit),
+                                              if (state.wfpSupervisor != null)
+                                                AdditionalField(
+                                                    Constants.supervisorName,
+                                                    state.wfpSupervisor),
+                                              if (state.settlementData != null)
+                                                AdditionalField(
+                                                    Constants.data,
+                                                    json.encode(state
+                                                        .settlementData!
+                                                        .map((e) => json
+                                                            .encode(e.toJson()))
+                                                        .toList())),
+                                            ]));
+
+                                context.read<DailyImplementationPlanBloc>().add(
+                                      DailyImplementationPlanEvent.handleCreate(
+                                        dipUserAction: tripBookAction,
+                                      ),
+                                    );
+                              }
                             },
                             label: localizations
-                                .translate(i18.common.coreCommonSubmit),
+                                .translate(i18.common.coreCommonFinish),
                           ),
                         ),
                       ],

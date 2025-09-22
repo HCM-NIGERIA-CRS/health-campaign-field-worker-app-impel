@@ -188,7 +188,7 @@ extension ContextUtilityExtensions on BuildContext {
     try {
       bool isWardFocalPoint = loggedInUserRoles
           .where(
-            (role) => role.code == RolesType.wardFocalPoint.toValue(),
+            (role) => (role.code == RolesType.wardFocalPerson.toValue()),
           )
           .toList()
           .isNotEmpty;

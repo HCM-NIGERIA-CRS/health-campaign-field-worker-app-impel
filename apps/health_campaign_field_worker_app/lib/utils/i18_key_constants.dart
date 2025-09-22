@@ -69,6 +69,8 @@ class Common {
 
   String get coreCommonSubmit => 'CORE_COMMON_SUBMIT';
 
+  String get coreCommonFinish => 'CORE_COMMON_FINISH';
+
   String get coreCommonSave => 'CORE_COMMON_SAVE';
 
   String get coreCommonCancel => 'CORE_COMMON_CANCEL';
@@ -1423,6 +1425,10 @@ class IndividualDetails {
 
 class BeneficiaryDetails {
   const BeneficiaryDetails();
+
+  String get dialogTitle => 'DIP_DIALOG_TITLE';
+
+  String get dialogContent => 'DIP_DIALOG_CONTENT';
 
   String get beneficiaryHeight => "BENEFICIARY_HEIGHT_LABEL";
 

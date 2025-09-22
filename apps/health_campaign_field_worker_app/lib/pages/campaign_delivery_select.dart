@@ -12,6 +12,7 @@ import 'package:transit_post/router/transit_post_router.gm.dart';
 import 'package:transit_post/transit_post.dart';
 
 import '../router/app_router.dart';
+import '../utils/extensions/extensions.dart';
 import '../widgets/header/back_navigation_help_header.dart';
 import '../widgets/home/home_item_card.dart';
 import '../widgets/localized.dart';
@@ -92,15 +93,16 @@ class CampaignDeliverySelectPageState
 
   _HomeItemDataModel? _getItems(BuildContext context) {
     List<Widget> homeItemsList = [
-      HomeItemCard(
-        icon: Icons.family_restroom_rounded,
-        label: i18.home.beneficiaryLabel,
-        onPressed: () async {
-          RegistrationDeliverySingleton()
-              .setHouseholdType(HouseholdType.family);
-          context.router.push(const CustomRegistrationDeliveryWrapperRoute());
-        },
-      ),
+      if (context.isDistributor)
+        HomeItemCard(
+          icon: Icons.family_restroom_rounded,
+          label: i18.home.beneficiaryLabel,
+          onPressed: () async {
+            RegistrationDeliverySingleton()
+                .setHouseholdType(HouseholdType.family);
+            context.router.push(const CustomRegistrationDeliveryWrapperRoute());
+          },
+        ),
       HomeItemCard(
         icon: Icons.pin_drop,
         label: i18.home.transitPostLabel,

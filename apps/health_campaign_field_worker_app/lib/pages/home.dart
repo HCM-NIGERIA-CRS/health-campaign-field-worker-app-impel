@@ -659,10 +659,7 @@ class _HomePageState extends LocalizedState<HomePage> {
                   .map((e) => e.displayName)
                   .toList()
                   .contains(element) ||
-              element == i18.home.db ||
-              element == i18.home.dailyImplementationPlanLabel ||
-              element == i18.home.campaignDeliverySelection ||
-              element == i18.home.nonComplianceTracking,
+              element == i18.home.db,
         )
         .toList();
 

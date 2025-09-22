@@ -264,8 +264,8 @@ class CustomHouseholdSummaryPageState
                                       label: localizations.translate(i18_local
                                           .caregiverConsent
                                           .reasonForNonComplianceLabel),
-                                      value: widget.reasonNonCompliance ??
-                                          localizations.translate(
+                                      value: localizations.translate(
+                                          widget.reasonNonCompliance ??
                                               i18.common.coreCommonNA),
                                       labelFlex: 5,
                                       padding: const EdgeInsets.only(

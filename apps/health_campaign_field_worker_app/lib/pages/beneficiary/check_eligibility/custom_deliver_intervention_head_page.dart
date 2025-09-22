@@ -33,6 +33,7 @@ import 'package:registration_delivery/widgets/component_wrapper/product_variant_
 import 'package:registration_delivery/widgets/localized.dart';
 
 import '../../../blocs/app_initialization/app_initialization.dart';
+import '../../../blocs/registration_delivery/current_flow.dart';
 import '../../../data/local_store/no_sql/schema/app_configuration.dart';
 import '../../../router/app_router.dart';
 import '../../../utils/app_enums.dart';
@@ -97,7 +98,8 @@ class CustomDeliverInterventionHeadPageState
       FormGroup form,
       HouseholdMemberWrapper householdMember,
       IndividualModel? selectedIndividual,
-      ProjectBeneficiaryModel projectBeneficiary) async {
+      ProjectBeneficiaryModel projectBeneficiary,
+      Set<String> currentFlows) async {
     final lat = locationState.latitude;
     final long = locationState.longitude;
     TaskModel taskModel = _getTaskModel(
@@ -161,7 +163,8 @@ class CustomDeliverInterventionHeadPageState
           ),
         );
 
-    await handleSubmit(context, taskModel, deliverInterventionState);
+    await handleSubmit(
+        context, taskModel, deliverInterventionState, currentFlows);
   }
 
   void handleLocationState(
@@ -171,7 +174,8 @@ class CustomDeliverInterventionHeadPageState
       FormGroup form,
       HouseholdMemberWrapper householdMember,
       IndividualModel? selectedIndividual,
-      ProjectBeneficiaryModel projectBeneficiary) {
+      ProjectBeneficiaryModel projectBeneficiary,
+      Set<String> currentFlows) {
     if (context.mounted) {
       DigitComponentsUtils.showDialog(
         context,
@@ -189,7 +193,8 @@ class CustomDeliverInterventionHeadPageState
             form,
             householdMember,
             selectedIndividual,
-            projectBeneficiary);
+            projectBeneficiary,
+            currentFlows);
       });
     }
   }
@@ -198,6 +203,7 @@ class CustomDeliverInterventionHeadPageState
     BuildContext context,
     TaskModel taskModel,
     DeliverInterventionState deliverState,
+    Set<String> currentFlows,
   ) async {
     ProjectTypeModel? projectTypeModel = RegistrationDeliverySingleton()
         .selectedProject
@@ -206,7 +212,8 @@ class CustomDeliverInterventionHeadPageState
 
     if (deliverState.futureDeliveries != null &&
         deliverState.futureDeliveries!.isNotEmpty &&
-        projectTypeModel?.cycles?.isNotEmpty == true) {
+        projectTypeModel?.cycles?.isNotEmpty == true &&
+        currentFlows.contains(Constants.smcFlow)) {
       context.router.popUntilRouteWithName(BeneficiaryWrapperRoute.name);
       context.router.push(
         CustomSplashAcknowledgementRoute(
@@ -374,155 +381,164 @@ class CustomDeliverInterventionHeadPageState
                                             margin: const EdgeInsets.only(
                                                 top: spacer2),
                                             children: [
-                                              ValueListenableBuilder(
-                                                valueListenable: clickedStatus,
+                                              BlocBuilder<CurrentFlowBloc,
+                                                  CurrentFlowState>(
                                                 builder: (context,
-                                                    bool isClicked, _) {
-                                                  return BlocBuilder<
-                                                          LocationBloc,
-                                                          LocationState>(
-                                                      builder: (context,
-                                                          locationState) {
-                                                    return DigitButton(
-                                                      label: localizations
-                                                          .translate(
-                                                        i18.common
-                                                            .coreCommonSubmit,
-                                                      ),
-                                                      type: DigitButtonType
-                                                          .primary,
-                                                      size:
-                                                          DigitButtonSize.large,
-                                                      mainAxisSize:
-                                                          MainAxisSize.max,
-                                                      isDisabled: isClicked,
-                                                      onPressed: () async {
-                                                        final deliveredProducts =
-                                                            ((form.control(_resourceDeliveredKey)
-                                                                        as FormArray)
-                                                                    .value
-                                                                as List<
-                                                                    ProductVariantModel?>);
-                                                        final hasEmptyResources =
-                                                            hasEmptyOrNullResources(
-                                                                deliveredProducts);
-                                                        final hasZeroQuantity =
-                                                            hasEmptyOrZeroQuantity(
-                                                                form);
-                                                        final hasDuplicates =
-                                                            hasDuplicateResources(
-                                                                deliveredProducts,
-                                                                form);
+                                                    currentFlowState) {
+                                                  return ValueListenableBuilder(
+                                                    valueListenable:
+                                                        clickedStatus,
+                                                    builder: (context,
+                                                        bool isClicked, _) {
+                                                      return BlocBuilder<
+                                                              LocationBloc,
+                                                              LocationState>(
+                                                          builder: (context,
+                                                              locationState) {
+                                                        return DigitButton(
+                                                          label: localizations
+                                                              .translate(
+                                                            i18.common
+                                                                .coreCommonSubmit,
+                                                          ),
+                                                          type: DigitButtonType
+                                                              .primary,
+                                                          size: DigitButtonSize
+                                                              .large,
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
+                                                          isDisabled: isClicked,
+                                                          onPressed: () async {
+                                                            final deliveredProducts =
+                                                                ((form.control(_resourceDeliveredKey)
+                                                                            as FormArray)
+                                                                        .value
+                                                                    as List<
+                                                                        ProductVariantModel?>);
+                                                            final hasEmptyResources =
+                                                                hasEmptyOrNullResources(
+                                                                    deliveredProducts);
+                                                            final hasZeroQuantity =
+                                                                hasEmptyOrZeroQuantity(
+                                                                    form);
+                                                            final hasDuplicates =
+                                                                hasDuplicateResources(
+                                                                    deliveredProducts,
+                                                                    form);
 
-                                                        if (hasEmptyResources) {
-                                                          Toast.showToast(
-                                                              context,
-                                                              message: localizations
-                                                                  .translate(i18
-                                                                      .deliverIntervention
-                                                                      .resourceDeliveredValidation),
-                                                              type: ToastType
-                                                                  .error);
-                                                        } else if (hasDuplicates) {
-                                                          Toast.showToast(
-                                                              context,
-                                                              message: localizations
-                                                                  .translate(i18
-                                                                      .deliverIntervention
-                                                                      .resourceDuplicateValidation),
-                                                              type: ToastType
-                                                                  .error);
-                                                        } else if (hasZeroQuantity) {
-                                                          Toast.showToast(
-                                                              context,
-                                                              message: localizations
-                                                                  .translate(i18
-                                                                      .deliverIntervention
-                                                                      .resourceCannotBeZero),
-                                                              type: ToastType
-                                                                  .error);
-                                                        } else {
-                                                          final shouldSubmit =
-                                                              await dialog
-                                                                      .DigitDialog
-                                                                  .show<bool>(
-                                                            context,
-                                                            options: dialog
-                                                                .DigitDialogOptions(
-                                                              titleText:
-                                                                  localizations
-                                                                      .translate(
-                                                                i18.deliverIntervention
-                                                                    .dialogTitle,
-                                                              ),
-                                                              contentText:
-                                                                  localizations
-                                                                      .translate(
-                                                                i18.deliverIntervention
-                                                                    .dialogContent,
-                                                              ),
-                                                              primaryAction: dialog
-                                                                  .DigitDialogActions(
-                                                                label: localizations
-                                                                    .translate(
-                                                                  i18.common
-                                                                      .coreCommonSubmit,
-                                                                ),
-                                                                action: (ctx) {
-                                                                  Navigator.of(
-                                                                          ctx,
-                                                                          rootNavigator:
-                                                                              true)
-                                                                      .pop(
-                                                                          true);
-                                                                },
-                                                              ),
-                                                              secondaryAction:
-                                                                  dialog
-                                                                      .DigitDialogActions(
-                                                                label: localizations
-                                                                    .translate(
-                                                                  i18.common
-                                                                      .coreCommonGoback,
-                                                                ),
-                                                                action: (ctx) {
-                                                                  Navigator.of(
-                                                                          ctx,
-                                                                          rootNavigator:
-                                                                              true)
-                                                                      .pop(
-                                                                          false);
-                                                                },
-                                                              ),
-                                                            ),
-                                                          );
-
-                                                          // Check the result of the dialog
-                                                          if (shouldSubmit ??
-                                                              false) {
-                                                            if (context
-                                                                .mounted) {
-                                                              context
-                                                                  .read<
-                                                                      LocationBloc>()
-                                                                  .add(
-                                                                      const LoadLocationEvent());
-                                                              handleLocationState(
-                                                                locationState,
+                                                            if (hasEmptyResources) {
+                                                              Toast.showToast(
+                                                                  context,
+                                                                  message: localizations
+                                                                      .translate(i18
+                                                                          .deliverIntervention
+                                                                          .resourceDeliveredValidation),
+                                                                  type: ToastType
+                                                                      .error);
+                                                            } else if (hasDuplicates) {
+                                                              Toast.showToast(
+                                                                  context,
+                                                                  message: localizations
+                                                                      .translate(i18
+                                                                          .deliverIntervention
+                                                                          .resourceDuplicateValidation),
+                                                                  type: ToastType
+                                                                      .error);
+                                                            } else if (hasZeroQuantity) {
+                                                              Toast.showToast(
+                                                                  context,
+                                                                  message: localizations
+                                                                      .translate(i18
+                                                                          .deliverIntervention
+                                                                          .resourceCannotBeZero),
+                                                                  type: ToastType
+                                                                      .error);
+                                                            } else {
+                                                              final shouldSubmit =
+                                                                  await dialog
+                                                                          .DigitDialog
+                                                                      .show<
+                                                                          bool>(
                                                                 context,
-                                                                deliveryInterventionState,
-                                                                form,
-                                                                householdMemberWrapper,
-                                                                individualModel,
-                                                                projectBeneficiary!
-                                                                    .first,
+                                                                options: dialog
+                                                                    .DigitDialogOptions(
+                                                                  titleText:
+                                                                      localizations
+                                                                          .translate(
+                                                                    i18.deliverIntervention
+                                                                        .dialogTitle,
+                                                                  ),
+                                                                  contentText:
+                                                                      localizations
+                                                                          .translate(
+                                                                    i18.deliverIntervention
+                                                                        .dialogContent,
+                                                                  ),
+                                                                  primaryAction:
+                                                                      dialog
+                                                                          .DigitDialogActions(
+                                                                    label: localizations
+                                                                        .translate(
+                                                                      i18.common
+                                                                          .coreCommonSubmit,
+                                                                    ),
+                                                                    action:
+                                                                        (ctx) {
+                                                                      Navigator.of(
+                                                                              ctx,
+                                                                              rootNavigator: true)
+                                                                          .pop(true);
+                                                                    },
+                                                                  ),
+                                                                  secondaryAction:
+                                                                      dialog
+                                                                          .DigitDialogActions(
+                                                                    label: localizations
+                                                                        .translate(
+                                                                      i18.common
+                                                                          .coreCommonGoback,
+                                                                    ),
+                                                                    action:
+                                                                        (ctx) {
+                                                                      Navigator.of(
+                                                                              ctx,
+                                                                              rootNavigator: true)
+                                                                          .pop(false);
+                                                                    },
+                                                                  ),
+                                                                ),
                                                               );
+
+                                                              // Check the result of the dialog
+                                                              if (shouldSubmit ??
+                                                                  false) {
+                                                                if (context
+                                                                    .mounted) {
+                                                                  context
+                                                                      .read<
+                                                                          LocationBloc>()
+                                                                      .add(
+                                                                          const LoadLocationEvent());
+                                                                  handleLocationState(
+                                                                      locationState,
+                                                                      context,
+                                                                      deliveryInterventionState,
+                                                                      form,
+                                                                      householdMemberWrapper,
+                                                                      individualModel,
+                                                                      projectBeneficiary!
+                                                                          .first,
+                                                                      currentFlowState
+                                                                              .currentFlows ??
+                                                                          {});
+                                                                }
+                                                              }
                                                             }
-                                                          }
-                                                        }
-                                                      },
-                                                    );
-                                                  });
+                                                          },
+                                                        );
+                                                      });
+                                                    },
+                                                  );
                                                 },
                                               ),
                                             ]);
