@@ -632,8 +632,10 @@ class CustomIndividualDetailsPolioSMCPageState
                                                     generatedUniqueId,
                                               );
 
-                                              addressModelCaptured =
-                                                  addressModel;
+                                              setState(() {
+                                                addressModelCaptured =
+                                                    addressModel;
+                                              });
 
                                               if (context.mounted) {
                                                 final scannerBloc = context

@@ -550,12 +550,20 @@ class _EligibilityChecklistViewPage
                                                   ],
                                                 ),
                                                 address: widget
-                                                    .individual!.address?.first
-                                                    .copyWith(
-                                                  relatedClientReferenceId:
-                                                      clientReferenceId,
-                                                  id: null,
-                                                ),
+                                                        .addressModelCaptured
+                                                        ?.copyWith(
+                                                            rowVersion: 1,
+                                                            relatedClientReferenceId:
+                                                                clientReferenceId,
+                                                            id: null) ??
+                                                    widget.individual!.address
+                                                        ?.first
+                                                        .copyWith(
+                                                      rowVersion: 1,
+                                                      relatedClientReferenceId:
+                                                          clientReferenceId,
+                                                      id: null,
+                                                    ),
                                               ),
                                               isEditing: false,
                                               boundaryModel: context.boundary,
@@ -573,8 +581,10 @@ class _EligibilityChecklistViewPage
                                     router.push(
                                       CustomHouseholdAcknowledgementRoute(
                                           enableViewHousehold: true,
+                                          isAddChild: true,
                                           eligibilityAssessmentType:
-                                              widget.eligibilityAssessmentType),
+                                              widget.eligibilityAssessmentType,
+                                          individualModel: widget.individual),
                                     );
                                   } else if (ifReferral) {
                                     router.push(CustomReferBeneficiarySMCRoute(

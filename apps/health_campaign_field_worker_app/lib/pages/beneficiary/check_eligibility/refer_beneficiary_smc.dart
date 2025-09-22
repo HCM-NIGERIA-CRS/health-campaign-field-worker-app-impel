@@ -327,11 +327,13 @@ class CustomReferBeneficiarySMCPageState
                                         final addressModel = widget
                                                 .addressModelCaptured
                                                 ?.copyWith(
+                                                    rowVersion: 1,
                                                     relatedClientReferenceId:
                                                         clientReferenceId,
                                                     id: null) ??
                                             widget.individual.address?.first
                                                 .copyWith(
+                                              rowVersion: 1,
                                               relatedClientReferenceId:
                                                   clientReferenceId,
                                               id: null,
@@ -442,10 +444,13 @@ class CustomReferBeneficiarySMCPageState
                                         ).then(
                                           (value) => context.router.popAndPush(
                                             CustomHouseholdAcknowledgementRoute(
-                                              enableViewHousehold: true,
-                                              eligibilityAssessmentType:
-                                                  EligibilityAssessmentType.vas,
-                                            ),
+                                                enableViewHousehold: true,
+                                                isAddChild: true,
+                                                eligibilityAssessmentType:
+                                                    EligibilityAssessmentType
+                                                        .vas,
+                                                individualModel:
+                                                    widget.individual),
                                           ),
                                         );
                                       }
