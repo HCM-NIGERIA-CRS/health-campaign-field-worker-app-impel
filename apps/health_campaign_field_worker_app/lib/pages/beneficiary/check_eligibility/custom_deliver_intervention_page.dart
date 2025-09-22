@@ -271,7 +271,7 @@ class CustomDeliverInterventionPageState
       );
       context.router.popAndPush(
         CustomHouseholdAcknowledgementRoute(
-          individualModel: individual,
+          individualModel: individual ?? widget.selectedIndividual,
           enableViewHousehold: true,
           isAddChild: true,
           eligibilityAssessmentType: widget.eligibilityAssessmentType,
@@ -286,7 +286,7 @@ class CustomDeliverInterventionPageState
         context.router.push(
           CustomSplashAcknowledgementRoute(
               enableBackToSearch: false,
-              individual: widget.selectedIndividual,
+              individual: individual ?? widget.selectedIndividual,
               eligibilityAssessmentType: widget.eligibilityAssessmentType),
         );
       } else {
@@ -301,7 +301,7 @@ class CustomDeliverInterventionPageState
         );
         context.router.popAndPush(
           CustomHouseholdAcknowledgementRoute(
-            individualModel: individual,
+            individualModel: individual ?? widget.selectedIndividual,
             enableViewHousehold: true,
             isAddChild: true,
             eligibilityAssessmentType: widget.eligibilityAssessmentType,

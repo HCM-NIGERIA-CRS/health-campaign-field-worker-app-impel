@@ -373,6 +373,9 @@ class CustomDoseAdministeredPageState
                                             isAddChild: true,
                                             eligibilityAssessmentType: widget
                                                 .eligibilityAssessmentType,
+                                            individualModel: widget
+                                                    .selectedIndividual ??
+                                                overViewBloc.selectedIndividual,
                                           ),
                                         ));
                                   }
