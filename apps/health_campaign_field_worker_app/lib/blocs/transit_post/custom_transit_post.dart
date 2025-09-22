@@ -12,20 +12,16 @@ import '../../data/repositories/local/transit_post/custom_user_action.dart';
 part 'custom_transit_post.freezed.dart';
 
 typedef CustomTransitPostEmitter = Emitter<CustomTransitPostState>;
-typedef UserActionRemoteRepository
-    = DataRepository<UserActionModel, UserActionSearchModel>;
 
 class CustomTransitPostBloc
     extends Bloc<CustomTransitPostEvent, CustomTransitPostState> {
   final CustomUserActionLocalRepository customUserActionLocalRepository;
   final UserActionLocalRepository userActionLocalRepository;
-  final UserActionRemoteRepository userActionRemoteRepository;
 
   CustomTransitPostBloc(
     super.initialState, {
     required this.customUserActionLocalRepository,
     required this.userActionLocalRepository,
-    required this.userActionRemoteRepository,
   }) {
     on(_handleTransitPostSelection);
     on(_handleDeliveryCount);
@@ -110,6 +106,8 @@ class CustomTransitPostBloc
               'scannedResource',
               event.scannedResource,
             ),
+            if (event.additionalFieldsCaptured?.isNotEmpty ?? false)
+              ...event.additionalFieldsCaptured!
           ])));
       emit(state.copyWith(
         curCount: state.curCount != null ? state.curCount! + 1 : 1,
@@ -139,6 +137,7 @@ class CustomTransitPostEvent with _$CustomTransitPostEvent {
     String? action,
     int? curCount,
     int? totalCount,
+    List<AdditionalField>? additionalFieldsCaptured,
   }) = CustomTransitPostDeliveryEvent;
 
   const factory CustomTransitPostEvent.handleDeliveryCount({

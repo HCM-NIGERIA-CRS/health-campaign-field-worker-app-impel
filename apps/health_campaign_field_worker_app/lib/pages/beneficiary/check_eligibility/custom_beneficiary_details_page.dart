@@ -44,11 +44,11 @@ import 'custom_record_delivery_cycle.dart';
 class CustomBeneficiaryDetailsPage extends LocalizedStatefulWidget {
   final EligibilityAssessmentType eligibilityAssessmentType;
   final IndividualModel? individualSelected;
-  final bool? isRevisit;
+  final bool? isHead;
   const CustomBeneficiaryDetailsPage({
     required this.eligibilityAssessmentType,
     this.individualSelected,
-    this.isRevisit,
+    this.isHead,
     super.key,
     super.appLocalizations,
   });
@@ -172,6 +172,8 @@ class CustomBeneficiaryDetailsPageState
               return BlocBuilder<ProductVariantBloc, ProductVariantState>(
                 builder: (context, productState) {
                   return productState.maybeWhen(
+                      loading: () =>
+                          const Center(child: CircularProgressIndicator()),
                       orElse: () => const Offstage(),
                       fetched: (productVariantsValue) {
                         final variant = productState.whenOrNull(
@@ -229,101 +231,150 @@ class CustomBeneficiaryDetailsPageState
                                                               .selectedIndividual,
                                                         ),
                                                       );
+
+                                                      final currentCycle =
+                                                          deliverState.cycle >=
+                                                                  0
+                                                              ? deliverState
+                                                                  .cycle
+                                                              : 0;
+
+                                                      // Calculate the current dose. If deliverInterventionState.dose is negative, set it to 0.
+                                                      final currentDose =
+                                                          deliverState.dose >= 0
+                                                              ? deliverState
+                                                                  .dose
+                                                              : 0;
+
+                                                      final items =
+                                                          RegistrationDeliverySingleton()
+                                                                  .projectType!
+                                                                  .cycles?[
+                                                                      currentCycle -
+                                                                          1]
+                                                                  .deliveries?[
+                                                              currentDose - 1];
+
+                                                      DeliveryDoseCriteria?
+                                                          deliveryCriteria =
+                                                          getProductVariant(
+                                                              items,
+                                                              state.selectedIndividual ??
+                                                                  widget
+                                                                      .individualSelected,
+                                                              state
+                                                                  .householdMemberWrapper
+                                                                  .household,
+                                                              context)["criteria"];
+
                                                       showCustomPopup(
                                                         context: context,
-                                                        builder: (popUpContext) => Popup(
-                                                            title: localizations
-                                                                .translate(i18
-                                                                    .beneficiaryDetails
-                                                                    .resourcesTobeDelivered),
-                                                            type: PopUpType
-                                                                .simple,
-                                                            contentPadding:
-                                                                EdgeInsets.zero,
-                                                            additionalWidgets: [
-                                                              buildTableContentSMC(
-                                                                  deliverState,
-                                                                  context,
-                                                                  variant,
-                                                                  state?.selectedIndividual ??
-                                                                      widget
-                                                                          .individualSelected,
-                                                                  state
-                                                                      .householdMemberWrapper
-                                                                      .household)
-                                                            ],
-                                                            actions: [
-                                                              DigitButton(
-                                                                  label: localizations
-                                                                      .translate(i18
-                                                                          .beneficiaryDetails
-                                                                          .ctaProceed),
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator
-                                                                        .of(
+                                                        builder: (popUpContext) =>
+                                                            Popup(
+                                                                title: localizations
+                                                                    .translate(i18
+                                                                        .beneficiaryDetails
+                                                                        .resourcesTobeDelivered),
+                                                                type: PopUpType
+                                                                    .simple,
+                                                                contentPadding:
+                                                                    EdgeInsets
+                                                                        .zero,
+                                                                additionalWidgets: [
+                                                                  buildTableContentSMC(
+                                                                      deliverState,
                                                                       context,
-                                                                      rootNavigator:
-                                                                          true,
-                                                                    ).pop();
+                                                                      variant,
+                                                                      state?.selectedIndividual ??
+                                                                          widget
+                                                                              .individualSelected,
+                                                                      state
+                                                                          .householdMemberWrapper
+                                                                          .household)
+                                                                ],
+                                                                actions: [
+                                                                  DigitButton(
+                                                                      label: localizations.translate((deliveryCriteria !=
+                                                                                  null &&
+                                                                              deliveryCriteria.condition !=
+                                                                                  null)
+                                                                          ? i18
+                                                                              .beneficiaryDetails
+                                                                              .ctaProceed
+                                                                          : i18
+                                                                              .common
+                                                                              .coreCommonGoback),
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator
+                                                                            .of(
+                                                                          context,
+                                                                          rootNavigator:
+                                                                              true,
+                                                                        ).pop();
 
-                                                                    final currentCycle =
-                                                                        deliverState.cycle >=
+                                                                        final currentCycle = deliverState.cycle >=
                                                                                 0
                                                                             ? deliverState.cycle
                                                                             : 0;
 
-                                                                    // Calculate the current dose. If deliverInterventionState.dose is negative, set it to 0.
-                                                                    final currentDose =
-                                                                        deliverState.dose >=
+                                                                        // Calculate the current dose. If deliverInterventionState.dose is negative, set it to 0.
+                                                                        final currentDose = deliverState.dose >=
                                                                                 0
                                                                             ? deliverState.dose
                                                                             : 0;
 
-                                                                    final items = RegistrationDeliverySingleton()
-                                                                        .projectType!
-                                                                        .cycles?[
-                                                                            currentCycle -
+                                                                        final items = RegistrationDeliverySingleton()
+                                                                            .projectType!
+                                                                            .cycles?[currentCycle -
                                                                                 1]
-                                                                        .deliveries?[currentDose - 1];
+                                                                            .deliveries?[currentDose - 1];
 
-                                                                    DeliveryDoseCriteria? deliveryCriteria = getProductVariant(
-                                                                        items,
-                                                                        state.selectedIndividual ??
-                                                                            widget
-                                                                                .individualSelected,
-                                                                        state
-                                                                            .householdMemberWrapper
-                                                                            .household,
-                                                                        context)["criteria"];
+                                                                        DeliveryDoseCriteria? deliveryCriteria = getProductVariant(
+                                                                            items,
+                                                                            state.selectedIndividual ??
+                                                                                widget.individualSelected,
+                                                                            state.householdMemberWrapper.household,
+                                                                            context)["criteria"];
 
-                                                                    // var productVariants =
-                                                                    //     deliveryCriteria
-                                                                    //         .productVariants;
+                                                                        // var productVariants =
+                                                                        //     deliveryCriteria
+                                                                        //         .productVariants;
 
-                                                                    // final value = variant!
-                                                                    //         .firstWhere(
-                                                                    //           (element) => element.id == productVariants?.first.productVariantId,
-                                                                    //         )
-                                                                    //         .sku ??
-                                                                    //     "";
+                                                                        // final value = variant!
+                                                                        //         .firstWhere(
+                                                                        //           (element) => element.id == productVariants?.first.productVariantId,
+                                                                        //         )
+                                                                        //         .sku ??
+                                                                        //     "";
 
-                                                                    if (deliveryCriteria !=
-                                                                        null) {
-                                                                      router
-                                                                          .push(
-                                                                        CustomDeliverInterventionRoute(
-                                                                            eligibilityAssessmentType:
-                                                                                widget.eligibilityAssessmentType,
-                                                                            selectedIndividual: widget.individualSelected),
-                                                                      );
-                                                                    }
-                                                                  },
-                                                                  type: DigitButtonType
-                                                                      .primary,
-                                                                  size: DigitButtonSize
-                                                                      .large),
-                                                            ]),
+                                                                        if (deliveryCriteria !=
+                                                                            null) {
+                                                                          router
+                                                                              .push(
+                                                                            CustomDeliverInterventionRoute(
+                                                                                eligibilityAssessmentType: widget.eligibilityAssessmentType,
+                                                                                selectedIndividual: widget.individualSelected),
+                                                                          );
+                                                                        } else {
+                                                                          router
+                                                                              .push(
+                                                                            CustomHouseholdOverviewRoute(),
+                                                                          );
+                                                                        }
+                                                                      },
+                                                                      type: DigitButtonType
+                                                                          .primary,
+                                                                      size: DigitButtonSize
+                                                                          .large),
+                                                                ],
+                                                                onOutsideTap:
+                                                                    () {
+                                                                  Navigator.of(
+                                                                          popUpContext)
+                                                                      .pop(
+                                                                          false);
+                                                                }),
                                                       );
                                                     }
                                                   },
@@ -342,6 +393,16 @@ class CustomBeneficiaryDetailsPageState
                                               size: DigitButtonSize.large,
                                               mainAxisSize: MainAxisSize.max,
                                               onPressed: () {
+                                                if (widget?.isHead ?? false) {
+                                                  context.router.push(
+                                                      CustomDeliverInterventionHeadRoute(
+                                                    eligibilityAssessmentType:
+                                                        widget
+                                                            .eligibilityAssessmentType,
+                                                    selectedIndividual: widget
+                                                        .individualSelected,
+                                                  ));
+                                                }
                                                 context.router.push(
                                                     CustomDeliverInterventionRoute(
                                                   eligibilityAssessmentType: widget

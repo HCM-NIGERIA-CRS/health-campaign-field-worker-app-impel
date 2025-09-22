@@ -6,12 +6,18 @@ import 'package:digit_data_model/models/entities/address_type.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:intl/intl.dart';
 import 'package:registration_delivery/models/entities/status.dart';
 import 'package:registration_delivery/registration_delivery.dart';
 import '../../../../models/entities/status.dart' as local_status;
+import '../../utils/date_utils.dart' as digits;
 
 import '../../utils/constants.dart';
+import '../../utils/date_utils.dart';
 import '../../utils/typedefs.dart';
+
+import 'package:registration_delivery/utils/constants.dart'
+    as registration_constants;
 
 part 'consent_household.freezed.dart';
 
@@ -111,29 +117,45 @@ class ConsentHouseholdBloc
                 Constants.householdNumber,
                 householdNumber,
               ),
+            if (event.reasonForNonCompliance != null &&
+                (event.reasonForNonCompliance?.isNotEmpty ?? false))
+              AdditionalField(
+                Constants.reasonForNonCompliance,
+                event.reasonForNonCompliance,
+              ),
             AdditionalField(
               Constants.consent,
               isConsent,
             ),
           ]));
 
+      // setting age for individual as 19 years to avoid null issue in age based flow
+
+      DigitDOBAge age = DigitDOBAge(years: 19, months: 0, days: 0);
+      final dob = DigitDateUtils.calculateDob(age);
+      String? dobString;
+      if (dob != null) {
+        dobString = DateFormat(registration_constants.Constants().dateFormat)
+            .format(dob);
+      }
+
       var individual = IndividualModel(
-        clientReferenceId: IdGen.i.identifier,
-        tenantId: event.tenantId,
-        rowVersion: 1,
-        clientAuditDetails: ClientAuditDetails(
-          createdBy: event.loggedInUserUuid!,
-          createdTime: DateTime.now().millisecondsSinceEpoch,
-          lastModifiedBy: event.loggedInUserUuid!,
-          lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
-        ),
-        auditDetails: AuditDetails(
-          createdBy: event.loggedInUserUuid!,
-          createdTime: DateTime.now().millisecondsSinceEpoch,
-          lastModifiedBy: event.loggedInUserUuid!,
-          lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
-        ),
-      );
+          clientReferenceId: IdGen.i.identifier,
+          tenantId: event.tenantId,
+          rowVersion: 1,
+          clientAuditDetails: ClientAuditDetails(
+            createdBy: event.loggedInUserUuid!,
+            createdTime: DateTime.now().millisecondsSinceEpoch,
+            lastModifiedBy: event.loggedInUserUuid!,
+            lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
+          ),
+          auditDetails: AuditDetails(
+            createdBy: event.loggedInUserUuid!,
+            createdTime: DateTime.now().millisecondsSinceEpoch,
+            lastModifiedBy: event.loggedInUserUuid!,
+            lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
+          ),
+          dateOfBirth: dobString);
 
       var name = NameModel(
         givenName: event.householdHeadName,
@@ -337,6 +359,7 @@ class ConsentHouseholdEvent with _$ConsentHouseholdEvent {
     String? householdNumber,
     String? beneficiaryType,
     String? householdHeadName,
+    String? reasonForNonCompliance,
     bool isConsent, {
     @Default(0) double latitude,
     @Default(0) double longitude,

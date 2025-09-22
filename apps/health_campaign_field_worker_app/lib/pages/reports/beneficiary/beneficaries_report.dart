@@ -125,6 +125,7 @@ class BeneficiariesReportState extends LocalizedState<BeneficiariesReportPage> {
                       ) =>
                           context.read<BeneficiaryDownSyncBloc>().add(
                                 DownSyncCheckTotalCountEvent(
+                                  useProjectId: !context.isWFP,
                                   projectId: context.projectId,
                                   boundaryCode: boundaryCode,
                                   pendingSyncCount: pendingSyncCount,

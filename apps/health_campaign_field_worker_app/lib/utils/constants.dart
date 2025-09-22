@@ -30,6 +30,7 @@ import '../data/local_store/no_sql/schema/row_versions.dart';
 import '../data/local_store/no_sql/schema/service_registry.dart';
 import '../data/repositories/local/inventory_management/custom_stock.dart';
 import '../data/repositories/remote/downsync.dart';
+import '../data/repositories/remote/transit_post/custom_user_action.dart';
 import '../data/sync_registry.dart';
 import '../data/sync_service_mapper.dart';
 import '../firebase_options.dart';
@@ -124,6 +125,7 @@ class Constants {
   static const String pipeSeparator = '||';
   static const String consent = 'consent';
   static const String householdNumber = 'householdNumber';
+  static const String reasonForNonCompliance = 'reasonForNonCompliance';
 
   static const int mlPerBottle = 30;
   static const int apiCallLimit = 1000;
@@ -133,6 +135,18 @@ class Constants {
   static const String childrenAFP = 'childrenAFP';
   static const String guineaWorm = 'guineaWorm';
   static const int dailyTarget = 40;
+  static const int onchoMinValidAgeInMonths = 60;
+  static const int smcMinValidAgeInMonths = 3;
+  static const int smcMaxValidAgeInMonths = 59;
+  static const int polioMaxValidAgeInMonths = 59;
+  static const int polioMinValidAgeInMonths = 0;
+
+  static const String boundaryCode = "BoundaryCode";
+  static const String supervisorName = "SupervisorName";
+  static const String data = "Data";
+
+  static const String status = "Status";
+  static const String intervenedBy = "IntervenedBy";
 
   // for stock validation
 
@@ -140,6 +154,20 @@ class Constants {
   static const String spaq2 = "SPAQ 2";
   static const String blueVAS = "Blue VAS";
   static const String redVAS = "Red VAS";
+
+  static const String dipAction = "DAILY_PLAN";
+  static const String nonComplianceAction = "NON_COMPLIANCE";
+
+  static const String smcFlow = "smcFlow";
+  static const String polioFlow = "polioFlow";
+  static const String measlesFlow = "measlesFlow";
+  static const String onchoFlow = "onchoFlow";
+
+  static const String polioProductVariantId = 'PVAR-2025-05-08-000001';
+  static const String measlesProductVariantId = 'PVAR-2025-05-08-000001';
+  static const String onchoProductVariantId = 'PVAR-2025-05-08-000001';
+  static const String spaq1ProductVariantId = 'PVAR-2025-05-08-000001';
+  static const String spaq2ProductVariantId = 'PVAR-2025-05-08-000001';
 
   static const String productVariantId1 = 'PVAR-2025-05-08-000001';
   static const String productVariantId2 = 'PVAR-2025-05-08-000002';
@@ -314,7 +342,7 @@ class Constants {
         if (value == DataModelType.service)
           ServiceRemoteRepository(dio, actionMap: actions),
         if (value == DataModelType.userAction)
-          UserActionRemoteRepository(dio, actionMap: actions),
+          CustomUserActionRemoteRepository(dio, actionMap: actions),
       ]);
     }
 
@@ -339,6 +367,19 @@ class Constants {
   static List<KeyValue> yesNo = [
     KeyValue('CORE_COMMON_YES', true),
     KeyValue('CORE_COMMON_NO', false),
+  ];
+
+  static List<String> statusOptions = [
+    'Resolved, Pending Vaccination',
+    'Open',
+    'Escalated',
+  ];
+
+  static List<String> intervenedByOptions = [
+    'Traditional Leader',
+    'Religious Leader',
+    'Community Influence',
+    'Others (LGA Team, Monitors, etc)',
   ];
 
   void setInitialDataOfPackages() {

@@ -47,6 +47,7 @@ import 'package:transit_post/utils/utils.dart';
 
 import '../blocs/app_initialization/app_initialization.dart';
 import '../blocs/auth/auth.dart';
+import '../blocs/daily_implementation_plan/dip_search.dart';
 import '../blocs/localization/app_localization.dart';
 import '../blocs/localization/localization.dart';
 import '../data/local_store/app_shared_preferences.dart';
@@ -66,6 +67,7 @@ import '../widgets/localized.dart';
 import '../widgets/registration_delivery/custom_beneficiary_progress.dart';
 import '../widgets/showcase/config/showcase_constants.dart';
 import '../widgets/showcase/showcase_button.dart';
+import 'non_compliance_tracker/non_compliance_tracking_search.dart';
 
 @RoutePage()
 class HomePage extends LocalizedStatefulWidget {
@@ -87,7 +89,7 @@ class _HomePageState extends LocalizedState<HomePage> {
   @override
   initState() {
     super.initState();
-
+    context.read<DipSearchBloc>().add(const DipSearchEvent.search());
     subscription = Connectivity()
         .onConnectivityChanged
         .listen((List<ConnectivityResult> result) async {
@@ -552,12 +554,20 @@ class _HomePageState extends LocalizedState<HomePage> {
       ),
       i18.home.dailyImplementationPlanLabel:
           homeShowcaseData.dailyImplementationPlan.buildWith(
-        child: HomeItemCard(
-          label: i18.home.dailyImplementationPlanLabel,
-          onPressed: () {
-            showDIPFLowDialog(context, localizations);
+        child: BlocBuilder<DipSearchBloc, DipSearchState>(
+          builder: (context, state) {
+            UserActionModel? dipUserAction;
+            if (state is DipSearchSettlementState) {
+              dipUserAction = state.selectedDipUserAction;
+            }
+            return HomeItemCard(
+              label: i18.home.dailyImplementationPlanLabel,
+              onPressed: () {
+                showDIPDialog(context, localizations, dipUserAction);
+              },
+              icon: Icons.people,
+            );
           },
-          icon: Icons.people,
         ),
       ),
       i18.home.campaignDeliverySelection:
@@ -568,6 +578,16 @@ class _HomePageState extends LocalizedState<HomePage> {
             context.router.push(CampaignDeliverySelectRoute());
           },
           icon: Icons.groups,
+        ),
+      ),
+      i18.home.nonComplianceTracking:
+          homeShowcaseData.nonComplianceTracking.buildWith(
+        child: HomeItemCard(
+          label: i18.home.nonComplianceTracking,
+          onPressed: () {
+            context.router.push(const NonComplianceTrackingWrapperRoute());
+          },
+          icon: Icons.announcement,
         ),
       ),
     };
@@ -598,6 +618,8 @@ class _HomePageState extends LocalizedState<HomePage> {
           homeShowcaseData.dailyImplementationPlan.showcaseKey,
       i18.home.campaignDeliverySelection:
           homeShowcaseData.campaignDeliverySelection.showcaseKey,
+      i18.home.nonComplianceTracking:
+          homeShowcaseData.nonComplianceTracking.showcaseKey,
       i18.home.db: homeShowcaseData.db.showcaseKey,
       i18.home.dashboard: homeShowcaseData.dashBoard.showcaseKey,
       i18.home.clfLabel: homeShowcaseData.clf.showcaseKey,
@@ -612,14 +634,17 @@ class _HomePageState extends LocalizedState<HomePage> {
       // INFO: Need to add items label of package Here
       i18.home.dailyImplementationPlanLabel,
       i18.home.campaignDeliverySelection,
-      i18.home.mySurveyForm,
+      i18.home.nonComplianceTracking,
+      // i18.home.mySurveyForm,
       i18.home.manageAttendanceLabel,
       i18.home.beneficiaryReferralLabel,
       // i18.home.beneficiaryLabel,
       i18.home.manageStockLabel,
       i18.home.stockReconciliationLabel,
       i18.home.viewReportsLabel,
-      i18.home.viewSummaryReportsLabel,
+      // hide the summary report feature
+      // TODO : should be done via role action
+      // i18.home.viewSummaryReportsLabel,
       i18.home.syncDataLabel,
       i18.home.fileComplaint,
       i18.home.beneficiaryIdLabel,
@@ -634,9 +659,7 @@ class _HomePageState extends LocalizedState<HomePage> {
                   .map((e) => e.displayName)
                   .toList()
                   .contains(element) ||
-              element == i18.home.db ||
-              element == i18.home.dailyImplementationPlanLabel ||
-              element == i18.home.campaignDeliverySelection,
+              element == i18.home.db,
         )
         .toList();
 
@@ -931,9 +954,10 @@ void setPackagesSingleton(BuildContext context) {
       });
 }
 
-void showDIPFLowDialog(
+void showDIPDialog(
   BuildContext context,
   AppLocalizations localizations,
+  UserActionModel? dipUserAction,
 ) {
   showDialog(
       context: context,
@@ -942,89 +966,88 @@ void showDIPFLowDialog(
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              GestureDetector(
-                onTap: () {
-                  context.router.push(SelectBoundaryRoute());
+              if (dipUserAction == null)
+                GestureDetector(
+                  onTap: () {
+                    context.router.push(SelectSettlementsRoute());
 
-                  Navigator.of(context).pop();
-                },
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.orange[800]!,
-                      width: 1,
+                    Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.orange[800]!,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white,
                     ),
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.white,
-                  ),
-                  padding: const EdgeInsets.all(16),
-                  child: Center(
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.edit_note_outlined,
-                          size: 24,
-                          color: Colors.orange[800],
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          localizations.translate(
-                              i18.dailyImplementationFlow.createDIPLabel),
-                          style: TextStyle(
-                            fontSize: 16,
+                    padding: const EdgeInsets.all(16),
+                    child: Center(
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.edit_note_outlined,
+                            size: 24,
                             color: Colors.orange[800],
-                            fontWeight: FontWeight.bold,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 8),
+                          Text(
+                            localizations.translate(
+                                i18.dailyImplementationFlow.createDIPLabel),
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.orange[800],
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16), // Add spacing between buttons
-              GestureDetector(
-                onTap: () {
-                  // context.router.push(
-
-                  // );
-                  Navigator.of(context).pop();
-                },
-                child: Container(
-                  width: 400,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.orange[800]!,
-                      width: 1,
+              if (dipUserAction != null)
+                GestureDetector(
+                  onTap: () {
+                    context.router.push(const SelectSettlementsDateViewRoute());
+                    Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    width: 400,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.orange[800]!,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white,
                     ),
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.white,
-                  ),
-                  padding: const EdgeInsets.all(16),
-                  child: Center(
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.remove_red_eye,
-                          size: 24,
-                          color: Colors.orange[800],
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          localizations.translate(
-                            i18.dailyImplementationFlow.viewDIPLabel,
-                          ),
-                          style: TextStyle(
-                            fontSize: 16,
+                    padding: const EdgeInsets.all(16),
+                    child: Center(
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.remove_red_eye,
+                            size: 24,
                             color: Colors.orange[800],
-                            fontWeight: FontWeight.bold,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 8),
+                          Text(
+                            localizations.translate(
+                              i18.dailyImplementationFlow.viewDIPLabel,
+                            ),
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.orange[800],
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
             ],
           ),
         );

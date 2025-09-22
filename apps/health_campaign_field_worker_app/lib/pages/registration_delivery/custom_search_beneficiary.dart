@@ -379,6 +379,7 @@ class _CustomSearchBeneficiaryPageState
                                                   isProximityEnabled = false;
                                                   isSearchByBeneficiaryIdEnabled =
                                                       false;
+                                                  isHouseNonCompliant = false;
                                                   searchController.clear();
                                                   blocWrapper.clearEvent();
                                                 });
@@ -570,7 +571,12 @@ class _CustomSearchBeneficiaryPageState
                                       (householdMemberWrapper
                                                   .projectBeneficiaries ??
                                               [])
-                                          .isEmpty) {
+                                          .isEmpty ||
+                                      (i.tasks != null &&
+                                          i.tasks?.last.status ==
+                                              Status.administeredFailed
+                                                  .toValue() &&
+                                          (i.tasks ?? []).isNotEmpty)) {
                                     setState(() {
                                       selectedFilters = [];
                                     });

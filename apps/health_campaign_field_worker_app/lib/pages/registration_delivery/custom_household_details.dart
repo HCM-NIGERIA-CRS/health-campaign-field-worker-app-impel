@@ -17,25 +17,25 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:registration_delivery/blocs/household_overview/household_overview.dart';
 import 'package:registration_delivery/blocs/search_households/search_households.dart';
 import 'package:registration_delivery/models/entities/additional_fields_type.dart';
-import 'package:registration_delivery/utils/extensions/extensions.dart';
 
 import 'package:registration_delivery/models/entities/household.dart';
 import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
 import 'package:registration_delivery/utils/constants.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
 import 'package:registration_delivery/utils/utils.dart';
+
+import '../../models/entities/project_types.dart';
+import '../../utils/extensions/extensions.dart' as local_extensions;
+
 import '../../utils/i18_key_constants.dart' as i18_local;
-import 'package:registration_delivery/widgets/back_navigation_help_header.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 import 'package:registration_delivery/widgets/showcase/config/showcase_constants.dart';
-import 'package:registration_delivery/widgets/showcase/showcase_button.dart';
 
 import '../../blocs/registration_delivery/custom_beneficairy_registration.dart';
 import '../../router/app_router.dart';
 import '../../utils/registration_delivery/registration_delivery_utils.dart';
 import 'custom_beneficiary_acknowledgement.dart';
 import '../../utils/constants.dart' as local_constants;
-import '../../models/entities/status.dart';
 
 @RoutePage()
 class CustomHouseHoldDetailsPage extends LocalizedStatefulWidget {
@@ -436,10 +436,20 @@ class CustomHouseHoldDetailsPageState
                                   registrationDate: dateOfRegistration,
                                 ),
                               );
-                              context.router.push(
-                                CustomIndividualDetailsRoute(
-                                    isHeadOfHousehold: true),
-                              );
+                              if ((local_extensions.ContextUtilityExtensions(
+                                          context)
+                                      .projectTypeCode ==
+                                  ProjectTypes.polio.toValue())) {
+                                context.router
+                                    .push(CustomIndividualDetailsRoute(
+                                  isHeadOfHousehold: true,
+                                ));
+                              } else {
+                                context.router
+                                    .push(CustomIndividualDetailsPolioSMCRoute(
+                                  isHeadOfHousehold: true,
+                                ));
+                              }
                             },
                             editHousehold: (
                               addressModel,
@@ -456,8 +466,9 @@ class CustomHouseHoldDetailsPageState
                                       e.key ==
                                       local_constants.Constants.consentsKey)
                                   .firstOrNull;
-                              isNoConsent =
-                                  isConsentAdditionalField?.value == false;
+                              isNoConsent = isConsentAdditionalField?.value ==
+                                      false ||
+                                  isConsentAdditionalField?.value == "false";
 
                               var household = householdModel.copyWith(
                                   memberCount: memberCount,
@@ -601,11 +612,21 @@ class CustomHouseHoldDetailsPageState
                                             addressModel: addressModel,
                                             projectBeneficiaryModel:
                                                 projectBeneficiaryModel),
-                                    children: [
-                                      CustomIndividualDetailsRoute(
-                                        isHeadOfHousehold: true,
-                                      ),
-                                    ],
+                                    children: (local_extensions
+                                                    .ContextUtilityExtensions(
+                                                        context)
+                                                .projectTypeCode ==
+                                            ProjectTypes.polio.toValue())
+                                        ? [
+                                            CustomIndividualDetailsRoute(
+                                              isHeadOfHousehold: true,
+                                            )
+                                          ]
+                                        : [
+                                            CustomIndividualDetailsPolioSMCRoute(
+                                              isHeadOfHousehold: true,
+                                            ),
+                                          ],
                                   ),
                                 );
                               } else {

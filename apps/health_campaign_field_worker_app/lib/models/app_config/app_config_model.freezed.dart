@@ -941,8 +941,20 @@ mixin _$HCMWrapperModel {
   List<CheckListTypes> get checklistTypes => throw _privateConstructorUsedError;
   @JsonKey(name: 'ID_TYPE_OPTIONS_POPULATOR')
   List<IdTypeOptions> get idTypeOptions => throw _privateConstructorUsedError;
+  @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR')
+  List<DeliveryCommentOptions> get redoseDeliveryCommentsOptions =>
+      throw _privateConstructorUsedError;
   @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_POPULATOR')
   List<DeliveryCommentOptions> get deliveryCommentOptions =>
+      throw _privateConstructorUsedError;
+  @JsonKey(name: 'AGE_RANGE_OPTIONS')
+  List<AgeRangeOptions> get ageRangeOptions =>
+      throw _privateConstructorUsedError;
+  @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
+  List<HeightRangeOptions> get heightRangeOptions =>
+      throw _privateConstructorUsedError;
+  @JsonKey(name: 'USER_ACTION_DAILY_PLAN')
+  List<DailyActionPlanConfig> get dailyPlanConfigs =>
       throw _privateConstructorUsedError;
   @JsonKey(name: 'NON_COMPLIANCE_REASONS')
   List<NonComplianceReasons> get nonComplianceReasons =>
@@ -1009,8 +1021,15 @@ abstract class $HCMWrapperModelCopyWith<$Res> {
       @JsonKey(name: 'CHECKLIST_TYPES') List<CheckListTypes> checklistTypes,
       @JsonKey(name: 'ID_TYPE_OPTIONS_POPULATOR')
       List<IdTypeOptions> idTypeOptions,
+      @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR')
+      List<DeliveryCommentOptions> redoseDeliveryCommentsOptions,
       @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_POPULATOR')
       List<DeliveryCommentOptions> deliveryCommentOptions,
+      @JsonKey(name: 'AGE_RANGE_OPTIONS') List<AgeRangeOptions> ageRangeOptions,
+      @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
+      List<HeightRangeOptions> heightRangeOptions,
+      @JsonKey(name: 'USER_ACTION_DAILY_PLAN')
+      List<DailyActionPlanConfig> dailyPlanConfigs,
       @JsonKey(name: 'NON_COMPLIANCE_REASONS')
       List<NonComplianceReasons> nonComplianceReasons,
       @JsonKey(name: 'BACKEND_INTERFACE')
@@ -1054,7 +1073,11 @@ class _$HCMWrapperModelCopyWithImpl<$Res, $Val extends HCMWrapperModel>
     Object? backgroundServiceConfig = freezed,
     Object? checklistTypes = null,
     Object? idTypeOptions = null,
+    Object? redoseDeliveryCommentsOptions = null,
     Object? deliveryCommentOptions = null,
+    Object? ageRangeOptions = null,
+    Object? heightRangeOptions = null,
+    Object? dailyPlanConfigs = null,
     Object? nonComplianceReasons = null,
     Object? backendInterface = null,
     Object? callSupportOptions = freezed,
@@ -1106,10 +1129,26 @@ class _$HCMWrapperModelCopyWithImpl<$Res, $Val extends HCMWrapperModel>
           ? _value.idTypeOptions
           : idTypeOptions // ignore: cast_nullable_to_non_nullable
               as List<IdTypeOptions>,
+      redoseDeliveryCommentsOptions: null == redoseDeliveryCommentsOptions
+          ? _value.redoseDeliveryCommentsOptions
+          : redoseDeliveryCommentsOptions // ignore: cast_nullable_to_non_nullable
+              as List<DeliveryCommentOptions>,
       deliveryCommentOptions: null == deliveryCommentOptions
           ? _value.deliveryCommentOptions
           : deliveryCommentOptions // ignore: cast_nullable_to_non_nullable
               as List<DeliveryCommentOptions>,
+      ageRangeOptions: null == ageRangeOptions
+          ? _value.ageRangeOptions
+          : ageRangeOptions // ignore: cast_nullable_to_non_nullable
+              as List<AgeRangeOptions>,
+      heightRangeOptions: null == heightRangeOptions
+          ? _value.heightRangeOptions
+          : heightRangeOptions // ignore: cast_nullable_to_non_nullable
+              as List<HeightRangeOptions>,
+      dailyPlanConfigs: null == dailyPlanConfigs
+          ? _value.dailyPlanConfigs
+          : dailyPlanConfigs // ignore: cast_nullable_to_non_nullable
+              as List<DailyActionPlanConfig>,
       nonComplianceReasons: null == nonComplianceReasons
           ? _value.nonComplianceReasons
           : nonComplianceReasons // ignore: cast_nullable_to_non_nullable
@@ -1187,8 +1226,15 @@ abstract class _$$HCMWrapperModelImplCopyWith<$Res>
       @JsonKey(name: 'CHECKLIST_TYPES') List<CheckListTypes> checklistTypes,
       @JsonKey(name: 'ID_TYPE_OPTIONS_POPULATOR')
       List<IdTypeOptions> idTypeOptions,
+      @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR')
+      List<DeliveryCommentOptions> redoseDeliveryCommentsOptions,
       @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_POPULATOR')
       List<DeliveryCommentOptions> deliveryCommentOptions,
+      @JsonKey(name: 'AGE_RANGE_OPTIONS') List<AgeRangeOptions> ageRangeOptions,
+      @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
+      List<HeightRangeOptions> heightRangeOptions,
+      @JsonKey(name: 'USER_ACTION_DAILY_PLAN')
+      List<DailyActionPlanConfig> dailyPlanConfigs,
       @JsonKey(name: 'NON_COMPLIANCE_REASONS')
       List<NonComplianceReasons> nonComplianceReasons,
       @JsonKey(name: 'BACKEND_INTERFACE')
@@ -1230,7 +1276,11 @@ class __$$HCMWrapperModelImplCopyWithImpl<$Res>
     Object? backgroundServiceConfig = freezed,
     Object? checklistTypes = null,
     Object? idTypeOptions = null,
+    Object? redoseDeliveryCommentsOptions = null,
     Object? deliveryCommentOptions = null,
+    Object? ageRangeOptions = null,
+    Object? heightRangeOptions = null,
+    Object? dailyPlanConfigs = null,
     Object? nonComplianceReasons = null,
     Object? backendInterface = null,
     Object? callSupportOptions = freezed,
@@ -1282,10 +1332,26 @@ class __$$HCMWrapperModelImplCopyWithImpl<$Res>
           ? _value._idTypeOptions
           : idTypeOptions // ignore: cast_nullable_to_non_nullable
               as List<IdTypeOptions>,
+      redoseDeliveryCommentsOptions: null == redoseDeliveryCommentsOptions
+          ? _value._redoseDeliveryCommentsOptions
+          : redoseDeliveryCommentsOptions // ignore: cast_nullable_to_non_nullable
+              as List<DeliveryCommentOptions>,
       deliveryCommentOptions: null == deliveryCommentOptions
           ? _value._deliveryCommentOptions
           : deliveryCommentOptions // ignore: cast_nullable_to_non_nullable
               as List<DeliveryCommentOptions>,
+      ageRangeOptions: null == ageRangeOptions
+          ? _value._ageRangeOptions
+          : ageRangeOptions // ignore: cast_nullable_to_non_nullable
+              as List<AgeRangeOptions>,
+      heightRangeOptions: null == heightRangeOptions
+          ? _value._heightRangeOptions
+          : heightRangeOptions // ignore: cast_nullable_to_non_nullable
+              as List<HeightRangeOptions>,
+      dailyPlanConfigs: null == dailyPlanConfigs
+          ? _value._dailyPlanConfigs
+          : dailyPlanConfigs // ignore: cast_nullable_to_non_nullable
+              as List<DailyActionPlanConfig>,
       nonComplianceReasons: null == nonComplianceReasons
           ? _value._nonComplianceReasons
           : nonComplianceReasons // ignore: cast_nullable_to_non_nullable
@@ -1360,8 +1426,16 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
       required final List<CheckListTypes> checklistTypes,
       @JsonKey(name: 'ID_TYPE_OPTIONS_POPULATOR')
       required final List<IdTypeOptions> idTypeOptions,
+      @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR')
+      required final List<DeliveryCommentOptions> redoseDeliveryCommentsOptions,
       @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_POPULATOR')
       required final List<DeliveryCommentOptions> deliveryCommentOptions,
+      @JsonKey(name: 'AGE_RANGE_OPTIONS')
+      required final List<AgeRangeOptions> ageRangeOptions,
+      @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
+      required final List<HeightRangeOptions> heightRangeOptions,
+      @JsonKey(name: 'USER_ACTION_DAILY_PLAN')
+      required final List<DailyActionPlanConfig> dailyPlanConfigs,
       @JsonKey(name: 'NON_COMPLIANCE_REASONS')
       required final List<NonComplianceReasons> nonComplianceReasons,
       @JsonKey(name: 'BACKEND_INTERFACE')
@@ -1396,7 +1470,11 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
         _backgroundServiceConfig = backgroundServiceConfig,
         _checklistTypes = checklistTypes,
         _idTypeOptions = idTypeOptions,
+        _redoseDeliveryCommentsOptions = redoseDeliveryCommentsOptions,
         _deliveryCommentOptions = deliveryCommentOptions,
+        _ageRangeOptions = ageRangeOptions,
+        _heightRangeOptions = heightRangeOptions,
+        _dailyPlanConfigs = dailyPlanConfigs,
         _nonComplianceReasons = nonComplianceReasons,
         _backendInterface = backendInterface,
         _callSupportOptions = callSupportOptions,
@@ -1502,6 +1580,16 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
     return EqualUnmodifiableListView(_idTypeOptions);
   }
 
+  final List<DeliveryCommentOptions> _redoseDeliveryCommentsOptions;
+  @override
+  @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR')
+  List<DeliveryCommentOptions> get redoseDeliveryCommentsOptions {
+    if (_redoseDeliveryCommentsOptions is EqualUnmodifiableListView)
+      return _redoseDeliveryCommentsOptions;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_redoseDeliveryCommentsOptions);
+  }
+
   final List<DeliveryCommentOptions> _deliveryCommentOptions;
   @override
   @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_POPULATOR')
@@ -1510,6 +1598,35 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
       return _deliveryCommentOptions;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_deliveryCommentOptions);
+  }
+
+  final List<AgeRangeOptions> _ageRangeOptions;
+  @override
+  @JsonKey(name: 'AGE_RANGE_OPTIONS')
+  List<AgeRangeOptions> get ageRangeOptions {
+    if (_ageRangeOptions is EqualUnmodifiableListView) return _ageRangeOptions;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_ageRangeOptions);
+  }
+
+  final List<HeightRangeOptions> _heightRangeOptions;
+  @override
+  @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
+  List<HeightRangeOptions> get heightRangeOptions {
+    if (_heightRangeOptions is EqualUnmodifiableListView)
+      return _heightRangeOptions;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_heightRangeOptions);
+  }
+
+  final List<DailyActionPlanConfig> _dailyPlanConfigs;
+  @override
+  @JsonKey(name: 'USER_ACTION_DAILY_PLAN')
+  List<DailyActionPlanConfig> get dailyPlanConfigs {
+    if (_dailyPlanConfigs is EqualUnmodifiableListView)
+      return _dailyPlanConfigs;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_dailyPlanConfigs);
   }
 
   final List<NonComplianceReasons> _nonComplianceReasons;
@@ -1648,7 +1765,7 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
 
   @override
   String toString() {
-    return 'HCMWrapperModel(appConfig: $appConfig, bandWidthBatchSize: $bandWidthBatchSize, downSyncBandWidthBatchSize: $downSyncBandWidthBatchSize, beneficiaryIdConfig: $beneficiaryIdConfig, householdDeletionReasonOptions: $householdDeletionReasonOptions, householdMemberDeletionReasonOptions: $householdMemberDeletionReasonOptions, backgroundServiceConfig: $backgroundServiceConfig, checklistTypes: $checklistTypes, idTypeOptions: $idTypeOptions, deliveryCommentOptions: $deliveryCommentOptions, nonComplianceReasons: $nonComplianceReasons, backendInterface: $backendInterface, callSupportOptions: $callSupportOptions, transportTypes: $transportTypes, symptomsTypeList: $symptomsTypeList, searchHouseHoldFilters: $searchHouseHoldFilters, searchCLFFilters: $searchCLFFilters, referralReasonList: $referralReasonList, houseStructureTypes: $houseStructureTypes, refusalReasons: $refusalReasons, firebaseConfig: $firebaseConfig, transitPostType: $transitPostType)';
+    return 'HCMWrapperModel(appConfig: $appConfig, bandWidthBatchSize: $bandWidthBatchSize, downSyncBandWidthBatchSize: $downSyncBandWidthBatchSize, beneficiaryIdConfig: $beneficiaryIdConfig, householdDeletionReasonOptions: $householdDeletionReasonOptions, householdMemberDeletionReasonOptions: $householdMemberDeletionReasonOptions, backgroundServiceConfig: $backgroundServiceConfig, checklistTypes: $checklistTypes, idTypeOptions: $idTypeOptions, redoseDeliveryCommentsOptions: $redoseDeliveryCommentsOptions, deliveryCommentOptions: $deliveryCommentOptions, ageRangeOptions: $ageRangeOptions, heightRangeOptions: $heightRangeOptions, dailyPlanConfigs: $dailyPlanConfigs, nonComplianceReasons: $nonComplianceReasons, backendInterface: $backendInterface, callSupportOptions: $callSupportOptions, transportTypes: $transportTypes, symptomsTypeList: $symptomsTypeList, searchHouseHoldFilters: $searchHouseHoldFilters, searchCLFFilters: $searchCLFFilters, referralReasonList: $referralReasonList, houseStructureTypes: $houseStructureTypes, refusalReasons: $refusalReasons, firebaseConfig: $firebaseConfig, transitPostType: $transitPostType)';
   }
 
   @override
@@ -1678,7 +1795,16 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
             const DeepCollectionEquality()
                 .equals(other._idTypeOptions, _idTypeOptions) &&
             const DeepCollectionEquality().equals(
+                other._redoseDeliveryCommentsOptions,
+                _redoseDeliveryCommentsOptions) &&
+            const DeepCollectionEquality().equals(
                 other._deliveryCommentOptions, _deliveryCommentOptions) &&
+            const DeepCollectionEquality()
+                .equals(other._ageRangeOptions, _ageRangeOptions) &&
+            const DeepCollectionEquality()
+                .equals(other._heightRangeOptions, _heightRangeOptions) &&
+            const DeepCollectionEquality()
+                .equals(other._dailyPlanConfigs, _dailyPlanConfigs) &&
             const DeepCollectionEquality()
                 .equals(other._nonComplianceReasons, _nonComplianceReasons) &&
             const DeepCollectionEquality()
@@ -1719,7 +1845,11 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
         const DeepCollectionEquality().hash(_backgroundServiceConfig),
         const DeepCollectionEquality().hash(_checklistTypes),
         const DeepCollectionEquality().hash(_idTypeOptions),
+        const DeepCollectionEquality().hash(_redoseDeliveryCommentsOptions),
         const DeepCollectionEquality().hash(_deliveryCommentOptions),
+        const DeepCollectionEquality().hash(_ageRangeOptions),
+        const DeepCollectionEquality().hash(_heightRangeOptions),
+        const DeepCollectionEquality().hash(_dailyPlanConfigs),
         const DeepCollectionEquality().hash(_nonComplianceReasons),
         const DeepCollectionEquality().hash(_backendInterface),
         const DeepCollectionEquality().hash(_callSupportOptions),
@@ -1769,8 +1899,16 @@ abstract class _HCMWrapperModel implements HCMWrapperModel {
       required final List<CheckListTypes> checklistTypes,
       @JsonKey(name: 'ID_TYPE_OPTIONS_POPULATOR')
       required final List<IdTypeOptions> idTypeOptions,
+      @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR')
+      required final List<DeliveryCommentOptions> redoseDeliveryCommentsOptions,
       @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_POPULATOR')
       required final List<DeliveryCommentOptions> deliveryCommentOptions,
+      @JsonKey(name: 'AGE_RANGE_OPTIONS')
+      required final List<AgeRangeOptions> ageRangeOptions,
+      @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
+      required final List<HeightRangeOptions> heightRangeOptions,
+      @JsonKey(name: 'USER_ACTION_DAILY_PLAN')
+      required final List<DailyActionPlanConfig> dailyPlanConfigs,
       @JsonKey(name: 'NON_COMPLIANCE_REASONS')
       required final List<NonComplianceReasons> nonComplianceReasons,
       @JsonKey(name: 'BACKEND_INTERFACE')
@@ -1827,8 +1965,20 @@ abstract class _HCMWrapperModel implements HCMWrapperModel {
   @JsonKey(name: 'ID_TYPE_OPTIONS_POPULATOR')
   List<IdTypeOptions> get idTypeOptions;
   @override
+  @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR')
+  List<DeliveryCommentOptions> get redoseDeliveryCommentsOptions;
+  @override
   @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_POPULATOR')
   List<DeliveryCommentOptions> get deliveryCommentOptions;
+  @override
+  @JsonKey(name: 'AGE_RANGE_OPTIONS')
+  List<AgeRangeOptions> get ageRangeOptions;
+  @override
+  @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
+  List<HeightRangeOptions> get heightRangeOptions;
+  @override
+  @JsonKey(name: 'USER_ACTION_DAILY_PLAN')
+  List<DailyActionPlanConfig> get dailyPlanConfigs;
   @override
   @JsonKey(name: 'NON_COMPLIANCE_REASONS')
   List<NonComplianceReasons> get nonComplianceReasons;
@@ -3778,6 +3928,475 @@ abstract class _DeliveryCommentOptions implements DeliveryCommentOptions {
   @override
   @JsonKey(ignore: true)
   _$$DeliveryCommentOptionsImplCopyWith<_$DeliveryCommentOptionsImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+AgeRangeOptions _$AgeRangeOptionsFromJson(Map<String, dynamic> json) {
+  return _AgeRangeOptions.fromJson(json);
+}
+
+/// @nodoc
+mixin _$AgeRangeOptions {
+  String get name => throw _privateConstructorUsedError;
+  String get code => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $AgeRangeOptionsCopyWith<AgeRangeOptions> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $AgeRangeOptionsCopyWith<$Res> {
+  factory $AgeRangeOptionsCopyWith(
+          AgeRangeOptions value, $Res Function(AgeRangeOptions) then) =
+      _$AgeRangeOptionsCopyWithImpl<$Res, AgeRangeOptions>;
+  @useResult
+  $Res call({String name, String code});
+}
+
+/// @nodoc
+class _$AgeRangeOptionsCopyWithImpl<$Res, $Val extends AgeRangeOptions>
+    implements $AgeRangeOptionsCopyWith<$Res> {
+  _$AgeRangeOptionsCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? code = null,
+  }) {
+    return _then(_value.copyWith(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      code: null == code
+          ? _value.code
+          : code // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$AgeRangeOptionsImplCopyWith<$Res>
+    implements $AgeRangeOptionsCopyWith<$Res> {
+  factory _$$AgeRangeOptionsImplCopyWith(_$AgeRangeOptionsImpl value,
+          $Res Function(_$AgeRangeOptionsImpl) then) =
+      __$$AgeRangeOptionsImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String name, String code});
+}
+
+/// @nodoc
+class __$$AgeRangeOptionsImplCopyWithImpl<$Res>
+    extends _$AgeRangeOptionsCopyWithImpl<$Res, _$AgeRangeOptionsImpl>
+    implements _$$AgeRangeOptionsImplCopyWith<$Res> {
+  __$$AgeRangeOptionsImplCopyWithImpl(
+      _$AgeRangeOptionsImpl _value, $Res Function(_$AgeRangeOptionsImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? code = null,
+  }) {
+    return _then(_$AgeRangeOptionsImpl(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      code: null == code
+          ? _value.code
+          : code // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$AgeRangeOptionsImpl implements _AgeRangeOptions {
+  _$AgeRangeOptionsImpl({required this.name, required this.code});
+
+  factory _$AgeRangeOptionsImpl.fromJson(Map<String, dynamic> json) =>
+      _$$AgeRangeOptionsImplFromJson(json);
+
+  @override
+  final String name;
+  @override
+  final String code;
+
+  @override
+  String toString() {
+    return 'AgeRangeOptions(name: $name, code: $code)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$AgeRangeOptionsImpl &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.code, code) || other.code == code));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(runtimeType, name, code);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$AgeRangeOptionsImplCopyWith<_$AgeRangeOptionsImpl> get copyWith =>
+      __$$AgeRangeOptionsImplCopyWithImpl<_$AgeRangeOptionsImpl>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$AgeRangeOptionsImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _AgeRangeOptions implements AgeRangeOptions {
+  factory _AgeRangeOptions(
+      {required final String name,
+      required final String code}) = _$AgeRangeOptionsImpl;
+
+  factory _AgeRangeOptions.fromJson(Map<String, dynamic> json) =
+      _$AgeRangeOptionsImpl.fromJson;
+
+  @override
+  String get name;
+  @override
+  String get code;
+  @override
+  @JsonKey(ignore: true)
+  _$$AgeRangeOptionsImplCopyWith<_$AgeRangeOptionsImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+HeightRangeOptions _$HeightRangeOptionsFromJson(Map<String, dynamic> json) {
+  return _HeightRangeOptions.fromJson(json);
+}
+
+/// @nodoc
+mixin _$HeightRangeOptions {
+  String get name => throw _privateConstructorUsedError;
+  String get code => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $HeightRangeOptionsCopyWith<HeightRangeOptions> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $HeightRangeOptionsCopyWith<$Res> {
+  factory $HeightRangeOptionsCopyWith(
+          HeightRangeOptions value, $Res Function(HeightRangeOptions) then) =
+      _$HeightRangeOptionsCopyWithImpl<$Res, HeightRangeOptions>;
+  @useResult
+  $Res call({String name, String code});
+}
+
+/// @nodoc
+class _$HeightRangeOptionsCopyWithImpl<$Res, $Val extends HeightRangeOptions>
+    implements $HeightRangeOptionsCopyWith<$Res> {
+  _$HeightRangeOptionsCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? code = null,
+  }) {
+    return _then(_value.copyWith(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      code: null == code
+          ? _value.code
+          : code // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$HeightRangeOptionsImplCopyWith<$Res>
+    implements $HeightRangeOptionsCopyWith<$Res> {
+  factory _$$HeightRangeOptionsImplCopyWith(_$HeightRangeOptionsImpl value,
+          $Res Function(_$HeightRangeOptionsImpl) then) =
+      __$$HeightRangeOptionsImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String name, String code});
+}
+
+/// @nodoc
+class __$$HeightRangeOptionsImplCopyWithImpl<$Res>
+    extends _$HeightRangeOptionsCopyWithImpl<$Res, _$HeightRangeOptionsImpl>
+    implements _$$HeightRangeOptionsImplCopyWith<$Res> {
+  __$$HeightRangeOptionsImplCopyWithImpl(_$HeightRangeOptionsImpl _value,
+      $Res Function(_$HeightRangeOptionsImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? code = null,
+  }) {
+    return _then(_$HeightRangeOptionsImpl(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      code: null == code
+          ? _value.code
+          : code // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$HeightRangeOptionsImpl implements _HeightRangeOptions {
+  _$HeightRangeOptionsImpl({required this.name, required this.code});
+
+  factory _$HeightRangeOptionsImpl.fromJson(Map<String, dynamic> json) =>
+      _$$HeightRangeOptionsImplFromJson(json);
+
+  @override
+  final String name;
+  @override
+  final String code;
+
+  @override
+  String toString() {
+    return 'HeightRangeOptions(name: $name, code: $code)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$HeightRangeOptionsImpl &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.code, code) || other.code == code));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(runtimeType, name, code);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$HeightRangeOptionsImplCopyWith<_$HeightRangeOptionsImpl> get copyWith =>
+      __$$HeightRangeOptionsImplCopyWithImpl<_$HeightRangeOptionsImpl>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$HeightRangeOptionsImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _HeightRangeOptions implements HeightRangeOptions {
+  factory _HeightRangeOptions(
+      {required final String name,
+      required final String code}) = _$HeightRangeOptionsImpl;
+
+  factory _HeightRangeOptions.fromJson(Map<String, dynamic> json) =
+      _$HeightRangeOptionsImpl.fromJson;
+
+  @override
+  String get name;
+  @override
+  String get code;
+  @override
+  @JsonKey(ignore: true)
+  _$$HeightRangeOptionsImplCopyWith<_$HeightRangeOptionsImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+DailyActionPlanConfig _$DailyActionPlanConfigFromJson(
+    Map<String, dynamic> json) {
+  return _DailyActionPlanConfig.fromJson(json);
+}
+
+/// @nodoc
+mixin _$DailyActionPlanConfig {
+  String get key => throw _privateConstructorUsedError;
+  String get value => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $DailyActionPlanConfigCopyWith<DailyActionPlanConfig> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $DailyActionPlanConfigCopyWith<$Res> {
+  factory $DailyActionPlanConfigCopyWith(DailyActionPlanConfig value,
+          $Res Function(DailyActionPlanConfig) then) =
+      _$DailyActionPlanConfigCopyWithImpl<$Res, DailyActionPlanConfig>;
+  @useResult
+  $Res call({String key, String value});
+}
+
+/// @nodoc
+class _$DailyActionPlanConfigCopyWithImpl<$Res,
+        $Val extends DailyActionPlanConfig>
+    implements $DailyActionPlanConfigCopyWith<$Res> {
+  _$DailyActionPlanConfigCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? key = null,
+    Object? value = null,
+  }) {
+    return _then(_value.copyWith(
+      key: null == key
+          ? _value.key
+          : key // ignore: cast_nullable_to_non_nullable
+              as String,
+      value: null == value
+          ? _value.value
+          : value // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$DailyActionPlanConfigImplCopyWith<$Res>
+    implements $DailyActionPlanConfigCopyWith<$Res> {
+  factory _$$DailyActionPlanConfigImplCopyWith(
+          _$DailyActionPlanConfigImpl value,
+          $Res Function(_$DailyActionPlanConfigImpl) then) =
+      __$$DailyActionPlanConfigImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String key, String value});
+}
+
+/// @nodoc
+class __$$DailyActionPlanConfigImplCopyWithImpl<$Res>
+    extends _$DailyActionPlanConfigCopyWithImpl<$Res,
+        _$DailyActionPlanConfigImpl>
+    implements _$$DailyActionPlanConfigImplCopyWith<$Res> {
+  __$$DailyActionPlanConfigImplCopyWithImpl(_$DailyActionPlanConfigImpl _value,
+      $Res Function(_$DailyActionPlanConfigImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? key = null,
+    Object? value = null,
+  }) {
+    return _then(_$DailyActionPlanConfigImpl(
+      key: null == key
+          ? _value.key
+          : key // ignore: cast_nullable_to_non_nullable
+              as String,
+      value: null == value
+          ? _value.value
+          : value // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$DailyActionPlanConfigImpl implements _DailyActionPlanConfig {
+  _$DailyActionPlanConfigImpl({required this.key, required this.value});
+
+  factory _$DailyActionPlanConfigImpl.fromJson(Map<String, dynamic> json) =>
+      _$$DailyActionPlanConfigImplFromJson(json);
+
+  @override
+  final String key;
+  @override
+  final String value;
+
+  @override
+  String toString() {
+    return 'DailyActionPlanConfig(key: $key, value: $value)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DailyActionPlanConfigImpl &&
+            (identical(other.key, key) || other.key == key) &&
+            (identical(other.value, value) || other.value == value));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(runtimeType, key, value);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$DailyActionPlanConfigImplCopyWith<_$DailyActionPlanConfigImpl>
+      get copyWith => __$$DailyActionPlanConfigImplCopyWithImpl<
+          _$DailyActionPlanConfigImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$DailyActionPlanConfigImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _DailyActionPlanConfig implements DailyActionPlanConfig {
+  factory _DailyActionPlanConfig(
+      {required final String key,
+      required final String value}) = _$DailyActionPlanConfigImpl;
+
+  factory _DailyActionPlanConfig.fromJson(Map<String, dynamic> json) =
+      _$DailyActionPlanConfigImpl.fromJson;
+
+  @override
+  String get key;
+  @override
+  String get value;
+  @override
+  @JsonKey(ignore: true)
+  _$$DailyActionPlanConfigImplCopyWith<_$DailyActionPlanConfigImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 

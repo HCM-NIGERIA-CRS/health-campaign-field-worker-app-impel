@@ -49,6 +49,9 @@ const transitFixedPost = TransitFixedPost();
 
 class Common {
   const Common();
+  String get nonComplianceTrackingLabel => 'NON_COMPLIANCE_TRACKING_LABEL';
+  String get nonComplianceUpdateStatusLabel =>
+      'NON_COMPLIANCE_UPDATE_STATUS_LABEL';
 
   String get coreCommonContinue => 'CORE_COMMON_CONTINUE';
   String get coreCommonWarning => 'CORE_COMMON_WARNING';
@@ -65,6 +68,8 @@ class Common {
   String get coreCommonMobileNumber => 'CORE_COMMON_MOBILE_NUMBER';
 
   String get coreCommonSubmit => 'CORE_COMMON_SUBMIT';
+
+  String get coreCommonFinish => 'CORE_COMMON_FINISH';
 
   String get coreCommonSave => 'CORE_COMMON_SAVE';
 
@@ -166,8 +171,17 @@ class HouseholdOverView {
   String get householdOverViewSMCAssessmentActionText =>
       'HOUSEHOLD_OVER_VIEW_SMC_ASSESSMENT_ACTION_TEXT';
 
+  String get householdOverViewDeliverActionText =>
+      'HOUSEHOLD_OVER_VIEW_DELIVER_ACTION_TEXT';
+
   String get householdOverViewRevisitAbsentText =>
       'HOUSEHOLD_OVER_VIEW_REVISIT_ABSENT_TEXT';
+
+  String get householdOverViewRevisitAbsentHeadText =>
+      'HOUSEHOLD_OVER_VIEW_REVISIT_ABSENT_HEAD_TEXT';
+
+  String get householdOverViewAdministerHeadText =>
+      'HOUSEHOLD_OVER_VIEW_ADMINISTER_HEAD_TEXT';
 
   String get householdOverViewVASAssessmentActionText =>
       'HOUSEHOLD_OVER_VIEW_VAS_ASSESSMENT_ACTION_TEXT';
@@ -191,6 +205,8 @@ class HouseholdOverView {
 
   String get householdOverViewBeneficiaryReferredVASLabel =>
       'HOUSEHOLD_OVER_VIEW_BENEFICIARY_REFERRED_VAS_LABEL';
+
+  String get nonCompliantHouseholdStatus => 'HOUSEHOLD_NON_COMPLIANT_STATUS';
 }
 
 class DeliverIntervention {
@@ -247,6 +263,8 @@ class DeliverIntervention {
   String get ninetoElevenAgeRange => 'NINE_ELEVEN_AGE_RANGE';
   String get twelvetofiftyNineAgeRange => 'TWELVE_FIFTYNINE_AGE_RANGE';
   String get selectAgeRangeMessage => 'SELECT_AGE_RANGE';
+
+  String get disabilityLabel => 'DELIVER_INTERVENTION_DISABILITY_LABEL';
 }
 
 class Checklist {
@@ -796,6 +814,8 @@ class CaregiverConsent {
 class DailyImplementationFlow {
   const DailyImplementationFlow();
 
+  String get dip => 'TEAM_1_DIP_LABEL';
+  String get obrRound => 'OBR_ROUND_LABEL';
   String get selectBoundaryLabel => 'SELECT_BOUNDARY_HEADING_LABEL';
   String get dateOfEntry => 'SELECT_DATE_OF_ENTRY';
   String get administrativeUnitLabel => 'SELECT_ADMINISTRATIVE_UNIT_LABEL';
@@ -803,6 +823,13 @@ class DailyImplementationFlow {
   String get boundaryLabel => 'SELECT_BOUNDARY_LABEL';
   String get createDIPLabel => 'CREATE_DIP_LABEL';
   String get viewDIPLabel => 'VIEW_DIP_LABEL';
+
+  String get selectDateForAllSettlements => 'SELECT_DATE_FOR_ALL_SETTLEMENTS';
+  String get settlements => 'SETTLEMENTS_LABEL';
+  String get dateOfVisit => 'DATE_OF_VISIT_LABEL';
+
+  String get no_daily_implementation_plan_found =>
+      'NO_DAILY_IMPLEMENTATION_PLAN_FOUND';
 }
 
 class ComplaintsDetailsShowcase {
@@ -991,6 +1018,7 @@ class Home {
   String get dailyImplementationPlanLabel => 'HOME_DIP_LABEL';
   String get campaignDeliverySelection =>
       'HOME_CAMPAIGN_DELIVERY_SELECTION_LABEL';
+  String get nonComplianceTracking => 'HOME_NON_COMPLIANCE_TRACKING_LABEL';
 
   String get viewSummaryReportsLabel => 'VIEW_SUMMARY_REPORTS_LABEL';
 }
@@ -1358,6 +1386,9 @@ class SearchBeneficiary {
   String get proximityLabel => 'PROXIMITY_LABEL';
   String get beneficiaryIdValidInfoDescription =>
       'BENEFICIARY_ID_VALID_INFO_DESCRIPTION';
+
+  String get nonComplianceSearchInfoDescription =>
+      'NON_COMPLIANCE_SEARCH_INFO_DESCRIPTION';
 }
 
 class IndividualDetails {
@@ -1425,6 +1456,14 @@ class IndividualDetails {
 
 class BeneficiaryDetails {
   const BeneficiaryDetails();
+
+  String get dialogTitle => 'DIP_DIALOG_TITLE';
+
+  String get dialogContent => 'DIP_DIALOG_CONTENT';
+
+  String get beneficiaryHeight => "BENEFICIARY_HEIGHT_LABEL";
+
+  String get noResourceFound => "NO_RESOURCE_FOUND";
 
   String get validationForExcessStockReturn =>
       "ERROR_VALIDATION_FOR_EXCESS_STOCK_RETURN";

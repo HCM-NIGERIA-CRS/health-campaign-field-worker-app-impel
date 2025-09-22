@@ -4,6 +4,7 @@ import 'package:digit_data_model/data_model.dart';
 import 'package:digit_data_model/models/entities/user_action.dart';
 import 'package:digit_data_model/utils/utils.dart';
 import 'package:digit_location_tracker/utils/utils.dart';
+import 'package:digit_ui_components/utils/date_utils.dart';
 import 'package:inventory_management/inventory_management.dart';
 import 'package:referral_reconciliation/referral_reconciliation.dart'
     as referral_reconciliation_mappers;
@@ -20,11 +21,6 @@ import 'package:complaints/complaints.init.dart' as complaints_mappers;
 import '../../utils/i18_key_constants.dart' as i18_local;
 import 'package:inventory_management/utils/i18_key_constants.dart' as i18_stock;
 
-import 'dart:convert';
-
-import 'package:crypto/crypto.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/foundation.dart';
 import 'package:inventory_management/inventory_management.init.dart'
     as inventory_mappers;
 
@@ -56,6 +52,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import '../blocs/app_initialization/app_initialization.dart';
 import '../blocs/projects_beneficiary_downsync/project_beneficiaries_downsync.dart';
 import '../data/local_store/app_shared_preferences.dart';
+
 import '../data/local_store/no_sql/schema/localization.dart';
 import '../data/local_store/secure_store/secure_store.dart';
 import '../models/app_config/app_config_model.dart';
@@ -63,6 +60,8 @@ import '../models/entities/status.dart' as local_status;
 import '../router/app_router.dart';
 import '../widgets/progress_indicator/progress_indicator.dart';
 import 'constants.dart';
+import '../../utils/date_utils.dart' as digits;
+
 import 'extensions/extensions.dart';
 
 export 'app_exception.dart';
@@ -286,12 +285,11 @@ bool validateStockSubmission({
 }
 
 String customFormatAgeRange(String condition) {
+  // Case 1: Matches patterns like "20<ageandage<30"
   final regex =
       RegExp(r'(\d+)\s*<\s*ageandage\s*<\s*(\d+)', caseSensitive: false);
   final match = regex.firstMatch(condition);
   if (match != null && match.groupCount == 2) {
-    // final min = match.group(1);
-    // final max = match.group(2);
     int min = int.parse(match.group(1)!);
     int max = int.parse(match.group(2)!);
 
@@ -301,6 +299,33 @@ String customFormatAgeRange(String condition) {
     print('min: $min, max: $max');
     return '$min - $max months';
   }
+
+  // Case 2: Matches "age>59andheight>140andheight<159"
+  final complexRegex = RegExp(
+      r'age\s*>\s*(\d+)\s*and\s*height\s*>\s*(\d+)\s*and\s*height\s*<\s*(\d+)',
+      caseSensitive: false);
+  final complexMatch = complexRegex.firstMatch(condition);
+
+  if (complexMatch != null && complexMatch.groupCount == 3) {
+    int ageMin = int.parse(complexMatch.group(1)!);
+    int heightMin = int.parse(complexMatch.group(2)!);
+    int heightMax = int.parse(complexMatch.group(3)!);
+
+    // Adjust height by +/- 1
+    int adjHeightMin = heightMin + 1;
+    int adjHeightMax = heightMax - 1;
+
+    return '$adjHeightMin-$adjHeightMax heights';
+  }
+
+  // Case 3: If condition starts with age but we only want height part
+  final ageHeightRegex =
+      RegExp(r'age\s*>\s*\d+\s*and\s*(height.*)', caseSensitive: false);
+  final ageHeightMatch = ageHeightRegex.firstMatch(condition);
+  if (ageHeightMatch != null) {
+    return ageHeightMatch.group(1)!; // return only height part
+  }
+
   return condition;
 }
 
@@ -384,6 +409,52 @@ int getPregnantWomenCount(HouseholdModel? householdCaptured) {
   }
 }
 
+void decideFlowBasedOnAge(
+    DigitDOBAgeConvertor age, bool smcFlow, bool polioFlow, bool onchoFlow) {
+  final ageInMonths = (age.years * 12) + age.months;
+  if (ageInMonths >= Constants.smcMinValidAgeInMonths &&
+      ageInMonths <= Constants.smcMaxValidAgeInMonths) {
+    smcFlow = true;
+  }
+  if (ageInMonths >= Constants.polioMinValidAgeInMonths &&
+      ageInMonths <= Constants.polioMaxValidAgeInMonths) {
+    polioFlow = true;
+  }
+
+  if (age.years > Constants.onchoMinValidAgeInMonths) {
+    onchoFlow = true;
+  }
+}
+
+bool isSMCFlow(DigitDOBAgeConvertor age) {
+  final ageInMonths = (age.years * 12) + age.months;
+  if (ageInMonths >= Constants.smcMinValidAgeInMonths &&
+      ageInMonths <= Constants.smcMaxValidAgeInMonths) {
+    return true;
+  }
+  return false;
+}
+
+bool isPolioFlow(DigitDOBAgeConvertor age) {
+  final ageInMonths = (age.years * 12) + age.months;
+  if (ageInMonths >= Constants.polioMinValidAgeInMonths &&
+      ageInMonths <= Constants.polioMaxValidAgeInMonths) {
+    return true;
+  }
+
+  return false;
+}
+
+bool isOnchoFlow(
+  DigitDOBAgeConvertor age,
+) {
+  final ageInMonths = (age.years * 12) + age.months;
+  if (ageInMonths >= Constants.onchoMinValidAgeInMonths) {
+    return true;
+  }
+  return false;
+}
+
 bool showAddMember(HouseholdMemberWrapper? wrapper) {
   int childrenCount = 0;
   // assumption only child are added
@@ -420,6 +491,23 @@ dynamic getValueForTheKey(String key, HouseholdModel? householdModel) {
       .firstOrNull;
 
   return object == null ? object : object.value;
+}
+
+int totalMemberCount(dynamic childrenCount) {
+  // return 1 for head of the family
+  // childrenCount can be null, int, String, double
+  if (childrenCount == null) {
+    return 1;
+  } else {
+    if (childrenCount is String) {
+      return (int.tryParse(childrenCount) ?? 0) + 1;
+    } else if (childrenCount is int) {
+      return childrenCount + 1;
+    } else if (childrenCount is double) {
+      return childrenCount.toInt() + 1;
+    }
+  }
+  return 1;
 }
 
 Map<String, dynamic>? customValidMobileNumber(

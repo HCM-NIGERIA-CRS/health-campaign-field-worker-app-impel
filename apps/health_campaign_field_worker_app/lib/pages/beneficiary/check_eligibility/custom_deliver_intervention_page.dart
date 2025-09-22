@@ -29,10 +29,12 @@ import 'package:registration_delivery/utils/utils.dart';
 import 'package:registration_delivery/models/entities/additional_fields_type.dart';
 import 'package:registration_delivery/models/entities/status.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
+import 'package:registration_delivery/widgets/beneficiary/resource_beneficiary_card.dart';
 import 'package:registration_delivery/widgets/component_wrapper/product_variant_bloc_wrapper.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 
 import '../../../blocs/app_initialization/app_initialization.dart';
+import '../../../blocs/registration_delivery/current_flow.dart';
 import '../../../data/local_store/no_sql/schema/app_configuration.dart';
 import '../../../router/app_router.dart';
 import '../../../utils/app_enums.dart';
@@ -76,6 +78,8 @@ class CustomDeliverInterventionPageState
   final clickedStatus = ValueNotifier<bool>(false);
   bool? shouldSubmit = false;
 
+  bool isAbsent = false;
+
   bool isTaskUpdate = false;
   TaskModel? oldTaskCaptured;
 
@@ -98,36 +102,48 @@ class CustomDeliverInterventionPageState
   }
 
   Future<void> handleCapturedLocationState(
-      LocationState locationState,
-      BuildContext context,
-      DeliverInterventionState deliverInterventionState,
-      FormGroup form,
-      HouseholdMemberWrapper householdMember,
-      IndividualModel? selectedIndividual,
-      ProjectBeneficiaryModel projectBeneficiary) async {
+    LocationState locationState,
+    BuildContext context,
+    DeliverInterventionState deliverInterventionState,
+    FormGroup form,
+    HouseholdMemberWrapper householdMember,
+    IndividualModel? selectedIndividual,
+    ProjectBeneficiaryModel projectBeneficiary,
+    List<ProductVariantModel?> productVariantsDelivered,
+    Set<String> currentFlows,
+  ) async {
     final lat = locationState.latitude;
     final long = locationState.longitude;
-    TaskModel taskModel = _getTaskModel(
-      context,
-      form: form,
-      oldTask: RegistrationDeliverySingleton().beneficiaryType ==
-              BeneficiaryType.household
-          ? deliverInterventionState.tasks?.lastOrNull
-          : null,
-      projectBeneficiaryClientReferenceId: projectBeneficiary.clientReferenceId,
-      dose: deliverInterventionState.dose,
-      cycle: deliverInterventionState.cycle,
-      deliveryStrategy: DeliverStrategyType.direct.toValue(),
-      address: householdMember.members?.first.address?.first,
-      latitude: lat,
-      longitude: long,
-      selectedIndividual: selectedIndividual,
-    );
+    List<TaskModel> tasks = [];
 
-// update the old task if needed
+    for (var productDelivered in productVariantsDelivered) {
+      if (productDelivered == null) continue;
+      TaskModel task = _getTaskModel(
+        context,
+        form: form,
+        oldTask: null,
+        projectBeneficiaryClientReferenceId:
+            projectBeneficiary.clientReferenceId,
+        dose: deliverInterventionState.dose,
+        cycle: deliverInterventionState.cycle,
+        deliveryStrategy: DeliverStrategyType.direct.toValue(),
+        address: householdMember.members?.first.address?.first,
+        latitude: lat,
+        longitude: long,
+        selectedIndividual: selectedIndividual,
+        productVariantDelivered: [productDelivered!],
+      );
+      tasks.add(task);
+    }
+
+// update the old task if needed , update only the first task, as only one task will be there for individual
+// marked absent
     if (isTaskUpdate && oldTaskCaptured != null) {
       TaskModel updatedTask =
-          _updateTaskModel(context, oldTaskCaptured!, taskModel);
+          _updateTaskModel(context, oldTaskCaptured!, tasks.first);
+
+      // submit the updated task
+
       context.read<DeliverInterventionBloc>().add(
             DeliverInterventionSubmitEvent(
                 task: updatedTask,
@@ -136,19 +152,32 @@ class CustomDeliverInterventionPageState
                 navigateToSummary: false,
                 householdMemberWrapper: householdMember),
           );
+
+      /// submit the rest of the tasks as new tasks ,skipping 0th index as that is updated above
+
+      if (tasks.length > 1) {
+        for (int i = 1; i < tasks.length; i++) {
+          var task = tasks[i];
+
+          context.read<DeliverInterventionBloc>().add(
+                DeliverInterventionSubmitEvent(
+                  task: task,
+                  isEditing: false,
+                  boundaryModel: RegistrationDeliverySingleton().boundary!,
+                ),
+              );
+        }
+      }
     } else {
-      context.read<DeliverInterventionBloc>().add(
-            DeliverInterventionSubmitEvent(
-                task: taskModel,
-                isEditing: (deliverInterventionState.tasks ?? []).isNotEmpty &&
-                        RegistrationDeliverySingleton().beneficiaryType ==
-                            BeneficiaryType.household
-                    ? true
-                    : false,
+      for (var task in tasks) {
+        context.read<DeliverInterventionBloc>().add(
+              DeliverInterventionSubmitEvent(
+                task: task,
+                isEditing: false,
                 boundaryModel: RegistrationDeliverySingleton().boundary!,
-                navigateToSummary: true,
-                householdMemberWrapper: householdMember),
-          );
+              ),
+            );
+      }
     }
 
     final productvariantList =
@@ -173,17 +202,21 @@ class CustomDeliverInterventionPageState
           ),
         );
 
-    await handleSubmit(context, taskModel, deliverInterventionState);
+    await handleSubmit(
+        context, deliverInterventionState, selectedIndividual, currentFlows);
   }
 
   void handleLocationState(
-      LocationState locationState,
-      BuildContext context,
-      DeliverInterventionState deliverInterventionState,
-      FormGroup form,
-      HouseholdMemberWrapper householdMember,
-      IndividualModel? selectedIndividual,
-      ProjectBeneficiaryModel projectBeneficiary) {
+    LocationState locationState,
+    BuildContext context,
+    DeliverInterventionState deliverInterventionState,
+    FormGroup form,
+    HouseholdMemberWrapper householdMember,
+    IndividualModel? selectedIndividual,
+    ProjectBeneficiaryModel projectBeneficiary,
+    List<ProductVariantModel?> productVariantsDelivered,
+    Set<String> currentFlows,
+  ) {
     if (context.mounted) {
       DigitComponentsUtils.showDialog(
         context,
@@ -195,49 +228,32 @@ class CustomDeliverInterventionPageState
         // After delay, hide the initial dialog
         DigitComponentsUtils.hideDialog(context);
         handleCapturedLocationState(
-            locationState,
-            context,
-            deliverInterventionState,
-            form,
-            householdMember,
-            selectedIndividual,
-            projectBeneficiary);
+          locationState,
+          context,
+          deliverInterventionState,
+          form,
+          householdMember,
+          selectedIndividual,
+          projectBeneficiary,
+          productVariantsDelivered,
+          currentFlows,
+        );
       });
     }
   }
 
   Future<void> handleSubmit(
     BuildContext context,
-    TaskModel taskModel,
     DeliverInterventionState deliverState,
+    IndividualModel? individual,
+    Set<String> currentFlows,
   ) async {
-    context.read<DeliverInterventionBloc>().add(
-          DeliverInterventionSubmitEvent(
-            task: deliverState.oldTask ?? taskModel,
-            isEditing: (deliverState.tasks ?? []).isNotEmpty &&
-                    RegistrationDeliverySingleton().beneficiaryType ==
-                        BeneficiaryType.household
-                ? true
-                : false,
-            boundaryModel: RegistrationDeliverySingleton().boundary!,
-          ),
-        );
-
     ProjectTypeModel? projectTypeModel = RegistrationDeliverySingleton()
         .selectedProject
         ?.additionalDetails
         ?.projectType;
 
-    if (deliverState.futureDeliveries != null &&
-        deliverState.futureDeliveries!.isNotEmpty &&
-        projectTypeModel?.cycles?.isNotEmpty == true) {
-      context.router.popUntilRouteWithName(BeneficiaryWrapperRoute.name);
-      context.router.push(
-        CustomSplashAcknowledgementRoute(
-            enableBackToSearch: false,
-            eligibilityAssessmentType: widget.eligibilityAssessmentType),
-      );
-    } else {
+    if (isAbsent) {
       final reloadState = context.read<HouseholdOverviewBloc>();
 
       reloadState.add(
@@ -249,11 +265,43 @@ class CustomDeliverInterventionPageState
       );
       context.router.popAndPush(
         CustomHouseholdAcknowledgementRoute(
+          individualModel: individual,
           enableViewHousehold: true,
           isAddChild: true,
           eligibilityAssessmentType: widget.eligibilityAssessmentType,
         ),
       );
+    } else {
+      if (deliverState.futureDeliveries != null &&
+          deliverState.futureDeliveries!.isNotEmpty &&
+          projectTypeModel?.cycles?.isNotEmpty == true &&
+          currentFlows.contains(Constants.smcFlow)) {
+        context.router.popUntilRouteWithName(BeneficiaryWrapperRoute.name);
+        context.router.push(
+          CustomSplashAcknowledgementRoute(
+              enableBackToSearch: false,
+              individual: widget.selectedIndividual,
+              eligibilityAssessmentType: widget.eligibilityAssessmentType),
+        );
+      } else {
+        final reloadState = context.read<HouseholdOverviewBloc>();
+
+        reloadState.add(
+          HouseholdOverviewReloadEvent(
+            projectId: RegistrationDeliverySingleton().projectId!,
+            projectBeneficiaryType:
+                RegistrationDeliverySingleton().beneficiaryType!,
+          ),
+        );
+        context.router.popAndPush(
+          CustomHouseholdAcknowledgementRoute(
+            individualModel: individual,
+            enableViewHousehold: true,
+            isAddChild: true,
+            eligibilityAssessmentType: widget.eligibilityAssessmentType,
+          ),
+        );
+      }
     }
   }
 
@@ -397,178 +445,217 @@ class CustomDeliverInterventionPageState
                                             margin: const EdgeInsets.only(
                                                 top: spacer2),
                                             children: [
-                                              ValueListenableBuilder(
-                                                valueListenable: clickedStatus,
+                                              BlocBuilder<CurrentFlowBloc,
+                                                  CurrentFlowState>(
                                                 builder: (context,
-                                                    bool isClicked, _) {
-                                                  return BlocBuilder<
-                                                          LocationBloc,
-                                                          LocationState>(
-                                                      builder: (context,
-                                                          locationState) {
-                                                    return DigitButton(
-                                                      label: localizations
-                                                          .translate(
-                                                        i18.common
-                                                            .coreCommonSubmit,
-                                                      ),
-                                                      type: DigitButtonType
-                                                          .primary,
-                                                      size:
-                                                          DigitButtonSize.large,
-                                                      mainAxisSize:
-                                                          MainAxisSize.max,
-                                                      isDisabled: isClicked,
-                                                      onPressed: () async {
-                                                        final deliveredProducts =
-                                                            ((form.control(_resourceDeliveredKey)
-                                                                        as FormArray)
-                                                                    .value
-                                                                as List<
-                                                                    ProductVariantModel?>);
-                                                        final hasEmptyResources =
-                                                            hasEmptyOrNullResources(
-                                                                deliveredProducts);
-                                                        final hasZeroQuantity =
-                                                            hasEmptyOrZeroQuantity(
-                                                                form);
-                                                        final hasDuplicates =
-                                                            hasDuplicateResources(
-                                                                deliveredProducts,
-                                                                form);
+                                                    currentFlowState) {
+                                                  return ValueListenableBuilder(
+                                                    valueListenable:
+                                                        clickedStatus,
+                                                    builder: (context,
+                                                        bool isClicked, _) {
+                                                      return BlocBuilder<
+                                                              LocationBloc,
+                                                              LocationState>(
+                                                          builder: (context,
+                                                              locationState) {
+                                                        return DigitButton(
+                                                          label: localizations
+                                                              .translate(
+                                                            i18.common
+                                                                .coreCommonSubmit,
+                                                          ),
+                                                          type: DigitButtonType
+                                                              .primary,
+                                                          size: DigitButtonSize
+                                                              .large,
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
+                                                          isDisabled: isClicked,
+                                                          onPressed: () async {
+                                                            final deliveredProducts =
+                                                                ((form.control(_resourceDeliveredKey)
+                                                                            as FormArray)
+                                                                        .value
+                                                                    as List<
+                                                                        ProductVariantModel?>);
+                                                            final hasEmptyResources =
+                                                                hasEmptyOrNullResources(
+                                                                    deliveredProducts);
+                                                            final hasZeroQuantity =
+                                                                hasEmptyOrZeroQuantity(
+                                                                    form);
+                                                            final hasDuplicates =
+                                                                hasDuplicateResources(
+                                                                    deliveredProducts,
+                                                                    form);
 
-                                                        if (hasEmptyResources) {
-                                                          Toast.showToast(
-                                                              context,
-                                                              message: localizations
-                                                                  .translate(i18
-                                                                      .deliverIntervention
-                                                                      .resourceDeliveredValidation),
-                                                              type: ToastType
-                                                                  .error);
-                                                        } else if (hasDuplicates) {
-                                                          Toast.showToast(
-                                                              context,
-                                                              message: localizations
-                                                                  .translate(i18
-                                                                      .deliverIntervention
-                                                                      .resourceDuplicateValidation),
-                                                              type: ToastType
-                                                                  .error);
-                                                        } else if (hasZeroQuantity) {
-                                                          Toast.showToast(
-                                                              context,
-                                                              message: localizations
-                                                                  .translate(i18
-                                                                      .deliverIntervention
-                                                                      .resourceCannotBeZero),
-                                                              type: ToastType
-                                                                  .error);
-                                                        } else {
-                                                          final shouldSubmit =
-                                                              await dialog
-                                                                      .DigitDialog
-                                                                  .show<bool>(
-                                                            context,
-                                                            options: dialog
-                                                                .DigitDialogOptions(
-                                                              titleText:
-                                                                  localizations
-                                                                      .translate(
-                                                                i18.deliverIntervention
-                                                                    .dialogTitle,
-                                                              ),
-                                                              contentText:
-                                                                  localizations
-                                                                      .translate(
-                                                                i18.deliverIntervention
-                                                                    .dialogContent,
-                                                              ),
-                                                              primaryAction: dialog
-                                                                  .DigitDialogActions(
-                                                                label: localizations
-                                                                    .translate(
-                                                                  i18.common
-                                                                      .coreCommonSubmit,
-                                                                ),
-                                                                action: (ctx) {
-                                                                  Navigator.of(
-                                                                          ctx,
-                                                                          rootNavigator:
-                                                                              true)
-                                                                      .pop(
-                                                                          true);
-                                                                },
-                                                              ),
-                                                              secondaryAction:
-                                                                  dialog
-                                                                      .DigitDialogActions(
-                                                                label: localizations
-                                                                    .translate(
-                                                                  i18.common
-                                                                      .coreCommonGoback,
-                                                                ),
-                                                                action: (ctx) {
-                                                                  Navigator.of(
-                                                                          ctx,
-                                                                          rootNavigator:
-                                                                              true)
-                                                                      .pop(
-                                                                          false);
-                                                                },
-                                                              ),
-                                                            ),
-                                                          );
+                                                            // get the delivery comment
+                                                            final deliveryComment = form
+                                                                .control(
+                                                                    _deliveryCommentKey)
+                                                                .value as String?;
 
-                                                          // Check the result of the dialog
-                                                          if (shouldSubmit ??
-                                                              false) {
-                                                            if (context
-                                                                .mounted) {
-                                                              // vas
+                                                            final isChildAbsent = deliveryComment !=
+                                                                        null &&
+                                                                    deliveryComment
+                                                                        .isNotEmpty
+                                                                ? deliveryComment ==
+                                                                        local_status
+                                                                            .Status
+                                                                            .beneficiaryAbsent
+                                                                            .toValue()
+                                                                    ? true
+                                                                    : false
+                                                                : false;
 
-                                                              final deliveryState =
-                                                                  deliveryInterventionState;
+                                                            setState(() {
+                                                              isAbsent =
+                                                                  isChildAbsent;
+                                                            });
 
-                                                              oldTaskCaptured =
-                                                                  deliveryInterventionState
-                                                                      ?.tasks
-                                                                      ?.where(
-                                                                          (element) {
-                                                                return element
-                                                                        ?.projectBeneficiaryClientReferenceId ==
-                                                                    projectBeneficiary
-                                                                        ?.first
-                                                                        .clientReferenceId;
-                                                              }).firstOrNull;
-
-                                                              setState(() {
-                                                                isTaskUpdate =
-                                                                    checkIfTaskUpdate(
-                                                                        oldTaskCaptured);
-                                                              });
-
-                                                              context
-                                                                  .read<
-                                                                      LocationBloc>()
-                                                                  .add(
-                                                                      const LoadLocationEvent());
-                                                              handleLocationState(
-                                                                locationState,
+                                                            if (hasEmptyResources) {
+                                                              Toast.showToast(
+                                                                  context,
+                                                                  message: localizations
+                                                                      .translate(i18
+                                                                          .deliverIntervention
+                                                                          .resourceDeliveredValidation),
+                                                                  type: ToastType
+                                                                      .error);
+                                                            } else if (hasDuplicates) {
+                                                              Toast.showToast(
+                                                                  context,
+                                                                  message: localizations
+                                                                      .translate(i18
+                                                                          .deliverIntervention
+                                                                          .resourceDuplicateValidation),
+                                                                  type: ToastType
+                                                                      .error);
+                                                            } else if (hasZeroQuantity) {
+                                                              Toast.showToast(
+                                                                  context,
+                                                                  message: localizations
+                                                                      .translate(i18
+                                                                          .deliverIntervention
+                                                                          .resourceCannotBeZero),
+                                                                  type: ToastType
+                                                                      .error);
+                                                            } else {
+                                                              final shouldSubmit =
+                                                                  await dialog
+                                                                          .DigitDialog
+                                                                      .show<
+                                                                          bool>(
                                                                 context,
-                                                                deliveryInterventionState,
-                                                                form,
-                                                                householdMemberWrapper,
-                                                                individualModel,
-                                                                projectBeneficiary!
-                                                                    .first,
+                                                                options: dialog
+                                                                    .DigitDialogOptions(
+                                                                  titleText:
+                                                                      localizations
+                                                                          .translate(
+                                                                    i18.deliverIntervention
+                                                                        .dialogTitle,
+                                                                  ),
+                                                                  contentText:
+                                                                      localizations
+                                                                          .translate(
+                                                                    i18.deliverIntervention
+                                                                        .dialogContent,
+                                                                  ),
+                                                                  primaryAction:
+                                                                      dialog
+                                                                          .DigitDialogActions(
+                                                                    label: localizations
+                                                                        .translate(
+                                                                      i18.common
+                                                                          .coreCommonSubmit,
+                                                                    ),
+                                                                    action:
+                                                                        (ctx) {
+                                                                      Navigator.of(
+                                                                              ctx,
+                                                                              rootNavigator: true)
+                                                                          .pop(true);
+                                                                    },
+                                                                  ),
+                                                                  secondaryAction:
+                                                                      dialog
+                                                                          .DigitDialogActions(
+                                                                    label: localizations
+                                                                        .translate(
+                                                                      i18.common
+                                                                          .coreCommonGoback,
+                                                                    ),
+                                                                    action:
+                                                                        (ctx) {
+                                                                      Navigator.of(
+                                                                              ctx,
+                                                                              rootNavigator: true)
+                                                                          .pop(false);
+                                                                    },
+                                                                  ),
+                                                                ),
                                                               );
+
+                                                              // Check the result of the dialog
+                                                              if (shouldSubmit ??
+                                                                  false) {
+                                                                if (context
+                                                                    .mounted) {
+                                                                  // vas
+
+                                                                  // assumption only one task for individual when marked absent
+                                                                  oldTaskCaptured =
+                                                                      deliveryInterventionState
+                                                                          ?.tasks
+                                                                          ?.where(
+                                                                              (element) {
+                                                                    return element
+                                                                            ?.projectBeneficiaryClientReferenceId ==
+                                                                        projectBeneficiary
+                                                                            ?.first
+                                                                            .clientReferenceId;
+                                                                  }).firstOrNull;
+
+                                                                  setState(() {
+                                                                    isTaskUpdate =
+                                                                        checkIfTaskUpdate(
+                                                                            oldTaskCaptured);
+                                                                  });
+
+                                                                  context
+                                                                      .read<
+                                                                          LocationBloc>()
+                                                                      .add(
+                                                                          const LoadLocationEvent());
+
+                                                                  // here when absent flow , passing dummy product variant with product id only , as product variant is required in task model
+                                                                  handleLocationState(
+                                                                    locationState,
+                                                                    context,
+                                                                    deliveryInterventionState,
+                                                                    form,
+                                                                    householdMemberWrapper,
+                                                                    individualModel,
+                                                                    projectBeneficiary!
+                                                                        .first,
+                                                                    isAbsent
+                                                                        ? [
+                                                                            deliveredProducts.first
+                                                                          ]
+                                                                        : deliveredProducts,
+                                                                    currentFlowState
+                                                                            .currentFlows ??
+                                                                        {},
+                                                                  );
+                                                                }
+                                                              }
                                                             }
-                                                          }
-                                                        }
-                                                      },
-                                                    );
-                                                  });
+                                                          },
+                                                        );
+                                                      });
+                                                    },
+                                                  );
                                                 },
                                               ),
                                             ]);
@@ -722,6 +809,8 @@ class CustomDeliverInterventionPageState
                                                       eligibilityAssessmentType:
                                                           widget
                                                               .eligibilityAssessmentType,
+                                                      productVariants:
+                                                          productVariants,
                                                       cardIndex: _controllers
                                                           .indexOf(e),
                                                       totalItems:
@@ -891,7 +980,10 @@ class CustomDeliverInterventionPageState
     double? latitude,
     double? longitude,
     IndividualModel? selectedIndividual,
+    List<ProductVariantModel>? productVariantDelivered,
   }) {
+    // Assumption here productVariantDelivered will always have one item
+
     // Initialize task with oldTask if available, or create a new one
     var task = oldTask;
     var clientReferenceId = task?.clientReferenceId ?? IdGen.i.identifier;
@@ -930,30 +1022,34 @@ class CustomDeliverInterventionPageState
     task = task.copyWith(
       projectId: RegistrationDeliverySingleton().projectId,
       // set quantity as 0  in resource if childAbsent
-      resources: productvariantList
-          .map((e) => TaskResourceModel(
-                taskclientReferenceId: clientReferenceId,
-                clientReferenceId: IdGen.i.identifier,
-                productVariantId: e?.id,
-                isDelivered: true,
-                taskId: task?.id,
-                tenantId: RegistrationDeliverySingleton().tenantId,
-                rowVersion: oldTask?.rowVersion ?? 1,
-                quantity: isChildAbsent
-                    ? "0"
-                    : (((form.control(_quantityDistributedKey) as FormArray)
-                            .value)?[productvariantList.indexOf(e)])
-                        .toString(),
-                clientAuditDetails: ClientAuditDetails(
-                  createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
-                  createdTime: context.millisecondsSinceEpoch(),
-                ),
-                auditDetails: AuditDetails(
-                  createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
-                  createdTime: context.millisecondsSinceEpoch(),
-                ),
-              ))
-          .toList(),
+      resources: isChildAbsent
+          ? []
+          : productVariantDelivered!
+              .map((e) => TaskResourceModel(
+                    taskclientReferenceId: clientReferenceId,
+                    clientReferenceId: IdGen.i.identifier,
+                    productVariantId: e?.id,
+                    isDelivered: true,
+                    taskId: task?.id,
+                    tenantId: RegistrationDeliverySingleton().tenantId,
+                    rowVersion: oldTask?.rowVersion ?? 1,
+                    quantity: isChildAbsent
+                        ? "0"
+                        : (((form.control(_quantityDistributedKey) as FormArray)
+                                .value)?[productvariantList.indexOf(e)])
+                            .toString(),
+                    clientAuditDetails: ClientAuditDetails(
+                      createdBy:
+                          RegistrationDeliverySingleton().loggedInUserUuid!,
+                      createdTime: context.millisecondsSinceEpoch(),
+                    ),
+                    auditDetails: AuditDetails(
+                      createdBy:
+                          RegistrationDeliverySingleton().loggedInUserUuid!,
+                      createdTime: context.millisecondsSinceEpoch(),
+                    ),
+                  ))
+              .toList(),
       address: address?.copyWith(
         relatedClientReferenceId: clientReferenceId,
         id: null,
@@ -1008,6 +1104,14 @@ class CustomDeliverInterventionPageState
               AdditionalFieldsType.deliveryComment.toValue(),
               deliveryComment,
             ),
+          if (productVariantDelivered != null &&
+              productVariantDelivered.isNotEmpty &&
+              !isAbsent)
+            AdditionalField(
+              "ProductDelivered",
+              productVariantDelivered.first?.sku ??
+                  productVariantDelivered.first.id,
+            ),
           ...getIndividualAdditionalFields(selectedIndividual)
         ],
       ),
@@ -1061,7 +1165,10 @@ class CustomDeliverInterventionPageState
 
   // ignore: long-parameter-list
   TaskModel _updateTaskModel(
-      BuildContext context, TaskModel oldTask, TaskModel newTask) {
+    BuildContext context,
+    TaskModel oldTask,
+    TaskModel newTask,
+  ) {
     oldTask = oldTask.copyWith(
         tenantId: RegistrationDeliverySingleton().tenantId,
         auditDetails: oldTask.auditDetails!.copyWith(
@@ -1071,6 +1178,7 @@ class CustomDeliverInterventionPageState
             lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid!,
             lastModifiedTime: context.millisecondsSinceEpoch()),
         status: newTask.status,
+        resources: newTask.resources,
         additionalFields: oldTask.additionalFields == null
             ? TaskAdditionalFields(
                 version: 1, fields: [...newTask.additionalFields?.fields ?? []])
@@ -1197,6 +1305,7 @@ class CustomResourceBeneficiaryCard extends LocalizedStatefulWidget {
   final FormGroup form;
   final int totalItems;
   final EligibilityAssessmentType eligibilityAssessmentType;
+  final List<DeliveryProductVariant>? productVariants;
 
   const CustomResourceBeneficiaryCard({
     super.key,
@@ -1206,6 +1315,7 @@ class CustomResourceBeneficiaryCard extends LocalizedStatefulWidget {
     required this.form,
     required this.totalItems,
     required this.eligibilityAssessmentType,
+    this.productVariants,
   });
 
   @override
@@ -1227,6 +1337,20 @@ class CustomResourceBeneficiaryCardState
               final selectedVariant = widget.form
                   .control('resourceDelivered.${widget.cardIndex}')
                   .value as ProductVariantModel?;
+
+              final doseQuantity = widget.productVariants
+                      ?.firstWhereOrNull(
+                          (e) => e.productVariantId == selectedVariant?.id)
+                      ?.quantity
+                      .toString() ??
+                  "1";
+
+              // set the quantity in the form for the selected variant
+
+              widget.form
+                  .control('quantityDistributed.${widget.cardIndex}')
+                  .value = int.tryParse(doseQuantity) ?? 1;
+
               return Column(
                 children: [
                   LabeledField(
@@ -1269,9 +1393,8 @@ class CustomResourceBeneficiaryCardState
                       ),
                       child: DigitNumericFormInput(
                         isDisabled: true,
-                        minValue: 1,
                         step: 1,
-                        initialValue: "1",
+                        initialValue: doseQuantity,
                         onChange: (value) {
                           widget.form
                               .control(

@@ -12,20 +12,15 @@ import '../../data/repositories/local/transit_post/custom_user_action.dart';
 part 'fixed_post.freezed.dart';
 
 typedef FixedPostEmitter = Emitter<FixedPostState>;
-typedef UserActionRemoteRepository
-    = DataRepository<UserActionModel, UserActionSearchModel>;
 
 class FixedPostBloc extends Bloc<FixedPostEvent, FixedPostState> {
   final UserActionLocalRepository userActionLocalRepository;
   final CustomUserActionLocalRepository customUserActionLocalRepository;
 
-  final UserActionRemoteRepository userActionRemoteRepository;
-
   FixedPostBloc(
     super.initialState, {
     required this.userActionLocalRepository,
     required this.customUserActionLocalRepository,
-    required this.userActionRemoteRepository,
   }) {
     on(_handleFixedPostSelection);
     on(_handleDeliveryCount);
@@ -110,6 +105,8 @@ class FixedPostBloc extends Bloc<FixedPostEvent, FixedPostState> {
               'scannedResource',
               event.scannedResource,
             ),
+            if (event.additionalFieldsCaptured?.isNotEmpty ?? false)
+              ...event.additionalFieldsCaptured!
           ])));
       emit(state.copyWith(
         curCount: state.curCount != null ? state.curCount! + 1 : 1,
@@ -119,16 +116,6 @@ class FixedPostBloc extends Bloc<FixedPostEvent, FixedPostState> {
       rethrow;
     }
   }
-
-  // FutureOr<int> fetchCount(
-  //   String? userId, {
-  //   UserActionSearchModel? query,
-  // }) async {
-  //   return retryLocalCallOperation<int>(() async {
-  //     final totalCount =
-  //         userActionLocalRepository.search(UserActionSearchModel(),);
-  //   });
-  // }
 }
 
 @freezed
@@ -149,6 +136,7 @@ class FixedPostEvent with _$FixedPostEvent {
     String? action,
     int? curCount,
     int? totalCount,
+    List<AdditionalField>? additionalFieldsCaptured,
   }) = FixedPostDeliveryEvent;
 
   const factory FixedPostEvent.handleDeliveryCount({

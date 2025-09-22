@@ -32,7 +32,8 @@ mixin _$FixedPostEvent {
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)
         handleDelivery,
     required TResult Function(int curCount, int totalCount, String? action)
         handleDeliveryCount,
@@ -54,7 +55,8 @@ mixin _$FixedPostEvent {
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)?
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)?
         handleDelivery,
     TResult? Function(int curCount, int totalCount, String? action)?
         handleDeliveryCount,
@@ -72,7 +74,8 @@ mixin _$FixedPostEvent {
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)?
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)?
         handleDelivery,
     TResult Function(int curCount, int totalCount, String? action)?
         handleDeliveryCount,
@@ -254,7 +257,8 @@ class _$FixedPostSelectionEventImpl implements FixedPostSelectionEvent {
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)
         handleDelivery,
     required TResult Function(int curCount, int totalCount, String? action)
         handleDeliveryCount,
@@ -280,7 +284,8 @@ class _$FixedPostSelectionEventImpl implements FixedPostSelectionEvent {
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)?
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)?
         handleDelivery,
     TResult? Function(int curCount, int totalCount, String? action)?
         handleDeliveryCount,
@@ -302,7 +307,8 @@ class _$FixedPostSelectionEventImpl implements FixedPostSelectionEvent {
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)?
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)?
         handleDelivery,
     TResult Function(int curCount, int totalCount, String? action)?
         handleDeliveryCount,
@@ -383,7 +389,8 @@ abstract class _$$FixedPostDeliveryEventImplCopyWith<$Res> {
       String? scannedResource,
       String? action,
       int? curCount,
-      int? totalCount});
+      int? totalCount,
+      List<AdditionalField>? additionalFieldsCaptured});
 }
 
 /// @nodoc
@@ -405,6 +412,7 @@ class __$$FixedPostDeliveryEventImplCopyWithImpl<$Res>
     Object? action = freezed,
     Object? curCount = freezed,
     Object? totalCount = freezed,
+    Object? additionalFieldsCaptured = freezed,
   }) {
     return _then(_$FixedPostDeliveryEventImpl(
       latitude: null == latitude
@@ -435,6 +443,10 @@ class __$$FixedPostDeliveryEventImplCopyWithImpl<$Res>
           ? _value.totalCount
           : totalCount // ignore: cast_nullable_to_non_nullable
               as int?,
+      additionalFieldsCaptured: freezed == additionalFieldsCaptured
+          ? _value._additionalFieldsCaptured
+          : additionalFieldsCaptured // ignore: cast_nullable_to_non_nullable
+              as List<AdditionalField>?,
     ));
   }
 }
@@ -449,7 +461,9 @@ class _$FixedPostDeliveryEventImpl implements FixedPostDeliveryEvent {
       this.scannedResource,
       this.action,
       this.curCount,
-      this.totalCount});
+      this.totalCount,
+      final List<AdditionalField>? additionalFieldsCaptured})
+      : _additionalFieldsCaptured = additionalFieldsCaptured;
 
   @override
   @JsonKey()
@@ -468,10 +482,20 @@ class _$FixedPostDeliveryEventImpl implements FixedPostDeliveryEvent {
   final int? curCount;
   @override
   final int? totalCount;
+  final List<AdditionalField>? _additionalFieldsCaptured;
+  @override
+  List<AdditionalField>? get additionalFieldsCaptured {
+    final value = _additionalFieldsCaptured;
+    if (value == null) return null;
+    if (_additionalFieldsCaptured is EqualUnmodifiableListView)
+      return _additionalFieldsCaptured;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   @override
   String toString() {
-    return 'FixedPostEvent.handleDelivery(latitude: $latitude, longitude: $longitude, locationAccuracy: $locationAccuracy, scannedResource: $scannedResource, action: $action, curCount: $curCount, totalCount: $totalCount)';
+    return 'FixedPostEvent.handleDelivery(latitude: $latitude, longitude: $longitude, locationAccuracy: $locationAccuracy, scannedResource: $scannedResource, action: $action, curCount: $curCount, totalCount: $totalCount, additionalFieldsCaptured: $additionalFieldsCaptured)';
   }
 
   @override
@@ -491,12 +515,22 @@ class _$FixedPostDeliveryEventImpl implements FixedPostDeliveryEvent {
             (identical(other.curCount, curCount) ||
                 other.curCount == curCount) &&
             (identical(other.totalCount, totalCount) ||
-                other.totalCount == totalCount));
+                other.totalCount == totalCount) &&
+            const DeepCollectionEquality().equals(
+                other._additionalFieldsCaptured, _additionalFieldsCaptured));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, latitude, longitude,
-      locationAccuracy, scannedResource, action, curCount, totalCount);
+  int get hashCode => Object.hash(
+      runtimeType,
+      latitude,
+      longitude,
+      locationAccuracy,
+      scannedResource,
+      action,
+      curCount,
+      totalCount,
+      const DeepCollectionEquality().hash(_additionalFieldsCaptured));
 
   @JsonKey(ignore: true)
   @override
@@ -522,13 +556,21 @@ class _$FixedPostDeliveryEventImpl implements FixedPostDeliveryEvent {
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)
         handleDelivery,
     required TResult Function(int curCount, int totalCount, String? action)
         handleDeliveryCount,
   }) {
-    return handleDelivery(latitude, longitude, locationAccuracy,
-        scannedResource, action, curCount, totalCount);
+    return handleDelivery(
+        latitude,
+        longitude,
+        locationAccuracy,
+        scannedResource,
+        action,
+        curCount,
+        totalCount,
+        additionalFieldsCaptured);
   }
 
   @override
@@ -548,13 +590,21 @@ class _$FixedPostDeliveryEventImpl implements FixedPostDeliveryEvent {
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)?
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)?
         handleDelivery,
     TResult? Function(int curCount, int totalCount, String? action)?
         handleDeliveryCount,
   }) {
-    return handleDelivery?.call(latitude, longitude, locationAccuracy,
-        scannedResource, action, curCount, totalCount);
+    return handleDelivery?.call(
+        latitude,
+        longitude,
+        locationAccuracy,
+        scannedResource,
+        action,
+        curCount,
+        totalCount,
+        additionalFieldsCaptured);
   }
 
   @override
@@ -570,15 +620,23 @@ class _$FixedPostDeliveryEventImpl implements FixedPostDeliveryEvent {
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)?
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)?
         handleDelivery,
     TResult Function(int curCount, int totalCount, String? action)?
         handleDeliveryCount,
     required TResult orElse(),
   }) {
     if (handleDelivery != null) {
-      return handleDelivery(latitude, longitude, locationAccuracy,
-          scannedResource, action, curCount, totalCount);
+      return handleDelivery(
+          latitude,
+          longitude,
+          locationAccuracy,
+          scannedResource,
+          action,
+          curCount,
+          totalCount,
+          additionalFieldsCaptured);
     }
     return orElse();
   }
@@ -621,13 +679,15 @@ class _$FixedPostDeliveryEventImpl implements FixedPostDeliveryEvent {
 
 abstract class FixedPostDeliveryEvent implements FixedPostEvent {
   const factory FixedPostDeliveryEvent(
-      {final double latitude,
-      final double longitude,
-      final double locationAccuracy,
-      final String? scannedResource,
-      final String? action,
-      final int? curCount,
-      final int? totalCount}) = _$FixedPostDeliveryEventImpl;
+          {final double latitude,
+          final double longitude,
+          final double locationAccuracy,
+          final String? scannedResource,
+          final String? action,
+          final int? curCount,
+          final int? totalCount,
+          final List<AdditionalField>? additionalFieldsCaptured}) =
+      _$FixedPostDeliveryEventImpl;
 
   double get latitude;
   double get longitude;
@@ -636,6 +696,7 @@ abstract class FixedPostDeliveryEvent implements FixedPostEvent {
   String? get action;
   int? get curCount;
   int? get totalCount;
+  List<AdditionalField>? get additionalFieldsCaptured;
   @JsonKey(ignore: true)
   _$$FixedPostDeliveryEventImplCopyWith<_$FixedPostDeliveryEventImpl>
       get copyWith => throw _privateConstructorUsedError;
@@ -744,7 +805,8 @@ class _$FixedPostDeliveryCountEventImpl implements FixedPostDeliveryCountEvent {
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)
         handleDelivery,
     required TResult Function(int curCount, int totalCount, String? action)
         handleDeliveryCount,
@@ -769,7 +831,8 @@ class _$FixedPostDeliveryCountEventImpl implements FixedPostDeliveryCountEvent {
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)?
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)?
         handleDelivery,
     TResult? Function(int curCount, int totalCount, String? action)?
         handleDeliveryCount,
@@ -790,7 +853,8 @@ class _$FixedPostDeliveryCountEventImpl implements FixedPostDeliveryCountEvent {
             String? scannedResource,
             String? action,
             int? curCount,
-            int? totalCount)?
+            int? totalCount,
+            List<AdditionalField>? additionalFieldsCaptured)?
         handleDelivery,
     TResult Function(int curCount, int totalCount, String? action)?
         handleDeliveryCount,

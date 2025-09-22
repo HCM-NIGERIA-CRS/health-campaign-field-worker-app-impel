@@ -81,8 +81,16 @@ class HCMWrapperModel with _$HCMWrapperModel {
     required List<CheckListTypes> checklistTypes,
     @JsonKey(name: 'ID_TYPE_OPTIONS_POPULATOR')
     required List<IdTypeOptions> idTypeOptions,
+    @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR')
+    required List<DeliveryCommentOptions> redoseDeliveryCommentsOptions,
     @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_POPULATOR')
     required List<DeliveryCommentOptions> deliveryCommentOptions,
+    @JsonKey(name: 'AGE_RANGE_OPTIONS')
+    required List<AgeRangeOptions> ageRangeOptions,
+    @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
+    required List<HeightRangeOptions> heightRangeOptions,
+    @JsonKey(name: 'USER_ACTION_DAILY_PLAN')
+    required List<DailyActionPlanConfig> dailyPlanConfigs,
     @JsonKey(name: 'NON_COMPLIANCE_REASONS')
     required List<NonComplianceReasons> nonComplianceReasons,
     @JsonKey(name: 'BACKEND_INTERFACE')
@@ -237,6 +245,39 @@ class DeliveryCommentOptions with _$DeliveryCommentOptions {
 
   factory DeliveryCommentOptions.fromJson(Map<String, dynamic> json) =>
       _$DeliveryCommentOptionsFromJson(json);
+}
+
+@freezed
+class AgeRangeOptions with _$AgeRangeOptions {
+  factory AgeRangeOptions({
+    required String name,
+    required String code,
+  }) = _AgeRangeOptions;
+
+  factory AgeRangeOptions.fromJson(Map<String, dynamic> json) =>
+      _$AgeRangeOptionsFromJson(json);
+}
+
+@freezed
+class HeightRangeOptions with _$HeightRangeOptions {
+  factory HeightRangeOptions({
+    required String name,
+    required String code,
+  }) = _HeightRangeOptions;
+
+  factory HeightRangeOptions.fromJson(Map<String, dynamic> json) =>
+      _$HeightRangeOptionsFromJson(json);
+}
+
+@freezed
+class DailyActionPlanConfig with _$DailyActionPlanConfig {
+  factory DailyActionPlanConfig({
+    required String key,
+    required String value,
+  }) = _DailyActionPlanConfig;
+
+  factory DailyActionPlanConfig.fromJson(Map<String, dynamic> json) =>
+      _$DailyActionPlanConfigFromJson(json);
 }
 
 @freezed

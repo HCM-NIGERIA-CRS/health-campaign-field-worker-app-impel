@@ -1,5 +1,7 @@
 import 'package:complaints/blocs/localization/app_localization.dart';
+import 'package:digit_data_model/models/entities/user_action.dart';
 import 'package:digit_scanner/blocs/app_localization.dart';
+import 'package:registration_delivery/blocs/search_households/search_households.dart';
 import 'package:survey_form/router/survey_form_router.dart';
 import 'package:attendance_management/router/attendance_router.dart';
 import 'package:attendance_management/router/attendance_router.gm.dart';
@@ -37,9 +39,15 @@ import '../pages/beneficiary/check_eligibility/refer_beneficiary_smc.dart';
 import '../pages/beneficiary/check_eligibility/refer_beneficiary_vas.dart';
 import '../pages/complaints/custom_complaints_inbox.dart';
 import '../pages/custom_household_summary.dart';
+import '../pages/daily_Implementation_plan/select_settlements_date.dart';
+import '../pages/daily_Implementation_plan/select_settlements_date_view.dart';
+import '../pages/daily_Implementation_plan/select_settlements_date_view_list.dart';
 import '../pages/inventory_management/custom_inventory_facility_selection.dart';
 import '../pages/inventory_management/qr_scanner.dart';
 import '../pages/inventory_management/receive_stock.dart';
+import '../pages/non_compliance_tracker/non_compliance_tracking_search.dart';
+import '../pages/non_compliance_tracker/non_compliance_tracking_wrapper.dart';
+import '../pages/non_compliance_tracker/non_compliance_update_status.dart';
 import '../pages/registration_delivery/custom_complaints_details.dart';
 import '../pages/boundary_selection.dart';
 import '../pages/home.dart';
@@ -109,7 +117,10 @@ import '../pages/transit_post/custom_transit_post_wrapper.dart';
 
 import '../pages/campaign_delivery_select.dart';
 
-import '../pages/dailyImplementationPlan/select_boundary.dart';
+import '../pages/daily_Implementation_plan/select_settlements.dart';
+import '../pages/beneficiary/check_eligibility/custom_deliver_intervention_head_page.dart';
+import '../pages/beneficiary/check_eligibility/custom_beneficiary_details_head_page.dart';
+import '../pages/registration_delivery/custom_individual_details_polio_smc.dart';
 
 part 'app_router.gr.dart';
 
@@ -150,6 +161,20 @@ class AppRouter extends _$AppRouter {
         AutoRoute(
             page: CampaignDeliverySelectRoute.page,
             path: 'campaign-delivery-select'),
+        AutoRoute(
+            page: NonComplianceTrackingWrapperRoute.page,
+            path: 'non-compliance-tracking-wrapper',
+            children: [
+              AutoRoute(
+                page: NonComplianceTrackingSearchRoute.page,
+                path: 'non-compliance-tracking-search',
+                initial: true,
+              ),
+              AutoRoute(
+                page: NonComplianceUpdateStatusRoute.page,
+                path: 'non-compliance-update-status',
+              )
+            ]),
         AutoRoute(page: BeneficiaryIdDownSyncRoute.page),
         AutoRoute(page: ProfileRoute.page, path: 'profile'),
         AutoRoute(page: UserQRDetailsRoute.page, path: 'user-qr-code'),
@@ -188,9 +213,21 @@ class AppRouter extends _$AppRouter {
         ),
 
         AutoRoute(
-          page: SelectBoundaryRoute.page,
-          path: 'select-boundary',
+          page: SelectSettlementsRoute.page,
+          path: 'select-settlements',
         ),
+        AutoRoute(
+          page: SelectSettlementsDateRoute.page,
+          path: 'select-settlements-date',
+        ),
+        AutoRoute(
+          page: SelectSettlementsDateViewRoute.page,
+          path: 'select-settlements-date-view',
+        ),
+        // AutoRoute(
+        //   page: SelectSettlementsDateViewListRoute.page,
+        //   path: 'select-settlements-date-view-list',
+        // ),
 
         // Attendance Route
         AutoRoute(
@@ -364,9 +401,10 @@ class AppRouter extends _$AppRouter {
                   AutoRoute(
                       page: CustomIndividualDetailsRoute.page,
                       path: 'custom-individual-details'),
-                  // AutoRoute(
-                  //     page: HouseHoldDetailsRoute.page,
-                  //     path: 'household-details'),
+                  AutoRoute(
+                      page: CustomIndividualDetailsPolioSMCRoute.page,
+                      path: 'custom-individual-details-polio-smc'),
+
                   AutoRoute(
                       page: CustomHouseHoldDetailsRoute.page,
                       path: 'household-details'),
@@ -384,7 +422,7 @@ class AppRouter extends _$AppRouter {
                   // ),
                   AutoRoute(
                     page: CustomBeneficiaryAcknowledgementRoute.page,
-                    path: 'beneficiary-acknowledgement',
+                    path: 'custom-beneficiary-acknowledgement',
                   ),
                 ],
               ),
@@ -410,6 +448,10 @@ class AppRouter extends _$AppRouter {
                     page: CustomBeneficiaryDetailsRoute.page,
                     path: 'custom-beneficiary-details',
                   ),
+                  AutoRoute(
+                    page: CustomBeneficiaryDetailsHeadRoute.page,
+                    path: 'custom-beneficiary-details-head',
+                  ),
                   // RedirectRoute(
                   //   path: 'beneficiary-details',
                   //   redirectTo: 'custom-beneficiary-details',
@@ -417,6 +459,10 @@ class AppRouter extends _$AppRouter {
                   AutoRoute(
                     page: CustomDeliverInterventionRoute.page,
                     path: 'custom-deliver-intervention',
+                  ),
+                  AutoRoute(
+                    page: CustomDeliverInterventionHeadRoute.page,
+                    path: 'custom-deliver-intervention-head',
                   ),
                   // AutoRoute(
                   //   page: DeliverInterventionRoute.page,

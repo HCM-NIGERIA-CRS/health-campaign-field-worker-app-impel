@@ -33,10 +33,16 @@ class CustomHouseholdSummaryPage extends LocalizedStatefulWidget {
   final String? householdNumber;
   final String? headName;
   final String? reasonNonCompliance;
+  final double latitude;
+  final double longitude;
+  final double locationAccuracy;
   const CustomHouseholdSummaryPage({
     required this.householdNumber,
     required this.headName,
     required this.reasonNonCompliance,
+    required this.latitude,
+    required this.longitude,
+    required this.locationAccuracy,
     super.key,
     super.appLocalizations,
   });
@@ -184,7 +190,11 @@ class CustomHouseholdSummaryPageState
                                   widget.householdNumber,
                                   beneficiaryType,
                                   widget.headName,
+                                  widget.reasonNonCompliance,
                                   false,
+                                  latitude: widget.latitude,
+                                  longitude: widget.longitude,
+                                  locationAccuracy: widget.locationAccuracy,
                                 ));
                                 Future.delayed(
                                         const Duration(milliseconds: 700))
@@ -254,8 +264,8 @@ class CustomHouseholdSummaryPageState
                                       label: localizations.translate(i18_local
                                           .caregiverConsent
                                           .reasonForNonComplianceLabel),
-                                      value: widget.reasonNonCompliance ??
-                                          localizations.translate(
+                                      value: localizations.translate(
+                                          widget.reasonNonCompliance ??
                                               i18.common.coreCommonNA),
                                       labelFlex: 5,
                                       padding: const EdgeInsets.only(

@@ -53,6 +53,10 @@ class MasterEnumsMapper extends EnumMapper<MasterEnums> {
         return MasterEnums.idTypes;
       case "DELIVERY_COMMENT_OPTIONS_POPULATOR":
         return MasterEnums.deliveryComments;
+      case "DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR":
+        return MasterEnums.redoseDeliveryComments;
+      case "USER_ACTION_DAILY_PLAN":
+        return MasterEnums.dipConfig;
       case "BACKEND_INTERFACE":
         return MasterEnums.backendInterface;
       case "CALL_SUPPORT":
@@ -81,6 +85,10 @@ class MasterEnumsMapper extends EnumMapper<MasterEnums> {
         return MasterEnums.transitPostType;
       case "NON_COMPLIANCE_REASONS":
         return MasterEnums.nonComplianceReasons;
+      case "AGE_RANGE_OPTIONS":
+        return MasterEnums.ageRangeOptions;
+      case "HEIGHT_RANGE_OPTIONS":
+        return MasterEnums.heightRangeOptions;
       default:
         throw MapperException.unknownEnumValue(value);
     }
@@ -117,6 +125,10 @@ class MasterEnumsMapper extends EnumMapper<MasterEnums> {
         return "ID_TYPE_OPTIONS_POPULATOR";
       case MasterEnums.deliveryComments:
         return "DELIVERY_COMMENT_OPTIONS_POPULATOR";
+      case MasterEnums.redoseDeliveryComments:
+        return "DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR";
+      case MasterEnums.dipConfig:
+        return "USER_ACTION_DAILY_PLAN";
       case MasterEnums.backendInterface:
         return "BACKEND_INTERFACE";
       case MasterEnums.callSupport:
@@ -145,6 +157,10 @@ class MasterEnumsMapper extends EnumMapper<MasterEnums> {
         return "TRANSIT_POST_TYPE";
       case MasterEnums.nonComplianceReasons:
         return "NON_COMPLIANCE_REASONS";
+      case MasterEnums.ageRangeOptions:
+        return "AGE_RANGE_OPTIONS";
+      case MasterEnums.heightRangeOptions:
+        return "HEIGHT_RANGE_OPTIONS";
     }
   }
 }

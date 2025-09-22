@@ -13,6 +13,7 @@ import 'package:registration_delivery/blocs/search_households/search_households.
 import 'package:registration_delivery/models/entities/status.dart';
 import 'package:registration_delivery/models/entities/task.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
+import '../../models/entities/project_types.dart';
 import '../../utils/extensions/extensions.dart';
 import 'package:registration_delivery/utils/utils.dart';
 import 'package:registration_delivery/widgets/beneficiary/beneficiary_card.dart';
@@ -109,6 +110,8 @@ class CustomViewBeneficiaryCardState
 
     final tableData = householdMember.members?.map(
       (e) {
+        final isHead = householdMember.headOfHousehold?.clientReferenceId ==
+            e.clientReferenceId;
         final projectBeneficiary =
             householdMember.projectBeneficiaries?.where((element) {
           if (RegistrationDeliverySingleton().beneficiaryType ==
@@ -160,15 +163,19 @@ class CustomViewBeneficiaryCardState
               : DateTime.now(),
         ).months;
 
-        final isNotEligible = !checkEligibilityForAgeAndSideEffect(
-          DigitDOBAgeConvertor(
-            years: ageInYears,
-            months: ageInMonths,
-          ),
-          RegistrationDeliverySingleton().projectType,
-          (taskData ?? []).isNotEmpty ? taskData?.last : null,
-          sideEffects,
-        );
+        // Todo : cover the case where polio project type is there
+        final isNotEligible =
+            context.projectTypeCode == ProjectTypes.oncho.toValue()
+                ? false
+                : !checkEligibilityForAgeAndSideEffect(
+                    DigitDOBAgeConvertor(
+                      years: ageInYears,
+                      months: ageInMonths,
+                    ),
+                    RegistrationDeliverySingleton().projectType,
+                    (taskData ?? []).isNotEmpty ? taskData?.last : null,
+                    sideEffects,
+                  );
 
         final isBeneficiaryRefused = checkIfBeneficiaryRefused(taskData);
         final isBeneficiaryAbsent = checkIfBeneficiaryAbsent(taskData);
@@ -176,8 +183,6 @@ class CustomViewBeneficiaryCardState
             checkBeneficiaryInEligibleSMC(taskData, context.selectedCycle);
         final isBeneficiaryReferred =
             checkBeneficiaryReferredSMC(taskData, context.selectedCycle);
-        final isHead = householdMember.headOfHousehold?.clientReferenceId ==
-            e.clientReferenceId;
 
         final isStatusReset = util_local.checkStatusSMC(taskData, currentCycle);
 
@@ -206,7 +211,8 @@ class CustomViewBeneficiaryCardState
             "",
             cellKey: 'delivery',
             widget: Text(
-              isHead
+              isHead &&
+                      (context.projectTypeCode == ProjectTypes.polio.toValue())
                   ? localizations.translate(
                       i18_local.householdOverView
                           .householdOverViewHouseholderHeadLabel,
@@ -223,7 +229,9 @@ class CustomViewBeneficiaryCardState
                       taskData,
                     ),
               style: TextStyle(
-                color: isHead
+                color: isHead &&
+                        (context.projectTypeCode ==
+                            ProjectTypes.polio.toValue())
                     ? theme.colorScheme.surfaceTint
                     : getTableCellTextColor(
                         isNotEligible: isNotEligible,
@@ -355,13 +363,25 @@ class CustomViewBeneficiaryCardState
                           HouseholdType.community)
                       ? null
                       : getStatus(
-                          tasks ?? [],
-                          householdMember.projectBeneficiaries ?? [],
-                          RegistrationDeliverySingleton().beneficiaryType ==
-                                  BeneficiaryType.individual
-                              ? isNotEligible
-                              : false,
-                          isBeneficiaryRefused),
+                                  tasks ?? [],
+                                  householdMember.projectBeneficiaries ?? [],
+                                  RegistrationDeliverySingleton()
+                                              .beneficiaryType ==
+                                          BeneficiaryType.individual
+                                      ? isNotEligible
+                                      : false,
+                                  isBeneficiaryRefused) ==
+                              Status.administeredFailed.toValue()
+                          ? localizations.translate(i18_local
+                              .householdOverView.nonCompliantHouseholdStatus)
+                          : getStatus(
+                              tasks ?? [],
+                              householdMember.projectBeneficiaries ?? [],
+                              RegistrationDeliverySingleton().beneficiaryType ==
+                                      BeneficiaryType.individual
+                                  ? isNotEligible
+                                  : false,
+                              isBeneficiaryRefused),
                   title: (RegistrationDeliverySingleton().householdType ==
                           HouseholdType.community)
                       ? householdMember.household?.address?.buildingName ??
@@ -395,22 +415,33 @@ class CustomViewBeneficiaryCardState
                 rows: tableData ?? [],
               ),
             ),
-            Container(
-              height: 24,
-              margin: const EdgeInsets.all(4),
-              child: Center(
-                child: IconButton(
-                  padding: EdgeInsets.zero,
-                  icon: Icon(
-                    isCardExpanded
-                        ? Icons.keyboard_arrow_up
-                        : Icons.keyboard_arrow_down,
-                    size: 24,
+            // Todo : verify this condition once again , not showing expand icon for non compliant household,
+            //as no proper individual info present at this moment
+            if (getStatus(
+                    tasks ?? [],
+                    householdMember.projectBeneficiaries ?? [],
+                    RegistrationDeliverySingleton().beneficiaryType ==
+                            BeneficiaryType.individual
+                        ? isNotEligible
+                        : false,
+                    isBeneficiaryRefused) !=
+                Status.administeredFailed.toValue())
+              Container(
+                height: 24,
+                margin: const EdgeInsets.all(4),
+                child: Center(
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    icon: Icon(
+                      isCardExpanded
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down,
+                      size: 24,
+                    ),
+                    onPressed: () => isCardExpanded = !isCardExpanded,
                   ),
-                  onPressed: () => isCardExpanded = !isCardExpanded,
                 ),
               ),
-            ),
           ]
         ]);
   }

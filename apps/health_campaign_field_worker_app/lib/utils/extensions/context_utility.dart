@@ -26,6 +26,7 @@ extension ContextUtilityExtensions on BuildContext {
 
   String get projectId => selectedProject.id;
 
+  // returns project type code
   String? get projectTypeCode {
     final projectType = selectedProject.projectType;
 
@@ -97,6 +98,21 @@ extension ContextUtilityExtensions on BuildContext {
     return selectedBeneficiary;
   }
 
+  BoundaryModel get wardBoundary {
+    final boundaryBloc = _get<BoundaryBloc>();
+    final boundaryState = boundaryBloc.state;
+
+    final selectedWardBoundary = boundaryState.boundaryList
+        .where((element) => element.label == "Settlement")
+        .firstOrNull;
+
+    if (selectedWardBoundary == null) {
+      throw AppException('No ward boundary is selected');
+    }
+
+    return selectedWardBoundary;
+  }
+
   BoundaryModel get boundary {
     final boundaryBloc = _get<BoundaryBloc>();
     final boundaryState = boundaryBloc.state;
@@ -157,7 +173,7 @@ extension ContextUtilityExtensions on BuildContext {
     try {
       bool isDistributorUser = loggedInUserRoles
           .where(
-            (role) => role.code == RolesType.communityDistributor.toValue(),
+            (role) => role.code == RolesType.distributor.toValue(),
           )
           .toList()
           .isNotEmpty;
@@ -183,6 +199,21 @@ extension ContextUtilityExtensions on BuildContext {
       },
     );
     return counts ?? {};
+  }
+
+  bool get isWFP {
+    try {
+      bool isWardFocalPoint = loggedInUserRoles
+          .where(
+            (role) => (role.code == RolesType.wardFocalPerson.toValue()),
+          )
+          .toList()
+          .isNotEmpty;
+
+      return isWardFocalPoint;
+    } catch (_) {
+      return false;
+    }
   }
 
   List<UserRoleModel> get loggedInUserRoles {

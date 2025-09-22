@@ -124,4 +124,7 @@ class _HomePageShowcaseData {
   final campaignDeliverySelection = ShowcaseItemBuilder(
     messageLocalizationKey: i18.home.dailyImplementationPlanLabel,
   );
+  final nonComplianceTracking = ShowcaseItemBuilder(
+    messageLocalizationKey: i18.home.nonComplianceTracking,
+  );
 }

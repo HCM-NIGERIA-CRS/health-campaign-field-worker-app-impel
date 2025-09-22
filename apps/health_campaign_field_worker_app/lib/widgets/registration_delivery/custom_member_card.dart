@@ -4,6 +4,7 @@ import 'package:digit_components/digit_components.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_ui_components/theme/digit_extended_theme.dart';
 import 'package:digit_ui_components/theme/spacers.dart';
+import 'package:digit_ui_components/utils/date_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:registration_delivery/blocs/app_localization.dart';
@@ -16,6 +17,7 @@ import 'package:registration_delivery/router/registration_delivery_router.gm.dar
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
 import '../../blocs/localization/app_localization.dart';
 
+import '../../models/entities/project_types.dart';
 import '../../router/app_router.dart';
 import '../../utils/app_enums.dart';
 import '../../utils/registration_delivery/utils_smc.dart';
@@ -51,6 +53,9 @@ class CustomMemberCard extends StatelessWidget {
   final bool isBeneficiaryIneligible;
   final bool isBeneficiaryReferred;
   final bool isBeneficiaryAbsent;
+  final bool smcFlow;
+  final bool polioFlow;
+  final bool onchoFlow;
   final String? projectBeneficiaryClientReferenceId;
 
   const CustomMemberCard({
@@ -75,6 +80,9 @@ class CustomMemberCard extends StatelessWidget {
     this.isBeneficiaryReferred = false,
     this.isBeneficiaryAbsent = false,
     this.sideEffects,
+    this.smcFlow = false,
+    this.polioFlow = false,
+    this.onchoFlow = false,
     required this.variant,
   });
 
@@ -86,19 +94,20 @@ class CustomMemberCard extends StatelessWidget {
         checkBeneficiaryInEligibleSMC(tasks, context.selectedCycle);
 
     final theme = Theme.of(context);
-    if (isHead) {
-      return Align(
-        alignment: Alignment.centerLeft,
-        child: DigitIconButton(
-          icon: Icons.info_rounded,
-          iconSize: 20,
-          iconText: localizations.translate(i18_local
-              .householdOverView.householdOverViewHouseholderHeadLabel),
-          iconTextColor: theme.colorScheme.surfaceTint,
-          iconColor: theme.colorScheme.surfaceTint,
-        ),
-      );
-    }
+    // if (isHead &&
+    //     !isDelivered &&
+    //     (context.projectTypeCode == ProjectTypes.oncho.toValue())) {
+    //   return Align(
+    //     alignment: Alignment.centerLeft,
+    //     child: DigitIconButton(
+    //       icon: Icons.info_rounded,
+    //       iconSize: 20,
+    //       iconText: localizations.translate(Status.notVisited.toValue()),
+    //       iconTextColor: theme.colorScheme.error,
+    //       iconColor: theme.colorScheme.error,
+    //     ),
+    //   );
+    // }
     if ((isDelivered ||
         isBeneficiaryReferredSMC ||
         isBeneficiaryInEligibleSMC)) {
@@ -195,7 +204,9 @@ class CustomMemberCard extends StatelessWidget {
   Widget actionButton(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.digitTextTheme(context);
+    // List<TaskModel>? smcTasks = _getSMCStatusData();
     final doseStatus = checkStatusSMC(tasks, context.selectedCycle);
+
     bool smcAssessmentPendingStatus =
         assessmentSMCPending(tasks, context.selectedCycle);
 
@@ -204,10 +215,41 @@ class CustomMemberCard extends StatelessWidget {
 
     bool isBeneficiaryInEligibleSMC =
         checkBeneficiaryInEligibleSMC(tasks, context.selectedCycle);
+    final redosePendingStatus = smcAssessmentPendingStatus
+        ? true
+        : redosePending(tasks, context.selectedCycle);
 
     if ((isNotEligibleSMC || isBeneficiaryIneligible) && !doseStatus) {
       return const Offstage();
     }
+    // todo add a condition to check if already delivered
+    // if (isHead && context.projectTypeCode == ProjectTypes.oncho.toValue()) {
+    //   return DigitElevatedButton(
+    //     child: Center(
+    //       child: Text(
+    //         localizations.translate(i18_local
+    //             .householdOverView.householdOverViewAdministerHeadText),
+    //         style: textTheme.headingM.copyWith(color: Colors.white),
+    //       ),
+    //     ),
+    //     onPressed: () async {
+    //       final bloc = context.read<HouseholdOverviewBloc>();
+    //       bloc.add(
+    //         HouseholdOverviewEvent.selectedIndividual(
+    //           individualModel: individual,
+    //         ),
+    //       );
+
+    //       context.router.push(
+    //         CustomBeneficiaryDetailsHeadRoute(
+    //           isHead: true,
+    //           individualSelected: individual,
+    //           eligibilityAssessmentType: EligibilityAssessmentType.smc,
+    //         ),
+    //       );
+    //     },
+    //   );
+    // }
     if (isNotEligibleSMC) {
       return const Offstage();
     }
@@ -221,10 +263,16 @@ class CustomMemberCard extends StatelessWidget {
               child: Text(
                 localizations.translate(
                   isBeneficiaryAbsent
-                      ? i18_local
-                          .householdOverView.householdOverViewRevisitAbsentText
-                      : i18_local.householdOverView
-                          .householdOverViewSMCAssessmentActionText,
+                      ? isHead
+                          ? i18_local.householdOverView
+                              .householdOverViewRevisitAbsentHeadText
+                          : i18_local.householdOverView
+                              .householdOverViewRevisitAbsentText
+                      : smcFlow
+                          ? i18_local.householdOverView
+                              .householdOverViewSMCAssessmentActionText
+                          : i18_local.householdOverView
+                              .householdOverViewDeliverActionText,
                 ),
                 style: textTheme.headingM.copyWith(color: Colors.white),
               ),
@@ -237,16 +285,130 @@ class CustomMemberCard extends StatelessWidget {
                 ),
               );
 
-              context.router.push(
-                CustomBeneficiaryDetailsRoute(
+              if (smcFlow && polioFlow) {
+                context.router.push(EligibilityChecklistViewRoute(
+                  eligibilityAssessmentType: EligibilityAssessmentType.smc,
+                  projectBeneficiaryClientReferenceId:
+                      projectBeneficiaryClientReferenceId,
+                  individual: individual,
+                  showBackButton: false,
+                ));
+                //route to eligibility checklist page first
+              } else if (polioFlow || onchoFlow) {
+                // route to normal beneficiary details page first
+                context.router.push(CustomBeneficiaryDetailsRoute(
                   individualSelected: individual,
                   eligibilityAssessmentType: EligibilityAssessmentType.smc,
+                ));
+              }
+            },
+          ),
+        if (!(smcAssessmentPendingStatus) && redosePendingStatus && smcFlow)
+          DigitElevatedButton(
+            child: Center(
+              child: Text(
+                localizations.translate(
+                  i18_local.householdOverView.householdOverViewRedoseActionText,
+                ),
+                style: textTheme.headingM.copyWith(color: Colors.white),
+              ),
+            ),
+            onPressed: () async {
+              final bloc = context.read<HouseholdOverviewBloc>();
+              bloc.add(
+                HouseholdOverviewEvent.selectedIndividual(
+                  individualModel: individual,
                 ),
               );
+
+              if ((tasks ?? []).isNotEmpty) {
+                TaskModel? successfulTask = tasks
+                    ?.where(
+                      (element) =>
+                          element.status ==
+                          Status.administeredSuccess.toValue(),
+                    )
+                    .lastOrNull;
+                if (redosePendingStatus) {
+                  // final spaq1 = context.spaq1;
+                  // final spaq2 = context.spaq2;
+
+                  // int doseCount = double.parse(
+                  //   successfulTask?.resources?.first.quantity ?? "0",
+                  // ).round();
+
+                  // final value = variant
+                  //     .firstWhere(
+                  //       (element) =>
+                  //           element.id ==
+                  //           successfulTask!.resources!.first.productVariantId,
+                  //     )
+                  //     .sku;
+
+                  if (successfulTask != null) {
+                    context.router.push(
+                      RecordRedoseRoute(
+                        tasks: [successfulTask],
+                      ),
+                    );
+                  }
+                  // else {
+                  //   DigitDialog.show(
+                  //     context,
+                  //     options: DigitDialogOptions(
+                  //       titleText: localizations.translate(
+                  //         i18_local.beneficiaryDetails.insufficientStockHeading,
+                  //       ),
+                  //       titleIcon: Icon(
+                  //         Icons.warning,
+                  //         color: DigitTheme.instance.colorScheme.error,
+                  //       ),
+                  //       contentText: (value == Constants.spaq1)
+                  //           ? "${localizations.translate(
+                  //               i18_local.beneficiaryDetails
+                  //                   .insufficientAZTStockMessageDelivery,
+                  //             )} \n ${localizations.translate(
+                  //               i18_local.beneficiaryDetails.spaq1DoseUnit,
+                  //             )}"
+                  //           : "${localizations.translate(
+                  //               i18_local.beneficiaryDetails
+                  //                   .insufficientAZTStockMessageDelivery,
+                  //             )} \n ${localizations.translate(
+                  //               i18_local.beneficiaryDetails.spaq2DoseUnit,
+                  //             )}",
+                  //       primaryAction: DigitDialogActions(
+                  //         label: localizations.translate(i18_local
+                  //             .beneficiaryDetails.backToHouseholdDetails),
+                  //         action: (ctx) {
+                  //           Navigator.of(
+                  //             ctx,
+                  //             rootNavigator: true,
+                  //           ).pop();
+                  //         },
+                  //       ),
+                  //     ),
+                  //   );
+                  // }
+                }
+              }
             },
           ),
       ],
     );
+  }
+
+  List<TaskModel>? _getSMCStatusData() {
+    return tasks
+        ?.where((e) =>
+            e.additionalFields?.fields.firstWhereOrNull(
+              (element) =>
+                  element.key ==
+                      additional_fields_local.AdditionalFieldsType.deliveryType
+                          .toValue() &&
+                  element.value == EligibilityAssessmentStatus.smcDone.name,
+            ) !=
+            null)
+        .toList();
   }
 
   @override
@@ -418,18 +580,14 @@ class CustomMemberCard extends StatelessWidget {
             offstage: beneficiaryType != BeneficiaryType.individual,
             child: Padding(
               padding: const EdgeInsets.all(4.0),
-              child: isHead
-                  ? const Column(
-                      children: [],
-                    )
-                  : Column(
-                      children: [
-                        actionButton(context),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                      ],
-                    ),
+              child: Column(
+                children: [
+                  actionButton(context),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                ],
+              ),
             ),
           ),
         ],

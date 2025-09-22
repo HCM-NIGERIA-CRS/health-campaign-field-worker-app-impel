@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:collection/collection.dart';
 import 'package:digit_components/widgets/atoms/digit_toaster.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_scanner/digit_scanner.dart';
@@ -30,9 +31,14 @@ import 'package:transit_post/widgets/total_delivery.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart'
     as registration_delivery;
 import '../../../utils/i18_key_constants.dart' as i18_local;
+import '../../blocs/app_initialization/app_initialization.dart';
 import '../../blocs/transit_post/custom_transit_post.dart';
 import '../../blocs/transit_post/fixed_post.dart';
+import '../../data/local_store/no_sql/schema/app_configuration.dart';
+import '../../models/entities/project_types.dart';
+import '../../models/entities/user_action_enums.dart';
 import '../../router/app_router.dart';
+import '../../utils/extensions/extensions.dart';
 import '../../widgets/showcase/showcase_wrappers.dart';
 import '../campaign_delivery_select.dart';
 
@@ -153,47 +159,10 @@ class CustomTransitPostRecordVaccinationPageState
                               ),
                             ],
                           ),
-                        ) as bool;
+                        );
 
                         if (submit ?? false) {
                           if (context.mounted) {
-                            // // submit polio event
-                            // context.read<CustomTransitPostBloc>().add(
-                            //     CustomTransitPostEvent.submitDelivery(
-                            //         latitude: latKey.text.isNotEmpty
-                            //             ? double.parse(latKey.text)
-                            //             : transitPostState.latitude,
-                            //         longitude: lngKey.text.isNotEmpty
-                            //             ? double.parse(lngKey.text)
-                            //             : transitPostState.longitude,
-                            //         locationAccuracy:
-                            //             accuracyKey.text.isNotEmpty
-                            //                 ? double.parse(accuracyKey.text)
-                            //                 : transitPostState.locationAccuracy,
-                            //         scannedResource: "",
-                            //         drugType: "POLIO",
-                            //         beneficiaryDelivered:
-                            //             polioBeneficiaryCount));
-
-                            // // submit measles event
-
-                            // context
-                            //     .read<CustomTransitPostBloc>()
-                            //     .add(CustomTransitPostEvent.submitDelivery(
-                            //       latitude: latKey.text.isNotEmpty
-                            //           ? double.parse(latKey.text)
-                            //           : transitPostState.latitude,
-                            //       longitude: lngKey.text.isNotEmpty
-                            //           ? double.parse(lngKey.text)
-                            //           : transitPostState.longitude,
-                            //       locationAccuracy: accuracyKey.text.isNotEmpty
-                            //           ? double.parse(accuracyKey.text)
-                            //           : transitPostState.locationAccuracy,
-                            //       scannedResource: "",
-                            //       drugType: drugType,
-                            //       beneficiaryDelivered: measlesBeneficiaryCount,
-                            //     ));
-
                             context.router.replaceAll(
                                 [const CustomTransitPostSelectionRoute()]);
                           }
@@ -227,7 +196,8 @@ class CustomTransitPostRecordVaccinationPageState
                                     ),
                                     value: DateFormat("d MMMM yyyy")
                                         .format(DateTime.now())),
-                                if (widget.postType == PostType.transit.name)
+                                if (widget.postType ==
+                                    UserActionEnums.transit.toValue())
                                   LabelValueItem(
                                       labelFlex: 5,
                                       label: localizations.translate(
@@ -238,7 +208,8 @@ class CustomTransitPostRecordVaccinationPageState
                                 LabelValueItem(
                                     labelFlex: 5,
                                     label: localizations.translate(
-                                      widget.postType == PostType.transit.name
+                                      widget.postType ==
+                                              UserActionEnums.transit.toValue()
                                           ? i18.transitPost.transitPostNameLabel
                                           : i18_local.transitFixedPost
                                               .fixedPostnameLabel,
@@ -256,21 +227,6 @@ class CustomTransitPostRecordVaccinationPageState
                         color: theme.colorTheme.text.primary,
                       ),
                     ),
-                    // if (TransitPostSingleton().minAge != null &&
-                    //     TransitPostSingleton().maxAge != null)
-                    //   LabelValueSummary(items: [
-                    //     LabelValueItem(
-                    //       labelFlex: 5,
-                    //       maxLines: 4,
-                    //       label: localizations.translate(
-                    //         i18.transitPost.beneficiaryAgeLabel,
-                    //       ),
-                    //       value:
-                    //           "${localizations.translate(i18.transitPost.beneficiaryAgeDescription)} ${TransitPostSingleton().minAge!.toString()} ${"-"} ${TransitPostSingleton().maxAge!.toString()} ${localizations.translate(
-                    //         i18_local.individualDetails.monthsHintText,
-                    //       )}",
-                    //     )
-                    //   ]),
                     SizedBox(
                       height: (tableRow.length * 70.0).toDouble().clamp(
                               100, MediaQuery.of(context).size.height * 0.5) +
@@ -356,6 +312,7 @@ class CustomTransitPostRecordVaccinationPageState
                                           ? 1
                                           : transitPostState.totalCount! + 1,
                                   action: widget.postType,
+                                  scannedResource: "POLIO",
                                 ));
 
                             context.router
@@ -386,6 +343,49 @@ class CustomTransitPostRecordVaccinationPageState
                           value: measlesBeneficiaryCount.toString(),
                         )
                       ]),
+                      Text(
+                        localizations.translate(
+                          i18_local.deliverIntervention.selectAgeRange,
+                        ),
+                        style: textTheme.headingL
+                            .copyWith(color: theme.colorTheme.text.primary),
+                      ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.fromLTRB(kPadding, 0, kPadding, 0),
+                        child: BlocBuilder<AppInitializationBloc,
+                            AppInitializationState>(
+                          builder: (context, state) {
+                            if (state is! AppInitialized) {
+                              return const Offstage();
+                            }
+
+                            final ageRangeOptions =
+                                state.appConfiguration.ageRangeOptions ??
+                                    <AgeRangeOptions>[];
+
+                            return FormField(
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                builder: (context) {
+                                  return RadioList(
+                                    radioDigitButtons: ageRangeOptions
+                                        .map((age) => RadioButtonModel(
+                                            code: age.code, name: age.code))
+                                        .toList(),
+                                    groupValue: ageRangeSelected ?? '',
+                                    onChanged: (value) {
+                                      if (value.code.isNotEmpty) {
+                                        setState(() {
+                                          ageRangeSelected = value.code;
+                                        });
+                                      }
+                                    },
+                                  );
+                                });
+                          },
+                        ),
+                      ),
                       DigitButton(
                         label: localizations.translate(
                           i18_local.deliverIntervention.vaccinateBeneficiary,
@@ -424,26 +424,29 @@ class CustomTransitPostRecordVaccinationPageState
 
                             context.read<CustomTransitPostBloc>().add(
                                   CustomTransitPostDeliveryEvent(
-                                    latitude: latKey.text.isNotEmpty
-                                        ? double.parse(latKey.text)
-                                        : transitPostState.latitude,
-                                    longitude: lngKey.text.isNotEmpty
-                                        ? double.parse(lngKey.text)
-                                        : transitPostState.longitude,
-                                    locationAccuracy:
-                                        accuracyKey.text.isNotEmpty
-                                            ? double.parse(accuracyKey.text)
-                                            : transitPostState.locationAccuracy,
-                                    curCount:
-                                        (transitPostState.curCount == null)
-                                            ? 1
-                                            : transitPostState.curCount! + 1,
-                                    totalCount:
-                                        (transitPostState.totalCount == null)
-                                            ? 1
-                                            : transitPostState.totalCount! + 1,
-                                    action: widget.postType,
-                                  ),
+                                      latitude: latKey.text.isNotEmpty
+                                          ? double.parse(latKey.text)
+                                          : transitPostState.latitude,
+                                      longitude: lngKey.text.isNotEmpty
+                                          ? double.parse(lngKey.text)
+                                          : transitPostState.longitude,
+                                      locationAccuracy: accuracyKey
+                                              .text.isNotEmpty
+                                          ? double.parse(accuracyKey.text)
+                                          : transitPostState.locationAccuracy,
+                                      curCount:
+                                          (transitPostState.curCount == null)
+                                              ? 1
+                                              : transitPostState.curCount! + 1,
+                                      totalCount:
+                                          (transitPostState.totalCount == null)
+                                              ? 1
+                                              : transitPostState.totalCount! +
+                                                  1,
+                                      action: widget.postType,
+                                      scannedResource: "MEASLES",
+                                      additionalFieldsCaptured:
+                                          ageRange != null ? [ageRange] : []),
                                 );
 
                             // set age range empty once selection done and event submitted
@@ -456,54 +459,6 @@ class CustomTransitPostRecordVaccinationPageState
                           }
                         },
                       ),
-                      Text(
-                        localizations.translate(
-                          i18_local.deliverIntervention.selectAgeRange,
-                        ),
-                        style: textTheme.headingL
-                            .copyWith(color: theme.colorTheme.text.primary),
-                      ),
-                      Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                              kPadding, 0, kPadding, 0),
-                          child: FormField(
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              builder: (context) {
-                                return RadioList(
-                                  radioDigitButtons: [
-                                    RadioButtonModel(
-                                      code: AgeRange.nineToEleven.name,
-                                      name: localizations.translate(
-                                        i18_local.deliverIntervention
-                                            .ninetoElevenAgeRange,
-                                      ),
-                                    ),
-                                    RadioButtonModel(
-                                      code: AgeRange.twelveToFiftyNine.name,
-                                      name: localizations.translate(
-                                        i18_local.deliverIntervention
-                                            .twelvetofiftyNineAgeRange,
-                                      ),
-                                    ),
-                                  ],
-                                  groupValue: ageRangeSelected ?? '',
-                                  onChanged: (value) {
-                                    if (value.code ==
-                                        AgeRange.nineToEleven.name) {
-                                      setState(() {
-                                        ageRangeSelected =
-                                            AgeRange.nineToEleven.name;
-                                      });
-                                    } else {
-                                      setState(() {
-                                        ageRangeSelected =
-                                            AgeRange.twelveToFiftyNine.name;
-                                      });
-                                    }
-                                  },
-                                );
-                              }))
                     ],
                   ),
                 ],
@@ -513,15 +468,16 @@ class CustomTransitPostRecordVaccinationPageState
     );
   }
 
-  String? getAgeRangeSelected(String? ageRangeSelected) {
+  AdditionalField? getAgeRangeSelected(String? ageRangeSelected) {
     if (ageRangeSelected == null) {
-      return "";
+      return null;
     }
-    return ageRangeSelected;
+    return AdditionalField("ageRange", ageRangeSelected);
   }
 
   List<DigitTableRow> buildTableData() {
-    final resources = TransitPostSingleton().resources;
+    final resources =
+        getResourceVariantsBasedOnProjectType(TransitPostSingleton().resources);
 
     if (resources == null || resources.isEmpty) return [];
 
@@ -536,12 +492,26 @@ class CustomTransitPostRecordVaccinationPageState
             "${localizations.translate(i18.transitPost.doseLabel)} $count",
             cellKey: "Dose$count"),
       );
-      tableData.add(DigitTableData(resource.productVariantId,
+      tableData.add(DigitTableData(resource.name ?? resource.productVariantId,
           cellKey: resource.name ?? resource.productVariantId));
 
       finalTableRow.add(DigitTableRow(tableRow: tableData));
       count++;
     }
     return finalTableRow;
+  }
+
+  List<ProjectProductVariantModel> getResourceVariantsBasedOnProjectType(
+    List<ProjectProductVariantModel>? resources,
+  ) {
+    if (resources == null || resources.isEmpty) return [];
+
+    // not filtering resources which are not needed on post
+    return resources
+        .whereNot((resource) =>
+            resource.productVariantId == "PVAR-2025-09-01-000022" ||
+            resource.productVariantId == "PVAR-2025-09-01-000021" ||
+            resource.productVariantId == "PVAR-2025-09-04-000023")
+        .toList();
   }
 }

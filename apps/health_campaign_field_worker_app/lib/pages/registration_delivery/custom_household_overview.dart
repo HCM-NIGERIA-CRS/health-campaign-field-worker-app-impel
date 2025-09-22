@@ -33,11 +33,14 @@ import 'package:registration_delivery/models/entities/status.dart';
 import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
 import 'package:registration_delivery/utils/utils.dart';
+import '../../blocs/registration_delivery/current_flow.dart';
 import '../../blocs/registration_delivery/custom_search_household.dart'
     as customSearchHouseholdBloc;
+import '../../models/entities/project_types.dart';
 import '../../utils/utils.dart';
 import '../../utils/date_utils.dart' as digits;
 import '../../utils/i18_key_constants.dart' as i18_local;
+import '../../utils/constants.dart' as local_constants;
 import '../../widgets/custom_back_navigation.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 import 'package:registration_delivery/widgets/member_card/member_card.dart';
@@ -48,6 +51,7 @@ import '../../utils/app_enums.dart';
 import '../../utils/registration_delivery/utils_smc.dart';
 import '../../widgets/registration_delivery/custom_member_card.dart';
 import '../../utils/utils.dart' as local_utils;
+import '../../utils/date_utils.dart' as digits;
 
 @RoutePage()
 class CustomHouseholdOverviewPage extends LocalizedStatefulWidget {
@@ -350,11 +354,8 @@ class _CustomHouseholdOverviewPageState
                                                   state.householdMemberWrapper
                                                       .household);
 
-                                          final childrenAbsentCount =
-                                              getValueForTheKey(
-                                                  Constants.childrenAbsent,
-                                                  state.householdMemberWrapper
-                                                      .household);
+                                          final totalMemberInHousehold =
+                                              totalMemberCount(childrenCount);
 
                                           if (RegistrationDeliverySingleton()
                                                   .householdType ==
@@ -420,21 +421,14 @@ class _CustomHouseholdOverviewPageState
                                                           .locality
                                                           ?.code ??
                                                       i18.common.coreCommonNA),
-                                                  // localizations.translate(
-                                                  //   i18.deliverIntervention
-                                                  //       .memberCountText,
-                                                  // ): state
-                                                  //     .householdMemberWrapper
-                                                  //     .household
-                                                  //     ?.memberCount,
+                                                  localizations.translate(
+                                                    i18.deliverIntervention
+                                                        .memberCountText,
+                                                  ): totalMemberInHousehold,
                                                   localizations.translate(
                                                     i18.householdDetails
                                                         .noOfChildrenBelow5YearsLabel,
                                                   ): childrenCount,
-                                                  localizations.translate(
-                                                    i18_local.householdDetails
-                                                        .noOfChildrenAbsentLabel,
-                                                  ): childrenAbsentCount,
                                                   if (shouldShowStatus)
                                                     localizations.translate(i18
                                                             .beneficiaryDetails
@@ -680,6 +674,39 @@ class _CustomHouseholdOverviewPageState
                                                     taskData,
                                                     context.selectedCycle);
 
+                                            // calculate age and decide the flow and route
+
+                                            String dob = e.dateOfBirth!;
+                                            DateTime? dateOfBirth =
+                                                DigitDateUtils
+                                                    .getFormattedDateToDateTime(
+                                                        dob);
+
+                                            final age =
+                                                DigitDateUtils.calculateAge(
+                                                    dateOfBirth!);
+                                            final smcFlow = isSMCFlow(age);
+                                            final polioFlow = isPolioFlow(age);
+                                            final onchoFlow = isOnchoFlow(age);
+
+                                            context.read<CurrentFlowBloc>().add(
+                                                  CurrentFlowEvent.set(
+                                                      currentFlows: {
+                                                        if (smcFlow)
+                                                          local_constants
+                                                              .Constants
+                                                              .smcFlow,
+                                                        if (polioFlow)
+                                                          local_constants
+                                                              .Constants
+                                                              .polioFlow,
+                                                        if (onchoFlow)
+                                                          local_constants
+                                                              .Constants
+                                                              .onchoFlow,
+                                                      }),
+                                                );
+
                                             return BlocBuilder<
                                                 ProductVariantBloc,
                                                 ProductVariantState>(
@@ -694,6 +721,9 @@ class _CustomHouseholdOverviewPageState
                                                       variant: value,
                                                       isHead: isHead,
                                                       individual: e,
+                                                      smcFlow: smcFlow,
+                                                      polioFlow: polioFlow,
+                                                      onchoFlow: onchoFlow,
                                                       projectBeneficiaries:
                                                           projectBeneficiary ??
                                                               [],
@@ -760,12 +790,23 @@ class _CustomHouseholdOverviewPageState
                                                                             ?.clientReferenceId),
                                                               ),
                                                             ),
-                                                            children: [
-                                                              CustomIndividualDetailsRoute(
-                                                                isHeadOfHousehold:
-                                                                    isHead,
-                                                              ),
-                                                            ],
+                                                            children: context
+                                                                        .projectTypeCode ==
+                                                                    ProjectTypes
+                                                                        .polio
+                                                                        .toValue()
+                                                                ? [
+                                                                    CustomIndividualDetailsRoute(
+                                                                      isHeadOfHousehold:
+                                                                          isHead,
+                                                                    ),
+                                                                  ]
+                                                                : [
+                                                                    CustomIndividualDetailsPolioSMCRoute(
+                                                                      isHeadOfHousehold:
+                                                                          isHead,
+                                                                    )
+                                                                  ],
                                                           ),
                                                         );
                                                         callReloadEvent(
@@ -864,29 +905,7 @@ class _CustomHouseholdOverviewPageState
                                                               ]),
                                                         );
                                                       },
-                                                      isNotEligibleSMC:
-                                                          RegistrationDeliverySingleton()
-                                                                      .projectType
-                                                                      ?.cycles !=
-                                                                  null
-                                                              ? !checkEligibilityForAgeAndSideEffectAll(
-                                                                  DigitDOBAgeConvertor(
-                                                                    years:
-                                                                        ageInYears,
-                                                                    months:
-                                                                        ageInMonths,
-                                                                  ),
-                                                                  RegistrationDeliverySingleton()
-                                                                      .projectType,
-                                                                  (taskData ??
-                                                                              [])
-                                                                          .isNotEmpty
-                                                                      ? taskData
-                                                                          ?.lastOrNull
-                                                                      : null,
-                                                                  sideEffectData,
-                                                                )
-                                                              : false,
+                                                      isNotEligibleSMC: false,
                                                       name: e.name?.givenName ??
                                                           ' - - ',
                                                       years: (e.dateOfBirth ==
@@ -979,15 +998,17 @@ class _CustomHouseholdOverviewPageState
             RegistrationDeliverySingleton().beneficiaryType!,
       ),
     );
-    await context.router.popAndPush(
+    await context.router.push(
       CustomBeneficiaryRegistrationWrapperRoute(
         initialState: BeneficiaryRegistrationAddMemberState(
           addressModel: address,
           householdModel: household!,
         ),
-        children: [
-          CustomIndividualDetailsRoute(),
-        ],
+        children: context.projectTypeCode == ProjectTypes.polio.toValue()
+            ? [
+                CustomIndividualDetailsRoute(),
+              ]
+            : [CustomIndividualDetailsPolioSMCRoute()],
       ),
     );
   }

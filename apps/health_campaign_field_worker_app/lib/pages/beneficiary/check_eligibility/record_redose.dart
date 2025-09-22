@@ -10,13 +10,17 @@ import 'package:digit_data_model/data/local_store/sql_store/tables/individual.da
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_ui_components/enum/app_enums.dart';
 import 'package:digit_ui_components/utils/component_utils.dart';
+import 'package:digit_ui_components/widgets/atoms/digit_button.dart';
 import 'package:digit_ui_components/widgets/atoms/digit_numeric_form_input.dart';
 import 'package:digit_ui_components/widgets/atoms/digit_text_form_input.dart';
 import 'package:digit_ui_components/widgets/atoms/labelled_fields.dart';
+import 'package:digit_ui_components/widgets/atoms/pop_up_card.dart';
 import 'package:digit_ui_components/widgets/atoms/reactive_fields.dart';
 import 'package:digit_ui_components/widgets/molecules/digit_card.dart';
+import 'package:digit_ui_components/widgets/molecules/show_pop_up.dart';
 import 'package:digit_ui_components/widgets/scrollable_content.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -162,13 +166,48 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                 : BlocBuilder<DeliverInterventionBloc,
                     DeliverInterventionState>(
                     builder: (context, deliveryInterventionstate) {
-                      List<ProductVariantsModel>? productVariants =
-                          projectState.projectType?.cycles?.isNotEmpty == true
-                              ? (_fetchProductVariant(
-                                  projectState,
-                                  householdOverviewState,
-                                  deliveryInterventionstate))
-                              : projectState.projectType?.resources;
+                      ProjectTypeModel? projectTypeModel =
+                          RegistrationDeliverySingleton()
+                              .selectedProject
+                              ?.additionalDetails
+                              ?.projectType;
+
+                      List<DeliveryProductVariant>? productVariants =
+                          projectTypeModel?.cycles?.isNotEmpty == true
+                              ? getProductVariants(deliveryInterventionstate,
+                                  householdOverviewState)
+                              : projectTypeModel?.resources
+                                  ?.map((r) => DeliveryProductVariant(
+                                      productVariantId: r.productVariantId))
+                                  .toList();
+                      if ((productVariants ?? []).isEmpty && context.mounted) {
+                        SchedulerBinding.instance.addPostFrameCallback((_) {
+                          showCustomPopup(
+                              context: context,
+                              builder: (popUpContext) => Popup(
+                                      title: localizations.translate(
+                                        i18.common.noResultsFound,
+                                      ),
+                                      description: localizations.translate(
+                                        i18.deliverIntervention
+                                            .checkForProductVariantsConfig,
+                                      ),
+                                      type: PopUpType.alert,
+                                      actions: [
+                                        DigitButton(
+                                          label: localizations.translate(
+                                            i18.common.coreCommonOk,
+                                          ),
+                                          onPressed: () {
+                                            context.router.maybePop();
+                                            Navigator.of(popUpContext).pop();
+                                          },
+                                          type: DigitButtonType.primary,
+                                          size: DigitButtonSize.large,
+                                        ),
+                                      ]));
+                        });
+                      }
 
                       return BlocBuilder<ProductVariantBloc,
                           ProductVariantState>(
@@ -185,6 +224,7 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                               return ReactiveFormBuilder(
                                 form: () => buildForm(
                                   context,
+                                  // TODO : verify this ,removed any other resource apart from spaq
                                   productVariants,
                                   variant,
                                 ),
@@ -386,11 +426,11 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                                                                       productVariantId)
                                                                   .firstOrNull;
 
-                                                          var quantityIndex =
-                                                              productvariantList
-                                                                  .indexOf(
-                                                            productVariant,
-                                                          );
+                                                          // var quantityIndex =
+                                                          //     productvariantList
+                                                          //         .indexOf(
+                                                          //   productVariant,
+                                                          // );
 
                                                           final quantity = quantityIndex <
                                                                   0
@@ -487,12 +527,16 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                                                                 context.router
                                                                     .push(
                                                                   CustomHouseholdAcknowledgementRoute(
-                                                                    enableViewHousehold:
-                                                                        true,
-                                                                    eligibilityAssessmentType:
-                                                                        EligibilityAssessmentType
-                                                                            .smc,
-                                                                  ),
+                                                                      individualModel:
+                                                                          householdOverviewState
+                                                                              .selectedIndividual,
+                                                                      enableViewHousehold:
+                                                                          true,
+                                                                      eligibilityAssessmentType:
+                                                                          EligibilityAssessmentType
+                                                                              .smc,
+                                                                      isAddChild:
+                                                                          true),
                                                                 ),
                                                               });
                                                         }
@@ -617,7 +661,7 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
 
                                                     final deliveryCommentOptions = state
                                                             .appConfiguration
-                                                            .deliveryCommentOptions ??
+                                                            .redoseDeliveryCommentsOptions ??
                                                         <DeliveryCommentOptions>[];
 
                                                     // return DigitReactiveDropdown<
@@ -1019,19 +1063,64 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
     return task;
   }
 
+  List<DeliveryProductVariant>? getProductVariants(
+      DeliverInterventionState deliveryInterventionState,
+      HouseholdOverviewState state) {
+    var result = (fetchProductVariant(
+        RegistrationDeliverySingleton()
+            .selectedProject
+            ?.additionalDetails
+            ?.projectType
+            ?.cycles![deliveryInterventionState.cycle - 1]
+            .deliveries?[deliveryInterventionState.dose - 1],
+        state.selectedIndividual,
+        state.householdMemberWrapper.household,
+        context: context));
+
+    List<DeliveryProductVariant> variants =
+        result['criteria']?.productVariants ?? [];
+
+    return variants
+        .where(
+            (variant) => variant.productVariantId != "PVAR-2025-07-24-000001")
+        .toList();
+  }
+
 // This method builds a form used for delivering interventions.
 
   FormGroup buildForm(
     BuildContext context,
-    List<ProductVariantsModel>? productVariants,
+    List<DeliveryProductVariant>? productVariants,
     List<ProductVariantModel>? variants,
   ) {
     final bloc = context.read<DeliverInterventionBloc>().state;
+    final overViewbloc = context.read<HouseholdOverviewBloc>().state;
 
     // Add controllers for each product variant to the _controllers list.
 
-    _controllers
-        .addAll(productVariants!.map((e) => productVariants.indexOf(e)));
+    _controllers.forEachIndexed((index, element) {
+      _controllers.removeAt(index);
+    });
+    ProjectTypeModel? projectTypeModel = RegistrationDeliverySingleton()
+        .selectedProject
+        ?.additionalDetails
+        ?.projectType;
+
+    // Add controllers for each product variant to the _controllers list.
+    if (_controllers.isEmpty) {
+      final int r = projectTypeModel?.cycles == null
+          ? 1
+          : getProductVariants(
+                    bloc,
+                    overViewbloc,
+                  ) !=
+                  null
+              ? getProductVariants(bloc, overViewbloc)?.length ?? 0
+              : 0;
+
+      _controllers.addAll(List.generate(r, (index) => index)
+          .mapIndexed((index, element) => index));
+    }
 
     return fb.group(<String, Object>{
       _doseAdministrationKey: FormControl<String>(
@@ -1045,16 +1134,18 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
       _resourceDeliveredKey: FormArray<ProductVariantModel>(
         [
           ..._controllers.map((e) => FormControl<ProductVariantModel>(
-                value: variants != null &&
-                        _controllers.indexOf(e) < variants.length
-                    ? variants.firstWhereOrNull(
-                        (element) =>
-                            element.id ==
-                            productVariants
-                                .elementAt(_controllers.indexOf(e))
-                                .productVariantId,
-                      )
-                    : null,
+                value: variants != null && variants.length < _controllers.length
+                    ? variants.last
+                    : (variants != null &&
+                            _controllers.indexOf(e) < variants.length
+                        ? variants.firstWhereOrNull(
+                            (element) =>
+                                element.id ==
+                                productVariants
+                                    ?.elementAt(_controllers.indexOf(e))
+                                    .productVariantId,
+                          )
+                        : null),
               )),
         ],
       ),
@@ -1065,7 +1156,7 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
               Validators.required,
             ],
             value:
-                "${productVariants[0].quantity ?? 0} ${localizations.translate(i18_local.beneficiaryDetails.beneficiaryDoseUnit)}",
+                "${productVariants?[0].quantity ?? 0} ${localizations.translate(i18_local.beneficiaryDetails.beneficiaryDoseUnit)}",
             // value: productVariants[0].quantity ?? 0,
           ),
         ),

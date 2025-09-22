@@ -122,10 +122,24 @@ _$HCMWrapperModelImpl _$$HCMWrapperModelImplFromJson(
       idTypeOptions: (json['ID_TYPE_OPTIONS_POPULATOR'] as List<dynamic>)
           .map((e) => IdTypeOptions.fromJson(e as Map<String, dynamic>))
           .toList(),
+      redoseDeliveryCommentsOptions:
+          (json['DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR'] as List<dynamic>)
+              .map((e) =>
+                  DeliveryCommentOptions.fromJson(e as Map<String, dynamic>))
+              .toList(),
       deliveryCommentOptions: (json['DELIVERY_COMMENT_OPTIONS_POPULATOR']
               as List<dynamic>)
           .map(
               (e) => DeliveryCommentOptions.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      ageRangeOptions: (json['AGE_RANGE_OPTIONS'] as List<dynamic>)
+          .map((e) => AgeRangeOptions.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      heightRangeOptions: (json['HEIGHT_RANGE_OPTIONS'] as List<dynamic>)
+          .map((e) => HeightRangeOptions.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      dailyPlanConfigs: (json['USER_ACTION_DAILY_PLAN'] as List<dynamic>)
+          .map((e) => DailyActionPlanConfig.fromJson(e as Map<String, dynamic>))
           .toList(),
       nonComplianceReasons: (json['NON_COMPLIANCE_REASONS'] as List<dynamic>)
           .map((e) => NonComplianceReasons.fromJson(e as Map<String, dynamic>))
@@ -181,7 +195,12 @@ Map<String, dynamic> _$$HCMWrapperModelImplToJson(
       'BACKGROUND_SERVICE_CONFIG': instance.backgroundServiceConfig,
       'CHECKLIST_TYPES': instance.checklistTypes,
       'ID_TYPE_OPTIONS_POPULATOR': instance.idTypeOptions,
+      'DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR':
+          instance.redoseDeliveryCommentsOptions,
       'DELIVERY_COMMENT_OPTIONS_POPULATOR': instance.deliveryCommentOptions,
+      'AGE_RANGE_OPTIONS': instance.ageRangeOptions,
+      'HEIGHT_RANGE_OPTIONS': instance.heightRangeOptions,
+      'USER_ACTION_DAILY_PLAN': instance.dailyPlanConfigs,
       'NON_COMPLIANCE_REASONS': instance.nonComplianceReasons,
       'BACKEND_INTERFACE': instance.backendInterface,
       'CALL_SUPPORT': instance.callSupportOptions,
@@ -355,6 +374,48 @@ Map<String, dynamic> _$$DeliveryCommentOptionsImplToJson(
     <String, dynamic>{
       'name': instance.name,
       'code': instance.code,
+    };
+
+_$AgeRangeOptionsImpl _$$AgeRangeOptionsImplFromJson(
+        Map<String, dynamic> json) =>
+    _$AgeRangeOptionsImpl(
+      name: json['name'] as String,
+      code: json['code'] as String,
+    );
+
+Map<String, dynamic> _$$AgeRangeOptionsImplToJson(
+        _$AgeRangeOptionsImpl instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'code': instance.code,
+    };
+
+_$HeightRangeOptionsImpl _$$HeightRangeOptionsImplFromJson(
+        Map<String, dynamic> json) =>
+    _$HeightRangeOptionsImpl(
+      name: json['name'] as String,
+      code: json['code'] as String,
+    );
+
+Map<String, dynamic> _$$HeightRangeOptionsImplToJson(
+        _$HeightRangeOptionsImpl instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'code': instance.code,
+    };
+
+_$DailyActionPlanConfigImpl _$$DailyActionPlanConfigImplFromJson(
+        Map<String, dynamic> json) =>
+    _$DailyActionPlanConfigImpl(
+      key: json['key'] as String,
+      value: json['value'] as String,
+    );
+
+Map<String, dynamic> _$$DailyActionPlanConfigImplToJson(
+        _$DailyActionPlanConfigImpl instance) =>
+    <String, dynamic>{
+      'key': instance.key,
+      'value': instance.value,
     };
 
 _$NonComplianceReasonsImpl _$$NonComplianceReasonsImplFromJson(

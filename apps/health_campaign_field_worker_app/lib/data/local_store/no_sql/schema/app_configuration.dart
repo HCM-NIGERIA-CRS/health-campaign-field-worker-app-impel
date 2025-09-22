@@ -52,8 +52,17 @@ class AppConfiguration {
   @Name('ID_TYPE_OPTIONS_POPULATOR')
   late List<IdTypeOptions>? idTypeOptions;
 
+  @Name('DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR')
+  late List<DeliveryCommentOptions>? redoseDeliveryCommentsOptions;
   @Name('DELIVERY_COMMENT_OPTIONS_POPULATOR')
   late List<DeliveryCommentOptions>? deliveryCommentOptions;
+  @Name('AGE_RANGE_OPTIONS')
+  late List<AgeRangeOptions>? ageRangeOptions;
+  @Name('HEIGHT_RANGE_OPTIONS')
+  late List<HeightRangeOptions>? heightRangeOptions;
+
+  @Name('USER_ACTION_DAILY_PLAN')
+  late List<DailyActionPlanConfig>? dailyPlanConfigs;
 
   @Name('TRANSPORT_TYPES')
   late List<TransportTypes>? transportTypes;
@@ -120,6 +129,24 @@ class IdTypeOptions {
 class DeliveryCommentOptions {
   late String name;
   late String code;
+}
+
+@embedded
+class AgeRangeOptions {
+  late String name;
+  late String code;
+}
+
+@embedded
+class HeightRangeOptions {
+  late String name;
+  late String code;
+}
+
+@embedded
+class DailyActionPlanConfig {
+  late String key;
+  late String value;
 }
 
 @embedded

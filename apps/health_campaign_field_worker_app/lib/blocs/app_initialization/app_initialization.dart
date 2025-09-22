@@ -101,6 +101,7 @@ class AppInitializationBloc
                     MasterEnums.checklistTypes.toValue(),
                     MasterEnums.idTypes.toValue(),
                     MasterEnums.deliveryComments.toValue(),
+                    MasterEnums.redoseDeliveryComments.toValue(),
                     MasterEnums.backendInterface.toValue(),
                     MasterEnums.callSupport.toValue(),
                     MasterEnums.transportTypes.toValue(),
@@ -110,6 +111,9 @@ class AppInitializationBloc
                     MasterEnums.beneficiaryIdConfig.toValue(),
                     MasterEnums.transitPostType.toValue(),
                     MasterEnums.nonComplianceReasons.toValue(),
+                    MasterEnums.dipConfig.toValue(),
+                    MasterEnums.ageRangeOptions.toValue(),
+                    MasterEnums.heightRangeOptions.toValue(),
                   ]),
                 ),
                 MdmsModuleDetailModel(
