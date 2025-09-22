@@ -203,9 +203,16 @@ class CustomBeneficiaryDetailsPageState
                                             children: [
                                                 DigitButton(
                                                   label:
-                                                      '${localizations.translate(i18.beneficiaryDetails.recordCycle)} '
-                                                      '${(deliverState.cycle == 0 ? (deliverState.cycle + 1) : deliverState.cycle).toString()} ${localizations.translate(i18.deliverIntervention.dose)} '
-                                                      '${(deliverState.dose).toString()}',
+
+                                                      // commented as to show static text , enable this if dynamic text needed
+                                                      // '${localizations.translate(i18.beneficiaryDetails.recordCycle)} '
+                                                      // '${(deliverState.cycle == 0 ? (deliverState.cycle + 1) : deliverState.cycle).toString()} ${localizations.translate(i18.deliverIntervention.dose)} '
+                                                      // '${(deliverState.dose).toString()}'
+
+                                                      localizations.translate(
+                                                          i18_local
+                                                              .deliverIntervention
+                                                              .recordDoseLabel),
                                                   type: DigitButtonType.primary,
                                                   size: DigitButtonSize.large,
                                                   mainAxisSize:

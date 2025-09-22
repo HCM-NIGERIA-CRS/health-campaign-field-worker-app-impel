@@ -17,12 +17,14 @@ import 'package:registration_delivery/router/registration_delivery_router.gm.dar
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
 import '../../blocs/localization/app_localization.dart';
 
+import '../../blocs/registration_delivery/current_flow.dart';
 import '../../models/entities/project_types.dart';
 import '../../router/app_router.dart';
 import '../../utils/app_enums.dart';
 import '../../utils/registration_delivery/utils_smc.dart';
 import '../../utils/utils.dart';
 import '../action_card/action_card.dart';
+import '../../utils/constants.dart' as local_constants;
 
 import '../../utils/i18_key_constants.dart' as i18_local;
 
@@ -286,6 +288,16 @@ class CustomMemberCard extends StatelessWidget {
               );
 
               if (smcFlow && polioFlow) {
+                // set flow when delivery flow started
+
+                context.read<CurrentFlowBloc>().add(
+                      CurrentFlowEvent.set(currentFlows: {
+                        if (smcFlow) local_constants.Constants.smcFlow,
+                        if (polioFlow) local_constants.Constants.polioFlow,
+                        if (onchoFlow) local_constants.Constants.onchoFlow,
+                      }),
+                    );
+
                 context.router.push(EligibilityChecklistViewRoute(
                   eligibilityAssessmentType: EligibilityAssessmentType.smc,
                   projectBeneficiaryClientReferenceId:
@@ -295,6 +307,14 @@ class CustomMemberCard extends StatelessWidget {
                 ));
                 //route to eligibility checklist page first
               } else if (polioFlow || onchoFlow) {
+                // set flow when delivery flow started
+                context.read<CurrentFlowBloc>().add(
+                      CurrentFlowEvent.set(currentFlows: {
+                        if (smcFlow) local_constants.Constants.smcFlow,
+                        if (polioFlow) local_constants.Constants.polioFlow,
+                        if (onchoFlow) local_constants.Constants.onchoFlow,
+                      }),
+                    );
                 // route to normal beneficiary details page first
                 context.router.push(CustomBeneficiaryDetailsRoute(
                   individualSelected: individual,
