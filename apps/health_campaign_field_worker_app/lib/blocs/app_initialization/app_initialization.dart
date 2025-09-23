@@ -114,6 +114,8 @@ class AppInitializationBloc
                     MasterEnums.dipConfig.toValue(),
                     MasterEnums.ageRangeOptions.toValue(),
                     MasterEnums.heightRangeOptions.toValue(),
+                    MasterEnums.stockManufacturer.toValue(),
+                    MasterEnums.statusVVM.toValue(),
                   ]),
                 ),
                 MdmsModuleDetailModel(
