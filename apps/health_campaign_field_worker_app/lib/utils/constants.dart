@@ -113,13 +113,14 @@ class Constants {
   static const String wardWarehouse = 'Ward Warehouse';
   static const String lgaWarehouse = 'LGA Warehouse';
   static const String stateWarehouse = "State Warehouse";
+  static const String zoneBoundaryLevel = 'Country';
   static const String stateBoundaryLevel = 'State';
   static const String countryBoundaryLevel = "Country";
   static const String provinceBoundaryLevel = 'PROVINCE';
-  static const String stateFacility = 'State Facility';
+  static const String stateFacility = 'State Warehouse';
   static const String zonalWarehouse = 'Zonal Warehouse';
-  static const String lgaFacility = 'LGA Facility'; // specific to smc
-  static const String wardFacility = 'Ward Facility';
+  static const String lgaFacility = 'LGA Warehouse'; // specific to smc
+  static const String wardFacility = 'Ward Warehouse';
   static const int validMinAge = 3;
   static const int validMaxAge = 59;
   static const String pipeSeparator = '||';
@@ -148,7 +149,7 @@ class Constants {
   static const String status = "Status";
   static const String intervenedBy = "IntervenedBy";
 
-  static const String productCounts = "productCounts";
+  static const String productSKUCounts = "productSKUCounts";
 
   // for stock validation
 

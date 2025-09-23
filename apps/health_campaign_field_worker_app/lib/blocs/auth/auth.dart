@@ -40,7 +40,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on(_onLogin);
     on(_onLogout);
     on(_onAutoLogin);
-    on(_onUpdateProductSkuCounts);
+    on(_onUpdateProductSKUCounts);
   }
 
   //_onAutoLogin event handles auto-login of the user when the user is already logged in and token is not expired, AuthenticatedWrapper is returned in UI
@@ -151,8 +151,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(const AuthUnauthenticatedState());
   }
 
-  FutureOr<void> _onUpdateProductSkuCounts(
-    AuthUpdateProductCountsEvent event,
+  FutureOr<void> _onUpdateProductSKUCounts(
+    AuthUpdateProductSKUCountsEvent event,
     AuthEmitter emit,
   ) async {
     // emit(const AuthLoadingState());
@@ -163,7 +163,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         tenantId: envConfig.variables.tenantId,
       ));
       Map<String, int> currentCounts =
-          await localSecureStore.getAllProductSkuCounts(productVariant);
+          await localSecureStore.getAllProductSKUCounts(productVariant);
 
       if (event.skuCountUpdates != null) {
         Map<String, int>? additionCounts = event.skuCountUpdates;
@@ -175,7 +175,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
       }
 
-      localSecureStore.setProductCounts(currentCounts);
+      localSecureStore.setProductSKUCounts(currentCounts);
 
       final accessToken = await localSecureStore.accessToken;
       final refreshToken = await localSecureStore.refreshToken;
@@ -214,9 +214,9 @@ class AuthEvent with _$AuthEvent {
     required String tenantId,
   }) = AuthLoginEvent;
 
-  const factory AuthEvent.updateProductCounts({
+  const factory AuthEvent.updateProductSKUCounts({
     Map<String, int>? skuCountUpdates,
-  }) = AuthUpdateProductCountsEvent;
+  }) = AuthUpdateProductSKUCountsEvent;
 
   const factory AuthEvent.autoLogin({
     required String tenantId,

@@ -51,7 +51,7 @@ class _ViewStockRecordsLGAPageState extends LocalizedState<ReceiveStockPage>
   void initState() {
     context
         .read<AuthBloc>()
-        .add(const AuthUpdateProductCountsEvent(skuCountUpdates: {}));
+        .add(const AuthUpdateProductSKUCountsEvent(skuCountUpdates: {}));
     super.initState();
     _forms = widget.stockRecords
         .map((_) => FormGroup({
@@ -241,7 +241,7 @@ class _ViewStockRecordsLGAPageState extends LocalizedState<ReceiveStockPage>
           skuCounts[productName] = (skuCounts[productName] ?? 0) + totalQty;
         }
         context.read<AuthBloc>().add(
-              AuthUpdateProductCountsEvent(
+              AuthUpdateProductSKUCountsEvent(
                 skuCountUpdates: skuCounts,
               ),
             );

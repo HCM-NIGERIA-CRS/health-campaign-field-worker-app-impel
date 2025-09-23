@@ -91,7 +91,7 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
   void initState() {
     context
         .read<AuthBloc>()
-        .add(const AuthUpdateProductCountsEvent(skuCountUpdates: {}));
+        .add(const AuthUpdateProductSKUCountsEvent(skuCountUpdates: {}));
     super.initState();
   }
 
@@ -469,7 +469,7 @@ class _RecordRedosePageState extends LocalizedState<RecordRedosePage> {
                                                           context
                                                               .read<AuthBloc>()
                                                               .add(
-                                                                AuthUpdateProductCountsEvent(
+                                                                AuthUpdateProductSKUCountsEvent(
                                                                   skuCountUpdates:
                                                                       skuCounts,
                                                                 ),

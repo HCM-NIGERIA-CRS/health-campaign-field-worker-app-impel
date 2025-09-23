@@ -154,14 +154,14 @@ class LocalSecureStore {
     }
   }
 
-  Future<Map<String, int>> getAllProductSkuCounts(
+  Future<Map<String, int>> getAllProductSKUCounts(
       List<ProductVariantModel> selectedProducts) async {
     try {
       List<String> productCountKeys = extractAllProductCounts(selectedProducts);
       final Map<String, int> result = {};
 
       for (final key in productCountKeys) {
-        final productCount = await getProductCounts(key);
+        final productCount = await getProductSKUCounts(key);
         result[key] = productCount;
       }
       return result;
@@ -170,11 +170,11 @@ class LocalSecureStore {
     }
   }
 
-  Future<int> getProductCounts(String productCountKey) async {
+  Future<int> getProductSKUCounts(String productCountKey) async {
     final userBody = await storage.read(key: userObjectKey);
     if (userBody == null) return 0;
     final localStorageStringMap =
-        await storage.read(key: Constants.productCounts);
+        await storage.read(key: Constants.productSKUCounts);
     if (localStorageStringMap == null) return 0;
     try {
       final user = UserRequestModel.fromJson(json.decode(userBody));
@@ -193,7 +193,7 @@ class LocalSecureStore {
     }
   }
 
-  Future<void> setProductCounts(Map<String, int> productCounts) async {
+  Future<void> setProductSKUCounts(Map<String, int> productCounts) async {
     final userBody = await storage.read(key: userObjectKey);
     if (userBody == null) return;
 
@@ -213,12 +213,9 @@ class LocalSecureStore {
       Map<String, dynamic> skuCountsWithUUID = {userUUID: skuCounts};
 
       await storage.write(
-        key: Constants.productCounts,
+        key: Constants.productSKUCounts,
         value: json.encode(skuCountsWithUUID),
       );
-      final localStorageStringMap =
-          await storage.read(key: Constants.productCounts);
-      print("");
     } catch (_) {
       return;
     }
@@ -307,7 +304,7 @@ class LocalSecureStore {
     List<String> allKeys = allValues.keys.toList();
 
     List<String> keysToDelete =
-        allKeys.where((key) => key != Constants.productCounts).toList();
+        allKeys.where((key) => key != Constants.productSKUCounts).toList();
 
     for (String key in keysToDelete) {
       await storage.delete(key: key);

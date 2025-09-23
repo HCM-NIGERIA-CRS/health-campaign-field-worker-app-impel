@@ -347,7 +347,7 @@ class _ViewStockRecordsPageState extends LocalizedState<ViewStockRecordsPage>
                       InputField(
                         type: InputType.text,
                         label: localizations.translate(
-                          i18_local.stockDetails.unusableVvmfirst,
+                          i18_local.stockDetails.unusableVvmFirst,
                         ),
                         initialValue: unusableVvmFirstQuantity,
                         isDisabled: true,

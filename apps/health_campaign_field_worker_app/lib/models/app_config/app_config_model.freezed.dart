@@ -950,13 +950,13 @@ mixin _$HCMWrapperModel {
   @JsonKey(name: 'AGE_RANGE_OPTIONS')
   List<AgeRangeOptions> get ageRangeOptions =>
       throw _privateConstructorUsedError;
-  @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
   @JsonKey(name: 'STOCK_MANUFACTURER')
   List<DeliveryCommentOptions> get stockManufacturer =>
       throw _privateConstructorUsedError;
   @JsonKey(name: 'STATUS_VVM')
   List<DeliveryCommentOptions> get statusVVM =>
       throw _privateConstructorUsedError;
+  @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
   List<HeightRangeOptions> get heightRangeOptions =>
       throw _privateConstructorUsedError;
   @JsonKey(name: 'USER_ACTION_DAILY_PLAN')
@@ -1032,10 +1032,10 @@ abstract class $HCMWrapperModelCopyWith<$Res> {
       @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_POPULATOR')
       List<DeliveryCommentOptions> deliveryCommentOptions,
       @JsonKey(name: 'AGE_RANGE_OPTIONS') List<AgeRangeOptions> ageRangeOptions,
-      @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
       @JsonKey(name: 'STOCK_MANUFACTURER')
       List<DeliveryCommentOptions> stockManufacturer,
       @JsonKey(name: 'STATUS_VVM') List<DeliveryCommentOptions> statusVVM,
+      @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
       List<HeightRangeOptions> heightRangeOptions,
       @JsonKey(name: 'USER_ACTION_DAILY_PLAN')
       List<DailyActionPlanConfig> dailyPlanConfigs,
@@ -1250,10 +1250,10 @@ abstract class _$$HCMWrapperModelImplCopyWith<$Res>
       @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_POPULATOR')
       List<DeliveryCommentOptions> deliveryCommentOptions,
       @JsonKey(name: 'AGE_RANGE_OPTIONS') List<AgeRangeOptions> ageRangeOptions,
-      @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
       @JsonKey(name: 'STOCK_MANUFACTURER')
       List<DeliveryCommentOptions> stockManufacturer,
       @JsonKey(name: 'STATUS_VVM') List<DeliveryCommentOptions> statusVVM,
+      @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
       List<HeightRangeOptions> heightRangeOptions,
       @JsonKey(name: 'USER_ACTION_DAILY_PLAN')
       List<DailyActionPlanConfig> dailyPlanConfigs,
@@ -1464,11 +1464,11 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
       required final List<DeliveryCommentOptions> deliveryCommentOptions,
       @JsonKey(name: 'AGE_RANGE_OPTIONS')
       required final List<AgeRangeOptions> ageRangeOptions,
-      @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
       @JsonKey(name: 'STOCK_MANUFACTURER')
       required final List<DeliveryCommentOptions> stockManufacturer,
       @JsonKey(name: 'STATUS_VVM')
       required final List<DeliveryCommentOptions> statusVVM,
+      @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
       required final List<HeightRangeOptions> heightRangeOptions,
       @JsonKey(name: 'USER_ACTION_DAILY_PLAN')
       required final List<DailyActionPlanConfig> dailyPlanConfigs,
@@ -1649,7 +1649,6 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
 
   final List<DeliveryCommentOptions> _stockManufacturer;
   @override
-  @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
   @JsonKey(name: 'STOCK_MANUFACTURER')
   List<DeliveryCommentOptions> get stockManufacturer {
     if (_stockManufacturer is EqualUnmodifiableListView)
@@ -1669,6 +1668,7 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
 
   final List<HeightRangeOptions> _heightRangeOptions;
   @override
+  @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
   List<HeightRangeOptions> get heightRangeOptions {
     if (_heightRangeOptions is EqualUnmodifiableListView)
       return _heightRangeOptions;
@@ -1968,11 +1968,11 @@ abstract class _HCMWrapperModel implements HCMWrapperModel {
       required final List<DeliveryCommentOptions> deliveryCommentOptions,
       @JsonKey(name: 'AGE_RANGE_OPTIONS')
       required final List<AgeRangeOptions> ageRangeOptions,
-      @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
       @JsonKey(name: 'STOCK_MANUFACTURER')
       required final List<DeliveryCommentOptions> stockManufacturer,
       @JsonKey(name: 'STATUS_VVM')
       required final List<DeliveryCommentOptions> statusVVM,
+      @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
       required final List<HeightRangeOptions> heightRangeOptions,
       @JsonKey(name: 'USER_ACTION_DAILY_PLAN')
       required final List<DailyActionPlanConfig> dailyPlanConfigs,
@@ -2041,13 +2041,13 @@ abstract class _HCMWrapperModel implements HCMWrapperModel {
   @JsonKey(name: 'AGE_RANGE_OPTIONS')
   List<AgeRangeOptions> get ageRangeOptions;
   @override
-  @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
   @JsonKey(name: 'STOCK_MANUFACTURER')
   List<DeliveryCommentOptions> get stockManufacturer;
   @override
   @JsonKey(name: 'STATUS_VVM')
   List<DeliveryCommentOptions> get statusVVM;
   @override
+  @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
   List<HeightRangeOptions> get heightRangeOptions;
   @override
   @JsonKey(name: 'USER_ACTION_DAILY_PLAN')

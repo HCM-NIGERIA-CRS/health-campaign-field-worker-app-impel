@@ -146,7 +146,7 @@ class CustomDeliverInterventionHeadPageState
         ? skuCounts[productvariantList!.first!.sku!] = int.parse(qty) * -1
         : 0;
     context.read<AuthBloc>().add(
-          AuthUpdateProductCountsEvent(
+          AuthUpdateProductSKUCountsEvent(
             skuCountUpdates: skuCounts,
           ),
         );

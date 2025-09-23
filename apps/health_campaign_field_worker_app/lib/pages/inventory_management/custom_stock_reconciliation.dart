@@ -52,6 +52,7 @@ class CustomStockReconciliationPageState
   static const _productVariantKey = 'productVariant';
   static const _manualCountKey = 'manualCountKey';
   static const _reconciliationCommentsKey = 'reconciliationCommentsKey';
+  static const _dateOfReconciliationKey = 'dateOfReconciliationKey';
   String? selectedFacilityId;
   TextEditingController controller1 = TextEditingController();
 
@@ -63,9 +64,7 @@ class CustomStockReconciliationPageState
       _facilityKey: FormControl<String>(
         validators: isDistributor ? [] : [Validators.required],
       ),
-      _productVariantKey: FormControl<ProductVariantModel>(
-        value: productVariants?.first ?? null,
-      ),
+      _productVariantKey: FormControl<ProductVariantModel>(),
       _manualCountKey: FormControl<String>(
         value: '0',
         validators: [
@@ -593,97 +592,93 @@ class CustomStockReconciliationPageState
                                                   });
                                             },
                                           ),
-                                          IgnorePointer(
-                                            child: ReactiveWrapperField(
-                                              formControlName:
-                                                  _productVariantKey,
-                                              validationMessages: {
-                                                'required': (error) =>
-                                                    localizations.translate(i18
-                                                        .common
-                                                        .corecommonRequired),
-                                              },
-                                              showErrors: (control) =>
-                                                  control.invalid &&
-                                                  control.touched,
-                                              builder: (field) {
-                                                return LabeledField(
-                                                  isRequired: true,
-                                                  label:
+                                          ReactiveWrapperField(
+                                            formControlName: _productVariantKey,
+                                            validationMessages: {
+                                              'required': (error) =>
+                                                  localizations.translate(i18
+                                                      .common
+                                                      .corecommonRequired),
+                                            },
+                                            showErrors: (control) =>
+                                                control.invalid &&
+                                                control.touched,
+                                            builder: (field) {
+                                              return LabeledField(
+                                                isRequired: true,
+                                                label: localizations.translate(
+                                                  i18.stockReconciliationDetails
+                                                      .productLabel,
+                                                ),
+                                                child: DigitDropdown(
+                                                  emptyItemText:
                                                       localizations.translate(
-                                                    i18.stockReconciliationDetails
-                                                        .productLabel,
+                                                    i18.common.noMatchFound,
                                                   ),
-                                                  child: DigitDropdown(
-                                                    emptyItemText:
-                                                        localizations.translate(
-                                                      i18.common.noMatchFound,
-                                                    ),
-                                                    selectedOption: (form
-                                                                .control(
-                                                                    _productVariantKey)
-                                                                .value !=
-                                                            null)
-                                                        ? DropdownItem(
-                                                            name: localizations.translate((form.control(_productVariantKey).value
-                                                                        as ProductVariantModel)
-                                                                    .sku ??
-                                                                (form.control(_productVariantKey).value
-                                                                        as ProductVariantModel)
-                                                                    .id),
-                                                            code: (form
-                                                                        .control(
-                                                                            _productVariantKey)
-                                                                        .value
-                                                                    as ProductVariantModel)
-                                                                .id)
-                                                        : const DropdownItem(
-                                                            name: '', code: ''),
-                                                    items: productVariants
-                                                        .map((variant) {
-                                                      return DropdownItem(
-                                                        name: localizations
-                                                            .translate(
-                                                          variant.sku ??
-                                                              variant.id,
-                                                        ),
-                                                        code: variant.id,
-                                                      );
-                                                    }).toList(),
-                                                    onSelect: (value) {
-                                                      field.control
-                                                          .markAsTouched();
+                                                  selectedOption: (form
+                                                              .control(
+                                                                  _productVariantKey)
+                                                              .value !=
+                                                          null)
+                                                      ? DropdownItem(
+                                                          name: localizations.translate((form
+                                                                          .control(
+                                                                              _productVariantKey)
+                                                                          .value
+                                                                      as ProductVariantModel)
+                                                                  .sku ??
+                                                              (form.control(_productVariantKey).value
+                                                                      as ProductVariantModel)
+                                                                  .id),
+                                                          code: (form.control(_productVariantKey).value
+                                                                  as ProductVariantModel)
+                                                              .id)
+                                                      : const DropdownItem(
+                                                          name: '', code: ''),
+                                                  items: productVariants
+                                                      .map((variant) {
+                                                    return DropdownItem(
+                                                      name: localizations
+                                                          .translate(
+                                                        variant.sku ??
+                                                            variant.id,
+                                                      ),
+                                                      code: variant.id,
+                                                    );
+                                                  }).toList(),
+                                                  onSelect: (value) {
+                                                    field.control
+                                                        .markAsTouched();
 
-                                                      /// Find the selected product variant model by matching the id
-                                                      final selectedVariant =
-                                                          productVariants
-                                                              .firstWhere(
-                                                        (variant) =>
-                                                            variant.id ==
+                                                    /// Find the selected product variant model by matching the id
+                                                    final selectedVariant =
+                                                        productVariants
+                                                            .firstWhere(
+                                                      (variant) =>
+                                                          variant.id ==
+                                                          value.code,
+                                                    );
+
+                                                    /// Update the form control with the selected product variant model
+                                                    field.control.value =
+                                                        selectedVariant;
+
+                                                    ctx
+                                                        .read<
+                                                            StockReconciliationBloc>()
+                                                        .add(
+                                                          StockReconciliationSelectProductEvent(
                                                             value.code,
-                                                      );
-
-                                                      /// Update the form control with the selected product variant model
-                                                      field.control.value =
-                                                          selectedVariant;
-
-                                                      ctx
-                                                          .read<
-                                                              StockReconciliationBloc>()
-                                                          .add(
-                                                            StockReconciliationSelectProductEvent(
-                                                              value.code,
-                                                              isDistributor: InventorySingleton()
-                                                                      .isDistributor! &&
-                                                                  !InventorySingleton()
-                                                                      .isWareHouseMgr!,
-                                                            ),
-                                                          );
-                                                    },
-                                                  ),
-                                                );
-                                              },
-                                            ),
+                                                            isDistributor: InventorySingleton()
+                                                                    .isDistributor! &&
+                                                                !InventorySingleton()
+                                                                    .isWareHouseMgr!,
+                                                          ),
+                                                        );
+                                                  },
+                                                ),
+                                              );
+                                            },
                                           ),
                                           LabelValueItem(
                                             label: localizations.translate(i18
