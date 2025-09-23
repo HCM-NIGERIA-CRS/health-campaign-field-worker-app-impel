@@ -1,11 +1,8 @@
 import 'dart:async';
 
-import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
-import 'package:digit_ui_components/widgets/atoms/digit_date_form_input.dart';
 import 'package:digit_components/widgets/atoms/digit_toaster.dart';
 import 'package:digit_data_model/data_model.dart';
-import 'package:digit_data_model/models/entities/product_variant.dart';
 import 'package:digit_scanner/blocs/scanner.dart';
 import 'package:flutter/services.dart';
 
@@ -26,8 +23,10 @@ import 'package:inventory_management/utils/utils.dart';
 import 'package:inventory_management/widgets/localized.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:inventory_management/utils/i18_key_constants.dart' as i18;
+import '../../blocs/app_initialization/app_initialization.dart';
 import '../../blocs/auth/auth.dart';
 import '../../blocs/inventory_management/stock_bloc.dart';
+import '../../data/local_store/no_sql/schema/app_configuration.dart';
 import '../../router/app_router.dart';
 import '../../utils/i18_key_constants.dart' as i18_local;
 import '../../utils/constants.dart';
@@ -35,6 +34,8 @@ import '../../utils/extensions/extensions.dart';
 import '../../utils/registration_delivery/registration_delivery_utils.dart';
 
 class DynamicTabsPage extends LocalizedStatefulWidget {
+  const DynamicTabsPage({super.key});
+
   @override
   LocalizedState<DynamicTabsPage> createState() => _DynamicTabsPageState();
 }
@@ -68,12 +69,12 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
   static const _expireDateKey = 'expireDate';
   static const _stockDamageKey = 'damageQuantity';
   static const _emptyVialsKey = 'emptyVialsQuantity';
-  static const _unusableVvmfirst = 'unusableVvmFirst';
-  static const _unusableVvmSecond = 'unusableVvmSecond';
+  static const _unusableVVMFirst = 'unusableVvmFirst';
+  static const _unusableVVMSecond = 'unusableVvmSecond';
   // static const _waybillQuantityKey = 'waybillQuantity';
   static const _batchNumberKey = 'batchNumberKey';
   static const _commentsKey = 'comments';
-  static const _materialNoteNUmber = 'materialNoteNumber';
+  static const _materialNoteNumberKey = 'materialNoteNumber';
   List<InventoryTransportTypes> transportTypes = [];
   List<String> skuList = [];
 
@@ -139,7 +140,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
     _forms.addAll({
       for (final product in selectedProducts)
         product: FormGroup({
-          _materialNoteNUmber: FormControl<String>(value: _sharedMRN),
+          _materialNoteNumberKey: FormControl<String>(value: _sharedMRN),
           _transactionReasonKey: FormControl<String>(),
           _voucherSerialNumberKey: FormControl<String>(
             validators: (InventorySingleton().isWareHouseMgr &&
@@ -173,7 +174,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                       Validators.max(1000000),
                     ]
                   : []),
-          _unusableVvmfirst: FormControl<int>(
+          _unusableVVMFirst: FormControl<int>(
               validators: context.isWardLevel &&
                       entryType == StockRecordEntryType.returned
                   ? [
@@ -182,7 +183,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                       Validators.max(1000000),
                     ]
                   : []),
-          _unusableVvmSecond: FormControl<int>(
+          _unusableVVMSecond: FormControl<int>(
               validators: context.isWardLevel &&
                       entryType == StockRecordEntryType.returned
                   ? [
@@ -319,7 +320,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
         fields: [
           AdditionalField('productName', product.sku),
           AdditionalField('variation', product.variation),
-          AdditionalField('materialNoteNumber', _sharedMRN),
+          AdditionalField(_materialNoteNumberKey, _sharedMRN),
           if (distributorName != null)
             AdditionalField('distributorName', distributorName),
         ],
@@ -594,42 +595,58 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                     const SizedBox(height: 16),
                     if ((isWareHouseMgr) &&
                         entryType != StockRecordEntryType.returned)
-                      ReactiveWrapperField(
-                        formControlName: _statusVvmKey,
-                        builder: (field) {
-                          return LabeledField(
-                            label: localizations.translate(
-                              i18_local.stockDetails.statusVvmLabel,
-                            ),
-                            child: DigitDropdown(
-                              emptyItemText: localizations.translate(
-                                i18.common.noMatchFound,
-                              ),
-                              // TODO : add the mdms data for statusVVM
-                              items: transportTypes.map((type) {
-                                return DropdownItem(
-                                  name: localizations.translate(type.name),
-                                  code: type.code,
-                                );
-                              }).toList(),
-                              selectedOption: (form
-                                          .control(_statusVvmKey)
-                                          .value !=
-                                      null)
-                                  ? DropdownItem(
-                                      name: localizations.translate(
-                                          form.control(_statusVvmKey).value),
-                                      code: form.control(_statusVvmKey).value)
-                                  : const DropdownItem(name: '', code: ''),
-                              onSelect: (value) {
-                                field.control.value = value.name;
-                                form.control(_statusVvmKey).value = value.code;
-                                form
-                                    .control(_statusVvmKey)
-                                    .updateValue(value.code);
-                                setState(() {});
-                              },
-                            ),
+                      BlocBuilder<AppInitializationBloc,
+                          AppInitializationState>(
+                        builder: (context, appInitState) {
+                          if (appInitState is! AppInitialized) {
+                            return const Offstage();
+                          }
+                          final stockViabilityStatusOptions = appInitState
+                                  .appConfiguration
+                                  .stockViabilityStatusOptions ??
+                              <StockViabilityStatusOptions>[];
+                          return ReactiveWrapperField(
+                            formControlName: _statusVvmKey,
+                            builder: (field) {
+                              return LabeledField(
+                                label: localizations.translate(
+                                  i18_local.stockDetails.statusVvmLabel,
+                                ),
+                                child: DigitDropdown(
+                                  emptyItemText: localizations.translate(
+                                    i18.common.noMatchFound,
+                                  ),
+                                  // TODO : add the mdms data for statusVVM
+                                  items:
+                                      stockViabilityStatusOptions.map((type) {
+                                    return DropdownItem(
+                                      name: localizations.translate(type.name),
+                                      code: type.code,
+                                    );
+                                  }).toList(),
+                                  selectedOption: (form
+                                              .control(_statusVvmKey)
+                                              .value !=
+                                          null)
+                                      ? DropdownItem(
+                                          name: localizations.translate(form
+                                              .control(_statusVvmKey)
+                                              .value),
+                                          code:
+                                              form.control(_statusVvmKey).value)
+                                      : const DropdownItem(name: '', code: ''),
+                                  onSelect: (value) {
+                                    field.control.value = value.name;
+                                    form.control(_statusVvmKey).value =
+                                        value.code;
+                                    form
+                                        .control(_statusVvmKey)
+                                        .updateValue(value.code);
+                                    setState(() {});
+                                  },
+                                ),
+                              );
+                            },
                           );
                         },
                       ),
@@ -654,44 +671,57 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                           }),
                     if ((isWareHouseMgr) &&
                         entryType != StockRecordEntryType.returned)
-                      ReactiveWrapperField(
-                        formControlName: _manufacturerKey,
-                        builder: (field) {
-                          return LabeledField(
-                            label: localizations.translate(
-                              i18_local.stockDetails.manufacturerLabel,
-                            ),
-                            child: DigitDropdown(
-                              emptyItemText: localizations.translate(
-                                i18.common.noMatchFound,
-                              ),
-                              //TODO : Add mdms data for manufacturer
-                              items: transportTypes.map((type) {
-                                return DropdownItem(
-                                  name: localizations.translate(type.name),
-                                  code: type.code,
-                                );
-                              }).toList(),
-                              selectedOption: (form
-                                          .control(_manufacturerKey)
-                                          .value !=
-                                      null)
-                                  ? DropdownItem(
-                                      name: localizations.translate(
-                                          form.control(_manufacturerKey).value),
-                                      code:
-                                          form.control(_manufacturerKey).value)
-                                  : const DropdownItem(name: '', code: ''),
-                              onSelect: (value) {
-                                field.control.value = value.name;
-                                form.control(_manufacturerKey).value =
-                                    value.code;
-                                form
-                                    .control(_manufacturerKey)
-                                    .updateValue(value.code);
-                                setState(() {});
-                              },
-                            ),
+                      BlocBuilder<AppInitializationBloc,
+                          AppInitializationState>(
+                        builder: (context, appInitState) {
+                          if (appInitState is! AppInitialized) {
+                            return const Offstage();
+                          }
+                          final stockManufacturerOptions = appInitState
+                                  .appConfiguration.stockManufacturerOptions ??
+                              <StockManufacturerOptions>[];
+                          return ReactiveWrapperField(
+                            formControlName: _manufacturerKey,
+                            builder: (field) {
+                              return LabeledField(
+                                label: localizations.translate(
+                                  i18_local.stockDetails.manufacturerLabel,
+                                ),
+                                child: DigitDropdown(
+                                  emptyItemText: localizations.translate(
+                                    i18.common.noMatchFound,
+                                  ),
+                                  //TODO : Add mdms data for manufacturer
+                                  items: stockManufacturerOptions.map((type) {
+                                    return DropdownItem(
+                                      name: localizations.translate(type.name),
+                                      code: type.code,
+                                    );
+                                  }).toList(),
+                                  selectedOption: (form
+                                              .control(_manufacturerKey)
+                                              .value !=
+                                          null)
+                                      ? DropdownItem(
+                                          name: localizations.translate(form
+                                              .control(_manufacturerKey)
+                                              .value),
+                                          code: form
+                                              .control(_manufacturerKey)
+                                              .value)
+                                      : const DropdownItem(name: '', code: ''),
+                                  onSelect: (value) {
+                                    field.control.value = value.name;
+                                    form.control(_manufacturerKey).value =
+                                        value.code;
+                                    form
+                                        .control(_manufacturerKey)
+                                        .updateValue(value.code);
+                                    setState(() {});
+                                  },
+                                ),
+                              );
+                            },
                           );
                         },
                       ),
@@ -820,7 +850,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                     if (entryType == StockRecordEntryType.returned &&
                         context.isWardLevel)
                       ReactiveWrapperField(
-                          formControlName: _unusableVvmfirst,
+                          formControlName: _unusableVVMFirst,
                           validationMessages: {
                             "number": (object) => localizations.translate(
                                   '${quantityCountLabel}_ERROR',
@@ -870,7 +900,7 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                     if (entryType == StockRecordEntryType.returned &&
                         context.isWardLevel)
                       ReactiveWrapperField(
-                          formControlName: _unusableVvmSecond,
+                          formControlName: _unusableVVMSecond,
                           validationMessages: {
                             "number": (object) => localizations.translate(
                                   '${quantityCountLabel}_ERROR',
@@ -1052,12 +1082,12 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
           if (form.control(_emptyVialsKey).value != null)
             AdditionalField(
                 'emptyVialsQuantity', form.control(_emptyVialsKey).value),
-          if (form.control(_unusableVvmfirst).value != null)
+          if (form.control(_unusableVVMFirst).value != null)
             AdditionalField(
-                'unusableVvmfirst', form.control(_unusableVvmfirst).value),
-          if (form.control(_unusableVvmSecond).value != null)
+                'unusableVvmfirst', form.control(_unusableVVMFirst).value),
+          if (form.control(_unusableVVMSecond).value != null)
             AdditionalField(
-                'unusableVvmSecond', form.control(_unusableVvmSecond).value),
+                'unusableVvmSecond', form.control(_unusableVVMSecond).value),
         ],
       ),
     );
