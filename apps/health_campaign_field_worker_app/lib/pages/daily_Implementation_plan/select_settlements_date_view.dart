@@ -97,13 +97,13 @@ class _SelectSettlementsDateViewState
                         headingStyle: textTheme.headingXl
                             .copyWith(color: theme.colorTheme.text.primary),
                       ),
-                      // DigitTextBlock(
-                      //   padding: EdgeInsets.zero,
-                      //   heading:
-                      //       "$monthYear ${localizations.translate(i18.dailyImplementationFlow.obrRound)}",
-                      //   headingStyle: textTheme.headingXS
-                      //       .copyWith(color: theme.colorTheme.text.primary),
-                      // ),
+                      DigitTextBlock(
+                        padding: EdgeInsets.zero,
+                        heading: localizations
+                            .translate(i18.dailyImplementationFlow.obrRound),
+                        headingStyle: textTheme.headingXS
+                            .copyWith(color: theme.colorTheme.text.primary),
+                      ),
                       const SizedBox(height: kPadding),
                       Expanded(
                         child: ReadonlyDigitGrid(
