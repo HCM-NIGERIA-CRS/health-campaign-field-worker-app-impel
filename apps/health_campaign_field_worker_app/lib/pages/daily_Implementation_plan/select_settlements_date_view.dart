@@ -77,12 +77,14 @@ class _SelectSettlementsDateViewState
                               }).toList() ??
                               [];
 
-                  DateTime? date = dipUserActionModel == null
-                      ? null
-                      : DateTime.fromMillisecondsSinceEpoch(
-                          dipUserActionModel.timestamp);
-                  String monthYear =
-                      date == null ? '' : DateFormat('MMM yyyy').format(date);
+                  // commented as per the requirement change
+
+                  // DateTime? date = dipUserActionModel == null
+                  //     ? null
+                  //     : DateTime.fromMillisecondsSinceEpoch(
+                  //         dipUserActionModel.timestamp);
+                  // String monthYear =
+                  //     date == null ? '' : DateFormat('MMM yyyy').format(date);
 
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -97,8 +99,8 @@ class _SelectSettlementsDateViewState
                       ),
                       DigitTextBlock(
                         padding: EdgeInsets.zero,
-                        heading:
-                            "$monthYear ${localizations.translate(i18.dailyImplementationFlow.obrRound)}",
+                        heading: localizations
+                            .translate(i18.dailyImplementationFlow.obrRound),
                         headingStyle: textTheme.headingXS
                             .copyWith(color: theme.colorTheme.text.primary),
                       ),

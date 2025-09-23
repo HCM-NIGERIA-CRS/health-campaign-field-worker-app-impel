@@ -212,6 +212,8 @@ class HouseholdOverView {
 class DeliverIntervention {
   const DeliverIntervention();
 
+  String get recordDoseLabel => 'BENEFICIARY_DETAILS_RECORD_DOSE_BUTTON_LABEL';
+
   String get campaignDeliverySelectionLabel =>
       'CAMPAIGN_DELIVERY_SELECTION_LABEL';
 

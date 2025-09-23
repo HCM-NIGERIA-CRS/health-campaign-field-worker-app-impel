@@ -332,6 +332,24 @@ class MdmsRepository {
       return heightRangeOption;
     }).toList();
 
+    final List<DeliveryCommentOptions>? stockManufacturer =
+        element?.stockManufacturer.map((element) {
+      final stockManufacturer = DeliveryCommentOptions()
+        ..name = element.name
+        ..code = element.code;
+
+      return stockManufacturer;
+    }).toList();
+
+    final List<DeliveryCommentOptions>? statusVVM =
+        element?.statusVVM.map((element) {
+      final statusVVM = DeliveryCommentOptions()
+        ..name = element.name
+        ..code = element.code;
+
+      return statusVVM;
+    }).toList();
+
     final List<DailyActionPlanConfig>? dailyPlanConfigs =
         element?.dailyPlanConfigs.map((element) {
       final dailyPlanConfig = DailyActionPlanConfig()
@@ -381,6 +399,8 @@ class MdmsRepository {
         redoseDeliveryCommentOptions;
     appConfiguration.ageRangeOptions = ageRangeOptions;
     appConfiguration.heightRangeOptions = heightRangeOptions;
+    appConfiguration.stockManufacturer = stockManufacturer;
+    appConfiguration.statusVVM = statusVVM;
     appConfiguration.dailyPlanConfigs = dailyPlanConfigs;
     appConfiguration.nonComplianceReasons = nonComplianceReasons;
     appConfiguration.beneficiaryIdConfig = beneficiaryIdConfig;

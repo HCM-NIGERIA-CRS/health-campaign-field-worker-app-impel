@@ -89,6 +89,10 @@ class MasterEnumsMapper extends EnumMapper<MasterEnums> {
         return MasterEnums.ageRangeOptions;
       case "HEIGHT_RANGE_OPTIONS":
         return MasterEnums.heightRangeOptions;
+      case "STOCK_MANUFACTURER":
+        return MasterEnums.stockManufacturer;
+      case "STATUS_VVM":
+        return MasterEnums.statusVVM;
       default:
         throw MapperException.unknownEnumValue(value);
     }
@@ -161,6 +165,10 @@ class MasterEnumsMapper extends EnumMapper<MasterEnums> {
         return "AGE_RANGE_OPTIONS";
       case MasterEnums.heightRangeOptions:
         return "HEIGHT_RANGE_OPTIONS";
+      case MasterEnums.stockManufacturer:
+        return "STOCK_MANUFACTURER";
+      case MasterEnums.statusVVM:
+        return "STATUS_VVM";
     }
   }
 }

@@ -135,7 +135,15 @@ _$HCMWrapperModelImpl _$$HCMWrapperModelImplFromJson(
       ageRangeOptions: (json['AGE_RANGE_OPTIONS'] as List<dynamic>)
           .map((e) => AgeRangeOptions.fromJson(e as Map<String, dynamic>))
           .toList(),
-      heightRangeOptions: (json['HEIGHT_RANGE_OPTIONS'] as List<dynamic>)
+      stockManufacturer: (json['HEIGHT_RANGE_OPTIONS'] as List<dynamic>)
+          .map(
+              (e) => DeliveryCommentOptions.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      statusVVM: (json['STATUS_VVM'] as List<dynamic>)
+          .map(
+              (e) => DeliveryCommentOptions.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      heightRangeOptions: (json['heightRangeOptions'] as List<dynamic>)
           .map((e) => HeightRangeOptions.fromJson(e as Map<String, dynamic>))
           .toList(),
       dailyPlanConfigs: (json['USER_ACTION_DAILY_PLAN'] as List<dynamic>)
@@ -199,7 +207,9 @@ Map<String, dynamic> _$$HCMWrapperModelImplToJson(
           instance.redoseDeliveryCommentsOptions,
       'DELIVERY_COMMENT_OPTIONS_POPULATOR': instance.deliveryCommentOptions,
       'AGE_RANGE_OPTIONS': instance.ageRangeOptions,
-      'HEIGHT_RANGE_OPTIONS': instance.heightRangeOptions,
+      'HEIGHT_RANGE_OPTIONS': instance.stockManufacturer,
+      'STATUS_VVM': instance.statusVVM,
+      'heightRangeOptions': instance.heightRangeOptions,
       'USER_ACTION_DAILY_PLAN': instance.dailyPlanConfigs,
       'NON_COMPLIANCE_REASONS': instance.nonComplianceReasons,
       'BACKEND_INTERFACE': instance.backendInterface,

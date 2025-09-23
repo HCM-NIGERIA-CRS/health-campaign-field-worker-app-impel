@@ -95,8 +95,11 @@ class _CustomHouseholdOverviewPageState
         },
         child: BlocBuilder<HouseholdOverviewBloc, HouseholdOverviewState>(
           builder: (ctx, state) {
+            // if projectType oncho then show button irrespective of count exceeded or not
             bool showAddMemberButton =
-                showAddMember(state.householdMemberWrapper);
+                context.projectTypeCode == ProjectTypes.oncho.toValue()
+                    ? true
+                    : showAddMember(state.householdMemberWrapper);
             return Scaffold(
               body: state.loading
                   ? const Center(child: CircularProgressIndicator())
@@ -688,24 +691,6 @@ class _CustomHouseholdOverviewPageState
                                             final smcFlow = isSMCFlow(age);
                                             final polioFlow = isPolioFlow(age);
                                             final onchoFlow = isOnchoFlow(age);
-
-                                            context.read<CurrentFlowBloc>().add(
-                                                  CurrentFlowEvent.set(
-                                                      currentFlows: {
-                                                        if (smcFlow)
-                                                          local_constants
-                                                              .Constants
-                                                              .smcFlow,
-                                                        if (polioFlow)
-                                                          local_constants
-                                                              .Constants
-                                                              .polioFlow,
-                                                        if (onchoFlow)
-                                                          local_constants
-                                                              .Constants
-                                                              .onchoFlow,
-                                                      }),
-                                                );
 
                                             return BlocBuilder<
                                                 ProductVariantBloc,

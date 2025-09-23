@@ -61,6 +61,11 @@ class AppConfiguration {
   @Name('HEIGHT_RANGE_OPTIONS')
   late List<HeightRangeOptions>? heightRangeOptions;
 
+  @Name("STOCK_MANUFACTURER")
+  late List<DeliveryCommentOptions>? stockManufacturer;
+  @Name("STATUS_VVM")
+  late List<DeliveryCommentOptions>? statusVVM;
+
   @Name('USER_ACTION_DAILY_PLAN')
   late List<DailyActionPlanConfig>? dailyPlanConfigs;
 

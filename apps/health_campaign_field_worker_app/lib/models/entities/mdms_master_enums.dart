@@ -69,4 +69,8 @@ enum MasterEnums {
   ageRangeOptions,
   @MappableValue("HEIGHT_RANGE_OPTIONS")
   heightRangeOptions,
+  @MappableValue("STOCK_MANUFACTURER")
+  stockManufacturer,
+  @MappableValue("STATUS_VVM")
+  statusVVM,
 }

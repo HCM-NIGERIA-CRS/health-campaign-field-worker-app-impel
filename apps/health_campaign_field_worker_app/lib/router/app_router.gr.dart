@@ -474,6 +474,7 @@ abstract class _$AppRouter extends RootStackRouter {
           isReadministrationUnSuccessful: args.isReadministrationUnSuccessful,
           quantityWasted: args.quantityWasted,
           productVariantId: args.productVariantId,
+          addressModelCaptured: args.addressModelCaptured,
           referralReasons: args.referralReasons,
         ),
       );
@@ -750,6 +751,7 @@ abstract class _$AppRouter extends RootStackRouter {
           projectBeneficiaryClientReferenceId:
               args.projectBeneficiaryClientReferenceId,
           showBackButton: args.showBackButton,
+          addressModelCaptured: args.addressModelCaptured,
           eligibilityAssessmentType: args.eligibilityAssessmentType,
           appLocalizations: args.appLocalizations,
         ),
@@ -2655,6 +2657,7 @@ class CustomReferBeneficiarySMCRoute
     bool isReadministrationUnSuccessful = false,
     String quantityWasted = "00",
     String? productVariantId,
+    AddressModel? addressModelCaptured,
     List<String>? referralReasons,
     List<PageRouteInfo>? children,
   }) : super(
@@ -2668,6 +2671,7 @@ class CustomReferBeneficiarySMCRoute
             isReadministrationUnSuccessful: isReadministrationUnSuccessful,
             quantityWasted: quantityWasted,
             productVariantId: productVariantId,
+            addressModelCaptured: addressModelCaptured,
             referralReasons: referralReasons,
           ),
           initialChildren: children,
@@ -2689,6 +2693,7 @@ class CustomReferBeneficiarySMCRouteArgs {
     this.isReadministrationUnSuccessful = false,
     this.quantityWasted = "00",
     this.productVariantId,
+    this.addressModelCaptured,
     this.referralReasons,
   });
 
@@ -2708,11 +2713,13 @@ class CustomReferBeneficiarySMCRouteArgs {
 
   final String? productVariantId;
 
+  final AddressModel? addressModelCaptured;
+
   final List<String>? referralReasons;
 
   @override
   String toString() {
-    return 'CustomReferBeneficiarySMCRouteArgs{key: $key, appLocalizations: $appLocalizations, isEditing: $isEditing, projectBeneficiaryClientRefId: $projectBeneficiaryClientRefId, individual: $individual, isReadministrationUnSuccessful: $isReadministrationUnSuccessful, quantityWasted: $quantityWasted, productVariantId: $productVariantId, referralReasons: $referralReasons}';
+    return 'CustomReferBeneficiarySMCRouteArgs{key: $key, appLocalizations: $appLocalizations, isEditing: $isEditing, projectBeneficiaryClientRefId: $projectBeneficiaryClientRefId, individual: $individual, isReadministrationUnSuccessful: $isReadministrationUnSuccessful, quantityWasted: $quantityWasted, productVariantId: $productVariantId, addressModelCaptured: $addressModelCaptured, referralReasons: $referralReasons}';
   }
 }
 
@@ -3656,6 +3663,7 @@ class EligibilityChecklistViewRoute
     IndividualModel? individual,
     String? projectBeneficiaryClientReferenceId,
     bool? showBackButton,
+    AddressModel? addressModelCaptured,
     required EligibilityAssessmentType eligibilityAssessmentType,
     AppLocalizations? appLocalizations,
     List<PageRouteInfo>? children,
@@ -3668,6 +3676,7 @@ class EligibilityChecklistViewRoute
             projectBeneficiaryClientReferenceId:
                 projectBeneficiaryClientReferenceId,
             showBackButton: showBackButton,
+            addressModelCaptured: addressModelCaptured,
             eligibilityAssessmentType: eligibilityAssessmentType,
             appLocalizations: appLocalizations,
           ),
@@ -3687,6 +3696,7 @@ class EligibilityChecklistViewRouteArgs {
     this.individual,
     this.projectBeneficiaryClientReferenceId,
     this.showBackButton,
+    this.addressModelCaptured,
     required this.eligibilityAssessmentType,
     this.appLocalizations,
   });
@@ -3701,13 +3711,15 @@ class EligibilityChecklistViewRouteArgs {
 
   final bool? showBackButton;
 
+  final AddressModel? addressModelCaptured;
+
   final EligibilityAssessmentType eligibilityAssessmentType;
 
   final AppLocalizations? appLocalizations;
 
   @override
   String toString() {
-    return 'EligibilityChecklistViewRouteArgs{key: $key, referralClientRefId: $referralClientRefId, individual: $individual, projectBeneficiaryClientReferenceId: $projectBeneficiaryClientReferenceId, showBackButton: $showBackButton, eligibilityAssessmentType: $eligibilityAssessmentType, appLocalizations: $appLocalizations}';
+    return 'EligibilityChecklistViewRouteArgs{key: $key, referralClientRefId: $referralClientRefId, individual: $individual, projectBeneficiaryClientReferenceId: $projectBeneficiaryClientReferenceId, showBackButton: $showBackButton, addressModelCaptured: $addressModelCaptured, eligibilityAssessmentType: $eligibilityAssessmentType, appLocalizations: $appLocalizations}';
   }
 }
 
