@@ -550,9 +550,6 @@ class CustomStockDetailsPageState
                                         List<FacilityModel> filteredFacilities =
                                             [];
 
-                                        var type = context.selectedProject
-                                            .address?.boundaryType;
-
                                         if (context.selectedProject.address
                                                 ?.boundaryType ==
                                             Constants.zoneBoundaryLevel) {
@@ -561,12 +558,13 @@ class CustomStockDetailsPageState
                                               ? facilities
                                                   .where((element) =>
                                                       element.usage ==
-                                                      Constants.centralFacility)
+                                                      Constants
+                                                          .nationalWarehouse)
                                                   .toList()
                                               : facilities
                                                   .where((element) =>
                                                       element.usage ==
-                                                      Constants.zonalWarehouse)
+                                                      Constants.stateWarehouse)
                                                   .toList();
                                         } else if (context.selectedProject
                                                 .address?.boundaryType ==
@@ -576,7 +574,7 @@ class CustomStockDetailsPageState
                                               ? facilities
                                                   .where((element) =>
                                                       element.usage ==
-                                                      Constants.stateWarehouse)
+                                                      Constants.zonalWarehouse)
                                                   .toList()
                                               : facilities
                                                   .where((element) =>
