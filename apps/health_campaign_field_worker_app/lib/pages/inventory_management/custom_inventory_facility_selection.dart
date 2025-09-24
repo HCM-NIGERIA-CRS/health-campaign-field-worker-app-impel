@@ -12,6 +12,8 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:inventory_management/utils/i18_key_constants.dart' as i18;
 import 'package:inventory_management/widgets/back_navigation_help_header.dart';
 
+import '../../widgets/custom_pop_route.dart';
+
 @RoutePage()
 class CustomInventoryFacilitySelectionPage extends LocalizedStatefulWidget {
   final List<FacilityModel> facilities;
@@ -41,133 +43,138 @@ class CustomInventoryFacilitySelectionPageState
     );
     final textTheme = theme.digitTextTheme(context);
 
-    return SafeArea(
-      child: ReactiveFormBuilder(
-        form: _form,
-        builder: (context, form, child) {
-          return Scaffold(
-            backgroundColor: Colors.white,
-            body: ReactiveFormConsumer(
-              builder: (context, form, _) {
-                final filteredFacilities =
-                    widget.facilities.where((FacilityModel element) {
-                  final query = form.control(_facilityName).value as String?;
-                  if (query == null || query.isEmpty) return true;
-                  final localizedFacilityIdWithPrefix = localizations
-                      .translate('$facilityPrefix${element.id}')
-                      .toLowerCase();
-                  final lowerCaseQuery = query.toLowerCase();
-                  return localizedFacilityIdWithPrefix.contains(lowerCaseQuery);
-                }).toList();
+    return GlobalBackHandler(
+      child: SafeArea(
+        child: ReactiveFormBuilder(
+          form: _form,
+          builder: (context, form, child) {
+            return Scaffold(
+              backgroundColor: Colors.white,
+              body: ReactiveFormConsumer(
+                builder: (context, form, _) {
+                  final filteredFacilities =
+                      widget.facilities.where((FacilityModel element) {
+                    final query = form.control(_facilityName).value as String?;
+                    if (query == null || query.isEmpty) return true;
+                    final localizedFacilityIdWithPrefix = localizations
+                        .translate('$facilityPrefix${element.id}')
+                        .toLowerCase();
+                    final lowerCaseQuery = query.toLowerCase();
+                    return localizedFacilityIdWithPrefix
+                        .contains(lowerCaseQuery);
+                  }).toList();
 
-                return ScrollableContent(
-                  backgroundColor: Colors.white,
-                  header: const BackNavigationHelpHeaderWidget(
-                    showHelp: false,
-                  ),
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: Container(
-                        color: Colors.white,
-                        child: Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: spacer4),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(spacer2),
-                                child: Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    localizations.translate(
-                                      i18.common.facilitySearchHeaderLabel,
+                  return ScrollableContent(
+                    backgroundColor: Colors.white,
+                    header: const BackNavigationHelpHeaderWidget(
+                      showHelp: false,
+                    ),
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: Container(
+                          color: Colors.white,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: spacer4),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(spacer2),
+                                  child: Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                      localizations.translate(
+                                        i18.common.facilitySearchHeaderLabel,
+                                      ),
+                                      style: textTheme.headingXl,
+                                      textAlign: TextAlign.left,
                                     ),
-                                    style: textTheme.headingXl,
-                                    textAlign: TextAlign.left,
                                   ),
                                 ),
-                              ),
-                              ReactiveWrapperField(
-                                  formControlName: _facilityName,
-                                  builder: (field) {
-                                    return DigitSearchFormInput(
-                                      onChange: (value) {
-                                        field.control.value = value;
-                                      },
-                                    );
-                                  }),
-                            ],
+                                ReactiveWrapperField(
+                                    formControlName: _facilityName,
+                                    builder: (field) {
+                                      return DigitSearchFormInput(
+                                        onChange: (value) {
+                                          field.control.value = value;
+                                        },
+                                      );
+                                    }),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final facility = filteredFacilities[index];
-                          String facilityPrefix =
-                              facility.id == 'Delivery Team' ? '' : 'FAC_';
-                          return Container(
-                            color: Colors.white,
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: spacer2),
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            final facility = filteredFacilities[index];
+                            String facilityPrefix =
+                                facility.id == 'Delivery Team' ? '' : 'FAC_';
+                            return Container(
+                              color: Colors.white,
+                              padding: const EdgeInsets.symmetric(
                                   horizontal: spacer2),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorTheme
-                                    .paper
-                                    .secondary,
-                                border: Border(
-                                  top:
-                                      index == 0 ? borderSide : BorderSide.none,
-                                  bottom: index == filteredFacilities.length - 1
-                                      ? borderSide
-                                      : BorderSide.none,
-                                  left: borderSide,
-                                  right: borderSide,
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: spacer2),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .colorTheme
+                                      .paper
+                                      .secondary,
+                                  border: Border(
+                                    top: index == 0
+                                        ? borderSide
+                                        : BorderSide.none,
+                                    bottom:
+                                        index == filteredFacilities.length - 1
+                                            ? borderSide
+                                            : BorderSide.none,
+                                    left: borderSide,
+                                    right: borderSide,
+                                  ),
                                 ),
-                              ),
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.of(context).pop(facility);
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.all(spacer2),
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .colorTheme
-                                        .paper
-                                        .secondary,
-                                    border: Border(
-                                      bottom: BorderSide(
-                                        color: theme.colorScheme.outline,
-                                        width: 1.0,
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).pop(facility);
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.all(spacer2),
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .colorTheme
+                                          .paper
+                                          .secondary,
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: theme.colorScheme.outline,
+                                          width: 1.0,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(spacer4),
+                                      child: Text(
+                                        localizations.translate(
+                                            '$facilityPrefix${facility.id}'),
                                       ),
                                     ),
                                   ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(spacer4),
-                                    child: Text(
-                                      localizations.translate(
-                                          '$facilityPrefix${facility.id}'),
-                                    ),
-                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                        childCount: filteredFacilities.length,
+                            );
+                          },
+                          childCount: filteredFacilities.length,
+                        ),
                       ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          );
-        },
+                    ],
+                  );
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }

@@ -37,6 +37,7 @@ import 'package:registration_delivery/utils/i18_key_constants.dart'
 
 import 'package:digit_components/widgets/atoms/digit_dropdown.dart' as dropdown;
 
+import '../../widgets/custom_pop_route.dart';
 import 'caregiver_consent.dart';
 
 @RoutePage()
@@ -100,207 +101,154 @@ class CustomHouseholdLocationPageState
     final bool isCommunity = RegistrationDeliverySingleton().householdType ==
         HouseholdType.community;
 
-    return Scaffold(
-      body: BlocBuilder<CustomBeneficiaryRegistrationBloc,
-          BeneficiaryRegistrationState>(builder: (context, registrationState) {
-        return ReactiveFormBuilder(
-          form: () => buildForm(bloc.state),
-          builder: (_, form, __) => BlocListener<LocationBloc, LocationState>(
-            listener: (context, locationState) {
-              registrationState.maybeMap(
-                  orElse: () => false,
-                  create: (value) {
-                    if (locationState.accuracy != null) {
-                      //Hide the dialog after 1 seconds
-                      Future.delayed(const Duration(seconds: 1), () {
-                        DigitComponentsUtils.hideDialog(context);
-                      });
-                    }
-                  });
-              if (locationState.accuracy != null) {
-                final lat = locationState.latitude;
-                final lng = locationState.longitude;
-                final accuracy = locationState.accuracy;
+    return GlobalBackHandler(
+      child: Scaffold(
+        body: BlocBuilder<CustomBeneficiaryRegistrationBloc,
+                BeneficiaryRegistrationState>(
+            builder: (context, registrationState) {
+          return ReactiveFormBuilder(
+            form: () => buildForm(bloc.state),
+            builder: (_, form, __) => BlocListener<LocationBloc, LocationState>(
+              listener: (context, locationState) {
+                registrationState.maybeMap(
+                    orElse: () => false,
+                    create: (value) {
+                      if (locationState.accuracy != null) {
+                        //Hide the dialog after 1 seconds
+                        Future.delayed(const Duration(seconds: 1), () {
+                          DigitComponentsUtils.hideDialog(context);
+                        });
+                      }
+                    });
+                if (locationState.accuracy != null) {
+                  final lat = locationState.latitude;
+                  final lng = locationState.longitude;
+                  final accuracy = locationState.accuracy;
 
-                form.control(_latKey).value ??= lat;
-                form.control(_lngKey).value ??= lng;
-                form.control(_accuracyKey).value ??= accuracy;
-              }
-            },
-            listenWhen: (previous, current) {
-              final lat = form.control(_latKey).value;
-              final lng = form.control(_lngKey).value;
-              final accuracy = form.control(_accuracyKey).value;
+                  form.control(_latKey).value ??= lat;
+                  form.control(_lngKey).value ??= lng;
+                  form.control(_accuracyKey).value ??= accuracy;
+                }
+              },
+              listenWhen: (previous, current) {
+                final lat = form.control(_latKey).value;
+                final lng = form.control(_lngKey).value;
+                final accuracy = form.control(_accuracyKey).value;
 
-              return lat != null || lng != null || accuracy != null
-                  ? false
-                  : true;
-            },
-            child: ScrollableContent(
-              enableFixedDigitButton: true,
-              header: const Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(bottom: spacer2),
-                    child: CustomBackNavigationHelpHeaderWidget(
-                      showHelp: false,
-                    ),
-                  ),
-                ],
-              ),
-              footer: DigitCard(
-                  margin: const EdgeInsets.only(top: spacer2),
+                return lat != null || lng != null || accuracy != null
+                    ? false
+                    : true;
+              },
+              child: ScrollableContent(
+                enableFixedDigitButton: true,
+                header: const Column(
                   children: [
-                    BlocBuilder<LocationBloc, LocationState>(
-                      builder: (context, locationState) {
-                        return DigitButton(
-                          label: localizations.translate(
-                            i18.householdLocation.actionLabel,
-                          ),
-                          type: DigitButtonType.primary,
-                          size: DigitButtonSize.large,
-                          mainAxisSize: MainAxisSize.max,
-                          onPressed: () {
-                            form.markAllAsTouched();
-                            if (!form.valid) return;
+                    Padding(
+                      padding: EdgeInsets.only(bottom: spacer2),
+                      child: CustomBackNavigationHelpHeaderWidget(
+                        showHelp: false,
+                      ),
+                    ),
+                  ],
+                ),
+                footer: DigitCard(
+                    margin: const EdgeInsets.only(top: spacer2),
+                    children: [
+                      BlocBuilder<LocationBloc, LocationState>(
+                        builder: (context, locationState) {
+                          return DigitButton(
+                            label: localizations.translate(
+                              i18.householdLocation.actionLabel,
+                            ),
+                            type: DigitButtonType.primary,
+                            size: DigitButtonSize.large,
+                            mainAxisSize: MainAxisSize.max,
+                            onPressed: () {
+                              form.markAllAsTouched();
+                              if (!form.valid) return;
 
-                            final addressLine1 =
-                                form.control(_addressLine1Key).value as String?;
-                            final addressLine2 =
-                                form.control(_addressLine2Key).value as String?;
-                            final landmark =
-                                form.control(_landmarkKey).value as String?;
-                            final postalCode =
-                                form.control(_postalCodeKey).value as String?;
+                              final addressLine1 = form
+                                  .control(_addressLine1Key)
+                                  .value as String?;
+                              final addressLine2 = form
+                                  .control(_addressLine2Key)
+                                  .value as String?;
+                              final landmark =
+                                  form.control(_landmarkKey).value as String?;
+                              final postalCode =
+                                  form.control(_postalCodeKey).value as String?;
 
-                            final householdNumberCaptured = form
-                                .control(_householdNumberKey)
-                                .value as String?;
+                              final householdNumberCaptured = form
+                                  .control(_householdNumberKey)
+                                  .value as String?;
 
-                            final householdHeadName = form
-                                .control(_householdHeadNameKey)
-                                .value as String?;
+                              final householdHeadName = form
+                                  .control(_householdHeadNameKey)
+                                  .value as String?;
 
-                            final reasonForNonCompliance = form
-                                .control(_reasonNonComplianceKey)
-                                .value as String?;
+                              final reasonForNonCompliance = form
+                                  .control(_reasonNonComplianceKey)
+                                  .value as String?;
 
-                            if (!isConsent &&
-                                (reasonForNonCompliance == null ||
-                                    (reasonForNonCompliance?.isEmpty ??
-                                        true))) {
-                              DigitToast.show(context,
-                                  options: DigitToastOptions(
-                                      localizations.translate(i18_local
-                                          .beneficiaryDetails
-                                          .reasonForNonComplianceNeeded),
-                                      true,
-                                      theme));
-                              return;
-                            }
-
-                            if (!isConsent &&
-                                (householdHeadName == null ||
-                                    (householdHeadName?.isEmpty ?? true))) {
-                              DigitToast.show(context,
-                                  options: DigitToastOptions(
-                                      localizations.translate(i18_local
-                                          .beneficiaryDetails
-                                          .houseHeadNameNeeded),
-                                      true,
-                                      theme));
-                              return;
-                            }
-
-                            registrationState.maybeWhen(
-                              orElse: () {
+                              if (!isConsent &&
+                                  (reasonForNonCompliance == null ||
+                                      (reasonForNonCompliance?.isEmpty ??
+                                          true))) {
+                                DigitToast.show(context,
+                                    options: DigitToastOptions(
+                                        localizations.translate(i18_local
+                                            .beneficiaryDetails
+                                            .reasonForNonComplianceNeeded),
+                                        true,
+                                        theme));
                                 return;
-                              },
-                              create: (
-                                address,
-                                householdModel,
-                                individualModel,
-                                projectBeneficiaryModel,
-                                registrationDate,
-                                searchQuery,
-                                loading,
-                                isHeadOfHousehold,
-                              ) {
-                                var addressModel = AddressModel(
-                                  addressLine1: addressLine1 != null &&
-                                          addressLine1.trim().isNotEmpty
-                                      ? addressLine1
-                                      : null,
-                                  addressLine2: addressLine2 != null &&
-                                          addressLine2.trim().isNotEmpty
-                                      ? addressLine2
-                                      : null,
-                                  landmark: landmark != null &&
-                                          landmark.trim().isNotEmpty
-                                      ? landmark
-                                      : null,
-                                  pincode: postalCode != null &&
-                                          postalCode.trim().isNotEmpty
-                                      ? postalCode
-                                      : null,
-                                  type: AddressType.correspondence,
-                                  latitude: form.control(_latKey).value ??
-                                      locationState.latitude,
-                                  longitude: form.control(_lngKey).value ??
-                                      locationState.longitude,
-                                  locationAccuracy:
-                                      form.control(_accuracyKey).value ??
-                                          locationState.accuracy,
-                                  locality: LocalityModel(
-                                    code: RegistrationDeliverySingleton()
-                                        .boundary!
-                                        .code!,
-                                    name: RegistrationDeliverySingleton()
-                                        .boundary!
-                                        .name,
-                                  ),
-                                  tenantId:
-                                      RegistrationDeliverySingleton().tenantId,
-                                  rowVersion: 1,
-                                  buildingName: (RegistrationDeliverySingleton()
-                                              .householdType ==
-                                          HouseholdType.community)
-                                      ? form.control(_buildingNameKey).value
-                                      : null,
-                                  auditDetails: AuditDetails(
-                                    createdBy: RegistrationDeliverySingleton()
-                                        .loggedInUserUuid!,
-                                    createdTime:
-                                        ContextUtilityExtensions(context)
-                                            .millisecondsSinceEpoch(),
-                                  ),
-                                  clientAuditDetails: ClientAuditDetails(
-                                    createdBy: RegistrationDeliverySingleton()
-                                        .loggedInUserUuid!,
-                                    createdTime:
-                                        ContextUtilityExtensions(context)
-                                            .millisecondsSinceEpoch(),
-                                    lastModifiedBy:
-                                        RegistrationDeliverySingleton()
-                                            .loggedInUserUuid,
-                                    lastModifiedTime:
-                                        ContextUtilityExtensions(context)
-                                            .millisecondsSinceEpoch(),
-                                  ),
-                                );
+                              }
 
-                                bloc.add(
-                                  BeneficiaryRegistrationSaveAddressEvent(
-                                    addressModel,
-                                  ),
-                                );
+                              if (!isConsent &&
+                                  (householdHeadName == null ||
+                                      (householdHeadName?.isEmpty ?? true))) {
+                                DigitToast.show(context,
+                                    options: DigitToastOptions(
+                                        localizations.translate(i18_local
+                                            .beneficiaryDetails
+                                            .houseHeadNameNeeded),
+                                        true,
+                                        theme));
+                                return;
+                              }
 
-                                if (!isConsent) {
-                                  context.router
-                                      .push(CustomHouseholdSummaryRoute(
-                                    householdNumber: householdNumberCaptured,
-                                    headName: householdHeadName,
-                                    reasonNonCompliance: reasonForNonCompliance,
+                              registrationState.maybeWhen(
+                                orElse: () {
+                                  return;
+                                },
+                                create: (
+                                  address,
+                                  householdModel,
+                                  individualModel,
+                                  projectBeneficiaryModel,
+                                  registrationDate,
+                                  searchQuery,
+                                  loading,
+                                  isHeadOfHousehold,
+                                ) {
+                                  var addressModel = AddressModel(
+                                    addressLine1: addressLine1 != null &&
+                                            addressLine1.trim().isNotEmpty
+                                        ? addressLine1
+                                        : null,
+                                    addressLine2: addressLine2 != null &&
+                                            addressLine2.trim().isNotEmpty
+                                        ? addressLine2
+                                        : null,
+                                    landmark: landmark != null &&
+                                            landmark.trim().isNotEmpty
+                                        ? landmark
+                                        : null,
+                                    pincode: postalCode != null &&
+                                            postalCode.trim().isNotEmpty
+                                        ? postalCode
+                                        : null,
+                                    type: AddressType.correspondence,
                                     latitude: form.control(_latKey).value ??
                                         locationState.latitude,
                                     longitude: form.control(_lngKey).value ??
@@ -308,381 +256,464 @@ class CustomHouseholdLocationPageState
                                     locationAccuracy:
                                         form.control(_accuracyKey).value ??
                                             locationState.accuracy,
-                                  ));
-                                } else {
+                                    locality: LocalityModel(
+                                      code: RegistrationDeliverySingleton()
+                                          .boundary!
+                                          .code!,
+                                      name: RegistrationDeliverySingleton()
+                                          .boundary!
+                                          .name,
+                                    ),
+                                    tenantId: RegistrationDeliverySingleton()
+                                        .tenantId,
+                                    rowVersion: 1,
+                                    buildingName:
+                                        (RegistrationDeliverySingleton()
+                                                    .householdType ==
+                                                HouseholdType.community)
+                                            ? form
+                                                .control(_buildingNameKey)
+                                                .value
+                                            : null,
+                                    auditDetails: AuditDetails(
+                                      createdBy: RegistrationDeliverySingleton()
+                                          .loggedInUserUuid!,
+                                      createdTime:
+                                          ContextUtilityExtensions(context)
+                                              .millisecondsSinceEpoch(),
+                                    ),
+                                    clientAuditDetails: ClientAuditDetails(
+                                      createdBy: RegistrationDeliverySingleton()
+                                          .loggedInUserUuid!,
+                                      createdTime:
+                                          ContextUtilityExtensions(context)
+                                              .millisecondsSinceEpoch(),
+                                      lastModifiedBy:
+                                          RegistrationDeliverySingleton()
+                                              .loggedInUserUuid,
+                                      lastModifiedTime:
+                                          ContextUtilityExtensions(context)
+                                              .millisecondsSinceEpoch(),
+                                    ),
+                                  );
+
+                                  bloc.add(
+                                    BeneficiaryRegistrationSaveAddressEvent(
+                                      addressModel,
+                                    ),
+                                  );
+
+                                  if (!isConsent) {
+                                    context.router
+                                        .push(CustomHouseholdSummaryRoute(
+                                      householdNumber: householdNumberCaptured,
+                                      headName: householdHeadName,
+                                      reasonNonCompliance:
+                                          reasonForNonCompliance,
+                                      latitude: form.control(_latKey).value ??
+                                          locationState.latitude,
+                                      longitude: form.control(_lngKey).value ??
+                                          locationState.longitude,
+                                      locationAccuracy:
+                                          form.control(_accuracyKey).value ??
+                                              locationState.accuracy,
+                                    ));
+                                  } else {
+                                    router.push(CustomHouseHoldDetailsRoute());
+                                  }
+                                },
+                                editHousehold: (
+                                  address,
+                                  householdModel,
+                                  individuals,
+                                  registrationDate,
+                                  projectBeneficiaryModel,
+                                  loading,
+                                  headOfHousehold,
+                                ) {
+                                  var addressModel = address.copyWith(
+                                    addressLine1: addressLine1 != null &&
+                                            addressLine1.trim().isNotEmpty
+                                        ? addressLine1
+                                        : null,
+                                    addressLine2: addressLine2 != null &&
+                                            addressLine2.trim().isNotEmpty
+                                        ? addressLine2
+                                        : null,
+                                    landmark: landmark != null &&
+                                            landmark.trim().isNotEmpty
+                                        ? landmark
+                                        : null,
+                                    locality: address.locality,
+                                    pincode: postalCode != null &&
+                                            postalCode.trim().isNotEmpty
+                                        ? postalCode
+                                        : null,
+                                    type: AddressType.correspondence,
+                                    latitude: form.control(_latKey).value,
+                                    longitude: form.control(_lngKey).value,
+                                    buildingName:
+                                        (RegistrationDeliverySingleton()
+                                                    .householdType ==
+                                                HouseholdType.community)
+                                            ? form
+                                                .control(_buildingNameKey)
+                                                .value
+                                            : null,
+                                    locationAccuracy:
+                                        form.control(_accuracyKey).value,
+                                  );
+                                  // TODO [Linking of Voucher for Household based project  need to be handled]
+
+                                  bloc.add(
+                                    BeneficiaryRegistrationSaveAddressEvent(
+                                      addressModel,
+                                    ),
+                                  );
                                   router.push(CustomHouseHoldDetailsRoute());
-                                }
-                              },
-                              editHousehold: (
-                                address,
-                                householdModel,
-                                individuals,
-                                registrationDate,
-                                projectBeneficiaryModel,
-                                loading,
-                                headOfHousehold,
-                              ) {
-                                var addressModel = address.copyWith(
-                                  addressLine1: addressLine1 != null &&
-                                          addressLine1.trim().isNotEmpty
-                                      ? addressLine1
-                                      : null,
-                                  addressLine2: addressLine2 != null &&
-                                          addressLine2.trim().isNotEmpty
-                                      ? addressLine2
-                                      : null,
-                                  landmark: landmark != null &&
-                                          landmark.trim().isNotEmpty
-                                      ? landmark
-                                      : null,
-                                  locality: address.locality,
-                                  pincode: postalCode != null &&
-                                          postalCode.trim().isNotEmpty
-                                      ? postalCode
-                                      : null,
-                                  type: AddressType.correspondence,
-                                  latitude: form.control(_latKey).value,
-                                  longitude: form.control(_lngKey).value,
-                                  buildingName: (RegistrationDeliverySingleton()
-                                              .householdType ==
-                                          HouseholdType.community)
-                                      ? form.control(_buildingNameKey).value
-                                      : null,
-                                  locationAccuracy:
-                                      form.control(_accuracyKey).value,
-                                );
-                                // TODO [Linking of Voucher for Household based project  need to be handled]
+                                },
+                                addMember: (
+                                  address,
+                                  householdModel,
+                                  loading,
+                                ) {
+                                  var addressModel = address.copyWith(
+                                    addressLine1: addressLine1 != null &&
+                                            addressLine1.trim().isNotEmpty
+                                        ? addressLine1
+                                        : null,
+                                    addressLine2: addressLine2 != null &&
+                                            addressLine2.trim().isNotEmpty
+                                        ? addressLine2
+                                        : null,
+                                    landmark: landmark != null &&
+                                            landmark.trim().isNotEmpty
+                                        ? landmark
+                                        : null,
+                                    locality: address.locality,
+                                    pincode: postalCode != null &&
+                                            postalCode.trim().isNotEmpty
+                                        ? postalCode
+                                        : null,
+                                    type: AddressType.correspondence,
+                                    latitude: form.control(_latKey).value,
+                                    longitude: form.control(_lngKey).value,
+                                    buildingName:
+                                        (RegistrationDeliverySingleton()
+                                                    .householdType ==
+                                                HouseholdType.community)
+                                            ? form
+                                                .control(_buildingNameKey)
+                                                .value
+                                            : null,
+                                    locationAccuracy:
+                                        form.control(_accuracyKey).value,
+                                  );
+                                  // TODO [Linking of Voucher for Household based project  need to be handled]
 
-                                bloc.add(
-                                  BeneficiaryRegistrationSaveAddressEvent(
-                                    addressModel,
+                                  bloc.add(
+                                    BeneficiaryRegistrationSaveAddressEvent(
+                                      addressModel,
+                                    ),
+                                  );
+                                  router.push(CustomHouseHoldDetailsRoute());
+                                },
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ]),
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: DigitCard(
+                        margin: const EdgeInsets.all(spacer2),
+                        children: [
+                          DigitTextBlock(
+                            padding: EdgeInsets.zero,
+                            heading: (isCommunity)
+                                ? localizations.translate(
+                                    i18.householdLocation.clfLocationLabelText)
+                                : localizations.translate(
+                                    i18.householdLocation
+                                        .householdLocationLabelText,
                                   ),
-                                );
-                                router.push(CustomHouseHoldDetailsRoute());
+                            headingStyle: textTheme.headingXl
+                                .copyWith(color: theme.colorTheme.text.primary),
+                          ),
+                          householdLocationShowcaseData.administrativeArea
+                              .buildWith(
+                            child: ReactiveWrapperField(
+                              formControlName: _administrationAreaKey,
+                              validationMessages: {
+                                'required': (_) => localizations.translate(
+                                      i18.householdLocation
+                                          .administrationAreaRequiredValidation,
+                                    ),
                               },
-                              addMember: (
-                                address,
-                                householdModel,
-                                loading,
-                              ) {
-                                var addressModel = address.copyWith(
-                                  addressLine1: addressLine1 != null &&
-                                          addressLine1.trim().isNotEmpty
-                                      ? addressLine1
-                                      : null,
-                                  addressLine2: addressLine2 != null &&
-                                          addressLine2.trim().isNotEmpty
-                                      ? addressLine2
-                                      : null,
-                                  landmark: landmark != null &&
-                                          landmark.trim().isNotEmpty
-                                      ? landmark
-                                      : null,
-                                  locality: address.locality,
-                                  pincode: postalCode != null &&
-                                          postalCode.trim().isNotEmpty
-                                      ? postalCode
-                                      : null,
-                                  type: AddressType.correspondence,
-                                  latitude: form.control(_latKey).value,
-                                  longitude: form.control(_lngKey).value,
-                                  buildingName: (RegistrationDeliverySingleton()
-                                              .householdType ==
-                                          HouseholdType.community)
-                                      ? form.control(_buildingNameKey).value
-                                      : null,
-                                  locationAccuracy:
-                                      form.control(_accuracyKey).value,
-                                );
-                                // TODO [Linking of Voucher for Household based project  need to be handled]
-
-                                bloc.add(
-                                  BeneficiaryRegistrationSaveAddressEvent(
-                                    addressModel,
-                                  ),
-                                );
-                                router.push(CustomHouseHoldDetailsRoute());
-                              },
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ]),
-              slivers: [
-                SliverToBoxAdapter(
-                  child: DigitCard(
-                      margin: const EdgeInsets.all(spacer2),
-                      children: [
-                        DigitTextBlock(
-                          padding: EdgeInsets.zero,
-                          heading: (isCommunity)
-                              ? localizations.translate(
-                                  i18.householdLocation.clfLocationLabelText)
-                              : localizations.translate(
+                              builder: (field) => LabeledField(
+                                isRequired: true,
+                                label: localizations.translate(
                                   i18.householdLocation
-                                      .householdLocationLabelText,
+                                      .administrationAreaFormLabel,
                                 ),
-                          headingStyle: textTheme.headingXl
-                              .copyWith(color: theme.colorTheme.text.primary),
-                        ),
-                        householdLocationShowcaseData.administrativeArea
-                            .buildWith(
-                          child: ReactiveWrapperField(
-                            formControlName: _administrationAreaKey,
+                                child: DigitTextFormInput(
+                                  readOnly: true,
+                                  errorMessage: field.errorText,
+                                  initialValue: form
+                                      .control(_administrationAreaKey)
+                                      .value,
+                                  onChange: (value) {
+                                    form.control(_administrationAreaKey).value =
+                                        value;
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                          ReactiveWrapperField(
+                            formControlName: _accuracyKey,
                             validationMessages: {
                               'required': (_) => localizations.translate(
-                                    i18.householdLocation
-                                        .administrationAreaRequiredValidation,
+                                    i18_registration_delivery
+                                        .householdLocation.gpsAccuracyLabel,
                                   ),
                             },
                             builder: (field) => LabeledField(
                               isRequired: true,
                               label: localizations.translate(
-                                i18.householdLocation
-                                    .administrationAreaFormLabel,
+                                i18_registration_delivery
+                                    .householdLocation.gpsAccuracyLabel,
                               ),
                               child: DigitTextFormInput(
                                 readOnly: true,
                                 errorMessage: field.errorText,
                                 initialValue:
-                                    form.control(_administrationAreaKey).value,
+                                    (form.control(_accuracyKey).value ?? 0.0)
+                                        .toString(),
                                 onChange: (value) {
-                                  form.control(_administrationAreaKey).value =
-                                      value;
+                                  form.control(_accuracyKey).value = value;
                                 },
                               ),
                             ),
                           ),
-                        ),
-                        ReactiveWrapperField(
-                          formControlName: _accuracyKey,
-                          validationMessages: {
-                            'required': (_) => localizations.translate(
-                                  i18_registration_delivery
-                                      .householdLocation.gpsAccuracyLabel,
-                                ),
-                          },
-                          builder: (field) => LabeledField(
-                            isRequired: true,
-                            label: localizations.translate(
-                              i18_registration_delivery
-                                  .householdLocation.gpsAccuracyLabel,
-                            ),
-                            child: DigitTextFormInput(
-                              readOnly: true,
-                              errorMessage: field.errorText,
-                              initialValue:
-                                  (form.control(_accuracyKey).value ?? 0.0)
-                                      .toString(),
-                              onChange: (value) {
-                                form.control(_accuracyKey).value = value;
-                              },
-                            ),
-                          ),
-                        ),
-                        ReactiveWrapperField(
-                          formControlName: _householdNumberKey,
-                          validationMessages: {
-                            'required': (object) => localizations.translate(
-                                  '${i18_local.householdDetails.householdNumberLabel}_IS_REQUIRED',
-                                ),
-                            'maxLength': (object) => localizations
-                                .translate(i18.common.maxCharsRequired)
-                                .replaceAll('{}', maxLength.toString()),
-                          },
-                          builder: (field) => LabeledField(
-                            label: localizations.translate(
-                              i18_local.householdDetails.householdNumberLabel,
-                            ),
-                            child: DigitTextFormInput(
-                              initialValue:
-                                  form.control(_householdNumberKey).value,
-                              onChange: (value) {
-                                form.control(_householdNumberKey).value = value;
-                              },
-                              errorMessage: field.errorText,
-                            ),
-                          ),
-                        ),
-                        ReactiveWrapperField<String>(
-                            formControlName: _consent,
-                            validationMessages: {
-                              'required': (_) => localizations.translate(
-                                    i18.common.corecommonRequired,
-                                  ),
-                            },
-                            showErrors: (control) =>
-                                control.invalid && control.touched,
-                            // Ensures error is shown if invalid and touched
-                            builder: (field) {
-                              return LabeledField(
-                                isRequired: true,
-                                label: localizations.translate(
-                                  i18_local
-                                      .householdDetails.householdConsentAction,
-                                ),
-                                child: RadioList(
-                                    onChanged: (val) {
-                                      form.control(_consent).markAsTouched();
-                                      form.control(_consent).value = val.code;
-                                      if (val.code ==
-                                          CaregiverConsentEnum.yes.toString()) {
-                                        setState(() {
-                                          isConsent = true;
-
-                                          form
-                                              .control(_reasonNonComplianceKey)
-                                              .clearValidators();
-                                          form
-                                              .control(_householdHeadNameKey)
-                                              .clearValidators();
-                                        });
-                                      } else if (val.code ==
-                                          CaregiverConsentEnum.no.toString()) {
-                                        setState(() {
-                                          isConsent = false;
-                                          form
-                                              .control(_householdHeadNameKey)
-                                              .setValidators([
-                                            Validators.required,
-                                            Validators.delegate((validator) =>
-                                                CustomValidator.sizeLessThan2(
-                                                    validator)),
-                                          ]);
-                                          form
-                                              .control(_reasonNonComplianceKey)
-                                              .setValidators([
-                                            Validators.required,
-                                            Validators.delegate((validator) =>
-                                                CustomValidator.sizeLessThan2(
-                                                    validator)),
-                                          ]);
-                                        });
-                                      }
-                                    },
-                                    groupValue:
-                                        form.control(_consent).value ?? "",
-                                    errorMessage: field.errorText,
-                                    radioDigitButtons: [
-                                      RadioButtonModel(
-                                          code: CaregiverConsentEnum.yes
-                                              .toString(),
-                                          name: localizations.translate(
-                                              i18_local
-                                                  .householdDetails.submitYes)),
-                                      RadioButtonModel(
-                                          code: CaregiverConsentEnum.no
-                                              .toString(),
-                                          name: localizations.translate(
-                                            i18_local.householdDetails.submitNo,
-                                          )),
-                                    ]),
-                              );
-                            }),
-                        Offstage(
-                          offstage: isConsent,
-                          child: ReactiveWrapperField(
-                            formControlName: _householdHeadNameKey,
+                          ReactiveWrapperField(
+                            formControlName: _householdNumberKey,
                             validationMessages: {
                               'required': (object) => localizations.translate(
-                                    '${i18_local.individualDetails.nameLabelText}_IS_REQUIRED',
+                                    '${i18_local.householdDetails.householdNumberLabel}_IS_REQUIRED',
                                   ),
                               'maxLength': (object) => localizations
                                   .translate(i18.common.maxCharsRequired)
                                   .replaceAll('{}', maxLength.toString()),
                             },
                             builder: (field) => LabeledField(
-                              isRequired: !isConsent,
                               label: localizations.translate(
-                                i18_local.individualDetails.nameLabelText,
+                                i18_local.householdDetails.householdNumberLabel,
                               ),
                               child: DigitTextFormInput(
                                 initialValue:
-                                    form.control(_householdHeadNameKey).value,
+                                    form.control(_householdNumberKey).value,
                                 onChange: (value) {
-                                  form.control(_householdHeadNameKey).value =
+                                  form.control(_householdNumberKey).value =
                                       value;
                                 },
                                 errorMessage: field.errorText,
                               ),
                             ),
                           ),
-                        ),
-                        Offstage(
-                          offstage: isConsent,
-                          child: BlocBuilder<AppInitializationBloc,
-                              AppInitializationState>(
-                            builder: (context, state) {
-                              if (state is! AppInitialized) {
-                                return const Offstage();
-                              }
+                          ReactiveWrapperField<String>(
+                              formControlName: _consent,
+                              validationMessages: {
+                                'required': (_) => localizations.translate(
+                                      i18.common.corecommonRequired,
+                                    ),
+                              },
+                              showErrors: (control) =>
+                                  control.invalid && control.touched,
+                              // Ensures error is shown if invalid and touched
+                              builder: (field) {
+                                return LabeledField(
+                                  isRequired: true,
+                                  label: localizations.translate(
+                                    i18_local.householdDetails
+                                        .householdConsentAction,
+                                  ),
+                                  child: RadioList(
+                                      onChanged: (val) {
+                                        form.control(_consent).markAsTouched();
+                                        form.control(_consent).value = val.code;
+                                        if (val.code ==
+                                            CaregiverConsentEnum.yes
+                                                .toString()) {
+                                          setState(() {
+                                            isConsent = true;
 
-                              final nonComplianceReasons =
-                                  state.appConfiguration.nonComplianceReasons ??
-                                      <NonComplianceReasons>[];
-
-                              return DigitReactiveSearchDropdown<String>(
-                                label: localizations.translate(
-                                  i18_local.caregiverConsent
-                                      .reasonForNonComplianceLabel,
-                                ),
-                                form: form,
-                                enabled: true,
+                                            form
+                                                .control(
+                                                    _reasonNonComplianceKey)
+                                                .clearValidators();
+                                            form
+                                                .control(_householdHeadNameKey)
+                                                .clearValidators();
+                                          });
+                                        } else if (val.code ==
+                                            CaregiverConsentEnum.no
+                                                .toString()) {
+                                          setState(() {
+                                            isConsent = false;
+                                            form
+                                                .control(_householdHeadNameKey)
+                                                .setValidators([
+                                              Validators.required,
+                                              Validators.delegate((validator) =>
+                                                  CustomValidator.sizeLessThan2(
+                                                      validator)),
+                                            ]);
+                                            form
+                                                .control(
+                                                    _reasonNonComplianceKey)
+                                                .setValidators([
+                                              Validators.required,
+                                              Validators.delegate((validator) =>
+                                                  CustomValidator.sizeLessThan2(
+                                                      validator)),
+                                            ]);
+                                          });
+                                        }
+                                      },
+                                      groupValue:
+                                          form.control(_consent).value ?? "",
+                                      errorMessage: field.errorText,
+                                      radioDigitButtons: [
+                                        RadioButtonModel(
+                                            code: CaregiverConsentEnum.yes
+                                                .toString(),
+                                            name: localizations.translate(
+                                                i18_local.householdDetails
+                                                    .submitYes)),
+                                        RadioButtonModel(
+                                            code: CaregiverConsentEnum.no
+                                                .toString(),
+                                            name: localizations.translate(
+                                              i18_local
+                                                  .householdDetails.submitNo,
+                                            )),
+                                      ]),
+                                );
+                              }),
+                          Offstage(
+                            offstage: isConsent,
+                            child: ReactiveWrapperField(
+                              formControlName: _householdHeadNameKey,
+                              validationMessages: {
+                                'required': (object) => localizations.translate(
+                                      '${i18_local.individualDetails.nameLabelText}_IS_REQUIRED',
+                                    ),
+                                'maxLength': (object) => localizations
+                                    .translate(i18.common.maxCharsRequired)
+                                    .replaceAll('{}', maxLength.toString()),
+                              },
+                              builder: (field) => LabeledField(
                                 isRequired: !isConsent,
-                                menuItems: nonComplianceReasons.map((e) {
-                                  return e.code;
-                                }).toList(),
-                                formControlName: _reasonNonComplianceKey,
-                                valueMapper: (value) => localizations.translate(
-                                  value,
+                                label: localizations.translate(
+                                  i18_local.individualDetails.nameLabelText,
                                 ),
-                                emptyText: localizations
-                                    .translate(i18.common.noMatchFound),
-                                validationMessage: localizations.translate(
-                                  i18.common.corecommonRequired,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        if (RegistrationDeliverySingleton().householdType ==
-                            HouseholdType.community)
-                          householdLocationShowcaseData.buildingName.buildWith(
-                              child: ReactiveWrapperField(
-                                  formControlName: _buildingNameKey,
-                                  validationMessages: {
-                                    'required': (_) => localizations.translate(
-                                          i18.common.corecommonRequired,
-                                        ),
-                                    'sizeLessThan2': (_) =>
-                                        localizations.translate(
-                                            i18.common.min3CharsRequired),
-                                    'maxLength': (object) => localizations
-                                        .translate(i18.common.maxCharsRequired)
-                                        .replaceAll('{}', maxLength.toString()),
+                                child: DigitTextFormInput(
+                                  initialValue:
+                                      form.control(_householdHeadNameKey).value,
+                                  onChange: (value) {
+                                    form.control(_householdHeadNameKey).value =
+                                        value;
                                   },
-                                  builder: (field) => LabeledField(
-                                      label: localizations.translate(i18
-                                          .householdLocation.buildingNameLabel),
-                                      isRequired: true,
-                                      child: DigitTextFormInput(
-                                        errorMessage: field.errorText,
-                                        onChange: (value) {
-                                          form.control(_buildingNameKey).value =
-                                              value;
+                                  errorMessage: field.errorText,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Offstage(
+                            offstage: isConsent,
+                            child: BlocBuilder<AppInitializationBloc,
+                                AppInitializationState>(
+                              builder: (context, state) {
+                                if (state is! AppInitialized) {
+                                  return const Offstage();
+                                }
+
+                                final nonComplianceReasons = state
+                                        .appConfiguration
+                                        .nonComplianceReasons ??
+                                    <NonComplianceReasons>[];
+
+                                return DigitReactiveSearchDropdown<String>(
+                                  label: localizations.translate(
+                                    i18_local.caregiverConsent
+                                        .reasonForNonComplianceLabel,
+                                  ),
+                                  form: form,
+                                  enabled: true,
+                                  isRequired: !isConsent,
+                                  menuItems: nonComplianceReasons.map((e) {
+                                    return e.code;
+                                  }).toList(),
+                                  formControlName: _reasonNonComplianceKey,
+                                  valueMapper: (value) =>
+                                      localizations.translate(
+                                    value,
+                                  ),
+                                  emptyText: localizations
+                                      .translate(i18.common.noMatchFound),
+                                  validationMessage: localizations.translate(
+                                    i18.common.corecommonRequired,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          if (RegistrationDeliverySingleton().householdType ==
+                              HouseholdType.community)
+                            householdLocationShowcaseData.buildingName
+                                .buildWith(
+                                    child: ReactiveWrapperField(
+                                        formControlName: _buildingNameKey,
+                                        validationMessages: {
+                                          'required': (_) =>
+                                              localizations.translate(
+                                                i18.common.corecommonRequired,
+                                              ),
+                                          'sizeLessThan2': (_) =>
+                                              localizations.translate(
+                                                  i18.common.min3CharsRequired),
+                                          'maxLength': (object) => localizations
+                                              .translate(
+                                                  i18.common.maxCharsRequired)
+                                              .replaceAll(
+                                                  '{}', maxLength.toString()),
                                         },
-                                        initialValue: form
-                                            .control(_buildingNameKey)
-                                            .value,
-                                      )))),
-                      ]),
-                ),
-              ],
+                                        builder: (field) => LabeledField(
+                                            label: localizations.translate(i18
+                                                .householdLocation
+                                                .buildingNameLabel),
+                                            isRequired: true,
+                                            child: DigitTextFormInput(
+                                              errorMessage: field.errorText,
+                                              onChange: (value) {
+                                                form
+                                                    .control(_buildingNameKey)
+                                                    .value = value;
+                                              },
+                                              initialValue: form
+                                                  .control(_buildingNameKey)
+                                                  .value,
+                                            )))),
+                        ]),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 
