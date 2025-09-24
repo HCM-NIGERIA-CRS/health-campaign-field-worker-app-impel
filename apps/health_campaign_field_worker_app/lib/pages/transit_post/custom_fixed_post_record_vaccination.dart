@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:registration_delivery/utils/utils.dart';
 
 import 'package:transit_post/blocs/transit_post.dart';
 import 'package:transit_post/router/transit_post_router.gm.dart';
@@ -56,12 +57,11 @@ class CustomFixedPostRecordVaccinationPage extends LocalizedStatefulWidget {
       CustomFixedPostRecordVaccinationPageState();
 }
 
-enum AgeRange { nineToEleven, twelveToFiftyNine }
-
 class CustomFixedPostRecordVaccinationPageState
     extends LocalizedState<CustomFixedPostRecordVaccinationPage> {
   String? ageRangeSelected;
   String? heightRangeSelected;
+  String? genderSelected;
 
   int polioBeneficiaryCount = 0;
   int measlesBeneficiaryCount = 0;
@@ -327,8 +327,8 @@ class CustomFixedPostRecordVaccinationPageState
                     ],
                   ),
                   Offstage(
-                    offstage: !(context.projectTypeCode ==
-                        ProjectTypes.oncho.toValue()),
+                    offstage:
+                        (context.projectTypeCode == ProjectTypes.pmo.toValue()),
                     child: DigitCard(
                       margin: const EdgeInsets.all(spacer2),
                       children: [
@@ -489,6 +489,45 @@ class CustomFixedPostRecordVaccinationPageState
                           value: measlesBeneficiaryCount.toString(),
                         )
                       ]),
+                      Padding(
+                        padding: EdgeInsets.all(0),
+                        child: Column(
+                          children: [
+                            Text(
+                              localizations.translate(
+                                i18_local
+                                    .individualDetails.selectGenderLabelText,
+                              ),
+                              style: textTheme.headingL.copyWith(
+                                  color: theme.colorTheme.text.primary),
+                            ),
+                            FormField(
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                builder: (context) {
+                                  return RadioList(
+                                    radioDigitButtons:
+                                        (RegistrationDeliverySingleton()
+                                                    .genderOptions ??
+                                                [])
+                                            .map((gender) => RadioButtonModel(
+                                                code: gender,
+                                                name: localizations
+                                                    .translate(gender)))
+                                            .toList(),
+                                    groupValue: genderSelected ?? '',
+                                    onChanged: (value) {
+                                      if (value.code.isNotEmpty) {
+                                        setState(() {
+                                          genderSelected = value.code;
+                                        });
+                                      }
+                                    },
+                                  );
+                                })
+                          ],
+                        ),
+                      ),
                       Text(
                         localizations.translate(
                           i18_local.deliverIntervention.selectAgeRange,
@@ -517,7 +556,9 @@ class CustomFixedPostRecordVaccinationPageState
                                   return RadioList(
                                     radioDigitButtons: ageRangeOptions
                                         .map((age) => RadioButtonModel(
-                                            code: age.code, name: age.code))
+                                            code: age.code,
+                                            name: localizations
+                                                .translate(age.code)))
                                         .toList(),
                                     groupValue: ageRangeSelected ?? '',
                                     onChanged: (value) {
@@ -544,6 +585,22 @@ class CustomFixedPostRecordVaccinationPageState
                           setState(() {
                             drugType = "MEASLES";
                           });
+
+                          if (genderSelected == null ||
+                              (genderSelected?.isEmpty ?? true)) {
+                            await DigitToast.show(
+                              context,
+                              options: DigitToastOptions(
+                                localizations.translate(
+                                    i18_local.deliverIntervention.selectGender),
+                                true,
+                                theme,
+                              ),
+                            );
+
+                            return;
+                          }
+
                           if (ageRangeSelected == null ||
                               (ageRangeSelected?.isEmpty ?? true)) {
                             await DigitToast.show(
@@ -561,6 +618,13 @@ class CustomFixedPostRecordVaccinationPageState
 
                           var ageRange = getAgeRangeSelected(ageRangeSelected);
 
+                          var gender = getGenderSelected(ageRangeSelected);
+
+                          List<AdditionalField> additionalFields = [];
+
+                          if (ageRange != null) additionalFields.add(ageRange);
+                          if (gender != null) additionalFields.add(gender);
+
                           if (context.mounted) {
                             setState(() {
                               measlesBeneficiaryCount += 1;
@@ -570,28 +634,27 @@ class CustomFixedPostRecordVaccinationPageState
 
                             context.read<FixedPostBloc>().add(
                                   FixedPostDeliveryEvent(
-                                      latitude: latKey.text.isNotEmpty
-                                          ? double.parse(latKey.text)
-                                          : fixedPostState.latitude,
-                                      longitude: lngKey.text.isNotEmpty
-                                          ? double.parse(lngKey.text)
-                                          : fixedPostState.longitude,
-                                      locationAccuracy:
-                                          accuracyKey.text.isNotEmpty
-                                              ? double.parse(accuracyKey.text)
-                                              : fixedPostState.locationAccuracy,
-                                      curCount:
-                                          (fixedPostState.curCount == null)
-                                              ? 1
-                                              : fixedPostState.curCount! + 1,
-                                      totalCount:
-                                          (fixedPostState.totalCount == null)
-                                              ? 1
-                                              : fixedPostState.totalCount! + 1,
-                                      action: widget.postType,
-                                      scannedResource: "MEASLES",
-                                      additionalFieldsCaptured:
-                                          ageRange == null ? [] : [ageRange]),
+                                    latitude: latKey.text.isNotEmpty
+                                        ? double.parse(latKey.text)
+                                        : fixedPostState.latitude,
+                                    longitude: lngKey.text.isNotEmpty
+                                        ? double.parse(lngKey.text)
+                                        : fixedPostState.longitude,
+                                    locationAccuracy:
+                                        accuracyKey.text.isNotEmpty
+                                            ? double.parse(accuracyKey.text)
+                                            : fixedPostState.locationAccuracy,
+                                    curCount: (fixedPostState.curCount == null)
+                                        ? 1
+                                        : fixedPostState.curCount! + 1,
+                                    totalCount:
+                                        (fixedPostState.totalCount == null)
+                                            ? 1
+                                            : fixedPostState.totalCount! + 1,
+                                    action: widget.postType,
+                                    scannedResource: "MEASLES",
+                                    additionalFieldsCaptured: additionalFields,
+                                  ),
                                 );
 
                             // set age range empty once selection done and event submitted
@@ -618,6 +681,13 @@ class CustomFixedPostRecordVaccinationPageState
       return null;
     }
     return AdditionalField("ageRange", heightRangeSelected);
+  }
+
+  AdditionalField? getGenderSelected(String? genderSelected) {
+    if (genderSelected == null) {
+      return null;
+    }
+    return AdditionalField("gender", genderSelected);
   }
 
   AdditionalField? getHeightRangeSelected(String? heightRangeSelected) {
@@ -658,17 +728,17 @@ class CustomFixedPostRecordVaccinationPageState
   ) {
     if (resources == null || resources.isEmpty) return [];
 
-    return context.projectTypeCode == ProjectTypes.oncho.toValue()
+    return context.projectTypeCode == ProjectTypes.pmo.toValue()
         ? resources
             .whereNot((resource) =>
                 resource.productVariantId == "PVAR-2025-09-01-000022" ||
-                resource.productVariantId == "PVAR-2025-09-01-000021")
+                resource.productVariantId == "PVAR-2025-09-01-000021" ||
+                resource.productVariantId == "PVAR-2025-09-04-000023")
             .toList()
         : resources
             .whereNot((resource) =>
                 resource.productVariantId == "PVAR-2025-09-01-000022" ||
-                resource.productVariantId == "PVAR-2025-09-01-000021" ||
-                resource.productVariantId == "PVAR-2025-09-01-000023")
+                resource.productVariantId == "PVAR-2025-09-01-000021")
             .toList();
   }
 }

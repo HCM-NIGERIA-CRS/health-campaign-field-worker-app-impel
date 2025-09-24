@@ -887,7 +887,7 @@ class CustomIndividualDetailsPolioSMCPageState
                                                   );
 
                                               if (context.projectTypeCode ==
-                                                      ProjectTypes.oncho
+                                                      ProjectTypes.pmo
                                                           .toValue() &&
                                                   onchoFlow) {
                                                 hideFieldsBasedOnAge = true;
@@ -1532,11 +1532,10 @@ class CustomIndividualDetailsPolioSMCPageState
           (element) =>
               element.toLowerCase() ==
               (individual?.additionalFields?.fields
-                      ?.firstWhereOrNull((e) => e.key == "disability")
-                      ?.value
-                      ?.toString()
-                      .toLowerCase() ??
-                  "no"),
+                  ?.firstWhereOrNull((e) => e.key == "disability")
+                  ?.value
+                  ?.toString()
+                  .toLowerCase()),
         ),
       ),
     });
