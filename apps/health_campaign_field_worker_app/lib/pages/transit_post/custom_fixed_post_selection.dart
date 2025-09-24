@@ -27,6 +27,7 @@ import '../../models/entities/user_action_enums.dart';
 import '../../utils/i18_key_constants.dart' as i18_local;
 
 import '../../router/app_router.dart';
+import '../../widgets/custom_pop_route.dart';
 import '../campaign_delivery_select.dart';
 
 @RoutePage()
@@ -65,207 +66,213 @@ class CustomFixedPostSelectionPageState
   Widget build(BuildContext context) {
     return BlocBuilder<FixedPostBloc, FixedPostState>(
         builder: (context, fixedPostState) {
-      return Scaffold(
-        body: fixedPostState.loading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : ReactiveFormBuilder(
-                form: () => buildFormGroup(),
-                builder: (_, form, __) => BlocListener<LocationBloc,
-                        LocationState>(
-                    listener: (context, locationState) {
-                      if (locationState.accuracy != null) {
-                        //Hide the dialog after 1 seconds
-                        Future.delayed(const Duration(seconds: 1), () {
-                          DigitComponentsUtils.hideDialog(context);
-                        });
-                      }
+      return GlobalBackHandler(
+        child: Scaffold(
+          body: fixedPostState.loading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : ReactiveFormBuilder(
+                  form: () => buildFormGroup(),
+                  builder: (_, form, __) => BlocListener<LocationBloc,
+                          LocationState>(
+                      listener: (context, locationState) {
+                        if (locationState.accuracy != null) {
+                          //Hide the dialog after 1 seconds
+                          Future.delayed(const Duration(seconds: 1), () {
+                            DigitComponentsUtils.hideDialog(context);
+                          });
+                        }
 
-                      final lat = locationState.latitude;
-                      final lng = locationState.longitude;
-                      final accuracy = locationState.accuracy;
+                        final lat = locationState.latitude;
+                        final lng = locationState.longitude;
+                        final accuracy = locationState.accuracy;
 
-                      form.control(_latKey).value ??= lat;
-                      form.control(_lngKey).value ??= lng;
-                      form.control(_accuracyKey).value ??= accuracy;
-                    },
-                    listenWhen: (previous, current) {
-                      final lat = form.control(_latKey).value;
-                      final lng = form.control(_lngKey).value;
-                      final accuracy = form.control(_accuracyKey).value;
+                        form.control(_latKey).value ??= lat;
+                        form.control(_lngKey).value ??= lng;
+                        form.control(_accuracyKey).value ??= accuracy;
+                      },
+                      listenWhen: (previous, current) {
+                        final lat = form.control(_latKey).value;
+                        final lng = form.control(_lngKey).value;
+                        final accuracy = form.control(_accuracyKey).value;
 
-                      return lat != null || lng != null || accuracy != null
-                          ? false
-                          : true;
-                    },
-                    child: ScrollableContent(
-                      header: const BackNavigationHelpHeaderWidget(),
-                      enableFixedDigitButton: true,
-                      footer: DigitCard(
-                        margin: const EdgeInsets.only(top: spacer2),
-                        children: [
-                          DigitButton(
-                            label: localizations.translate(
-                              i18_local.common.coreCommonNext,
-                            ),
-                            isDisabled: !form.valid,
-                            onPressed: () async {
-                              form.markAllAsTouched();
-                              if (!form.valid) return;
-
-                              final transitPostName =
-                                  form.control(_transitPostName).value;
-                              final lat = form.control(_latKey).value;
-                              final lng = form.control(_lngKey).value;
-                              final accuracy = form.control(_accuracyKey).value;
-
-                              context
-                                  .read<FixedPostBloc>()
-                                  .add(FixedPostSelectionEvent(
-                                    longitude: lng,
-                                    latitude: lat,
-                                    locationAccuracy: accuracy,
-                                    fixedPostName: transitPostName,
-                                    fixedPostType: "",
-                                  ));
-
-                              if (context.mounted) {
-                                context.router.push(
-                                    CustomFixedPostRecordVaccinationRoute(
-                                        postType:
-                                            UserActionEnums.fixed.toValue()));
-                              }
-                            },
-                            type: DigitButtonType.primary,
-                            size: DigitButtonSize.large,
-                            mainAxisSize: MainAxisSize.max,
-                          )
-                        ],
-                      ),
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
+                        return lat != null || lng != null || accuracy != null
+                            ? false
+                            : true;
+                      },
+                      child: ScrollableContent(
+                        header: const BackNavigationHelpHeaderWidget(),
+                        enableFixedDigitButton: true,
+                        footer: DigitCard(
+                          margin: const EdgeInsets.only(top: spacer2),
                           children: [
-                            DeliveryWidget(
-                              count: fixedPostState.totalCount ?? 0,
-                              description: localizations.translate(
-                                  i18.transitPost.totalDeliveriesDescription),
-                              width: MediaQuery.of(context).size.width * 0.5,
-                            ),
-                            DeliveryWidget(
-                              count: fixedPostState.curCount ?? 0,
-                              description: localizations.translate(
-                                  i18.transitPost.todayDeliveriesDescription),
-                              width: MediaQuery.of(context).size.width * 0.5,
+                            DigitButton(
+                              label: localizations.translate(
+                                i18_local.common.coreCommonNext,
+                              ),
+                              isDisabled: !form.valid,
+                              onPressed: () async {
+                                form.markAllAsTouched();
+                                if (!form.valid) return;
+
+                                final transitPostName =
+                                    form.control(_transitPostName).value;
+                                final lat = form.control(_latKey).value;
+                                final lng = form.control(_lngKey).value;
+                                final accuracy =
+                                    form.control(_accuracyKey).value;
+
+                                context
+                                    .read<FixedPostBloc>()
+                                    .add(FixedPostSelectionEvent(
+                                      longitude: lng,
+                                      latitude: lat,
+                                      locationAccuracy: accuracy,
+                                      fixedPostName: transitPostName,
+                                      fixedPostType: "",
+                                    ));
+
+                                if (context.mounted) {
+                                  context.router.push(
+                                      CustomFixedPostRecordVaccinationRoute(
+                                          postType:
+                                              UserActionEnums.fixed.toValue()));
+                                }
+                              },
+                              type: DigitButtonType.primary,
+                              size: DigitButtonSize.large,
+                              mainAxisSize: MainAxisSize.max,
                             )
                           ],
                         ),
-                        DigitCard(
-                            margin: const EdgeInsets.all(spacer2),
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              ReactiveWrapperField(
-                                formControlName: _administrationAreaKey,
-                                validationMessages: {
-                                  'required': (_) => localizations.translate(
-                                        i18_registration_delivery
-                                            .householdLocation
-                                            .administrationAreaRequiredValidation,
-                                      ),
-                                },
-                                builder: (field) => LabeledField(
-                                  isRequired: true,
-                                  label: localizations.translate(
-                                    i18_registration_delivery.householdLocation
-                                        .administrationAreaFormLabel,
-                                  ),
-                                  child: DigitTextFormInput(
-                                    readOnly: true,
-                                    errorMessage: field.errorText,
-                                    initialValue: form
-                                        .control(_administrationAreaKey)
-                                        .value,
-                                    onChange: (value) {
-                                      form
+                              DeliveryWidget(
+                                count: fixedPostState.totalCount ?? 0,
+                                description: localizations.translate(
+                                    i18.transitPost.totalDeliveriesDescription),
+                                width: MediaQuery.of(context).size.width * 0.5,
+                              ),
+                              DeliveryWidget(
+                                count: fixedPostState.curCount ?? 0,
+                                description: localizations.translate(
+                                    i18.transitPost.todayDeliveriesDescription),
+                                width: MediaQuery.of(context).size.width * 0.5,
+                              )
+                            ],
+                          ),
+                          DigitCard(
+                              margin: const EdgeInsets.all(spacer2),
+                              children: [
+                                ReactiveWrapperField(
+                                  formControlName: _administrationAreaKey,
+                                  validationMessages: {
+                                    'required': (_) => localizations.translate(
+                                          i18_registration_delivery
+                                              .householdLocation
+                                              .administrationAreaRequiredValidation,
+                                        ),
+                                  },
+                                  builder: (field) => LabeledField(
+                                    isRequired: true,
+                                    label: localizations.translate(
+                                      i18_registration_delivery
+                                          .householdLocation
+                                          .administrationAreaFormLabel,
+                                    ),
+                                    child: DigitTextFormInput(
+                                      readOnly: true,
+                                      errorMessage: field.errorText,
+                                      initialValue: form
                                           .control(_administrationAreaKey)
-                                          .value = value;
-                                    },
+                                          .value,
+                                      onChange: (value) {
+                                        form
+                                            .control(_administrationAreaKey)
+                                            .value = value;
+                                      },
+                                    ),
                                   ),
                                 ),
-                              ),
-                              ReactiveWrapperField(
-                                formControlName: _accuracyKey,
-                                validationMessages: {
-                                  'required': (_) => localizations.translate(
-                                        i18_registration_delivery
-                                            .householdLocation.gpsAccuracyLabel,
-                                      ),
-                                },
-                                builder: (field) => LabeledField(
-                                  isRequired: true,
-                                  label: localizations.translate(
-                                    i18_registration_delivery
-                                        .householdLocation.gpsAccuracyLabel,
-                                  ),
-                                  child: DigitTextFormInput(
-                                    readOnly: true,
-                                    errorMessage: field.errorText,
-                                    initialValue:
-                                        (form.control(_accuracyKey).value ??
-                                                0.0)
-                                            .toString(),
-                                    onChange: (value) {
-                                      form.control(_accuracyKey).value = value;
-                                    },
-                                  ),
-                                ),
-                              ),
-                              ReactiveWrapperField(
-                                formControlName: _transitPostName,
-                                validationMessages: {
-                                  "required": (_) => localizations
-                                      .translate(i18.common.coreCommonRequired)
-                                },
-                                builder: (field) => LabeledField(
-                                  label: localizations.translate(
-                                    i18_local
-                                        .transitFixedPost.fixedPostnameLabel,
-                                  ),
-                                  isRequired: true,
-                                  child: DigitDropdown(
-                                    selectedOption: DropdownItem(
-                                        name: localizations.translate(form
-                                                .control(_transitPostName)
-                                                .value ??
-                                            ''),
-                                        code: form
-                                                .control(_transitPostName)
-                                                .value ??
-                                            ''),
-                                    items: TransitPostSingleton()
-                                            .transitPostType
-                                            ?.map((transitPostType) =>
-                                                DropdownItem(
-                                                    name:
-                                                        localizations.translate(
-                                                            transitPostType),
-                                                    code: transitPostType))
-                                            .toList() ??
-                                        [],
-                                    onSelect: (value) {
-                                      setState(() {
-                                        form.control(_transitPostName).value =
-                                            value.code;
-                                      });
-                                    },
-                                    errorMessage: field.errorText,
+                                ReactiveWrapperField(
+                                  formControlName: _accuracyKey,
+                                  validationMessages: {
+                                    'required': (_) => localizations.translate(
+                                          i18_registration_delivery
+                                              .householdLocation
+                                              .gpsAccuracyLabel,
+                                        ),
+                                  },
+                                  builder: (field) => LabeledField(
+                                    isRequired: true,
+                                    label: localizations.translate(
+                                      i18_registration_delivery
+                                          .householdLocation.gpsAccuracyLabel,
+                                    ),
+                                    child: DigitTextFormInput(
+                                      readOnly: true,
+                                      errorMessage: field.errorText,
+                                      initialValue:
+                                          (form.control(_accuracyKey).value ??
+                                                  0.0)
+                                              .toString(),
+                                      onChange: (value) {
+                                        form.control(_accuracyKey).value =
+                                            value;
+                                      },
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ]),
-                      ],
-                    )),
-              ),
+                                ReactiveWrapperField(
+                                  formControlName: _transitPostName,
+                                  validationMessages: {
+                                    "required": (_) => localizations.translate(
+                                        i18.common.coreCommonRequired)
+                                  },
+                                  builder: (field) => LabeledField(
+                                    label: localizations.translate(
+                                      i18_local
+                                          .transitFixedPost.fixedPostnameLabel,
+                                    ),
+                                    isRequired: true,
+                                    child: DigitDropdown(
+                                      selectedOption: DropdownItem(
+                                          name: localizations.translate(form
+                                                  .control(_transitPostName)
+                                                  .value ??
+                                              ''),
+                                          code: form
+                                                  .control(_transitPostName)
+                                                  .value ??
+                                              ''),
+                                      items: TransitPostSingleton()
+                                              .transitPostType
+                                              ?.map((transitPostType) =>
+                                                  DropdownItem(
+                                                      name: localizations
+                                                          .translate(
+                                                              transitPostType),
+                                                      code: transitPostType))
+                                              .toList() ??
+                                          [],
+                                      onSelect: (value) {
+                                        setState(() {
+                                          form.control(_transitPostName).value =
+                                              value.code;
+                                        });
+                                      },
+                                      errorMessage: field.errorText,
+                                    ),
+                                  ),
+                                ),
+                              ]),
+                        ],
+                      )),
+                ),
+        ),
       );
     });
   }

@@ -17,6 +17,7 @@ import 'package:registration_delivery/widgets/inventory/no_facilities_assigned_d
 
 import '../../../utils/app_enums.dart';
 import '../../../widgets/custom_back_navigation.dart';
+import '../../../widgets/custom_pop_route.dart';
 import '../../../widgets/localized.dart';
 import 'package:registration_delivery/blocs/delivery_intervention/deliver_intervention.dart';
 import 'package:registration_delivery/blocs/household_overview/household_overview.dart';
@@ -154,8 +155,8 @@ class CustomReferBeneficiaryVASPageState
         return WillPopScope(
           onWillPop: () =>
               _onBackPressed(context, widget.isReadministrationUnSuccessful),
-          child: Scaffold(
-            body: Scaffold(
+          child: GlobalBackHandler(
+            child: Scaffold(
               body: ReactiveFormBuilder(
                 form: () => buildForm(facilities),
                 builder: (context, form, child) => ScrollableContent(

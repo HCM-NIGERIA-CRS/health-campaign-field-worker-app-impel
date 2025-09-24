@@ -51,6 +51,7 @@ import '../../blocs/registration_delivery/custom_beneficairy_registration.dart';
 import '../../router/app_router.dart';
 import '../../utils/utils.dart' as local_utils;
 import '../../utils/constants.dart' as local_constants;
+import '../../widgets/custom_pop_route.dart';
 import '../../widgets/showcase/showcase_wrappers.dart';
 import '../../widgets/date/custom_digit_dob_picker.dart';
 import 'custom_beneficiary_acknowledgement.dart';
@@ -168,513 +169,456 @@ class CustomIndividualDetailsPolioSMCPageState
     DateTime before150Years = DateTime(now.year - 150, now.month, now.day);
     final textTheme = theme.digitTextTheme(context);
 
-    return Scaffold(
-      body: ReactiveFormBuilder(
-          form: () => buildForm(bloc.state),
-          builder: (context, form, child) =>
-              BlocListener<UniqueIdBloc, UniqueIdState>(
-                listener: (context, uniqueIdState) {
-                  uniqueIdState.maybeWhen(
-                      orElse: () {},
-                      idCount: (availableCount, totalCount) {
-                        if (availableCount > 0) {
-                          context
-                              .read<UniqueIdBloc>()
-                              .add(const UniqueIdEvent.fetchAUniqueId());
-                        }
-                      },
-                      aUniqueId: (uniqueId) {
-                        generatedUniqueId = uniqueId.id;
-                      });
-                },
-                child:
-                    BlocConsumer<SearchHouseholdsBloc, SearchHouseholdsState>(
-                  listener: (context, searchHouseholdsState) {
-                    if (isCreate) {
-                      HouseholdMemberWrapper? householdMemberWrapper =
-                          searchHouseholdsState.householdMembers.lastOrNull;
-
-                      if (householdMemberWrapper != null) {
-                        router.push(CustomBeneficiaryAcknowledgementRoute(
-                          enableViewHousehold: true,
-                          acknowledgementType: AcknowledgementType.addHousehold,
-                        ));
-                      }
-                    } else if (isAddIndividual) {
-                      HouseholdMemberWrapper? householdMemberWrapper =
-                          searchHouseholdsState.householdMembers.lastOrNull;
-
-                      if (householdMemberWrapper != null) {
-                        if (individualCaptured != null) {
-                          // info get the relevant project beneficiary here
-                          final projectBeneficiaryAddMember =
-                              householdMemberWrapper
-                                  .projectBeneficiaries
-                                  ?.where((e) =>
-                                      e.beneficiaryClientReferenceId ==
-                                      individualCaptured!.clientReferenceId)
-                                  .toSet();
-                          // assumption add individual here is used for creating child,
-                          // if invalid age send to overview no checklist
-
-                          routeBasedOnFlow(
-                              individualCaptured!,
-                              projectBeneficiaryAddMember?.first,
-                              householdMemberWrapper!,
-                              router,
-                              context);
-                        } else {
-                          (router.parent() as StackRouter).maybePop();
-                          router.popUntil((route) =>
-                              route.settings.name ==
-                              SearchBeneficiaryRoute.name);
-                          router.push(CustomBeneficiaryAcknowledgementRoute(
-                            enableViewHousehold: true,
-                            acknowledgementType: AcknowledgementType.addMember,
-                          ));
-                        }
-                      }
-                    } else if (isEditIndividual) {
-                      HouseholdMemberWrapper? householdMemberWrapper =
-                          searchHouseholdsState.householdMembers.lastOrNull;
-
-                      if (householdMemberWrapper != null) {
-                        if (individualCaptured != null) {
-                          final overviewBloc =
-                              context.read<HouseholdOverviewBloc>();
-
-                          overviewBloc.add(
-                            HouseholdOverviewReloadEvent(
-                              projectId: RegistrationDeliverySingleton()
-                                  .projectId
-                                  .toString(),
-                              projectBeneficiaryType:
-                                  RegistrationDeliverySingleton()
-                                          .beneficiaryType ??
-                                      BeneficiaryType.household,
-                            ),
-                          );
-                          overviewBloc.stream
-                              .firstWhere((element) =>
-                                  element.loading == false &&
-                                  element.householdMemberWrapper.household !=
-                                      null)
-                              .then((value) {
-                            HouseholdMemberWrapper memberWrapper =
-                                overviewBloc.state.householdMemberWrapper;
-                            final route = router.parent() as StackRouter;
-                            route.popUntilRouteWithName(
-                                SearchBeneficiaryRoute.name);
-                            route.push(BeneficiaryWrapperRoute(
-                                wrapper: memberWrapper));
-                          });
-                        } else {
-                          (router.parent() as StackRouter).maybePop();
-                          router.popUntil((route) =>
-                              route.settings.name ==
-                              SearchBeneficiaryRoute.name);
-                          router.push(CustomBeneficiaryAcknowledgementRoute(
-                            enableViewHousehold: true,
-                            acknowledgementType: AcknowledgementType.addMember,
-                          ));
-                        }
-                      }
-                    }
+    return GlobalBackHandler(
+      child: Scaffold(
+        body: ReactiveFormBuilder(
+            form: () => buildForm(bloc.state),
+            builder: (context, form, child) =>
+                BlocListener<UniqueIdBloc, UniqueIdState>(
+                  listener: (context, uniqueIdState) {
+                    uniqueIdState.maybeWhen(
+                        orElse: () {},
+                        idCount: (availableCount, totalCount) {
+                          if (availableCount > 0) {
+                            context
+                                .read<UniqueIdBloc>()
+                                .add(const UniqueIdEvent.fetchAUniqueId());
+                          }
+                        },
+                        aUniqueId: (uniqueId) {
+                          generatedUniqueId = uniqueId.id;
+                        });
                   },
-                  builder: (context, searchHouseholdsState) {
-                    return BlocConsumer<CustomBeneficiaryRegistrationBloc,
-                        BeneficiaryRegistrationState>(
-                      listener: (context, state) {
-                        state.mapOrNull(persisted: (value) async {
-                          searchHouseholdsBloc
-                              .add(const SearchHouseholdsEvent.clear());
-                          searchHouseholdsBloc.add(
-                            SearchHouseholdsEvent.searchByHousehold(
-                              householdModel: value.householdModel,
-                              projectId:
-                                  RegistrationDeliverySingleton().projectId!,
-                              isProximityEnabled: false,
-                              maxRadius:
-                                  RegistrationDeliverySingleton().maxRadius,
-                            ),
-                          );
+                  child:
+                      BlocConsumer<SearchHouseholdsBloc, SearchHouseholdsState>(
+                    listener: (context, searchHouseholdsState) {
+                      if (isCreate) {
+                        HouseholdMemberWrapper? householdMemberWrapper =
+                            searchHouseholdsState.householdMembers.lastOrNull;
 
-                          final reloadState =
-                              context.read<HouseholdOverviewBloc>();
+                        if (householdMemberWrapper != null) {
+                          router.push(CustomBeneficiaryAcknowledgementRoute(
+                            enableViewHousehold: true,
+                            acknowledgementType:
+                                AcknowledgementType.addHousehold,
+                          ));
+                        }
+                      } else if (isAddIndividual) {
+                        HouseholdMemberWrapper? householdMemberWrapper =
+                            searchHouseholdsState.householdMembers.lastOrNull;
 
-                          reloadState.add(
-                            HouseholdOverviewReloadEvent(
-                              projectId:
-                                  RegistrationDeliverySingleton().projectId!,
-                              projectBeneficiaryType:
-                                  RegistrationDeliverySingleton()
-                                      .beneficiaryType!,
-                            ),
-                          );
-
+                        if (householdMemberWrapper != null) {
                           if (individualCaptured != null) {
-                            reloadState.add(
-                              HouseholdOverviewEvent.selectedIndividual(
-                                individualModel: individualCaptured!,
+                            // info get the relevant project beneficiary here
+                            final projectBeneficiaryAddMember =
+                                householdMemberWrapper.projectBeneficiaries
+                                    ?.where((e) =>
+                                        e.beneficiaryClientReferenceId ==
+                                        individualCaptured!.clientReferenceId)
+                                    .toSet();
+                            // assumption add individual here is used for creating child,
+                            // if invalid age send to overview no checklist
+
+                            routeBasedOnFlow(
+                                individualCaptured!,
+                                projectBeneficiaryAddMember?.first,
+                                householdMemberWrapper!,
+                                router,
+                                context);
+                          } else {
+                            (router.parent() as StackRouter).maybePop();
+                            router.popUntil((route) =>
+                                route.settings.name ==
+                                SearchBeneficiaryRoute.name);
+                            router.push(CustomBeneficiaryAcknowledgementRoute(
+                              enableViewHousehold: true,
+                              acknowledgementType:
+                                  AcknowledgementType.addMember,
+                            ));
+                          }
+                        }
+                      } else if (isEditIndividual) {
+                        HouseholdMemberWrapper? householdMemberWrapper =
+                            searchHouseholdsState.householdMembers.lastOrNull;
+
+                        if (householdMemberWrapper != null) {
+                          if (individualCaptured != null) {
+                            final overviewBloc =
+                                context.read<HouseholdOverviewBloc>();
+
+                            overviewBloc.add(
+                              HouseholdOverviewReloadEvent(
+                                projectId: RegistrationDeliverySingleton()
+                                    .projectId
+                                    .toString(),
+                                projectBeneficiaryType:
+                                    RegistrationDeliverySingleton()
+                                            .beneficiaryType ??
+                                        BeneficiaryType.household,
                               ),
                             );
+                            overviewBloc.stream
+                                .firstWhere((element) =>
+                                    element.loading == false &&
+                                    element.householdMemberWrapper.household !=
+                                        null)
+                                .then((value) {
+                              HouseholdMemberWrapper memberWrapper =
+                                  overviewBloc.state.householdMemberWrapper;
+                              final route = router.parent() as StackRouter;
+                              route.popUntilRouteWithName(
+                                  SearchBeneficiaryRoute.name);
+                              route.push(BeneficiaryWrapperRoute(
+                                  wrapper: memberWrapper));
+                            });
+                          } else {
+                            (router.parent() as StackRouter).maybePop();
+                            router.popUntil((route) =>
+                                route.settings.name ==
+                                SearchBeneficiaryRoute.name);
+                            router.push(CustomBeneficiaryAcknowledgementRoute(
+                              enableViewHousehold: true,
+                              acknowledgementType:
+                                  AcknowledgementType.addMember,
+                            ));
                           }
-                        });
-                      },
-                      builder: (context, state) {
-                        return ScrollableContent(
-                          enableFixedDigitButton: true,
-                          header: Column(children: [
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: spacer2),
-                              child: CustomBackNavigationHelpHeaderWidget(
-                                showHelp: false,
-                                handleback: () {
-                                  if (isEditIndividual) {
-                                    final parent =
-                                        context.router.parent() as StackRouter;
-                                    parent.maybePop();
-                                  } else {
-                                    searchHouseholdsBloc.add(
-                                        const SearchHouseholdsEvent.clear());
-                                    context.router.maybePop();
-                                  }
-                                },
+                        }
+                      }
+                    },
+                    builder: (context, searchHouseholdsState) {
+                      return BlocConsumer<CustomBeneficiaryRegistrationBloc,
+                          BeneficiaryRegistrationState>(
+                        listener: (context, state) {
+                          state.mapOrNull(persisted: (value) async {
+                            searchHouseholdsBloc
+                                .add(const SearchHouseholdsEvent.clear());
+                            searchHouseholdsBloc.add(
+                              SearchHouseholdsEvent.searchByHousehold(
+                                householdModel: value.householdModel,
+                                projectId:
+                                    RegistrationDeliverySingleton().projectId!,
+                                isProximityEnabled: false,
+                                maxRadius:
+                                    RegistrationDeliverySingleton().maxRadius,
                               ),
-                            ),
-                          ]),
-                          footer: DigitCard(
-                              margin: const EdgeInsets.only(top: spacer2),
-                              children: [
-                                ValueListenableBuilder(
-                                  valueListenable: clickedStatus,
-                                  builder: (context, bool isClicked, _) {
-                                    return DigitButton(
-                                      label: state.mapOrNull(
-                                            editIndividual: (value) =>
-                                                localizations.translate(
-                                                    i18.common.coreCommonSave),
-                                          ) ??
-                                          localizations.translate(
-                                              i18.common.coreCommonSubmit),
-                                      type: DigitButtonType.primary,
-                                      size: DigitButtonSize.large,
-                                      mainAxisSize: MainAxisSize.max,
-                                      onPressed: () async {
-                                        final age =
-                                            form.control(_dobKey).value == null
-                                                ? DigitDOBAgeConvertor(
-                                                    years: 0,
-                                                    months: 0,
-                                                    days: 0)
-                                                : DigitDateUtils.calculateAge(
-                                                    form.control(_dobKey).value
-                                                        as DateTime,
-                                                  );
-                                        if ((age.years == 0 &&
-                                                age.months == 0) ||
-                                            age.years >= 150 &&
-                                                age.months > 0) {
-                                          form
-                                              .control(_dobKey)
-                                              .setErrors({'': true});
-                                        }
+                            );
 
-                                        if (age.years < 18 &&
-                                            widget.isHeadOfHousehold) {
-                                          await DigitToast.show(
-                                            context,
-                                            options: DigitToastOptions(
-                                              localizations.translate(i18_local
-                                                  .individualDetails
-                                                  .headAgeValidError),
-                                              true,
-                                              theme,
+                            final reloadState =
+                                context.read<HouseholdOverviewBloc>();
+
+                            reloadState.add(
+                              HouseholdOverviewReloadEvent(
+                                projectId:
+                                    RegistrationDeliverySingleton().projectId!,
+                                projectBeneficiaryType:
+                                    RegistrationDeliverySingleton()
+                                        .beneficiaryType!,
+                              ),
+                            );
+
+                            if (individualCaptured != null) {
+                              reloadState.add(
+                                HouseholdOverviewEvent.selectedIndividual(
+                                  individualModel: individualCaptured!,
+                                ),
+                              );
+                            }
+                          });
+                        },
+                        builder: (context, state) {
+                          return ScrollableContent(
+                            enableFixedDigitButton: true,
+                            header: Column(children: [
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: spacer2),
+                                child: CustomBackNavigationHelpHeaderWidget(
+                                  showHelp: false,
+                                  handleback: () {
+                                    if (isEditIndividual) {
+                                      final parent = context.router.parent()
+                                          as StackRouter;
+                                      parent.maybePop();
+                                    } else {
+                                      searchHouseholdsBloc.add(
+                                          const SearchHouseholdsEvent.clear());
+                                      context.router.maybePop();
+                                    }
+                                  },
+                                ),
+                              ),
+                            ]),
+                            footer: DigitCard(
+                                margin: const EdgeInsets.only(top: spacer2),
+                                children: [
+                                  ValueListenableBuilder(
+                                    valueListenable: clickedStatus,
+                                    builder: (context, bool isClicked, _) {
+                                      return DigitButton(
+                                        label: state.mapOrNull(
+                                              editIndividual: (value) =>
+                                                  localizations.translate(i18
+                                                      .common.coreCommonSave),
+                                            ) ??
+                                            localizations.translate(
+                                                i18.common.coreCommonSubmit),
+                                        type: DigitButtonType.primary,
+                                        size: DigitButtonSize.large,
+                                        mainAxisSize: MainAxisSize.max,
+                                        onPressed: () async {
+                                          final age = form
+                                                      .control(_dobKey)
+                                                      .value ==
+                                                  null
+                                              ? DigitDOBAgeConvertor(
+                                                  years: 0, months: 0, days: 0)
+                                              : DigitDateUtils.calculateAge(
+                                                  form.control(_dobKey).value
+                                                      as DateTime,
+                                                );
+                                          if ((age.years == 0 &&
+                                                  age.months == 0) ||
+                                              age.years >= 150 &&
+                                                  age.months > 0) {
+                                            form
+                                                .control(_dobKey)
+                                                .setErrors({'': true});
+                                          }
+
+                                          if (age.years < 18 &&
+                                              widget.isHeadOfHousehold) {
+                                            await DigitToast.show(
+                                              context,
+                                              options: DigitToastOptions(
+                                                localizations.translate(
+                                                    i18_local.individualDetails
+                                                        .headAgeValidError),
+                                                true,
+                                                theme,
+                                              ),
+                                            );
+
+                                            return;
+                                          }
+
+                                          final submit = await showDialog(
+                                            context: context,
+                                            builder: (ctx) => Popup(
+                                              title: localizations.translate(
+                                                i18.deliverIntervention
+                                                    .dialogTitle,
+                                              ),
+                                              description:
+                                                  localizations.translate(
+                                                i18.deliverIntervention
+                                                    .dialogContent,
+                                              ),
+                                              actions: [
+                                                DigitButton(
+                                                    label:
+                                                        localizations.translate(
+                                                      i18.common
+                                                          .coreCommonSubmit,
+                                                    ),
+                                                    onPressed: () {
+                                                      clickedStatus.value =
+                                                          true;
+                                                      Navigator.of(
+                                                        context,
+                                                        rootNavigator: true,
+                                                      ).pop(true);
+                                                    },
+                                                    type:
+                                                        DigitButtonType.primary,
+                                                    size:
+                                                        DigitButtonSize.large),
+                                                DigitButton(
+                                                    label:
+                                                        localizations.translate(
+                                                      i18.common
+                                                          .coreCommonCancel,
+                                                    ),
+                                                    onPressed: () =>
+                                                        Navigator.of(
+                                                          context,
+                                                          rootNavigator: true,
+                                                        ).pop(false),
+                                                    type: DigitButtonType
+                                                        .secondary,
+                                                    size: DigitButtonSize.large)
+                                              ],
                                             ),
                                           );
 
-                                          return;
-                                        }
+                                          if (submit ?? false) {
+                                            final userId =
+                                                RegistrationDeliverySingleton()
+                                                    .loggedInUserUuid;
+                                            final projectId =
+                                                RegistrationDeliverySingleton()
+                                                    .projectId;
+                                            form.markAllAsTouched();
+                                            if (!form.valid) return;
+                                            FocusManager.instance.primaryFocus
+                                                ?.unfocus();
 
-                                        final submit = await showDialog(
-                                          context: context,
-                                          builder: (ctx) => Popup(
-                                            title: localizations.translate(
-                                              i18.deliverIntervention
-                                                  .dialogTitle,
-                                            ),
-                                            description:
-                                                localizations.translate(
-                                              i18.deliverIntervention
-                                                  .dialogContent,
-                                            ),
-                                            actions: [
-                                              DigitButton(
-                                                  label:
-                                                      localizations.translate(
-                                                    i18.common.coreCommonSubmit,
+                                            isEditIndividual = false;
+                                            isAddIndividual = false;
+                                            state.maybeWhen(
+                                              orElse: () {
+                                                return;
+                                              },
+                                              create: (
+                                                addressModel,
+                                                householdModel,
+                                                individualModel,
+                                                projectBeneficiaryModel,
+                                                registrationDate,
+                                                searchQuery,
+                                                loading,
+                                                isHeadOfHousehold,
+                                              ) async {
+                                                isCreate = true;
+
+                                                final individual =
+                                                    _getIndividualModel(
+                                                  context,
+                                                  form: form,
+                                                  oldIndividual: null,
+                                                  generatedUniqueId:
+                                                      generatedUniqueId,
+                                                );
+
+                                                final boundary =
+                                                    RegistrationDeliverySingleton()
+                                                        .boundary;
+
+                                                bloc.add(
+                                                  BeneficiaryRegistrationSaveIndividualDetailsEvent(
+                                                    model: individual,
+                                                    isHeadOfHousehold: widget
+                                                        .isHeadOfHousehold,
                                                   ),
-                                                  onPressed: () {
-                                                    clickedStatus.value = true;
-                                                    Navigator.of(
-                                                      context,
-                                                      rootNavigator: true,
-                                                    ).pop(true);
-                                                  },
-                                                  type: DigitButtonType.primary,
-                                                  size: DigitButtonSize.large),
-                                              DigitButton(
-                                                  label:
-                                                      localizations.translate(
-                                                    i18.common.coreCommonCancel,
-                                                  ),
-                                                  onPressed: () => Navigator.of(
-                                                        context,
-                                                        rootNavigator: true,
-                                                      ).pop(false),
-                                                  type:
-                                                      DigitButtonType.secondary,
-                                                  size: DigitButtonSize.large)
-                                            ],
-                                          ),
-                                        );
-
-                                        if (submit ?? false) {
-                                          final userId =
-                                              RegistrationDeliverySingleton()
-                                                  .loggedInUserUuid;
-                                          final projectId =
-                                              RegistrationDeliverySingleton()
-                                                  .projectId;
-                                          form.markAllAsTouched();
-                                          if (!form.valid) return;
-                                          FocusManager.instance.primaryFocus
-                                              ?.unfocus();
-
-                                          isEditIndividual = false;
-                                          isAddIndividual = false;
-                                          state.maybeWhen(
-                                            orElse: () {
-                                              return;
-                                            },
-                                            create: (
-                                              addressModel,
-                                              householdModel,
-                                              individualModel,
-                                              projectBeneficiaryModel,
-                                              registrationDate,
-                                              searchQuery,
-                                              loading,
-                                              isHeadOfHousehold,
-                                            ) async {
-                                              isCreate = true;
-
-                                              final individual =
-                                                  _getIndividualModel(
-                                                context,
-                                                form: form,
-                                                oldIndividual: null,
-                                                generatedUniqueId:
-                                                    generatedUniqueId,
-                                              );
-
-                                              final boundary =
-                                                  RegistrationDeliverySingleton()
-                                                      .boundary;
-
-                                              bloc.add(
-                                                BeneficiaryRegistrationSaveIndividualDetailsEvent(
-                                                  model: individual,
-                                                  isHeadOfHousehold:
-                                                      widget.isHeadOfHousehold,
-                                                ),
-                                              );
-                                              final scannerBloc = context
-                                                  .read<DigitScannerBloc>();
-                                              scannerBloc.add(
-                                                const DigitScannerEvent
-                                                    .handleScanner(),
-                                              );
-
-                                              if (scannerBloc.state.duplicate) {
-                                                Toast.showToast(context,
-                                                    message:
-                                                        localizations.translate(
-                                                      i18.deliverIntervention
-                                                          .resourceAlreadyScanned,
-                                                    ),
-                                                    type: ToastType.error);
-                                              } else {
-                                                clickedStatus.value = true;
+                                                );
                                                 final scannerBloc = context
                                                     .read<DigitScannerBloc>();
                                                 scannerBloc.add(
                                                   const DigitScannerEvent
                                                       .handleScanner(),
                                                 );
-                                                bloc.add(
-                                                  BeneficiaryRegistrationSummaryEvent(
-                                                    projectId: projectId!,
-                                                    userUuid: userId!,
-                                                    boundary: boundary!,
-                                                    tag: scannerBloc.state
-                                                            .qrCodes.isNotEmpty
-                                                        ? scannerBloc
-                                                            .state.qrCodes.first
-                                                        : null,
-                                                  ),
-                                                );
-                                                onSubmit(
-                                                  isCreate,
-                                                  isAddIndividual,
-                                                );
-                                              }
-                                            },
-                                            editIndividual: (
-                                              householdModel,
-                                              individualModel,
-                                              addressModel,
-                                              projectBeneficiaryModel,
-                                              loading,
-                                            ) async {
-                                              isEditIndividual = true;
-                                              final scannerBloc = context
-                                                  .read<DigitScannerBloc>();
-                                              scannerBloc.add(
-                                                const DigitScannerEvent
-                                                    .handleScanner(),
-                                              );
-                                              final individual =
-                                                  _getIndividualModel(
-                                                context,
-                                                form: form,
-                                                oldIndividual: individualModel,
-                                                generatedUniqueId:
-                                                    generatedUniqueId,
-                                              );
-                                              final tag = scannerBloc
-                                                      .state.qrCodes.isNotEmpty
-                                                  ? scannerBloc
-                                                      .state.qrCodes.first
-                                                  : null;
 
-                                              if (tag != null &&
-                                                  tag !=
-                                                      projectBeneficiaryModel
-                                                          ?.tag &&
-                                                  scannerBloc.state.duplicate) {
-                                                Toast.showToast(context,
-                                                    message:
-                                                        localizations.translate(
-                                                      i18.deliverIntervention
-                                                          .resourceAlreadyScanned,
-                                                    ),
-                                                    type: ToastType.error);
-                                              } else {
-                                                bloc.add(
-                                                  BeneficiaryRegistrationUpdateIndividualDetailsEvent(
-                                                    addressModel: addressModel,
-                                                    householdModel:
-                                                        householdModel,
-                                                    model: individual.copyWith(
-                                                      clientAuditDetails: (individual
-                                                                      .clientAuditDetails
-                                                                      ?.createdBy !=
-                                                                  null &&
-                                                              individual
-                                                                      .clientAuditDetails
-                                                                      ?.createdTime !=
-                                                                  null)
-                                                          ? ClientAuditDetails(
-                                                              createdBy: individual
-                                                                  .clientAuditDetails!
-                                                                  .createdBy,
-                                                              createdTime: individual
-                                                                  .clientAuditDetails!
-                                                                  .createdTime,
-                                                              lastModifiedBy:
-                                                                  RegistrationDeliverySingleton()
-                                                                      .loggedInUserUuid,
-                                                              lastModifiedTime:
-                                                                  ContextUtilityExtensions(
-                                                                          context)
-                                                                      .millisecondsSinceEpoch(),
-                                                            )
-                                                          : null,
-                                                    ),
-                                                    tag: scannerBloc.state
-                                                            .qrCodes.isNotEmpty
-                                                        ? scannerBloc
-                                                            .state.qrCodes.first
-                                                        : null,
-                                                  ),
-                                                );
-                                                onSubmit(
-                                                  false,
-                                                  isAddIndividual,
-                                                );
-
-                                                //context.router.maybePop();
-                                                Navigator.of(context).pop();
-                                              }
-                                            },
-                                            addMember: (
-                                              addressModel,
-                                              householdModel,
-                                              loading,
-                                            ) async {
-                                              isAddIndividual = true;
-                                              final individual =
-                                                  _getIndividualModel(
-                                                context,
-                                                form: form,
-                                                generatedUniqueId:
-                                                    generatedUniqueId,
-                                              );
-
-                                              setState(() {
-                                                addressModelCaptured =
-                                                    addressModel;
-                                              });
-
-                                              if (context.mounted) {
-                                                final scannerBloc = context
-                                                    .read<DigitScannerBloc>();
-                                                scannerBloc.add(
-                                                  const DigitScannerEvent
-                                                      .handleScanner(),
-                                                );
                                                 if (scannerBloc
                                                     .state.duplicate) {
-                                                  Toast.showToast(
-                                                    context,
-                                                    message:
-                                                        localizations.translate(
-                                                      i18.deliverIntervention
-                                                          .resourceAlreadyScanned,
-                                                    ),
-                                                    type: ToastType.error,
-                                                  );
+                                                  Toast.showToast(context,
+                                                      message: localizations
+                                                          .translate(
+                                                        i18.deliverIntervention
+                                                            .resourceAlreadyScanned,
+                                                      ),
+                                                      type: ToastType.error);
                                                 } else {
-                                                  individualCaptured =
-                                                      individual;
+                                                  clickedStatus.value = true;
+                                                  final scannerBloc = context
+                                                      .read<DigitScannerBloc>();
+                                                  scannerBloc.add(
+                                                    const DigitScannerEvent
+                                                        .handleScanner(),
+                                                  );
                                                   bloc.add(
-                                                    BeneficiaryRegistrationAddMemberEvent(
-                                                      beneficiaryType:
-                                                          RegistrationDeliverySingleton()
-                                                              .beneficiaryType!,
-                                                      householdModel:
-                                                          householdModel,
-                                                      individualModel:
-                                                          individual,
+                                                    BeneficiaryRegistrationSummaryEvent(
+                                                      projectId: projectId!,
+                                                      userUuid: userId!,
+                                                      boundary: boundary!,
+                                                      tag: scannerBloc
+                                                              .state
+                                                              .qrCodes
+                                                              .isNotEmpty
+                                                          ? scannerBloc.state
+                                                              .qrCodes.first
+                                                          : null,
+                                                    ),
+                                                  );
+                                                  onSubmit(
+                                                    isCreate,
+                                                    isAddIndividual,
+                                                  );
+                                                }
+                                              },
+                                              editIndividual: (
+                                                householdModel,
+                                                individualModel,
+                                                addressModel,
+                                                projectBeneficiaryModel,
+                                                loading,
+                                              ) async {
+                                                isEditIndividual = true;
+                                                final scannerBloc = context
+                                                    .read<DigitScannerBloc>();
+                                                scannerBloc.add(
+                                                  const DigitScannerEvent
+                                                      .handleScanner(),
+                                                );
+                                                final individual =
+                                                    _getIndividualModel(
+                                                  context,
+                                                  form: form,
+                                                  oldIndividual:
+                                                      individualModel,
+                                                  generatedUniqueId:
+                                                      generatedUniqueId,
+                                                );
+                                                final tag = scannerBloc.state
+                                                        .qrCodes.isNotEmpty
+                                                    ? scannerBloc
+                                                        .state.qrCodes.first
+                                                    : null;
+
+                                                if (tag != null &&
+                                                    tag !=
+                                                        projectBeneficiaryModel
+                                                            ?.tag &&
+                                                    scannerBloc
+                                                        .state.duplicate) {
+                                                  Toast.showToast(context,
+                                                      message: localizations
+                                                          .translate(
+                                                        i18.deliverIntervention
+                                                            .resourceAlreadyScanned,
+                                                      ),
+                                                      type: ToastType.error);
+                                                } else {
+                                                  bloc.add(
+                                                    BeneficiaryRegistrationUpdateIndividualDetailsEvent(
                                                       addressModel:
                                                           addressModel,
-                                                      userUuid:
-                                                          RegistrationDeliverySingleton()
-                                                              .loggedInUserUuid!,
-                                                      projectId:
-                                                          RegistrationDeliverySingleton()
-                                                              .projectId!,
+                                                      householdModel:
+                                                          householdModel,
+                                                      model:
+                                                          individual.copyWith(
+                                                        clientAuditDetails: (individual
+                                                                        .clientAuditDetails
+                                                                        ?.createdBy !=
+                                                                    null &&
+                                                                individual
+                                                                        .clientAuditDetails
+                                                                        ?.createdTime !=
+                                                                    null)
+                                                            ? ClientAuditDetails(
+                                                                createdBy: individual
+                                                                    .clientAuditDetails!
+                                                                    .createdBy,
+                                                                createdTime: individual
+                                                                    .clientAuditDetails!
+                                                                    .createdTime,
+                                                                lastModifiedBy:
+                                                                    RegistrationDeliverySingleton()
+                                                                        .loggedInUserUuid,
+                                                                lastModifiedTime:
+                                                                    ContextUtilityExtensions(
+                                                                            context)
+                                                                        .millisecondsSinceEpoch(),
+                                                              )
+                                                            : null,
+                                                      ),
                                                       tag: scannerBloc
                                                               .state
                                                               .qrCodes
@@ -688,176 +632,380 @@ class CustomIndividualDetailsPolioSMCPageState
                                                     false,
                                                     isAddIndividual,
                                                   );
+
+                                                  //context.router.maybePop();
+                                                  Navigator.of(context).pop();
                                                 }
-                                              }
-                                            },
-                                          );
-                                        }
-                                      },
-                                    );
-                                  },
-                                ),
-                              ]),
-                          slivers: [
-                            SliverToBoxAdapter(
-                                child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                  if (RegistrationDeliverySingleton()
-                                      .idTypeOptions!
-                                      .contains(IdentifierTypes
-                                          .uniqueBeneficiaryID
-                                          .toValue()))
-                                    displayUniqueIdCount(theme, form),
-                                  DigitCard(
-                                      margin: const EdgeInsets.all(spacer2),
-                                      children: [
-                                        Text(
-                                          localizations.translate(
-                                            widget.isHeadOfHousehold
-                                                ? i18_local.individualDetails
-                                                    .individualsDetailsHeadingLabelText
-                                                : i18_local.individualDetails
-                                                    .individualsRegistrationHeadingLabelText,
-                                          ),
-                                          style: textTheme.headingXl.copyWith(
-                                            color:
-                                                theme.colorTheme.text.primary,
-                                          ),
-                                        ),
-                                        Column(
-                                          children: [
-                                            individualDetailsShowcaseData
-                                                .nameOfIndividual
-                                                .buildWith(
-                                              child: ReactiveWrapperField(
-                                                formControlName:
-                                                    _individualNameKey,
-                                                validationMessages: {
-                                                  'required': (object) =>
-                                                      localizations.translate(
-                                                        '${i18.individualDetails.nameLabelText}_IS_REQUIRED',
+                                              },
+                                              addMember: (
+                                                addressModel,
+                                                householdModel,
+                                                loading,
+                                              ) async {
+                                                isAddIndividual = true;
+                                                final individual =
+                                                    _getIndividualModel(
+                                                  context,
+                                                  form: form,
+                                                  generatedUniqueId:
+                                                      generatedUniqueId,
+                                                );
+
+                                                setState(() {
+                                                  addressModelCaptured =
+                                                      addressModel;
+                                                });
+
+                                                if (context.mounted) {
+                                                  final scannerBloc = context
+                                                      .read<DigitScannerBloc>();
+                                                  scannerBloc.add(
+                                                    const DigitScannerEvent
+                                                        .handleScanner(),
+                                                  );
+                                                  if (scannerBloc
+                                                      .state.duplicate) {
+                                                    Toast.showToast(
+                                                      context,
+                                                      message: localizations
+                                                          .translate(
+                                                        i18.deliverIntervention
+                                                            .resourceAlreadyScanned,
                                                       ),
-                                                  'mobileNumber': (object) =>
-                                                      localizations.translate(
-                                                          i18_local
-                                                              .individualDetails
-                                                              .mobileNumberLengthValidationMessage),
-                                                  'maxLength': (object) =>
-                                                      localizations
-                                                          .translate(i18.common
-                                                              .maxCharsRequired)
-                                                          .replaceAll(
-                                                              '{}',
-                                                              maxLength
-                                                                  .toString()),
-                                                },
-                                                builder: (field) =>
-                                                    LabeledField(
-                                                  label:
-                                                      localizations.translate(
-                                                    i18.individualDetails
-                                                        .nameLabelText,
-                                                  ),
-                                                  isRequired: true,
-                                                  child: DigitTextFormInput(
-                                                    initialValue: form
-                                                        .control(
-                                                            _individualNameKey)
-                                                        .value,
-                                                    onChange: (value) {
-                                                      form
+                                                      type: ToastType.error,
+                                                    );
+                                                  } else {
+                                                    individualCaptured =
+                                                        individual;
+                                                    bloc.add(
+                                                      BeneficiaryRegistrationAddMemberEvent(
+                                                        beneficiaryType:
+                                                            RegistrationDeliverySingleton()
+                                                                .beneficiaryType!,
+                                                        householdModel:
+                                                            householdModel,
+                                                        individualModel:
+                                                            individual,
+                                                        addressModel:
+                                                            addressModel,
+                                                        userUuid:
+                                                            RegistrationDeliverySingleton()
+                                                                .loggedInUserUuid!,
+                                                        projectId:
+                                                            RegistrationDeliverySingleton()
+                                                                .projectId!,
+                                                        tag: scannerBloc
+                                                                .state
+                                                                .qrCodes
+                                                                .isNotEmpty
+                                                            ? scannerBloc.state
+                                                                .qrCodes.first
+                                                            : null,
+                                                      ),
+                                                    );
+                                                    onSubmit(
+                                                      false,
+                                                      isAddIndividual,
+                                                    );
+                                                  }
+                                                }
+                                              },
+                                            );
+                                          }
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ]),
+                            slivers: [
+                              SliverToBoxAdapter(
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                    if (RegistrationDeliverySingleton()
+                                        .idTypeOptions!
+                                        .contains(IdentifierTypes
+                                            .uniqueBeneficiaryID
+                                            .toValue()))
+                                      displayUniqueIdCount(theme, form),
+                                    DigitCard(
+                                        margin: const EdgeInsets.all(spacer2),
+                                        children: [
+                                          Text(
+                                            localizations.translate(
+                                              widget.isHeadOfHousehold
+                                                  ? i18_local.individualDetails
+                                                      .individualsDetailsHeadingLabelText
+                                                  : i18_local.individualDetails
+                                                      .individualsRegistrationHeadingLabelText,
+                                            ),
+                                            style: textTheme.headingXl.copyWith(
+                                              color:
+                                                  theme.colorTheme.text.primary,
+                                            ),
+                                          ),
+                                          Column(
+                                            children: [
+                                              individualDetailsShowcaseData
+                                                  .nameOfIndividual
+                                                  .buildWith(
+                                                child: ReactiveWrapperField(
+                                                  formControlName:
+                                                      _individualNameKey,
+                                                  validationMessages: {
+                                                    'required': (object) =>
+                                                        localizations.translate(
+                                                          '${i18.individualDetails.nameLabelText}_IS_REQUIRED',
+                                                        ),
+                                                    'mobileNumber': (object) =>
+                                                        localizations.translate(
+                                                            i18_local
+                                                                .individualDetails
+                                                                .mobileNumberLengthValidationMessage),
+                                                    'maxLength': (object) =>
+                                                        localizations
+                                                            .translate(i18
+                                                                .common
+                                                                .maxCharsRequired)
+                                                            .replaceAll(
+                                                                '{}',
+                                                                maxLength
+                                                                    .toString()),
+                                                  },
+                                                  builder: (field) =>
+                                                      LabeledField(
+                                                    label:
+                                                        localizations.translate(
+                                                      i18.individualDetails
+                                                          .nameLabelText,
+                                                    ),
+                                                    isRequired: true,
+                                                    child: DigitTextFormInput(
+                                                      initialValue: form
                                                           .control(
                                                               _individualNameKey)
-                                                          .value = value;
-                                                    },
-                                                    errorMessage:
-                                                        field.errorText,
+                                                          .value,
+                                                      onChange: (value) {
+                                                        form
+                                                            .control(
+                                                                _individualNameKey)
+                                                            .value = value;
+                                                      },
+                                                      errorMessage:
+                                                          field.errorText,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                            if (widget.isHeadOfHousehold)
-                                              const SizedBox(
-                                                height: spacer2,
+                                              if (widget.isHeadOfHousehold)
+                                                const SizedBox(
+                                                  height: spacer2,
+                                                ),
+                                              Offstage(
+                                                offstage:
+                                                    !widget.isHeadOfHousehold,
+                                                child: DigitCheckbox(
+                                                  capitalizeFirstLetter: false,
+                                                  label: (RegistrationDeliverySingleton()
+                                                              .householdType ==
+                                                          HouseholdType
+                                                              .community)
+                                                      ? localizations.translate(i18
+                                                          .individualDetails
+                                                          .clfCheckboxLabelText)
+                                                      : localizations.translate(
+                                                          i18.individualDetails
+                                                              .checkboxLabelText,
+                                                        ),
+                                                  value:
+                                                      widget.isHeadOfHousehold,
+                                                  readOnly:
+                                                      widget.isHeadOfHousehold,
+                                                  checkboxThemeData:
+                                                      DigitCheckboxThemeData(
+                                                          disabledIconColor:
+                                                              theme
+                                                                  .colorTheme
+                                                                  .primary
+                                                                  .primary1),
+                                                  onChanged: (_) {},
+                                                ),
                                               ),
-                                            Offstage(
-                                              offstage:
-                                                  !widget.isHeadOfHousehold,
-                                              child: DigitCheckbox(
-                                                capitalizeFirstLetter: false,
-                                                label: (RegistrationDeliverySingleton()
-                                                            .householdType ==
-                                                        HouseholdType.community)
-                                                    ? localizations.translate(i18
-                                                        .individualDetails
-                                                        .clfCheckboxLabelText)
-                                                    : localizations.translate(
-                                                        i18.individualDetails
-                                                            .checkboxLabelText,
-                                                      ),
-                                                value: widget.isHeadOfHousehold,
-                                                readOnly:
-                                                    widget.isHeadOfHousehold,
-                                                checkboxThemeData:
-                                                    DigitCheckboxThemeData(
-                                                        disabledIconColor: theme
-                                                            .colorTheme
-                                                            .primary
-                                                            .primary1),
-                                                onChanged: (_) {},
+                                            ],
+                                          ),
+                                          individualDetailsShowcaseData
+                                              .dateOfBirth
+                                              .buildWith(
+                                            child: CustomDigitDobPicker(
+                                              datePickerFormControl: _dobKey,
+                                              datePickerLabel:
+                                                  localizations.translate(
+                                                i18.individualDetails
+                                                    .dobLabelText,
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                        individualDetailsShowcaseData
-                                            .dateOfBirth
-                                            .buildWith(
-                                          child: CustomDigitDobPicker(
-                                            datePickerFormControl: _dobKey,
-                                            datePickerLabel:
-                                                localizations.translate(
-                                              i18.individualDetails
-                                                  .dobLabelText,
-                                            ),
-                                            ageFieldLabel:
-                                                localizations.translate(
-                                              i18.individualDetails
-                                                  .ageLabelText,
-                                            ),
-                                            yearsHintLabel:
-                                                localizations.translate(
-                                              i18.individualDetails
-                                                  .yearsHintText,
-                                            ),
-                                            separatorLabel:
-                                                localizations.translate(
-                                              i18.individualDetails
-                                                  .separatorLabelText,
-                                            ),
-                                            yearsAndMonthsErrMsg:
-                                                localizations.translate(
-                                              i18.individualDetails
-                                                  .yearsAndMonthsErrorText,
-                                            ),
-                                            initialDate: before150Years,
-                                            onChangeOfFormControl:
-                                                (formControl) {
-                                              // Handle changes to the control's value here
-                                              DateTime? value =
-                                                  formControl.value;
-                                              if (value == null) return;
-                                              // digits.DigitDOBAge age =
-                                              //     digits.DigitDateUtils
-                                              //         .calculateAge(value);
+                                              ageFieldLabel:
+                                                  localizations.translate(
+                                                i18.individualDetails
+                                                    .ageLabelText,
+                                              ),
+                                              yearsHintLabel:
+                                                  localizations.translate(
+                                                i18.individualDetails
+                                                    .yearsHintText,
+                                              ),
+                                              separatorLabel:
+                                                  localizations.translate(
+                                                i18.individualDetails
+                                                    .separatorLabelText,
+                                              ),
+                                              yearsAndMonthsErrMsg:
+                                                  localizations.translate(
+                                                i18.individualDetails
+                                                    .yearsAndMonthsErrorText,
+                                              ),
+                                              initialDate: before150Years,
+                                              onChangeOfFormControl:
+                                                  (formControl) {
+                                                // Handle changes to the control's value here
+                                                DateTime? value =
+                                                    formControl.value;
+                                                if (value == null) return;
+                                                // digits.DigitDOBAge age =
+                                                //     digits.DigitDateUtils
+                                                //         .calculateAge(value);
 
-                                              final age =
-                                                  DigitDateUtils.calculateAge(
-                                                value,
-                                              );
+                                                final age =
+                                                    DigitDateUtils.calculateAge(
+                                                  value,
+                                                );
 
-                                              // // show or hide fields based on age
+                                                // // show or hide fields based on age
+
+                                                smcFlow =
+                                                    local_utils.isSMCFlow(age);
+                                                polioFlow = local_utils
+                                                    .isPolioFlow(age);
+                                                onchoFlow = local_utils
+                                                    .isOnchoFlow(age);
+
+                                                context
+                                                    .read<CurrentFlowBloc>()
+                                                    .add(
+                                                      CurrentFlowEvent.set(
+                                                          currentFlows: {
+                                                            if (smcFlow)
+                                                              local_constants
+                                                                  .Constants
+                                                                  .smcFlow,
+                                                            if (polioFlow)
+                                                              local_constants
+                                                                  .Constants
+                                                                  .polioFlow,
+                                                            if (onchoFlow)
+                                                              local_constants
+                                                                  .Constants
+                                                                  .onchoFlow,
+                                                          }),
+                                                    );
+
+                                                if (context.projectTypeCode ==
+                                                        ProjectTypes.oncho
+                                                            .toValue() &&
+                                                    onchoFlow) {
+                                                  hideFieldsBasedOnAge = true;
+                                                  form
+                                                      .control(_heightKey)
+                                                      .setValidators(
+                                                          [Validators.required],
+                                                          autoValidate: true);
+
+                                                  form
+                                                      .control(_disabilityKey)
+                                                      .setValidators(
+                                                          [Validators.required],
+                                                          autoValidate: true);
+                                                } else {
+                                                  hideFieldsBasedOnAge = false;
+                                                  form
+                                                      .control(_heightKey)
+                                                      .setValidators([],
+                                                          autoValidate: true);
+
+                                                  form
+                                                      .control(_disabilityKey)
+                                                      .setValidators([],
+                                                          autoValidate: true);
+                                                }
+
+                                                if ((age.years == 0 &&
+                                                        age.months == 0) ||
+                                                    age.months > 11 ||
+                                                    (age.years >= 150 &&
+                                                        age.months >= 0)) {
+                                                  formControl
+                                                      .setErrors({'': true});
+                                                } else {
+                                                  formControl.removeError('');
+                                                }
+                                              },
+                                              cancelText:
+                                                  localizations.translate(i18
+                                                      .common.coreCommonCancel),
+                                              confirmText:
+                                                  localizations.translate(
+                                                      i18.common.coreCommonOk),
+                                              monthsHintLabel: 'Month',
+                                            ),
+                                          ),
+                                          dropdown.DigitDropdown<String>(
+                                            label: localizations.translate(
+                                              i18.individualDetails
+                                                  .genderLabelText,
+                                            ),
+                                            valueMapper: (value) =>
+                                                localizations.translate(value),
+                                            initialValue:
+                                                form.control(_genderKey).value,
+                                            menuItems:
+                                                RegistrationDeliverySingleton()
+                                                    .genderOptions!
+                                                    .map((e) => e)
+                                                    .toList(),
+                                            formControlName: _genderKey,
+                                            isRequired: true,
+                                            validationMessages: {
+                                              'required': (_) =>
+                                                  localizations.translate(
+                                                    i18.common
+                                                        .corecommonRequired,
+                                                  ),
+                                            },
+                                            onChanged: (value) {
+                                              if (value != null &&
+                                                  value.isNotEmpty) {
+                                                form.control(_genderKey).value =
+                                                    value;
+                                              } else {
+                                                form.control(_genderKey).value =
+                                                    null;
+                                                form
+                                                    .control(_genderKey)
+                                                    .setErrors({'': true});
+                                              }
+                                            },
+                                          ),
+                                          // enable only when projectType oncho
+                                          ReactiveFormConsumer(
+                                              builder: (context, form, child) {
+                                            final dob = form
+                                                .control(_dobKey)
+                                                .value as DateTime?;
+                                            final DigitDOBAgeConvertor age;
+
+                                            if (dob != null) {
+                                              age = DigitDateUtils.calculateAge(
+                                                  dob);
 
                                               smcFlow =
                                                   local_utils.isSMCFlow(age);
@@ -865,26 +1013,6 @@ class CustomIndividualDetailsPolioSMCPageState
                                                   local_utils.isPolioFlow(age);
                                               onchoFlow =
                                                   local_utils.isOnchoFlow(age);
-
-                                              context
-                                                  .read<CurrentFlowBloc>()
-                                                  .add(
-                                                    CurrentFlowEvent.set(
-                                                        currentFlows: {
-                                                          if (smcFlow)
-                                                            local_constants
-                                                                .Constants
-                                                                .smcFlow,
-                                                          if (polioFlow)
-                                                            local_constants
-                                                                .Constants
-                                                                .polioFlow,
-                                                          if (onchoFlow)
-                                                            local_constants
-                                                                .Constants
-                                                                .onchoFlow,
-                                                        }),
-                                                  );
 
                                               if (context.projectTypeCode ==
                                                       ProjectTypes.oncho
@@ -904,95 +1032,23 @@ class CustomIndividualDetailsPolioSMCPageState
                                                         autoValidate: true);
                                               } else {
                                                 hideFieldsBasedOnAge = false;
+                                                form.control(_heightKey).value =
+                                                    null;
                                                 form
                                                     .control(_heightKey)
                                                     .setValidators([],
                                                         autoValidate: true);
+                                                form
+                                                    .control(_disabilityKey)
+                                                    .value = null;
 
                                                 form
                                                     .control(_disabilityKey)
                                                     .setValidators([],
                                                         autoValidate: true);
                                               }
-
-                                              if ((age.years == 0 &&
-                                                      age.months == 0) ||
-                                                  age.months > 11 ||
-                                                  (age.years >= 150 &&
-                                                      age.months >= 0)) {
-                                                formControl
-                                                    .setErrors({'': true});
-                                              } else {
-                                                formControl.removeError('');
-                                              }
-                                            },
-                                            cancelText: localizations.translate(
-                                                i18.common.coreCommonCancel),
-                                            confirmText:
-                                                localizations.translate(
-                                                    i18.common.coreCommonOk),
-                                            monthsHintLabel: 'Month',
-                                          ),
-                                        ),
-                                        dropdown.DigitDropdown<String>(
-                                          label: localizations.translate(
-                                            i18.individualDetails
-                                                .genderLabelText,
-                                          ),
-                                          valueMapper: (value) =>
-                                              localizations.translate(value),
-                                          initialValue:
-                                              form.control(_genderKey).value,
-                                          menuItems:
-                                              RegistrationDeliverySingleton()
-                                                  .genderOptions!
-                                                  .map((e) => e)
-                                                  .toList(),
-                                          formControlName: _genderKey,
-                                          isRequired: true,
-                                          validationMessages: {
-                                            'required': (_) =>
-                                                localizations.translate(
-                                                  i18.common.corecommonRequired,
-                                                ),
-                                          },
-                                          onChanged: (value) {
-                                            if (value != null &&
-                                                value.isNotEmpty) {
-                                              form.control(_genderKey).value =
-                                                  value;
                                             } else {
-                                              form.control(_genderKey).value =
-                                                  null;
-                                              form
-                                                  .control(_genderKey)
-                                                  .setErrors({'': true});
-                                            }
-                                          },
-                                        ),
-                                        // enable only when projectType oncho
-                                        ReactiveFormConsumer(
-                                            builder: (context, form, child) {
-                                          final dob = form
-                                              .control(_dobKey)
-                                              .value as DateTime?;
-                                          final DigitDOBAgeConvertor age;
-
-                                          if (dob != null) {
-                                            age = DigitDateUtils.calculateAge(
-                                                dob);
-
-                                            smcFlow =
-                                                local_utils.isSMCFlow(age);
-                                            polioFlow =
-                                                local_utils.isPolioFlow(age);
-                                            onchoFlow =
-                                                local_utils.isOnchoFlow(age);
-
-                                            if (context.projectTypeCode ==
-                                                    ProjectTypes.oncho
-                                                        .toValue() &&
-                                                onchoFlow) {
+                                              // Default: if dob is null, just show the field
                                               hideFieldsBasedOnAge = true;
                                               form
                                                   .control(_heightKey)
@@ -1005,146 +1061,153 @@ class CustomIndividualDetailsPolioSMCPageState
                                                   .setValidators(
                                                       [Validators.required],
                                                       autoValidate: true);
-                                            } else {
-                                              hideFieldsBasedOnAge = false;
-                                              form.control(_heightKey).value =
-                                                  null;
-                                              form
-                                                  .control(_heightKey)
-                                                  .setValidators([],
-                                                      autoValidate: true);
-                                              form
-                                                  .control(_disabilityKey)
-                                                  .value = null;
-
-                                              form
-                                                  .control(_disabilityKey)
-                                                  .setValidators([],
-                                                      autoValidate: true);
                                             }
-                                          } else {
-                                            // Default: if dob is null, just show the field
-                                            hideFieldsBasedOnAge = true;
-                                            form
-                                                .control(_heightKey)
-                                                .setValidators(
-                                                    [Validators.required],
-                                                    autoValidate: true);
 
-                                            form
-                                                .control(_disabilityKey)
-                                                .setValidators(
-                                                    [Validators.required],
-                                                    autoValidate: true);
-                                          }
-
-                                          return Offstage(
-                                            offstage: !hideFieldsBasedOnAge,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                kPadding / 2,
-                                                0,
-                                                kPadding / 2,
-                                                0,
-                                              ),
-                                              child: DigitTextFormField(
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                isRequired: true,
-                                                formControlName: _heightKey,
-                                                inputFormatters: [
-                                                  FilteringTextInputFormatter
-                                                      .allow(
-                                                    RegExp("[0-9]"),
-                                                  ),
-                                                ],
-                                                label: localizations.translate(
-                                                  i18.individualDetails
-                                                      .heightLabelText,
+                                            return Offstage(
+                                              offstage: !hideFieldsBasedOnAge,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                  kPadding / 2,
+                                                  0,
+                                                  kPadding / 2,
+                                                  0,
                                                 ),
-                                                maxLength: 3,
-                                                validationMessages: {
-                                                  'required': (object) =>
-                                                      localizations.translate(i18
-                                                          .common
-                                                          .corecommonRequired),
-                                                },
-                                              ),
-                                            ),
-                                          );
-                                        }),
-                                        individualDetailsShowcaseData.mobile
-                                            .buildWith(
-                                          child: Offstage(
-                                            offstage: !widget.isHeadOfHousehold,
-                                            child: ReactiveWrapperField(
-                                              formControlName: _mobileNumberKey,
-                                              validationMessages: {
-                                                'minLength': (object) =>
-                                                    localizations.translate(
-                                                        i18_local
-                                                            .individualDetails
-                                                            .mobileNumberLengthValidationMessage),
-                                                'maxLength': (object) =>
-                                                    localizations
-                                                        .translate(i18_local
-                                                            .individualDetails
-                                                            .mobileNumberLengthValidationMessage)
-                                                        .replaceAll('{}', '11'),
-                                              },
-                                              builder: (field) => LabeledField(
-                                                label: localizations.translate(
-                                                  i18.individualDetails
-                                                      .mobileNumberLabelText,
-                                                ),
-                                                isRequired: false,
-                                                child: DigitTextFormInput(
+                                                child: DigitTextFormField(
                                                   keyboardType:
                                                       TextInputType.number,
-                                                  maxLength: 11,
+                                                  isRequired: true,
+                                                  formControlName: _heightKey,
                                                   inputFormatters: [
                                                     FilteringTextInputFormatter
-                                                        .digitsOnly,
+                                                        .allow(
+                                                      RegExp("[0-9]"),
+                                                    ),
                                                   ],
-                                                  initialValue: form
-                                                      .control(_mobileNumberKey)
-                                                      .value,
-                                                  onChange: (value) {
-                                                    form
+                                                  label:
+                                                      localizations.translate(
+                                                    i18.individualDetails
+                                                        .heightLabelText,
+                                                  ),
+                                                  maxLength: 3,
+                                                  validationMessages: {
+                                                    'required': (object) =>
+                                                        localizations.translate(i18
+                                                            .common
+                                                            .corecommonRequired),
+                                                  },
+                                                ),
+                                              ),
+                                            );
+                                          }),
+                                          individualDetailsShowcaseData.mobile
+                                              .buildWith(
+                                            child: Offstage(
+                                              offstage:
+                                                  !widget.isHeadOfHousehold,
+                                              child: ReactiveWrapperField(
+                                                formControlName:
+                                                    _mobileNumberKey,
+                                                validationMessages: {
+                                                  'minLength': (object) =>
+                                                      localizations.translate(
+                                                          i18_local
+                                                              .individualDetails
+                                                              .mobileNumberLengthValidationMessage),
+                                                  'maxLength': (object) =>
+                                                      localizations
+                                                          .translate(i18_local
+                                                              .individualDetails
+                                                              .mobileNumberLengthValidationMessage)
+                                                          .replaceAll(
+                                                              '{}', '11'),
+                                                },
+                                                builder: (field) =>
+                                                    LabeledField(
+                                                  label:
+                                                      localizations.translate(
+                                                    i18.individualDetails
+                                                        .mobileNumberLabelText,
+                                                  ),
+                                                  isRequired: false,
+                                                  child: DigitTextFormInput(
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    maxLength: 11,
+                                                    inputFormatters: [
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly,
+                                                    ],
+                                                    initialValue: form
                                                         .control(
                                                             _mobileNumberKey)
-                                                        .value = value;
-                                                  },
-                                                  errorMessage: field.errorText,
+                                                        .value,
+                                                    onChange: (value) {
+                                                      form
+                                                          .control(
+                                                              _mobileNumberKey)
+                                                          .value = value;
+                                                    },
+                                                    errorMessage:
+                                                        field.errorText,
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
 
-                                        ReactiveFormConsumer(
-                                            builder: (context, form, child) {
-                                          final dob = form
-                                              .control(_dobKey)
-                                              .value as DateTime?;
-                                          final DigitDOBAgeConvertor age;
+                                          ReactiveFormConsumer(
+                                              builder: (context, form, child) {
+                                            final dob = form
+                                                .control(_dobKey)
+                                                .value as DateTime?;
+                                            final DigitDOBAgeConvertor age;
 
-                                          if (dob != null) {
-                                            age = DigitDateUtils.calculateAge(
-                                                dob);
+                                            if (dob != null) {
+                                              age = DigitDateUtils.calculateAge(
+                                                  dob);
 
-                                            smcFlow =
-                                                local_utils.isSMCFlow(age);
-                                            polioFlow =
-                                                local_utils.isPolioFlow(age);
-                                            onchoFlow =
-                                                local_utils.isOnchoFlow(age);
+                                              smcFlow =
+                                                  local_utils.isSMCFlow(age);
+                                              polioFlow =
+                                                  local_utils.isPolioFlow(age);
+                                              onchoFlow =
+                                                  local_utils.isOnchoFlow(age);
 
-                                            if (context.projectTypeCode ==
-                                                    ProjectTypes.oncho
-                                                        .toValue() &&
-                                                onchoFlow) {
+                                              if (context.projectTypeCode ==
+                                                      ProjectTypes.oncho
+                                                          .toValue() &&
+                                                  onchoFlow) {
+                                                hideFieldsBasedOnAge = true;
+                                                form
+                                                    .control(_heightKey)
+                                                    .setValidators(
+                                                        [Validators.required],
+                                                        autoValidate: true);
+
+                                                form
+                                                    .control(_disabilityKey)
+                                                    .setValidators(
+                                                        [Validators.required],
+                                                        autoValidate: true);
+                                              } else {
+                                                hideFieldsBasedOnAge = false;
+                                                form.control(_heightKey).value =
+                                                    null;
+                                                form
+                                                    .control(_heightKey)
+                                                    .setValidators([],
+                                                        autoValidate: true);
+                                                form
+                                                    .control(_disabilityKey)
+                                                    .value = null;
+                                                form
+                                                    .control(_disabilityKey)
+                                                    .setValidators([],
+                                                        autoValidate: true);
+                                              }
+                                            } else {
+                                              // Default: if dob is null, just show the field
                                               hideFieldsBasedOnAge = true;
                                               form
                                                   .control(_heightKey)
@@ -1157,84 +1220,61 @@ class CustomIndividualDetailsPolioSMCPageState
                                                   .setValidators(
                                                       [Validators.required],
                                                       autoValidate: true);
-                                            } else {
-                                              hideFieldsBasedOnAge = false;
-                                              form.control(_heightKey).value =
-                                                  null;
-                                              form
-                                                  .control(_heightKey)
-                                                  .setValidators([],
-                                                      autoValidate: true);
-                                              form
-                                                  .control(_disabilityKey)
-                                                  .value = null;
-                                              form
-                                                  .control(_disabilityKey)
-                                                  .setValidators([],
-                                                      autoValidate: true);
                                             }
-                                          } else {
-                                            // Default: if dob is null, just show the field
-                                            hideFieldsBasedOnAge = true;
-                                            form
-                                                .control(_heightKey)
-                                                .setValidators(
-                                                    [Validators.required],
-                                                    autoValidate: true);
 
-                                            form
-                                                .control(_disabilityKey)
-                                                .setValidators(
-                                                    [Validators.required],
-                                                    autoValidate: true);
-                                          }
-
-                                          return Offstage(
-                                            offstage: !hideFieldsBasedOnAge,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                kPadding / 2,
-                                                0,
-                                                kPadding / 2,
-                                                0,
-                                              ),
-                                              child:
-                                                  DigitReactiveDropdown<String>(
-                                                label: localizations.translate(
-                                                  i18_local.deliverIntervention
-                                                      .disabilityLabel,
+                                            return Offstage(
+                                              offstage: !hideFieldsBasedOnAge,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                  kPadding / 2,
+                                                  0,
+                                                  kPadding / 2,
+                                                  0,
                                                 ),
-                                                isRequired: true,
-                                                valueMapper: (value) =>
-                                                    localizations
-                                                        .translate(value),
-                                                menuItems: const ["YES", "NO"],
-                                                formControlName: _disabilityKey,
-                                                onChanged: (value) {
-                                                  form
-                                                      .control(_disabilityKey)
-                                                      .value = value;
-                                                },
-                                                validationMessages: {
-                                                  'required': (object) =>
-                                                      localizations.translate(i18
-                                                          .common
-                                                          .corecommonRequired),
-                                                },
+                                                child: DigitReactiveDropdown<
+                                                    String>(
+                                                  label:
+                                                      localizations.translate(
+                                                    i18_local
+                                                        .deliverIntervention
+                                                        .disabilityLabel,
+                                                  ),
+                                                  isRequired: true,
+                                                  valueMapper: (value) =>
+                                                      localizations
+                                                          .translate(value),
+                                                  menuItems: const [
+                                                    "YES",
+                                                    "NO"
+                                                  ],
+                                                  formControlName:
+                                                      _disabilityKey,
+                                                  onChanged: (value) {
+                                                    form
+                                                        .control(_disabilityKey)
+                                                        .value = value;
+                                                  },
+                                                  validationMessages: {
+                                                    'required': (object) =>
+                                                        localizations.translate(i18
+                                                            .common
+                                                            .corecommonRequired),
+                                                  },
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                        }),
-                                      ]),
-                                ])),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                ),
-              )),
+                                            );
+                                          }),
+                                        ]),
+                                  ])),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  ),
+                )),
+      ),
     );
   }
 

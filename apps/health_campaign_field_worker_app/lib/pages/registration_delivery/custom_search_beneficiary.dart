@@ -40,6 +40,7 @@ import 'package:registration_delivery/widgets/status_filter/status_filter.dart';
 import '../../blocs/registration_delivery/custom_search_household.dart';
 import '../../router/app_router.dart';
 import '../../utils/search/global_search_parameters_smc.dart';
+import '../../widgets/custom_pop_route.dart';
 import '../../widgets/showcase/showcase_wrappers.dart';
 import '../../widgets/registration_delivery/custom_view_beneficiary_card.dart';
 
@@ -108,8 +109,8 @@ class _CustomSearchBeneficiaryPageState
     final theme = Theme.of(context);
     final textTheme = theme.digitTextTheme(context);
 
-    return KeyboardVisibilityBuilder(
-      builder: (context, isKeyboardVisible) => Scaffold(
+    return GlobalBackHandler(
+      child: Scaffold(
         body: NotificationListener<ScrollNotification>(
           onNotification: (scrollNotification) {
             if (scrollNotification is ScrollUpdateNotification) {
