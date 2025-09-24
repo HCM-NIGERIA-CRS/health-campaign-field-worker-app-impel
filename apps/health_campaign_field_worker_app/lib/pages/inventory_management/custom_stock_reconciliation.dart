@@ -549,20 +549,6 @@ class CustomStockReconciliationPageState
                                                                 facility,
                                                               ),
                                                             );
-
-                                                            stockReconciliationBloc
-                                                                .add(
-                                                              StockReconciliationSelectProductEvent(
-                                                                filteredProductVariants
-                                                                        .first
-                                                                        ?.id ??
-                                                                    "",
-                                                                isDistributor: InventorySingleton()
-                                                                        .isDistributor! &&
-                                                                    !InventorySingleton()
-                                                                        .isWareHouseMgr!,
-                                                              ),
-                                                            );
                                                           },
                                                           child: IgnorePointer(
                                                             child:
