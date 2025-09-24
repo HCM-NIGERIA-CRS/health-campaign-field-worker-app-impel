@@ -274,8 +274,7 @@ class CustomDeliverInterventionPageState
     } else {
       if (deliverState.futureDeliveries != null &&
           deliverState.futureDeliveries!.isNotEmpty &&
-          projectTypeModel?.cycles?.isNotEmpty == true &&
-          currentFlows.contains(Constants.smcFlow)) {
+          projectTypeModel?.cycles?.isNotEmpty == true) {
         context.router.popUntilRouteWithName(BeneficiaryWrapperRoute.name);
         context.router.push(
           CustomSplashAcknowledgementRoute(

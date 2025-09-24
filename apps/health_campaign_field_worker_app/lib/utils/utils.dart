@@ -427,11 +427,12 @@ void decideFlowBasedOnAge(
 }
 
 bool isSMCFlow(DigitDOBAgeConvertor age) {
-  final ageInMonths = (age.years * 12) + age.months;
-  if (ageInMonths >= Constants.smcMinValidAgeInMonths &&
-      ageInMonths <= Constants.smcMaxValidAgeInMonths) {
-    return true;
-  }
+  // TODO: to remove
+  // final ageInMonths = (age.years * 12) + age.months;
+  // if (ageInMonths >= Constants.smcMinValidAgeInMonths &&
+  //     ageInMonths <= Constants.smcMaxValidAgeInMonths) {
+  //   return true;
+  // }
   return false;
 }
 

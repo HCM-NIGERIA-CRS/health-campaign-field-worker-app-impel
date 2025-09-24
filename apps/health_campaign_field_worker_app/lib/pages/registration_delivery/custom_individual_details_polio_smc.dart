@@ -871,10 +871,6 @@ class CustomIndividualDetailsPolioSMCPageState
                                                   .add(
                                                     CurrentFlowEvent.set(
                                                         currentFlows: {
-                                                          if (smcFlow)
-                                                            local_constants
-                                                                .Constants
-                                                                .smcFlow,
                                                           if (polioFlow)
                                                             local_constants
                                                                 .Constants
@@ -1783,20 +1779,7 @@ class CustomIndividualDetailsPolioSMCPageState
     parent.popUntilRoot();
     router.push(BeneficiaryWrapperRoute(wrapper: wrapper));
 
-    if (smcFlow && polioFlow) {
-      //route to eligibility checklist page first
-
-      router.push(BeneficiaryWrapperRoute(wrapper: wrapper, children: [
-        EligibilityChecklistViewRoute(
-          eligibilityAssessmentType: EligibilityAssessmentType.smc,
-          projectBeneficiaryClientReferenceId:
-              projectBeneficiaryAddMember?.clientReferenceId,
-          individual: individual,
-          addressModelCaptured: addressModelCaptured,
-          showBackButton: false,
-        )
-      ]));
-    } else if (polioFlow || onchoFlow) {
+    if (polioFlow || onchoFlow) {
       // route to normal beneficiary details page first
       router.push(
         BeneficiaryWrapperRoute(
