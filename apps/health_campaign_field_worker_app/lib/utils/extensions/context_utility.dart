@@ -343,12 +343,12 @@ extension ContextUtilityExtensions on BuildContext {
       String? boundaryLevel = selectedProject.address?.boundaryType;
 
       if (boundaryLevel == Constants.lgaBoundaryLevel) {
-        bool isDownSyncEnabled = loggedInUserRoles
+        bool isLGA = loggedInUserRoles
             .where((role) => role.code == RolesType.warehouseManager.toValue())
             .toList()
             .isNotEmpty;
 
-        return isDownSyncEnabled;
+        return isLGA;
       }
       return false;
     } catch (_) {
@@ -361,12 +361,30 @@ extension ContextUtilityExtensions on BuildContext {
       String? boundaryLevel = selectedProject.address?.boundaryType;
 
       if (boundaryLevel == Constants.stateBoundaryLevel) {
-        bool isDownSyncEnabled = loggedInUserRoles
+        bool isState = loggedInUserRoles
             .where((role) => role.code == RolesType.warehouseManager.toValue())
             .toList()
             .isNotEmpty;
 
-        return isDownSyncEnabled;
+        return isState;
+      }
+      return false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  bool get isNationalWarehouseManager {
+    try {
+      String? boundaryLevel = selectedProject.address?.boundaryType;
+
+      if (boundaryLevel == Constants.countryBoundaryLevel) {
+        bool isNational = loggedInUserRoles
+            .where((role) => role.code == RolesType.warehouseManager.toValue())
+            .toList()
+            .isNotEmpty;
+
+        return isNational;
       }
       return false;
     } catch (_) {
