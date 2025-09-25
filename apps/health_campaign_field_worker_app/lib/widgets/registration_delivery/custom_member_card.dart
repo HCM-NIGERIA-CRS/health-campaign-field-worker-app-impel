@@ -270,11 +270,8 @@ class CustomMemberCard extends StatelessWidget {
                               .householdOverViewRevisitAbsentHeadText
                           : i18_local.householdOverView
                               .householdOverViewRevisitAbsentText
-                      : smcFlow
-                          ? i18_local.householdOverView
-                              .householdOverViewSMCAssessmentActionText
-                          : i18_local.householdOverView
-                              .householdOverViewDeliverActionText,
+                      : i18_local
+                          .householdOverView.householdOverViewDeliverActionText,
                 ),
                 style: textTheme.headingM.copyWith(color: Colors.white),
               ),
@@ -287,30 +284,10 @@ class CustomMemberCard extends StatelessWidget {
                 ),
               );
 
-              if (smcFlow && polioFlow) {
-                // set flow when delivery flow started
-
-                context.read<CurrentFlowBloc>().add(
-                      CurrentFlowEvent.set(currentFlows: {
-                        if (smcFlow) local_constants.Constants.smcFlow,
-                        if (polioFlow) local_constants.Constants.polioFlow,
-                        if (onchoFlow) local_constants.Constants.onchoFlow,
-                      }),
-                    );
-
-                context.router.push(EligibilityChecklistViewRoute(
-                  eligibilityAssessmentType: EligibilityAssessmentType.smc,
-                  projectBeneficiaryClientReferenceId:
-                      projectBeneficiaryClientReferenceId,
-                  individual: individual,
-                  showBackButton: false,
-                ));
-                //route to eligibility checklist page first
-              } else if (polioFlow || onchoFlow) {
+              if (polioFlow || onchoFlow) {
                 // set flow when delivery flow started
                 context.read<CurrentFlowBloc>().add(
                       CurrentFlowEvent.set(currentFlows: {
-                        if (smcFlow) local_constants.Constants.smcFlow,
                         if (polioFlow) local_constants.Constants.polioFlow,
                         if (onchoFlow) local_constants.Constants.onchoFlow,
                       }),
@@ -320,96 +297,6 @@ class CustomMemberCard extends StatelessWidget {
                   individualSelected: individual,
                   eligibilityAssessmentType: EligibilityAssessmentType.smc,
                 ));
-              }
-            },
-          ),
-        if (!(smcAssessmentPendingStatus) && redosePendingStatus && smcFlow)
-          DigitElevatedButton(
-            child: Center(
-              child: Text(
-                localizations.translate(
-                  i18_local.householdOverView.householdOverViewRedoseActionText,
-                ),
-                style: textTheme.headingM.copyWith(color: Colors.white),
-              ),
-            ),
-            onPressed: () async {
-              final bloc = context.read<HouseholdOverviewBloc>();
-              bloc.add(
-                HouseholdOverviewEvent.selectedIndividual(
-                  individualModel: individual,
-                ),
-              );
-
-              if ((tasks ?? []).isNotEmpty) {
-                TaskModel? successfulTask = tasks
-                    ?.where(
-                      (element) =>
-                          element.status ==
-                          Status.administeredSuccess.toValue(),
-                    )
-                    .lastOrNull;
-                if (redosePendingStatus) {
-                  // final spaq1 = context.spaq1;
-                  // final spaq2 = context.spaq2;
-
-                  // int doseCount = double.parse(
-                  //   successfulTask?.resources?.first.quantity ?? "0",
-                  // ).round();
-
-                  // final value = variant
-                  //     .firstWhere(
-                  //       (element) =>
-                  //           element.id ==
-                  //           successfulTask!.resources!.first.productVariantId,
-                  //     )
-                  //     .sku;
-
-                  if (successfulTask != null) {
-                    context.router.push(
-                      RecordRedoseRoute(
-                        tasks: [successfulTask],
-                      ),
-                    );
-                  }
-                  // else {
-                  //   DigitDialog.show(
-                  //     context,
-                  //     options: DigitDialogOptions(
-                  //       titleText: localizations.translate(
-                  //         i18_local.beneficiaryDetails.insufficientStockHeading,
-                  //       ),
-                  //       titleIcon: Icon(
-                  //         Icons.warning,
-                  //         color: DigitTheme.instance.colorScheme.error,
-                  //       ),
-                  //       contentText: (value == Constants.spaq1)
-                  //           ? "${localizations.translate(
-                  //               i18_local.beneficiaryDetails
-                  //                   .insufficientAZTStockMessageDelivery,
-                  //             )} \n ${localizations.translate(
-                  //               i18_local.beneficiaryDetails.spaq1DoseUnit,
-                  //             )}"
-                  //           : "${localizations.translate(
-                  //               i18_local.beneficiaryDetails
-                  //                   .insufficientAZTStockMessageDelivery,
-                  //             )} \n ${localizations.translate(
-                  //               i18_local.beneficiaryDetails.spaq2DoseUnit,
-                  //             )}",
-                  //       primaryAction: DigitDialogActions(
-                  //         label: localizations.translate(i18_local
-                  //             .beneficiaryDetails.backToHouseholdDetails),
-                  //         action: (ctx) {
-                  //           Navigator.of(
-                  //             ctx,
-                  //             rootNavigator: true,
-                  //           ).pop();
-                  //         },
-                  //       ),
-                  //     ),
-                  //   );
-                  // }
-                }
               }
             },
           ),

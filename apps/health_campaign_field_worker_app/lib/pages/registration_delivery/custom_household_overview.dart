@@ -688,8 +688,7 @@ class _CustomHouseholdOverviewPageState
                                             final age =
                                                 DigitDateUtils.calculateAge(
                                                     dateOfBirth!);
-                                            const smcFlow =
-                                                false; //isSMCFlow(age);
+                                            final smcFlow = isSMCFlow(age);
                                             final polioFlow = isPolioFlow(age);
                                             final onchoFlow = isOnchoFlow(age);
 
