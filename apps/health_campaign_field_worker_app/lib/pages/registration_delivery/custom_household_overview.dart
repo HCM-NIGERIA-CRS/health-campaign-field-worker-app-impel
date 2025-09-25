@@ -672,11 +672,6 @@ class _CustomHouseholdOverviewPageState
                                               taskData,
                                             );
 
-                                            final isBeneficiaryReferred =
-                                                checkBeneficiaryReferredSMC(
-                                                    taskData,
-                                                    context.selectedCycle);
-
                                             // calculate age and decide the flow and route
 
                                             String dob = e.dateOfBirth!;
@@ -688,7 +683,7 @@ class _CustomHouseholdOverviewPageState
                                             final age =
                                                 DigitDateUtils.calculateAge(
                                                     dateOfBirth!);
-                                            final smcFlow = isSMCFlow(age);
+
                                             final polioFlow = isPolioFlow(age);
                                             final onchoFlow = isOnchoFlow(age);
 
@@ -706,7 +701,6 @@ class _CustomHouseholdOverviewPageState
                                                       variant: value,
                                                       isHead: isHead,
                                                       individual: e,
-                                                      smcFlow: smcFlow,
                                                       polioFlow: polioFlow,
                                                       onchoFlow: onchoFlow,
                                                       projectBeneficiaries:
@@ -918,10 +912,6 @@ class _CustomHouseholdOverviewPageState
                                                                       .now(),
                                                             ).months),
                                                       gender: e.gender?.name,
-                                                      isBeneficiaryRefused:
-                                                          false,
-                                                      isBeneficiaryReferred:
-                                                          isBeneficiaryReferred,
                                                       isBeneficiaryAbsent:
                                                           isBeneficiaryAbsent,
                                                       isDelivered:

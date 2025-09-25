@@ -88,7 +88,6 @@ class CustomIndividualDetailsPolioSMCPageState
   DateTime now = DateTime.now();
   String? generatedUniqueId;
 
-  bool smcFlow = false;
   bool polioFlow = false;
   bool onchoFlow = false;
 
@@ -859,8 +858,6 @@ class CustomIndividualDetailsPolioSMCPageState
 
                                               // // show or hide fields based on age
 
-                                              smcFlow =
-                                                  local_utils.isSMCFlow(age);
                                               polioFlow =
                                                   local_utils.isPolioFlow(age);
                                               onchoFlow =
@@ -978,8 +975,6 @@ class CustomIndividualDetailsPolioSMCPageState
                                             age = DigitDateUtils.calculateAge(
                                                 dob);
 
-                                            smcFlow =
-                                                local_utils.isSMCFlow(age);
                                             polioFlow =
                                                 local_utils.isPolioFlow(age);
                                             onchoFlow =
@@ -1130,8 +1125,6 @@ class CustomIndividualDetailsPolioSMCPageState
                                             age = DigitDateUtils.calculateAge(
                                                 dob);
 
-                                            smcFlow =
-                                                local_utils.isSMCFlow(age);
                                             polioFlow =
                                                 local_utils.isPolioFlow(age);
                                             onchoFlow =

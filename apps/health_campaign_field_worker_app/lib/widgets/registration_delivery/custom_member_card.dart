@@ -51,11 +51,11 @@ class CustomMemberCard extends StatelessWidget {
   final List<TaskModel>? tasks;
   final List<SideEffectModel>? sideEffects;
   final bool isNotEligibleSMC;
-  final bool isBeneficiaryRefused;
+
   final bool isBeneficiaryIneligible;
-  final bool isBeneficiaryReferred;
+
   final bool isBeneficiaryAbsent;
-  final bool smcFlow;
+
   final bool polioFlow;
   final bool onchoFlow;
   final String? projectBeneficiaryClientReferenceId;
@@ -77,12 +77,9 @@ class CustomMemberCard extends StatelessWidget {
     this.tasks,
     this.isNotEligibleSMC = false,
     this.projectBeneficiaryClientReferenceId,
-    this.isBeneficiaryRefused = false,
     this.isBeneficiaryIneligible = false,
-    this.isBeneficiaryReferred = false,
     this.isBeneficiaryAbsent = false,
     this.sideEffects,
-    this.smcFlow = false,
     this.polioFlow = false,
     this.onchoFlow = false,
     required this.variant,
@@ -96,28 +93,11 @@ class CustomMemberCard extends StatelessWidget {
         checkBeneficiaryInEligibleSMC(tasks, context.selectedCycle);
 
     final theme = Theme.of(context);
-    // if (isHead &&
-    //     !isDelivered &&
-    //     (context.projectTypeCode == ProjectTypes.oncho.toValue())) {
-    //   return Align(
-    //     alignment: Alignment.centerLeft,
-    //     child: DigitIconButton(
-    //       icon: Icons.info_rounded,
-    //       iconSize: 20,
-    //       iconText: localizations.translate(Status.notVisited.toValue()),
-    //       iconTextColor: theme.colorScheme.error,
-    //       iconColor: theme.colorScheme.error,
-    //     ),
-    //   );
-    // }
-    if ((isDelivered ||
-        isBeneficiaryReferredSMC ||
-        isBeneficiaryInEligibleSMC)) {
+
+    if ((isDelivered)) {
       return Column(
         children: [
-          if (isDelivered ||
-              isBeneficiaryReferredSMC ||
-              isBeneficiaryInEligibleSMC)
+          if (isDelivered)
             Align(
               alignment: Alignment.centerLeft,
               child: DigitIconButton(
@@ -173,17 +153,6 @@ class CustomMemberCard extends StatelessWidget {
             iconSize: 20,
             iconText: localizations
                 .translate(local_status.Status.beneficiaryAbsent.toValue()),
-            iconTextColor: theme.colorScheme.error,
-            iconColor: theme.colorScheme.error,
-          ));
-    } else if (isBeneficiaryRefused) {
-      return Align(
-          alignment: Alignment.centerLeft,
-          child: DigitIconButton(
-            icon: Icons.info_rounded,
-            iconSize: 20,
-            iconText:
-                localizations.translate(Status.beneficiaryRefused.toValue()),
             iconTextColor: theme.colorScheme.error,
             iconColor: theme.colorScheme.error,
           ));
@@ -420,7 +389,6 @@ class CustomMemberCard extends StatelessWidget {
                           null &&
                       !isDelivered &&
                       !isBeneficiaryIneligible &&
-                      !isBeneficiaryReferred &&
                       !isBeneficiaryAbsent)
                   ? Positioned(
                       child: Align(
