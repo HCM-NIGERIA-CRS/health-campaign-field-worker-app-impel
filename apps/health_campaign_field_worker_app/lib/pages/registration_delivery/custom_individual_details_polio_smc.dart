@@ -903,7 +903,7 @@ class CustomIndividualDetailsPolioSMCPageState
                                                     );
 
                                                 if (context.projectTypeCode ==
-                                                        ProjectTypes.oncho
+                                                        ProjectTypes.pmo
                                                             .toValue() &&
                                                     onchoFlow) {
                                                   hideFieldsBasedOnAge = true;
@@ -988,7 +988,7 @@ class CustomIndividualDetailsPolioSMCPageState
                                               }
                                             },
                                           ),
-                                          // enable only when projectType oncho
+                                          // enable only when projectType pmo
                                           ReactiveFormConsumer(
                                               builder: (context, form, child) {
                                             final dob = form
@@ -1164,7 +1164,7 @@ class CustomIndividualDetailsPolioSMCPageState
                                                   local_utils.isOnchoFlow(age);
 
                                               if (context.projectTypeCode ==
-                                                      ProjectTypes.oncho
+                                                      ProjectTypes.pmo
                                                           .toValue() &&
                                                   onchoFlow) {
                                                 hideFieldsBasedOnAge = true;
