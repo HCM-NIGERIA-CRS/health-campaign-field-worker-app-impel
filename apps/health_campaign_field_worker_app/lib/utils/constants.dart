@@ -161,7 +161,6 @@ class Constants {
   static const String dipAction = "DAILY_PLAN";
   static const String nonComplianceAction = "NON_COMPLIANCE";
 
-  static const String smcFlow = "smcFlow";
   static const String polioFlow = "polioFlow";
   static const String measlesFlow = "measlesFlow";
   static const String onchoFlow = "onchoFlow";
