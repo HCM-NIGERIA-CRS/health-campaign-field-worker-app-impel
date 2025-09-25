@@ -29,6 +29,8 @@ class ProjectTypesMapper extends EnumMapper<ProjectTypes> {
         return ProjectTypes.polio;
       case "Polio-smc-ng":
         return ProjectTypes.oncho;
+      case "Polio-measles-oncho-ng":
+        return ProjectTypes.pmo;
       default:
         throw MapperException.unknownEnumValue(value);
     }
@@ -41,6 +43,8 @@ class ProjectTypesMapper extends EnumMapper<ProjectTypes> {
         return "Polio-ng";
       case ProjectTypes.oncho:
         return "Polio-smc-ng";
+      case ProjectTypes.pmo:
+        return "Polio-measles-oncho-ng";
     }
   }
 }

@@ -260,6 +260,7 @@ class DeliverIntervention {
   String get measlesDeliverySummary => 'MEASLES_DELIVERY_SUMMARY';
   String get vaccinateBeneficiary => 'VACCINATE_BENEFICIARY';
   String get selectAgeRange => 'SELECT_AGE_RANGE';
+  String get selectGender => 'SELECT_AGE_RANGE';
   String get selectHeightRange => 'SELECT_HEIGHT_RANGE';
 
   String get ninetoElevenAgeRange => 'NINE_ELEVEN_AGE_RANGE';
@@ -1425,6 +1426,7 @@ class IndividualDetails {
   String get separatorLabelText => 'SEPARATOR_LABEL_TEXT';
 
   String get genderLabelText => 'GENDER_LABEL_TEXT';
+  String get selectGenderLabelText => 'SELECT_GENDER_LABEL';
 
   String get dobErrorText => 'DOB_ERROR_MESSAGE';
 

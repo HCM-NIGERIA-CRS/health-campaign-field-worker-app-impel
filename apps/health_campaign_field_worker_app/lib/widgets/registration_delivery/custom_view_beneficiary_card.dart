@@ -165,7 +165,7 @@ class CustomViewBeneficiaryCardState
 
         // Todo : cover the case where polio project type is there
         final isNotEligible =
-            context.projectTypeCode == ProjectTypes.oncho.toValue()
+            context.projectTypeCode == ProjectTypes.pmo.toValue()
                 ? false
                 : !checkEligibilityForAgeAndSideEffect(
                     DigitDOBAgeConvertor(

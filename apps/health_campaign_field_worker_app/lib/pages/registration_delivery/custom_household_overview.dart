@@ -97,7 +97,7 @@ class _CustomHouseholdOverviewPageState
           builder: (ctx, state) {
             // if projectType oncho then show button irrespective of count exceeded or not
             bool showAddMemberButton =
-                context.projectTypeCode == ProjectTypes.oncho.toValue()
+                context.projectTypeCode == ProjectTypes.pmo.toValue()
                     ? true
                     : showAddMember(state.householdMemberWrapper);
             return Scaffold(

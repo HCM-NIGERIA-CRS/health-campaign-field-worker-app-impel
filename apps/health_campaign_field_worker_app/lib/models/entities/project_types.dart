@@ -8,4 +8,6 @@ enum ProjectTypes {
   polio,
   @MappableValue("Polio-smc-ng")
   oncho,
+  @MappableValue("Polio-measles-oncho-ng")
+  pmo,
 }
