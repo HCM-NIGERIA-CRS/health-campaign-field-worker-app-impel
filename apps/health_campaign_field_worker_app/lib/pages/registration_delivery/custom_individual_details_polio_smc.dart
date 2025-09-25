@@ -1040,6 +1040,8 @@ class CustomIndividualDetailsPolioSMCPageState
                                                 0,
                                               ),
                                               child: DigitTextFormField(
+                                                padding:
+                                                    const EdgeInsets.all(0),
                                                 keyboardType:
                                                     TextInputType.number,
                                                 isRequired: true,
@@ -1054,7 +1056,6 @@ class CustomIndividualDetailsPolioSMCPageState
                                                   i18.individualDetails
                                                       .heightLabelText,
                                                 ),
-                                                maxLength: 3,
                                                 validationMessages: {
                                                   'required': (object) =>
                                                       localizations.translate(i18
@@ -1190,6 +1191,8 @@ class CustomIndividualDetailsPolioSMCPageState
                                               ),
                                               child:
                                                   DigitReactiveDropdown<String>(
+                                                padding:
+                                                    const EdgeInsets.all(0),
                                                 label: localizations.translate(
                                                   i18_local.deliverIntervention
                                                       .disabilityLabel,
