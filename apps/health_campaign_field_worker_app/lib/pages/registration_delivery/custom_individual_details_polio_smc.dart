@@ -88,7 +88,6 @@ class CustomIndividualDetailsPolioSMCPageState
   DateTime now = DateTime.now();
   String? generatedUniqueId;
 
-  bool smcFlow = false;
   bool polioFlow = false;
   bool onchoFlow = false;
 
@@ -859,8 +858,6 @@ class CustomIndividualDetailsPolioSMCPageState
 
                                               // // show or hide fields based on age
 
-                                              smcFlow =
-                                                  local_utils.isSMCFlow(age);
                                               polioFlow =
                                                   local_utils.isPolioFlow(age);
                                               onchoFlow =
@@ -871,10 +868,6 @@ class CustomIndividualDetailsPolioSMCPageState
                                                   .add(
                                                     CurrentFlowEvent.set(
                                                         currentFlows: {
-                                                          if (smcFlow)
-                                                            local_constants
-                                                                .Constants
-                                                                .smcFlow,
                                                           if (polioFlow)
                                                             local_constants
                                                                 .Constants
@@ -887,7 +880,7 @@ class CustomIndividualDetailsPolioSMCPageState
                                                   );
 
                                               if (context.projectTypeCode ==
-                                                      ProjectTypes.oncho
+                                                      ProjectTypes.pmo
                                                           .toValue() &&
                                                   onchoFlow) {
                                                 hideFieldsBasedOnAge = true;
@@ -982,15 +975,13 @@ class CustomIndividualDetailsPolioSMCPageState
                                             age = DigitDateUtils.calculateAge(
                                                 dob);
 
-                                            smcFlow =
-                                                local_utils.isSMCFlow(age);
                                             polioFlow =
                                                 local_utils.isPolioFlow(age);
                                             onchoFlow =
                                                 local_utils.isOnchoFlow(age);
 
                                             if (context.projectTypeCode ==
-                                                    ProjectTypes.oncho
+                                                    ProjectTypes.pmo
                                                         .toValue() &&
                                                 onchoFlow) {
                                               hideFieldsBasedOnAge = true;
@@ -1134,15 +1125,13 @@ class CustomIndividualDetailsPolioSMCPageState
                                             age = DigitDateUtils.calculateAge(
                                                 dob);
 
-                                            smcFlow =
-                                                local_utils.isSMCFlow(age);
                                             polioFlow =
                                                 local_utils.isPolioFlow(age);
                                             onchoFlow =
                                                 local_utils.isOnchoFlow(age);
 
                                             if (context.projectTypeCode ==
-                                                    ProjectTypes.oncho
+                                                    ProjectTypes.pmo
                                                         .toValue() &&
                                                 onchoFlow) {
                                               hideFieldsBasedOnAge = true;
@@ -1532,11 +1521,10 @@ class CustomIndividualDetailsPolioSMCPageState
           (element) =>
               element.toLowerCase() ==
               (individual?.additionalFields?.fields
-                      ?.firstWhereOrNull((e) => e.key == "disability")
-                      ?.value
-                      ?.toString()
-                      .toLowerCase() ??
-                  "no"),
+                  ?.firstWhereOrNull((e) => e.key == "disability")
+                  ?.value
+                  ?.toString()
+                  .toLowerCase()),
         ),
       ),
     });
@@ -1783,20 +1771,7 @@ class CustomIndividualDetailsPolioSMCPageState
     parent.popUntilRoot();
     router.push(BeneficiaryWrapperRoute(wrapper: wrapper));
 
-    if (smcFlow && polioFlow) {
-      //route to eligibility checklist page first
-
-      router.push(BeneficiaryWrapperRoute(wrapper: wrapper, children: [
-        EligibilityChecklistViewRoute(
-          eligibilityAssessmentType: EligibilityAssessmentType.smc,
-          projectBeneficiaryClientReferenceId:
-              projectBeneficiaryAddMember?.clientReferenceId,
-          individual: individual,
-          addressModelCaptured: addressModelCaptured,
-          showBackButton: false,
-        )
-      ]));
-    } else if (polioFlow || onchoFlow) {
+    if (polioFlow || onchoFlow) {
       // route to normal beneficiary details page first
       router.push(
         BeneficiaryWrapperRoute(

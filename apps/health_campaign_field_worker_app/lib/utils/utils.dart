@@ -410,12 +410,9 @@ int getPregnantWomenCount(HouseholdModel? householdCaptured) {
 }
 
 void decideFlowBasedOnAge(
-    DigitDOBAgeConvertor age, bool smcFlow, bool polioFlow, bool onchoFlow) {
+    DigitDOBAgeConvertor age, bool polioFlow, bool onchoFlow) {
   final ageInMonths = (age.years * 12) + age.months;
-  if (ageInMonths >= Constants.smcMinValidAgeInMonths &&
-      ageInMonths <= Constants.smcMaxValidAgeInMonths) {
-    smcFlow = true;
-  }
+
   if (ageInMonths >= Constants.polioMinValidAgeInMonths &&
       ageInMonths <= Constants.polioMaxValidAgeInMonths) {
     polioFlow = true;
@@ -424,15 +421,6 @@ void decideFlowBasedOnAge(
   if (age.years > Constants.onchoMinValidAgeInMonths) {
     onchoFlow = true;
   }
-}
-
-bool isSMCFlow(DigitDOBAgeConvertor age) {
-  final ageInMonths = (age.years * 12) + age.months;
-  if (ageInMonths >= Constants.smcMinValidAgeInMonths &&
-      ageInMonths <= Constants.smcMaxValidAgeInMonths) {
-    return true;
-  }
-  return false;
 }
 
 bool isPolioFlow(DigitDOBAgeConvertor age) {

@@ -132,16 +132,11 @@ class CustomStockReconciliationPageState
                                 ),
                               ),
                           fetched: (productVariants) {
-                            final filteredProductVariants = productVariants
-                                .where((product) =>
-                                    product.sku == Constants.polioVariant)
-                                .toList();
-
                             return ReactiveFormBuilder(
                               form: () => _form(
                                 InventorySingleton().isDistributor! &&
                                     !InventorySingleton().isWareHouseMgr!,
-                                filteredProductVariants,
+                                productVariants,
                               ),
                               builder: (ctx, form, child) {
                                 return Scaffold(

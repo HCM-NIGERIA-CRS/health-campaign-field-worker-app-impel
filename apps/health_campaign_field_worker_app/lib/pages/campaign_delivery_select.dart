@@ -11,6 +11,7 @@ import 'package:registration_delivery/utils/utils.dart';
 import 'package:transit_post/router/transit_post_router.gm.dart';
 import 'package:transit_post/transit_post.dart';
 
+import '../models/entities/project_types.dart';
 import '../router/app_router.dart';
 import '../utils/extensions/extensions.dart';
 import '../widgets/header/back_navigation_help_header.dart';
@@ -103,13 +104,15 @@ class CampaignDeliverySelectPageState
             context.router.push(const CustomRegistrationDeliveryWrapperRoute());
           },
         ),
-      HomeItemCard(
-        icon: Icons.pin_drop,
-        label: i18.home.transitPostLabel,
-        onPressed: () {
-          context.router.push(const CustomTransitPostWrapperRoute());
-        },
-      ),
+      // hide if projectType is polio-measles-oncho
+      if (!(context.projectTypeCode == ProjectTypes.pmo.toValue()))
+        HomeItemCard(
+          icon: Icons.pin_drop,
+          label: i18.home.transitPostLabel,
+          onPressed: () {
+            context.router.push(const CustomTransitPostWrapperRoute());
+          },
+        ),
       HomeItemCard(
         icon: Icons.location_pin,
         label: i18.home.fixedPostLabel,
