@@ -424,7 +424,12 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
     final stockState = context.read<RecordStockBloc>().state;
     bool isWareHouseMgr = InventorySingleton().isWareHouseMgr;
     bool isHealthFacilitySupervisor = context.isHealthFacilitySupervisor;
+    bool hideVVM = false;
+
     final form = _forms[productName]!;
+
+    hideVVM = productName == "IVR" || productName == "IVM" ? true : false;
+
     StockRecordEntryType entryType = stockState.entryType;
     bool isLastTab = _tabController.index == _tabController.length - 1;
     String quantityCountLabel;
@@ -613,7 +618,8 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                           ],
                         ),
                         if ((isWareHouseMgr) &&
-                            entryType != StockRecordEntryType.returned)
+                            entryType != StockRecordEntryType.returned &&
+                            !hideVVM)
                           Column(
                             children: [
                               ReactiveWrapperField(

@@ -817,7 +817,9 @@ class _BoundarySelectionPageState
   }
 
   bool enableFilter() {
-    return false; //context.isWarehouseManager || context.isHealthFacilitySupervisor;
+    return context.isStateCold ||
+        context.isLGA ||
+        context.isNationalWarehouseManager;
   }
 
   void listenToSyncCount() async {
