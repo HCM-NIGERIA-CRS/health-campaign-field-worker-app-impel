@@ -58,6 +58,11 @@ class NonComplianceBeneficiaryCardState
   @override
   void didUpdateWidget(covariant NonComplianceBeneficiaryCard oldWidget) {
     householdMember = widget.householdMember;
+
+    // Reset expanded state if the parent rebuilt with a different household
+    if (oldWidget.householdMember != widget.householdMember) {
+      _isCardExpanded = false; // reset expansion
+    }
     super.didUpdateWidget(oldWidget);
   }
 
