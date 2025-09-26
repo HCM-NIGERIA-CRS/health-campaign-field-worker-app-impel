@@ -35,7 +35,7 @@
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:fullBackupOnly="false"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_1"
         android:label="DIGIT">
         <service
             android:name=".LocationService"
