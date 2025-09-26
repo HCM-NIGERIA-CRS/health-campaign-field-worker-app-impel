@@ -260,7 +260,7 @@ class DeliverIntervention {
   String get measlesDeliverySummary => 'MEASLES_DELIVERY_SUMMARY';
   String get vaccinateBeneficiary => 'VACCINATE_BENEFICIARY';
   String get selectAgeRange => 'SELECT_AGE_RANGE';
-  String get selectGender => 'SELECT_AGE_RANGE';
+  String get selectGender => 'SELECT_GENDER';
   String get selectHeightRange => 'SELECT_HEIGHT_RANGE';
 
   String get ninetoElevenAgeRange => 'NINE_ELEVEN_AGE_RANGE';

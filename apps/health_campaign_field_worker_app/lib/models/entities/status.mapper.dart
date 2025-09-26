@@ -45,6 +45,8 @@ class StatusMapper extends EnumMapper<Status> {
         return Status.inComplete;
       case "TO_ADMINISTER":
         return Status.toAdminister;
+      case "NOT_ADMINISTERED":
+        return Status.notAdministered;
       case "BENEFICIARY_ABSENT":
         return Status.beneficiaryAbsent;
       default:
@@ -75,6 +77,8 @@ class StatusMapper extends EnumMapper<Status> {
         return "IN_COMPLETE";
       case Status.toAdminister:
         return "TO_ADMINISTER";
+      case Status.notAdministered:
+        return "NOT_ADMINISTERED";
       case Status.beneficiaryAbsent:
         return "BENEFICIARY_ABSENT";
     }

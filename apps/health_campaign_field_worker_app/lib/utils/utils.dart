@@ -237,6 +237,16 @@ bool checkIfBeneficiaryAbsent(
   return isBeneficiaryAbsent;
 }
 
+bool checkIfBeneficiaryNotAdministered(
+  List<TaskModel>? tasks,
+) {
+  final isNotAdministered = (tasks != null &&
+      (tasks ?? []).isNotEmpty &&
+      tasks.last.status == local_status.Status.notAdministered.toValue());
+
+  return isNotAdministered;
+}
+
 String formatDateFromMillis(int millis) {
   final date = DateTime.fromMillisecondsSinceEpoch(millis);
   final day = date.day.toString().padLeft(2, '0');

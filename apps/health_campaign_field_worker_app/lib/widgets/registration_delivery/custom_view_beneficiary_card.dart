@@ -179,6 +179,7 @@ class CustomViewBeneficiaryCardState
 
         final isBeneficiaryRefused = checkIfBeneficiaryRefused(taskData);
         final isBeneficiaryAbsent = checkIfBeneficiaryAbsent(taskData);
+        final isNotAdministered = checkIfBeneficiaryNotAdministered(taskData);
         final isBeneficiaryIneligible =
             checkBeneficiaryInEligibleSMC(taskData, context.selectedCycle);
         final isBeneficiaryReferred =
@@ -225,6 +226,7 @@ class CustomViewBeneficiaryCardState
                         isBeneficiaryIneligible,
                         isBeneficiaryAbsent,
                         isStatusReset,
+                        isNotAdministered,
                       ),
                       taskData,
                     ),
@@ -238,7 +240,8 @@ class CustomViewBeneficiaryCardState
                         taskdata: taskData,
                         isBeneficiaryRefused: isBeneficiaryRefused ||
                             isBeneficiaryReferred ||
-                            isBeneficiaryAbsent,
+                            isBeneficiaryAbsent ||
+                            isNotAdministered,
                         isBeneficiaryIneligible: isBeneficiaryIneligible,
                         isStatusReset: isStatusReset,
                         theme: theme,
@@ -465,6 +468,8 @@ class CustomViewBeneficiaryCardState
         return localizations.translate(Status.beneficiaryRefused.toValue());
       } else if (statusKeys.isStatusReset) {
         return localizations.translate(Status.notVisited.toValue());
+      } else if (statusKeys.isNotAdministered) {
+        return localizations.translate(Status.notVisited.toValue());
       } else {
         return localizations.translate(
             i18.householdOverView.householdOverViewDeliveredIconLabel);
@@ -517,6 +522,7 @@ class CustomStatusKeys {
   bool isBeneficiaryIneligible;
   bool isBeneficiaryAbsent;
   bool isStatusReset;
+  bool isNotAdministered;
 
   CustomStatusKeys(
     this.isNotEligible,
@@ -525,5 +531,6 @@ class CustomStatusKeys {
     this.isBeneficiaryIneligible,
     this.isBeneficiaryAbsent,
     this.isStatusReset,
+    this.isNotAdministered,
   );
 }

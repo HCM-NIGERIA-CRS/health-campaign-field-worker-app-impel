@@ -618,7 +618,7 @@ class CustomFixedPostRecordVaccinationPageState
 
                           var ageRange = getAgeRangeSelected(ageRangeSelected);
 
-                          var gender = getGenderSelected(ageRangeSelected);
+                          var gender = getGenderSelected(genderSelected);
 
                           List<AdditionalField> additionalFields = [];
 
@@ -660,6 +660,7 @@ class CustomFixedPostRecordVaccinationPageState
                             // set age range empty once selection done and event submitted
                             setState(() {
                               ageRangeSelected = '';
+                              genderSelected = '';
                             });
 
                             context.router
@@ -680,7 +681,7 @@ class CustomFixedPostRecordVaccinationPageState
     if (ageRangeSelected == null) {
       return null;
     }
-    return AdditionalField("ageRange", heightRangeSelected);
+    return AdditionalField("ageRange", ageRangeSelected);
   }
 
   AdditionalField? getGenderSelected(String? genderSelected) {

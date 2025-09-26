@@ -565,6 +565,7 @@ class CustomIndividualDetailsPolioSMCPageState
                                                   generatedUniqueId:
                                                       generatedUniqueId,
                                                 );
+                                                individualCaptured = individual;
                                                 final tag = scannerBloc.state
                                                         .qrCodes.isNotEmpty
                                                     ? scannerBloc
