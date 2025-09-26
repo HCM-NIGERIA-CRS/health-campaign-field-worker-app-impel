@@ -1138,6 +1138,21 @@ class CustomDeliverInterventionPageState
     return getAgeMonths(age);
   }
 
+  String? getIndividualHeight(IndividualModel? individual) {
+    final value = individual?.additionalFields?.fields
+        .firstWhere(
+          (f) => f.key == "height",
+          orElse: () => const AdditionalField("height", null),
+        )
+        .value;
+
+    if (value == null) return null;
+    if (value is int) return value.toString();
+    if (value is String && value.trim().isNotEmpty) return value.trim();
+
+    return null;
+  }
+
   String? getBeneficiaryId(IndividualModel individualModel) {
     IdentifierTypes.uniqueBeneficiaryID.toValue();
     return individualModel.identifiers
@@ -1150,6 +1165,7 @@ class CustomDeliverInterventionPageState
 
   List<AdditionalField> getIndividualAdditionalFields(
       IndividualModel? individualModel) {
+    final height = getIndividualHeight(individualModel);
     return [
       if (individualModel != null)
         AdditionalField(
@@ -1170,6 +1186,11 @@ class CustomDeliverInterventionPageState
         AdditionalField(
           'uniqueBeneficiaryId',
           getBeneficiaryId(individualModel),
+        ),
+      if (individualModel != null && height != null && height.isNotEmpty)
+        AdditionalField(
+          'height',
+          height,
         ),
     ];
   }

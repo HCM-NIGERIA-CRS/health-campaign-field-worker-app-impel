@@ -129,6 +129,8 @@ class NonComplianceBeneficiaryCardState
 
     final tableData = householdMember.members?.map(
       (e) {
+        final isHead = householdMember.headOfHousehold?.clientReferenceId ==
+            e.clientReferenceId;
         final projectBeneficiary =
             householdMember.projectBeneficiaries?.where((element) {
           if (RegistrationDeliverySingleton().beneficiaryType ==
@@ -199,8 +201,6 @@ class NonComplianceBeneficiaryCardState
             checkBeneficiaryInEligibleSMC(taskData, context.selectedCycle);
         final isBeneficiaryReferred =
             checkBeneficiaryReferredSMC(taskData, context.selectedCycle);
-        final isHead = householdMember.headOfHousehold?.clientReferenceId ==
-            e.clientReferenceId;
 
         final isStatusReset = util_local.checkStatusSMC(taskData, currentCycle);
 
