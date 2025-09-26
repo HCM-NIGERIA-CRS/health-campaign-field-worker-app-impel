@@ -15,6 +15,7 @@ import 'package:registration_delivery/models/entities/status.dart';
 import 'package:registration_delivery/models/entities/task.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
 import '../../blocs/non_compliance/non_compliance_tracking.dart';
+import '../../models/entities/project_types.dart';
 import '../../utils/extensions/extensions.dart';
 import 'package:registration_delivery/utils/utils.dart';
 import 'package:registration_delivery/widgets/beneficiary/beneficiary_card.dart';
@@ -174,15 +175,18 @@ class NonComplianceBeneficiaryCardState
               : DateTime.now(),
         ).months;
 
-        final isNotEligible = !checkEligibilityForAgeAndSideEffect(
-          DigitDOBAgeConvertor(
-            years: ageInYears,
-            months: ageInMonths,
-          ),
-          RegistrationDeliverySingleton().projectType,
-          (taskData ?? []).isNotEmpty ? taskData?.last : null,
-          sideEffects,
-        );
+        final isNotEligible =
+            context.projectTypeCode == ProjectTypes.pmo.toValue()
+                ? false
+                : !checkEligibilityForAgeAndSideEffect(
+                    DigitDOBAgeConvertor(
+                      years: ageInYears,
+                      months: ageInMonths,
+                    ),
+                    RegistrationDeliverySingleton().projectType,
+                    (taskData ?? []).isNotEmpty ? taskData?.last : null,
+                    sideEffects,
+                  );
 
         final isBeneficiaryRefused = checkIfBeneficiaryRefused(taskData);
         final isBeneficiaryAbsent = checkIfBeneficiaryAbsent(taskData);
@@ -220,7 +224,8 @@ class NonComplianceBeneficiaryCardState
             "",
             cellKey: 'delivery',
             widget: Text(
-              isHead
+              isHead &&
+                      (context.projectTypeCode == ProjectTypes.polio.toValue())
                   ? localizations.translate(
                       i18_local.householdOverView
                           .householdOverViewHouseholderHeadLabel,
@@ -237,7 +242,9 @@ class NonComplianceBeneficiaryCardState
                       taskData,
                     ),
               style: TextStyle(
-                color: isHead
+                color: isHead &&
+                        (context.projectTypeCode ==
+                            ProjectTypes.polio.toValue())
                     ? theme.colorScheme.surfaceTint
                     : getTableCellTextColor(
                         isNotEligible: isNotEligible,

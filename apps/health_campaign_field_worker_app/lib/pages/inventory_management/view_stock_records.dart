@@ -255,7 +255,7 @@ class _ViewStockRecordsPageState extends LocalizedState<ViewStockRecordsPage>
                         label: localizations.translate(
                           i18_local.stockDetails.statusVvmLabel,
                         ),
-                        initialValue: statusVvm,
+                        initialValue: localizations.translate(statusVvm),
                         isDisabled: true,
                         readOnly: true,
                       ),
