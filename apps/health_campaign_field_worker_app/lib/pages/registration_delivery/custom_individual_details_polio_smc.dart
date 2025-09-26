@@ -333,6 +333,10 @@ class CustomIndividualDetailsPolioSMCPageState
                                 child: CustomBackNavigationHelpHeaderWidget(
                                   showHelp: false,
                                   handleback: () {
+                                    if (FocusScope.of(context).hasFocus) {
+                                      FocusScope.of(context).unfocus();
+                                    }
+
                                     if (isEditIndividual) {
                                       final parent = context.router.parent()
                                           as StackRouter;
@@ -340,6 +344,7 @@ class CustomIndividualDetailsPolioSMCPageState
                                     } else {
                                       searchHouseholdsBloc.add(
                                           const SearchHouseholdsEvent.clear());
+
                                       context.router.maybePop();
                                     }
                                   },

@@ -47,8 +47,7 @@ class CustomBackNavigationHelpHeaderWidget extends StatelessWidget {
                   DigitBackButton(
                     digitBackButtonThemeData:
                         const DigitBackButtonThemeData().copyWith(
-                          textColor: Theme.of(context)
-                              .colorTheme.text.primary,
+                      textColor: Theme.of(context).colorTheme.text.primary,
                       context: context,
                       backDigitButtonIcon: Icon(
                         Icons.arrow_left,
@@ -60,6 +59,9 @@ class CustomBackNavigationHelpHeaderWidget extends StatelessWidget {
                     ),
                     handleBack: () {
                       if (defaultPopRoute) {
+                        if (FocusScope.of(context).hasFocus) {
+                          FocusScope.of(context).unfocus();
+                        }
                         context.router.maybePop();
                       }
                       handleback != null ? handleback!() : null;
@@ -83,7 +85,7 @@ class CustomBackNavigationHelpHeaderWidget extends StatelessWidget {
                       type: DigitButtonType.tertiary,
                       size: DigitButtonSize.medium,
                       textColor: textTheme.colorTheme.primary.primary1,
-                      iconColor: textTheme.colorTheme.primary.primary1, 
+                      iconColor: textTheme.colorTheme.primary.primary1,
                     ),
                   ),
               ],
@@ -99,9 +101,9 @@ class CustomBackNavigationHelpHeaderWidget extends StatelessWidget {
               size: DigitButtonSize.medium,
               suffixIcon: Icons.help_outline_outlined,
               textColor: textTheme.colorTheme.primary.primary1,
-              iconColor: textTheme.colorTheme.primary.primary1, 
+              iconColor: textTheme.colorTheme.primary.primary1,
               onPressed: () => helpClicked,
-              ),
+            ),
           SizedBox(width: showcaseButton != null ? spacer4 : 0),
           if (showcaseButton != null) showcaseButton!,
         ],
