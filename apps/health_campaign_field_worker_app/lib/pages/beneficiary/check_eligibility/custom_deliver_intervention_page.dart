@@ -42,7 +42,7 @@ import '../../../utils/extensions/extensions.dart';
 import '../../../utils/i18_key_constants.dart' as i18_local;
 import '../../../models/entities/additional_fields_type.dart'
     as additional_fields_local;
-import '../../../utils/utils.dart' show getAgeMonths;
+import '../../../utils/utils.dart' show getAgeMonths, getIndividualHeight;
 import '../../../widgets/custom_back_navigation.dart';
 import '../../../models/entities/status.dart' as local_status;
 import '../../../widgets/custom_pop_route.dart';
@@ -1136,21 +1136,6 @@ class CustomDeliverInterventionPageState
         DateFormat("dd/MM/yyyy").parse(individualModel.dateOfBirth ?? '');
     DigitDOBAge age = DigitDateUtils.calculateAge(dateOfBirth);
     return getAgeMonths(age);
-  }
-
-  String? getIndividualHeight(IndividualModel? individual) {
-    final value = individual?.additionalFields?.fields
-        .firstWhere(
-          (f) => f.key == "height",
-          orElse: () => const AdditionalField("height", null),
-        )
-        .value;
-
-    if (value == null) return null;
-    if (value is int) return value.toString();
-    if (value is String && value.trim().isNotEmpty) return value.trim();
-
-    return null;
   }
 
   String? getBeneficiaryId(IndividualModel individualModel) {

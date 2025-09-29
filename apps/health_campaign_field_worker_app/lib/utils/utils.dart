@@ -285,6 +285,42 @@ String formatAgeRange(String condition) {
   return condition;
 }
 
+String? getIndividualHeight(IndividualModel? individual) {
+  final value = individual?.additionalFields?.fields
+      .firstWhere(
+        (f) => f.key == "height",
+        orElse: () => const AdditionalField("height", null),
+      )
+      .value;
+
+  if (value == null) return null;
+  if (value is int) return value.toString();
+  if (value is String && value.trim().isNotEmpty) return value.trim();
+
+  return null;
+}
+
+bool inEligibilityBasedOnHeight(dynamic height) {
+  // Null check
+  if (height == null) return false; // ineligible
+
+  int? parsedHeight;
+
+  // Handle int and String inputs
+  if (height is int) {
+    parsedHeight = height;
+  } else if (height is String && height.trim().isNotEmpty) {
+    parsedHeight = int.tryParse(height.trim());
+  }
+
+  // If parsing failed or height is less than or equal to min
+  if (parsedHeight == null || parsedHeight < Constants.minValidHeightOncho) {
+    return true; // ineligible
+  }
+
+  return false;
+}
+
 bool validateStockSubmission({
   required num availableBalance,
   required num stockReturned,

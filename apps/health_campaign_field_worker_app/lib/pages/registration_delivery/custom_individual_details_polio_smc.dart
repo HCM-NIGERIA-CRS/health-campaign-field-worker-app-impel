@@ -208,22 +208,44 @@ class CustomIndividualDetailsPolioSMCPageState
 
                         if (householdMemberWrapper != null) {
                           if (individualCaptured != null) {
-                            // info get the relevant project beneficiary here
-                            final projectBeneficiaryAddMember =
-                                householdMemberWrapper.projectBeneficiaries
-                                    ?.where((e) =>
-                                        e.beneficiaryClientReferenceId ==
-                                        individualCaptured!.clientReferenceId)
-                                    .toSet();
-                            // assumption add individual here is used for creating child,
-                            // if invalid age send to overview no checklist
+                            // get height of individual if present and check eligibility based on minimum eligible height
+                            final height = local_utils
+                                .getIndividualHeight(individualCaptured);
+                            bool ineligibleBasedOnHeight;
 
-                            routeBasedOnFlow(
-                                individualCaptured!,
-                                projectBeneficiaryAddMember?.first,
-                                householdMemberWrapper!,
-                                router,
-                                context);
+                            if (height == null || height.isEmpty) {
+                              ineligibleBasedOnHeight = false;
+                            } else {
+                              ineligibleBasedOnHeight = local_utils
+                                  .inEligibilityBasedOnHeight(height);
+                            }
+
+                            // route based on height ,
+
+                            if (ineligibleBasedOnHeight) {
+                              final parent =
+                                  context.router.parent() as StackRouter;
+                              parent.popUntilRoot();
+                              router.push(BeneficiaryWrapperRoute(
+                                  wrapper: householdMemberWrapper));
+                            } else {
+                              // info get the relevant project beneficiary here
+                              final projectBeneficiaryAddMember =
+                                  householdMemberWrapper.projectBeneficiaries
+                                      ?.where((e) =>
+                                          e.beneficiaryClientReferenceId ==
+                                          individualCaptured!.clientReferenceId)
+                                      .toSet();
+                              // assumption add individual here is used for creating child,
+                              // if invalid age send to overview no checklist
+
+                              routeBasedOnFlow(
+                                  individualCaptured!,
+                                  projectBeneficiaryAddMember?.first,
+                                  householdMemberWrapper!,
+                                  router,
+                                  context);
+                            }
                           } else {
                             (router.parent() as StackRouter).maybePop();
                             router.popUntil((route) =>
@@ -1297,7 +1319,7 @@ class CustomIndividualDetailsPolioSMCPageState
       final stringValue = heightValue.toString();
       formattedHeight = stringValue.length == 1 ? '0$stringValue' : stringValue;
     } else {
-      formattedHeight = '00';
+      formattedHeight = "";
     }
     final disability = form.control(_disabilityKey).value as String?;
 
@@ -1408,7 +1430,8 @@ class CustomIndividualDetailsPolioSMCPageState
                 identifierType: IdentifierTypes.uniqueBeneficiaryID.toValue(),
               ),
             ],
-      additionalFields: _buildAdditionalFields(individual, height, disability),
+      additionalFields:
+          _buildAdditionalFields(individual, formattedHeight, disability),
     );
     //Info add uniqueBeneficiaryId as identifier in individualModel
     individual =
@@ -1427,14 +1450,16 @@ class CustomIndividualDetailsPolioSMCPageState
       version: 1,
       fields: existingFields.isEmpty
           ? [
-              AdditionalField("height", height),
+              if (height != null && height.isNotEmpty)
+                AdditionalField("height", height),
               if (disability != null && disability.isNotEmpty)
                 AdditionalField("disability", disability)
             ]
           : [
               ...existingFields.where((field) =>
                   field.key != "height" && field.key != "disability"),
-              AdditionalField("height", height),
+              if (height != null && height.isNotEmpty)
+                AdditionalField("height", height),
               if (disability != null && disability.isNotEmpty)
                 AdditionalField("disability", disability)
             ],

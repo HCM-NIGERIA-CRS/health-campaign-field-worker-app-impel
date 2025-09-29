@@ -672,6 +672,20 @@ class _CustomHouseholdOverviewPageState
                                               taskData,
                                             );
 
+                                            // get height of individual if present and check eligibility based on minimum eligible height
+                                            final height =
+                                                getIndividualHeight(e);
+                                            bool ineligibleBasedOnHeight;
+
+                                            if (height == null ||
+                                                height.isEmpty) {
+                                              ineligibleBasedOnHeight = false;
+                                            } else {
+                                              ineligibleBasedOnHeight =
+                                                  inEligibilityBasedOnHeight(
+                                                      height);
+                                            }
+
                                             // calculate age and decide the flow and route
 
                                             String dob = e.dateOfBirth!;
@@ -884,7 +898,10 @@ class _CustomHouseholdOverviewPageState
                                                               ]),
                                                         );
                                                       },
-                                                      isNotEligibleSMC: false,
+                                                      isNotEligibleSMC: height ==
+                                                              null
+                                                          ? false
+                                                          : ineligibleBasedOnHeight,
                                                       name: e.name?.givenName ??
                                                           ' - - ',
                                                       years: (e.dateOfBirth ==

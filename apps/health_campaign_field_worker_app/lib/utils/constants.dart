@@ -158,6 +158,7 @@ class Constants {
   static const String blueVAS = "Blue VAS";
   static const String redVAS = "Red VAS";
 
+  static const int minValidHeightOncho = 90;
   static const String dipAction = "DAILY_PLAN";
   static const String nonComplianceAction = "NON_COMPLIANCE";
 
