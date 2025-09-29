@@ -73,4 +73,6 @@ enum MasterEnums {
   stockManufacturer,
   @MappableValue("STATUS_VVM")
   statusVVM,
+  @MappableValue("DIP_DAYS")
+  dipDays,
 }

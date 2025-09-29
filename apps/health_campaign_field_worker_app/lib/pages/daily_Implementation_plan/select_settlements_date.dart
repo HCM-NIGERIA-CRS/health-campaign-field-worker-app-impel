@@ -16,8 +16,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:registration_delivery/utils/utils.dart';
 
+import '../../blocs/app_initialization/app_initialization.dart';
 import '../../blocs/daily_implementation_plan/daily_implementation_plan.dart';
 import '../../blocs/daily_implementation_plan/dip_search.dart';
+import '../../data/local_store/no_sql/schema/app_configuration.dart';
 import '../../models/settlement/settlement_model.dart';
 import '../../router/app_router.dart';
 import '../../utils/utils.dart';
@@ -366,12 +368,6 @@ class SettlementRow extends StatefulWidget {
 }
 
 class _SettlementRowState extends State<SettlementRow> {
-  Map<String, String> allDates = {
-    'day1': 'Day 1',
-    'day2': 'Day 2',
-    'day3': 'Day 3',
-    'day4': 'Day 4',
-  };
   DropdownItem? selectedOption;
 
   @override
@@ -386,35 +382,47 @@ class _SettlementRowState extends State<SettlementRow> {
             code: widget.settlementData!.dayOfVisit,
             name: widget.settlementData!.dayOfVisit);
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Expanded(
-            child: Container(
-          decoration: cellDecoration,
-          height: 40,
-          child: Center(child: Text(widget.settlementCode)),
-        )),
-        const SizedBox(width: 1),
-        Expanded(
-            child: Container(
-          decoration: cellDecoration,
-          height: 40,
-          child: Center(
-            child: DigitDropdown(
-              selectedOption: selectedOption,
-              items: [
-                for (var date in allDates.keys)
-                  DropdownItem(code: date, name: allDates[date]!),
-              ],
-              onSelect: (value) {
-                widget.onSelectDate(value);
-              },
+    return BlocBuilder<AppInitializationBloc, AppInitializationState>(
+        builder: (context, state) {
+      if (state is! AppInitialized) {
+        return const Offstage();
+      }
+
+      // load date from mdms
+
+      final dipDays =
+          state.appConfiguration.dipDays ?? <DeliveryCommentOptions>[];
+
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Expanded(
+              child: Container(
+            decoration: cellDecoration,
+            height: 40,
+            child: Center(child: Text(widget.settlementCode)),
+          )),
+          const SizedBox(width: 1),
+          Expanded(
+              child: Container(
+            decoration: cellDecoration,
+            height: 40,
+            child: Center(
+              child: DigitDropdown(
+                selectedOption: selectedOption,
+                items: [
+                  for (var date in dipDays)
+                    DropdownItem(code: date.code, name: date.name),
+                ],
+                onSelect: (value) {
+                  widget.onSelectDate(value);
+                },
+              ),
             ),
-          ),
-        )),
-      ],
-    );
+          )),
+        ],
+      );
+    });
   }
 }

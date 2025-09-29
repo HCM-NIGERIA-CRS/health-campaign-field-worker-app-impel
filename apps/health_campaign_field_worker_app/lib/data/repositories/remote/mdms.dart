@@ -314,6 +314,15 @@ class MdmsRepository {
       return redoseDeliveryCommentOption;
     }).toList();
 
+    final List<DeliveryCommentOptions>? dipDays =
+        element?.dipDays.map((element) {
+      final dipDay = DeliveryCommentOptions()
+        ..name = element.name
+        ..code = element.code;
+
+      return dipDay;
+    }).toList();
+
     final List<AgeRangeOptions>? ageRangeOptions =
         element?.ageRangeOptions.map((element) {
       final ageRangeOption = AgeRangeOptions()
@@ -397,6 +406,7 @@ class MdmsRepository {
     appConfiguration.deliveryCommentOptions = deliveryCommentOptions;
     appConfiguration.redoseDeliveryCommentsOptions =
         redoseDeliveryCommentOptions;
+    appConfiguration.dipDays = dipDays;
     appConfiguration.ageRangeOptions = ageRangeOptions;
     appConfiguration.heightRangeOptions = heightRangeOptions;
     appConfiguration.stockManufacturer = stockManufacturer;

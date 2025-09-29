@@ -116,6 +116,7 @@ class AppInitializationBloc
                     MasterEnums.heightRangeOptions.toValue(),
                     MasterEnums.stockManufacturer.toValue(),
                     MasterEnums.statusVVM.toValue(),
+                    MasterEnums.dipDays.toValue(),
                   ]),
                 ),
                 MdmsModuleDetailModel(

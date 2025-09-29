@@ -212,7 +212,7 @@ class SelectBoundaryPageState extends LocalizedState<SelectSettlementsPage> {
                                     administrativeUnit: administrativeUnit,
                                     wfpSupervisor: wfpSupervisor,
                                     selectedSettlements: selectedOptions
-                                        .map((e) => e.name ?? '')
+                                        .map((e) => e.code ?? '')
                                         .toList(),
                                   ),
                                 );

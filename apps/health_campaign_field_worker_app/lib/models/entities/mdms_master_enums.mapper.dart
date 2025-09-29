@@ -93,6 +93,8 @@ class MasterEnumsMapper extends EnumMapper<MasterEnums> {
         return MasterEnums.stockManufacturer;
       case "STATUS_VVM":
         return MasterEnums.statusVVM;
+      case "DIP_DAYS":
+        return MasterEnums.dipDays;
       default:
         throw MapperException.unknownEnumValue(value);
     }
@@ -169,6 +171,8 @@ class MasterEnumsMapper extends EnumMapper<MasterEnums> {
         return "STOCK_MANUFACTURER";
       case MasterEnums.statusVVM:
         return "STATUS_VVM";
+      case MasterEnums.dipDays:
+        return "DIP_DAYS";
     }
   }
 }

@@ -66,6 +66,9 @@ class AppConfiguration {
   @Name("STATUS_VVM")
   late List<DeliveryCommentOptions>? statusVVM;
 
+  @Name("DIP_DAYS")
+  late List<DeliveryCommentOptions>? dipDays;
+
   @Name('USER_ACTION_DAILY_PLAN')
   late List<DailyActionPlanConfig>? dailyPlanConfigs;
 

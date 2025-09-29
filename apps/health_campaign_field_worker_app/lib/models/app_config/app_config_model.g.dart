@@ -143,6 +143,10 @@ _$HCMWrapperModelImpl _$$HCMWrapperModelImplFromJson(
           .map(
               (e) => DeliveryCommentOptions.fromJson(e as Map<String, dynamic>))
           .toList(),
+      dipDays: (json['DIP_DAYS'] as List<dynamic>)
+          .map(
+              (e) => DeliveryCommentOptions.fromJson(e as Map<String, dynamic>))
+          .toList(),
       heightRangeOptions: (json['HEIGHT_RANGE_OPTIONS'] as List<dynamic>)
           .map((e) => HeightRangeOptions.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -209,6 +213,7 @@ Map<String, dynamic> _$$HCMWrapperModelImplToJson(
       'AGE_RANGE_OPTIONS': instance.ageRangeOptions,
       'STOCK_MANUFACTURER': instance.stockManufacturer,
       'STATUS_VVM': instance.statusVVM,
+      'DIP_DAYS': instance.dipDays,
       'HEIGHT_RANGE_OPTIONS': instance.heightRangeOptions,
       'USER_ACTION_DAILY_PLAN': instance.dailyPlanConfigs,
       'NON_COMPLIANCE_REASONS': instance.nonComplianceReasons,

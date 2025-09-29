@@ -91,6 +91,7 @@ class HCMWrapperModel with _$HCMWrapperModel {
     required List<DeliveryCommentOptions> stockManufacturer,
     @JsonKey(name: 'STATUS_VVM')
     required List<DeliveryCommentOptions> statusVVM,
+    @JsonKey(name: 'DIP_DAYS') required List<DeliveryCommentOptions> dipDays,
     @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
     required List<HeightRangeOptions> heightRangeOptions,
     @JsonKey(name: 'USER_ACTION_DAILY_PLAN')

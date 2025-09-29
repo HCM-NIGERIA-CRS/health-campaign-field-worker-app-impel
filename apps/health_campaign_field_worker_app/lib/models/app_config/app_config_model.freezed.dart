@@ -956,6 +956,9 @@ mixin _$HCMWrapperModel {
   @JsonKey(name: 'STATUS_VVM')
   List<DeliveryCommentOptions> get statusVVM =>
       throw _privateConstructorUsedError;
+  @JsonKey(name: 'DIP_DAYS')
+  List<DeliveryCommentOptions> get dipDays =>
+      throw _privateConstructorUsedError;
   @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
   List<HeightRangeOptions> get heightRangeOptions =>
       throw _privateConstructorUsedError;
@@ -1035,6 +1038,7 @@ abstract class $HCMWrapperModelCopyWith<$Res> {
       @JsonKey(name: 'STOCK_MANUFACTURER')
       List<DeliveryCommentOptions> stockManufacturer,
       @JsonKey(name: 'STATUS_VVM') List<DeliveryCommentOptions> statusVVM,
+      @JsonKey(name: 'DIP_DAYS') List<DeliveryCommentOptions> dipDays,
       @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
       List<HeightRangeOptions> heightRangeOptions,
       @JsonKey(name: 'USER_ACTION_DAILY_PLAN')
@@ -1087,6 +1091,7 @@ class _$HCMWrapperModelCopyWithImpl<$Res, $Val extends HCMWrapperModel>
     Object? ageRangeOptions = null,
     Object? stockManufacturer = null,
     Object? statusVVM = null,
+    Object? dipDays = null,
     Object? heightRangeOptions = null,
     Object? dailyPlanConfigs = null,
     Object? nonComplianceReasons = null,
@@ -1159,6 +1164,10 @@ class _$HCMWrapperModelCopyWithImpl<$Res, $Val extends HCMWrapperModel>
       statusVVM: null == statusVVM
           ? _value.statusVVM
           : statusVVM // ignore: cast_nullable_to_non_nullable
+              as List<DeliveryCommentOptions>,
+      dipDays: null == dipDays
+          ? _value.dipDays
+          : dipDays // ignore: cast_nullable_to_non_nullable
               as List<DeliveryCommentOptions>,
       heightRangeOptions: null == heightRangeOptions
           ? _value.heightRangeOptions
@@ -1253,6 +1262,7 @@ abstract class _$$HCMWrapperModelImplCopyWith<$Res>
       @JsonKey(name: 'STOCK_MANUFACTURER')
       List<DeliveryCommentOptions> stockManufacturer,
       @JsonKey(name: 'STATUS_VVM') List<DeliveryCommentOptions> statusVVM,
+      @JsonKey(name: 'DIP_DAYS') List<DeliveryCommentOptions> dipDays,
       @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
       List<HeightRangeOptions> heightRangeOptions,
       @JsonKey(name: 'USER_ACTION_DAILY_PLAN')
@@ -1303,6 +1313,7 @@ class __$$HCMWrapperModelImplCopyWithImpl<$Res>
     Object? ageRangeOptions = null,
     Object? stockManufacturer = null,
     Object? statusVVM = null,
+    Object? dipDays = null,
     Object? heightRangeOptions = null,
     Object? dailyPlanConfigs = null,
     Object? nonComplianceReasons = null,
@@ -1375,6 +1386,10 @@ class __$$HCMWrapperModelImplCopyWithImpl<$Res>
       statusVVM: null == statusVVM
           ? _value._statusVVM
           : statusVVM // ignore: cast_nullable_to_non_nullable
+              as List<DeliveryCommentOptions>,
+      dipDays: null == dipDays
+          ? _value._dipDays
+          : dipDays // ignore: cast_nullable_to_non_nullable
               as List<DeliveryCommentOptions>,
       heightRangeOptions: null == heightRangeOptions
           ? _value._heightRangeOptions
@@ -1468,6 +1483,8 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
       required final List<DeliveryCommentOptions> stockManufacturer,
       @JsonKey(name: 'STATUS_VVM')
       required final List<DeliveryCommentOptions> statusVVM,
+      @JsonKey(name: 'DIP_DAYS')
+      required final List<DeliveryCommentOptions> dipDays,
       @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
       required final List<HeightRangeOptions> heightRangeOptions,
       @JsonKey(name: 'USER_ACTION_DAILY_PLAN')
@@ -1511,6 +1528,7 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
         _ageRangeOptions = ageRangeOptions,
         _stockManufacturer = stockManufacturer,
         _statusVVM = statusVVM,
+        _dipDays = dipDays,
         _heightRangeOptions = heightRangeOptions,
         _dailyPlanConfigs = dailyPlanConfigs,
         _nonComplianceReasons = nonComplianceReasons,
@@ -1664,6 +1682,15 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
     if (_statusVVM is EqualUnmodifiableListView) return _statusVVM;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_statusVVM);
+  }
+
+  final List<DeliveryCommentOptions> _dipDays;
+  @override
+  @JsonKey(name: 'DIP_DAYS')
+  List<DeliveryCommentOptions> get dipDays {
+    if (_dipDays is EqualUnmodifiableListView) return _dipDays;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_dipDays);
   }
 
   final List<HeightRangeOptions> _heightRangeOptions;
@@ -1822,7 +1849,7 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
 
   @override
   String toString() {
-    return 'HCMWrapperModel(appConfig: $appConfig, bandWidthBatchSize: $bandWidthBatchSize, downSyncBandWidthBatchSize: $downSyncBandWidthBatchSize, beneficiaryIdConfig: $beneficiaryIdConfig, householdDeletionReasonOptions: $householdDeletionReasonOptions, householdMemberDeletionReasonOptions: $householdMemberDeletionReasonOptions, backgroundServiceConfig: $backgroundServiceConfig, checklistTypes: $checklistTypes, idTypeOptions: $idTypeOptions, redoseDeliveryCommentsOptions: $redoseDeliveryCommentsOptions, deliveryCommentOptions: $deliveryCommentOptions, ageRangeOptions: $ageRangeOptions, stockManufacturer: $stockManufacturer, statusVVM: $statusVVM, heightRangeOptions: $heightRangeOptions, dailyPlanConfigs: $dailyPlanConfigs, nonComplianceReasons: $nonComplianceReasons, backendInterface: $backendInterface, callSupportOptions: $callSupportOptions, transportTypes: $transportTypes, symptomsTypeList: $symptomsTypeList, searchHouseHoldFilters: $searchHouseHoldFilters, searchCLFFilters: $searchCLFFilters, referralReasonList: $referralReasonList, houseStructureTypes: $houseStructureTypes, refusalReasons: $refusalReasons, firebaseConfig: $firebaseConfig, transitPostType: $transitPostType)';
+    return 'HCMWrapperModel(appConfig: $appConfig, bandWidthBatchSize: $bandWidthBatchSize, downSyncBandWidthBatchSize: $downSyncBandWidthBatchSize, beneficiaryIdConfig: $beneficiaryIdConfig, householdDeletionReasonOptions: $householdDeletionReasonOptions, householdMemberDeletionReasonOptions: $householdMemberDeletionReasonOptions, backgroundServiceConfig: $backgroundServiceConfig, checklistTypes: $checklistTypes, idTypeOptions: $idTypeOptions, redoseDeliveryCommentsOptions: $redoseDeliveryCommentsOptions, deliveryCommentOptions: $deliveryCommentOptions, ageRangeOptions: $ageRangeOptions, stockManufacturer: $stockManufacturer, statusVVM: $statusVVM, dipDays: $dipDays, heightRangeOptions: $heightRangeOptions, dailyPlanConfigs: $dailyPlanConfigs, nonComplianceReasons: $nonComplianceReasons, backendInterface: $backendInterface, callSupportOptions: $callSupportOptions, transportTypes: $transportTypes, symptomsTypeList: $symptomsTypeList, searchHouseHoldFilters: $searchHouseHoldFilters, searchCLFFilters: $searchCLFFilters, referralReasonList: $referralReasonList, houseStructureTypes: $houseStructureTypes, refusalReasons: $refusalReasons, firebaseConfig: $firebaseConfig, transitPostType: $transitPostType)';
   }
 
   @override
@@ -1862,6 +1889,7 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
                 .equals(other._stockManufacturer, _stockManufacturer) &&
             const DeepCollectionEquality()
                 .equals(other._statusVVM, _statusVVM) &&
+            const DeepCollectionEquality().equals(other._dipDays, _dipDays) &&
             const DeepCollectionEquality()
                 .equals(other._heightRangeOptions, _heightRangeOptions) &&
             const DeepCollectionEquality()
@@ -1911,6 +1939,7 @@ class _$HCMWrapperModelImpl implements _HCMWrapperModel {
         const DeepCollectionEquality().hash(_ageRangeOptions),
         const DeepCollectionEquality().hash(_stockManufacturer),
         const DeepCollectionEquality().hash(_statusVVM),
+        const DeepCollectionEquality().hash(_dipDays),
         const DeepCollectionEquality().hash(_heightRangeOptions),
         const DeepCollectionEquality().hash(_dailyPlanConfigs),
         const DeepCollectionEquality().hash(_nonComplianceReasons),
@@ -1972,6 +2001,8 @@ abstract class _HCMWrapperModel implements HCMWrapperModel {
       required final List<DeliveryCommentOptions> stockManufacturer,
       @JsonKey(name: 'STATUS_VVM')
       required final List<DeliveryCommentOptions> statusVVM,
+      @JsonKey(name: 'DIP_DAYS')
+      required final List<DeliveryCommentOptions> dipDays,
       @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
       required final List<HeightRangeOptions> heightRangeOptions,
       @JsonKey(name: 'USER_ACTION_DAILY_PLAN')
@@ -2046,6 +2077,9 @@ abstract class _HCMWrapperModel implements HCMWrapperModel {
   @override
   @JsonKey(name: 'STATUS_VVM')
   List<DeliveryCommentOptions> get statusVVM;
+  @override
+  @JsonKey(name: 'DIP_DAYS')
+  List<DeliveryCommentOptions> get dipDays;
   @override
   @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
   List<HeightRangeOptions> get heightRangeOptions;
