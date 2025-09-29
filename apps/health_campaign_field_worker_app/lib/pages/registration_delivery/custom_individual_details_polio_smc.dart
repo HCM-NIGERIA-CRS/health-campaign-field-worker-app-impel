@@ -1288,7 +1288,17 @@ class CustomIndividualDetailsPolioSMCPageState
       dobString = DateFormat(Constants().dateFormat).format(dob);
     }
 
-    final height = form.control(_heightKey).value as String? ?? "0";
+    // make sure that when passing value to additional field it is greater 1 in length
+
+    final heightValue = form.control(_heightKey).value;
+
+    String formattedHeight;
+    if (heightValue != null && heightValue.toString().trim().isNotEmpty) {
+      final stringValue = heightValue.toString();
+      formattedHeight = stringValue.length == 1 ? '0$stringValue' : stringValue;
+    } else {
+      formattedHeight = '00';
+    }
     final disability = form.control(_disabilityKey).value as String?;
 
     var individual = oldIndividual;
@@ -1315,7 +1325,8 @@ class CustomIndividualDetailsPolioSMCPageState
         additionalFields: IndividualAdditionalFields(
           version: 1,
           fields: [
-            AdditionalField("height", height),
+            if (formattedHeight.isNotEmpty)
+              AdditionalField("height", formattedHeight),
             if (disability != null && disability.isNotEmpty)
               AdditionalField("disability", disability),
           ],
