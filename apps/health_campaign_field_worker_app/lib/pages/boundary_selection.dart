@@ -263,8 +263,10 @@ class _BoundarySelectionPageState
                                                 : i18.acknowledgementSuccess
                                                     .goToHome,
                                           ),
-                                          boundaryName: selectedBoundary
-                                              .value!.name
+                                          // passed boundaryCode here if present and same is used on acknowledgement page
+                                          boundaryName: (selectedBoundary
+                                                      .value?.code ??
+                                                  selectedBoundary.value?.name)
                                               .toString(),
                                         ),
                                         dialogType:
