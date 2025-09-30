@@ -765,7 +765,8 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                                       errorMessage: field.errorText,
                                       onChange: (val) {
                                         if (val == '') {
-                                          field.control.value = '0';
+                                          // set null if no value entered
+                                          field.control.value = null;
                                         } else {
                                           field.control.value = val;
                                         }
@@ -1137,9 +1138,16 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
       additionalFields: currentStock.additionalFields?.copyWith(
         fields: [
           ...(filteredAdditionalFields),
-          if (form.control(_batchNumberKey).value != null)
+          // note save the additional field if length greater than 1 as 2 is minLength
+          if (form.control(_batchNumberKey).value != null &&
+              (form.control(_batchNumberKey).value as String)
+                  .trim()
+                  .isNotEmpty &&
+              (form.control(_batchNumberKey).value as String).trim().length > 1)
             AdditionalField('batchNumber', form.control(_batchNumberKey).value),
-          if (form.control(_commentsKey).value != null)
+          if (form.control(_commentsKey).value != null &&
+              (form.control(_commentsKey).value as String).trim().isNotEmpty &&
+              (form.control(_commentsKey).value as String).trim().length > 1)
             AdditionalField('comments', form.control(_commentsKey).value),
           if (form.control(_statusVvmKey).value != null)
             AdditionalField('statusVvm', form.control(_statusVvmKey).value),
