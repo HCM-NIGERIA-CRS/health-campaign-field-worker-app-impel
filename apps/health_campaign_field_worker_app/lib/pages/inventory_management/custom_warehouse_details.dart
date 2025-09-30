@@ -99,7 +99,7 @@ class CustomWarehouseDetailsPageState
                       } else if (ctx.selectedProject.address?.boundaryType ==
                               Constants.stateBoundaryLevel &&
                           isWareHouseMgr) {
-                        List<FacilityModel> filteredFacilities = allfacilities
+                        List<FacilityModel> filteredFacilities = facilities
                             .where((element) =>
                                 element.usage == Constants.stateWarehouse)
                             .toList();
@@ -109,7 +109,7 @@ class CustomWarehouseDetailsPageState
                       } else if (ctx.selectedProject.address?.boundaryType ==
                               Constants.lgaBoundaryLevel &&
                           isWareHouseMgr) {
-                        List<FacilityModel> filteredFacilities = allfacilities
+                        List<FacilityModel> filteredFacilities = facilities
                             .where((element) =>
                                 element.usage == Constants.lgaWarehouse)
                             .toList();
@@ -119,7 +119,7 @@ class CustomWarehouseDetailsPageState
                       } else if (ctx.selectedProject.address?.boundaryType ==
                               Constants.wardBoundaryLevel &&
                           isWareHouseMgr) {
-                        List<FacilityModel> filteredFacilities = allfacilities
+                        List<FacilityModel> filteredFacilities = facilities
                             .where((element) =>
                                 element.usage == Constants.wardWarehouse)
                             .toList();

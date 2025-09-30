@@ -438,7 +438,7 @@ class CustomStockReconciliationPageState
                                                         isWareHouseMgr) {
                                                       List<FacilityModel>
                                                           filteredFacilities =
-                                                          allfacilities
+                                                          facilities
                                                               .where((element) =>
                                                                   element
                                                                       .usage ==
@@ -459,7 +459,7 @@ class CustomStockReconciliationPageState
                                                         isWareHouseMgr) {
                                                       List<FacilityModel>
                                                           filteredFacilities =
-                                                          allfacilities
+                                                          facilities
                                                               .where((element) =>
                                                                   element
                                                                       .usage ==
@@ -480,7 +480,7 @@ class CustomStockReconciliationPageState
                                                         isWareHouseMgr) {
                                                       List<FacilityModel>
                                                           filteredFacilities =
-                                                          allfacilities
+                                                          facilities
                                                               .where((element) =>
                                                                   element
                                                                       .usage ==

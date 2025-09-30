@@ -260,7 +260,7 @@ class CustomInventoryReportDetailsPageState
                                                           isWareHouseMgr) {
                                                         List<FacilityModel>
                                                             filteredFacilities =
-                                                            allfacilities
+                                                            facilities
                                                                 .where((element) =>
                                                                     element
                                                                         .usage ==
@@ -281,7 +281,7 @@ class CustomInventoryReportDetailsPageState
                                                           isWareHouseMgr) {
                                                         List<FacilityModel>
                                                             filteredFacilities =
-                                                            allfacilities
+                                                            facilities
                                                                 .where((element) =>
                                                                     element
                                                                         .usage ==
@@ -302,7 +302,7 @@ class CustomInventoryReportDetailsPageState
                                                           isWareHouseMgr) {
                                                         List<FacilityModel>
                                                             filteredFacilities =
-                                                            allfacilities
+                                                            facilities
                                                                 .where((element) =>
                                                                     element
                                                                         .usage ==
