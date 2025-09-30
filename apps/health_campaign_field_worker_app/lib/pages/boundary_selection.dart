@@ -478,7 +478,10 @@ class _BoundarySelectionPageState
                                             onPressed: () async {
                                               if (!form.valid ||
                                                   validateAllBoundarySelection(
-                                                    !context.isWarehouseManager,
+                                                    context.isWFP ||
+                                                        context
+                                                            .isCommunityDistributor ||
+                                                        context.isWardLevel,
                                                   )) {
                                                 clickedStatus.value = false;
                                                 Toast.showToast(
@@ -749,7 +752,7 @@ class _BoundarySelectionPageState
   }
 
   void resetChildDropdowns(String parentLabel, BoundaryState state) {
-    final labelList = state.selectedBoundaryMap.keys.toList();
+    final labelList = filterBoundaryLabelListBasedOnRole(doFilter, state);
     final parentIndex = labelList.indexOf(parentLabel);
     if (state.boundaryList.isNotEmpty) {
       leastLevelBoundaries = (state.boundaryList.map((e) => e.code!).toList());
