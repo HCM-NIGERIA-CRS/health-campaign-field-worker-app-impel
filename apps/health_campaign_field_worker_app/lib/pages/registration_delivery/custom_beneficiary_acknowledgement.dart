@@ -13,6 +13,7 @@ import 'package:registration_delivery/router/registration_delivery_router.gm.dar
 import '../../blocs/registration_delivery/custom_beneficairy_registration.dart';
 import '../../blocs/registration_delivery/custom_search_household.dart';
 import '../../models/entities/identifier_types.dart';
+import '../../router/app_router.dart';
 import '../../utils/utils.dart';
 import '../../widgets/digit_ui_component/custom_panel_card.dart';
 import '../../utils/i18_key_constants.dart' as i18_local;
@@ -106,7 +107,8 @@ class CustomBeneficiaryAcknowledgementPageState
                   subTitle: subtitleMap(
                       householdMemberWrapper, state.householdModel?.id),
                   actions: [
-                    if (householdMemberWrapper != null)
+                    if (householdMemberWrapper != null &&
+                        (widget.enableViewHousehold == true))
                       DigitButton(
                           label: localizations.translate(
                             i18.householdDetails.viewHouseHoldDetailsAction,
@@ -131,7 +133,7 @@ class CustomBeneficiaryAcknowledgementPageState
                           (context.router.parent() as StackRouter).maybePop();
                           context.router.popUntil((route) =>
                               route.settings.name ==
-                              SearchBeneficiaryRoute.name);
+                              CustomSearchBeneficiaryRoute.name);
                         },
                         type: DigitButtonType.secondary,
                         size: DigitButtonSize.large),

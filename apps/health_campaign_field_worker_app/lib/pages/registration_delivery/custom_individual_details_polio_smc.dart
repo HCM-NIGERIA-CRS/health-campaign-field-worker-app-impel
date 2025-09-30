@@ -254,7 +254,7 @@ class CustomIndividualDetailsPolioSMCPageState
                             (router.parent() as StackRouter).maybePop();
                             router.popUntil((route) =>
                                 route.settings.name ==
-                                SearchBeneficiaryRoute.name);
+                                CustomSearchBeneficiaryRoute.name);
                             router.push(CustomBeneficiaryAcknowledgementRoute(
                               enableViewHousehold: true,
                               acknowledgementType:
@@ -292,7 +292,7 @@ class CustomIndividualDetailsPolioSMCPageState
                                   overviewBloc.state.householdMemberWrapper;
                               final route = router.parent() as StackRouter;
                               route.popUntilRouteWithName(
-                                  SearchBeneficiaryRoute.name);
+                                  CustomSearchBeneficiaryRoute.name);
                               route.push(BeneficiaryWrapperRoute(
                                   wrapper: memberWrapper));
                             });
@@ -300,7 +300,7 @@ class CustomIndividualDetailsPolioSMCPageState
                             (router.parent() as StackRouter).maybePop();
                             router.popUntil((route) =>
                                 route.settings.name ==
-                                SearchBeneficiaryRoute.name);
+                                CustomSearchBeneficiaryRoute.name);
                             router.push(CustomBeneficiaryAcknowledgementRoute(
                               enableViewHousehold: true,
                               acknowledgementType:

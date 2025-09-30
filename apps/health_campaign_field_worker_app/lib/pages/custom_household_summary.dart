@@ -77,7 +77,7 @@ class CustomHouseholdSummaryPageState
                 (router.parent() as StackRouter).maybePop();
               } else {
                 router.popUntil((route) =>
-                    route.settings.name == SearchBeneficiaryRoute.name);
+                    route.settings.name == CustomSearchBeneficiaryRoute.name);
                 context.read<SearchBlocWrapper>().searchHouseholdsBloc.add(
                       SearchHouseholdsEvent.searchByHousehold(
                         householdModel: value.householdModel,
@@ -86,7 +86,7 @@ class CustomHouseholdSummaryPageState
                       ),
                     );
                 router.push(CustomBeneficiaryAcknowledgementRoute(
-                  enableViewHousehold: true,
+                  enableViewHousehold: false,
                   acknowledgementType: AcknowledgementType.addHousehold,
                 ));
               }
@@ -196,6 +196,12 @@ class CustomHouseholdSummaryPageState
                                   longitude: widget.longitude,
                                   locationAccuracy: widget.locationAccuracy,
                                 ));
+
+                                context
+                                    .read<SearchBlocWrapper>()
+                                    .searchHouseholdsBloc
+                                    .add(const SearchHouseholdsEvent.clear());
+
                                 Future.delayed(
                                         const Duration(milliseconds: 700))
                                     .then((value) {
