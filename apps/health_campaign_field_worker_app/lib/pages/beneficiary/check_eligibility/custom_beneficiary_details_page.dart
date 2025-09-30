@@ -188,6 +188,7 @@ class CustomBeneficiaryDetailsPageState
                             header: const Column(children: [
                               CustomBackNavigationHelpHeaderWidget(
                                 showHelp: false,
+                                showBackNavigation: false,
                               ),
                             ]),
                             footer: BlocBuilder<DeliverInterventionBloc,

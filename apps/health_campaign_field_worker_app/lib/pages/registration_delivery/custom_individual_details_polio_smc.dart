@@ -167,6 +167,10 @@ class CustomIndividualDetailsPolioSMCPageState
     final theme = Theme.of(context);
     DateTime before150Years = DateTime(now.year - 150, now.month, now.day);
     final textTheme = theme.digitTextTheme(context);
+    final bool isEditIndividualFlow = bloc.state.mapOrNull(
+          editIndividual: (_) => true,
+        ) ??
+        false;
 
     return GlobalBackHandler(
       child: Scaffold(
@@ -370,6 +374,8 @@ class CustomIndividualDetailsPolioSMCPageState
                                       context.router.maybePop();
                                     }
                                   },
+                                  showBackNavigation:
+                                      (!isEditIndividualFlow ?? true),
                                 ),
                               ),
                             ]),
