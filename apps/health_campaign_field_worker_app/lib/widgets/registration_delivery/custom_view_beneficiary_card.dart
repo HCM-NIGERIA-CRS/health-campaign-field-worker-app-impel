@@ -167,6 +167,21 @@ class CustomViewBeneficiaryCardState
               : DateTime.now(),
         ).months;
 
+        bool? ineligibleBasedOnHeight;
+
+        // extract the height and check if ocnho flow only
+
+        if (context.projectTypeCode == ProjectTypes.pmo.toValue()) {
+          // get height of individual if present and check eligibility based on minimum eligible height
+          final height = getIndividualHeight(e);
+
+          if (height == null || height.isEmpty) {
+            ineligibleBasedOnHeight = false;
+          } else {
+            ineligibleBasedOnHeight = inEligibilityBasedOnHeight(height);
+          }
+        }
+
         // Todo : cover the case where polio project type is there
         final isNotEligible =
             context.projectTypeCode == ProjectTypes.pmo.toValue()
@@ -224,7 +239,7 @@ class CustomViewBeneficiaryCardState
                     )
                   : getTableCellText(
                       CustomStatusKeys(
-                        isNotEligible,
+                        isNotEligible || (ineligibleBasedOnHeight ?? false),
                         isBeneficiaryRefused,
                         isBeneficiaryReferred,
                         isBeneficiaryIneligible,
@@ -240,7 +255,8 @@ class CustomViewBeneficiaryCardState
                             ProjectTypes.polio.toValue())
                     ? theme.colorScheme.surfaceTint
                     : getTableCellTextColor(
-                        isNotEligible: isNotEligible,
+                        isNotEligible:
+                            isNotEligible || (ineligibleBasedOnHeight ?? false),
                         taskdata: taskData,
                         isBeneficiaryRefused: isBeneficiaryRefused ||
                             isBeneficiaryReferred ||
