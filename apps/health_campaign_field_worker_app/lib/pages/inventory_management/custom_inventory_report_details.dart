@@ -552,6 +552,8 @@ class CustomInventoryReportDetailsPageState
                                               const waybillKey =
                                                   'waybillNumber';
                                               const quantityKey = 'quantity';
+                                              const damageQuantityKey =
+                                                  'damageQuantity';
                                               const partialQuantityKey =
                                                   'partialBlistersReturned';
                                               const wastedQuantityKey =
@@ -577,20 +579,28 @@ class CustomInventoryReportDetailsPageState
                                                       key: quantityKey,
                                                       width: 200,
                                                     ),
-                                                    if (widget.reportType ==
+                                                    if ((widget.reportType ==
                                                             InventoryReportType
-                                                                .returned ||
-                                                        (widget.reportType ==
-                                                                InventoryReportType
-                                                                    .dispatch &&
-                                                            context
-                                                                .isCommunityDistributor))
+                                                                .dispatch &&
+                                                        context
+                                                            .isCommunityDistributor))
                                                       DigitGridColumn(
                                                         label: localizations
                                                             .translate(i18_local
                                                                 .stockDetails
                                                                 .quantityPartialReturnedLabel),
                                                         key: partialQuantityKey,
+                                                        width: 200,
+                                                      ),
+                                                    if ((widget.reportType ==
+                                                        InventoryReportType
+                                                            .returned))
+                                                      DigitGridColumn(
+                                                        label: localizations
+                                                            .translate(i18_local
+                                                                .stockDetails
+                                                                .quantityDamageReturnedLabel),
+                                                        key: damageQuantityKey,
                                                         width: 200,
                                                       ),
                                                     if (widget.reportType ==
@@ -631,14 +641,11 @@ class CustomInventoryReportDetailsPageState
                                                                       .quantity ??
                                                                   '',
                                                             ),
-                                                            if (widget.reportType ==
+                                                            if ((widget.reportType ==
                                                                     InventoryReportType
-                                                                        .returned ||
-                                                                (widget.reportType ==
-                                                                        InventoryReportType
-                                                                            .dispatch &&
-                                                                    context
-                                                                        .isCommunityDistributor))
+                                                                        .dispatch &&
+                                                                context
+                                                                    .isCommunityDistributor))
                                                               DigitGridCell(
                                                                 key:
                                                                     partialQuantityKey,
@@ -646,6 +653,20 @@ class CustomInventoryReportDetailsPageState
                                                                         null
                                                                     ? "0"
                                                                     : (model.additionalFields!.fields.firstWhereOrNull((e) => e.key == partialQuantityKey)?.value ??
+                                                                            '')
+                                                                        .toString(),
+                                                              ),
+                                                            if ((widget
+                                                                    .reportType ==
+                                                                InventoryReportType
+                                                                    .returned))
+                                                              DigitGridCell(
+                                                                key:
+                                                                    damageQuantityKey,
+                                                                value: model.additionalFields ==
+                                                                        null
+                                                                    ? "0"
+                                                                    : (model.additionalFields!.fields.firstWhereOrNull((e) => e.key == damageQuantityKey)?.value ??
                                                                             '')
                                                                         .toString(),
                                                               ),

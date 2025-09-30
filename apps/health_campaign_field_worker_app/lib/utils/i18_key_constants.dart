@@ -542,6 +542,9 @@ class StockDetails {
   String get quantityPartialReturnedLabel =>
       'STOCK_DETAILS_PARTIAL_QUANTITY_RETURNED';
 
+  String get quantityDamageReturnedLabel =>
+      'STOCK_DETAILS_DAMAGE_QUANTITY_RETURNED';
+
   String get quantityReturnedMaxError =>
       'STOCK_DETAILS_RETURNED_MAX_QUANTITY_ERROR';
   String get quantityWastedReturnedLabel =>
