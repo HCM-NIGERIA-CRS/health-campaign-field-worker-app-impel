@@ -210,14 +210,32 @@ class LocalSecureStore {
         skuCounts[productCountKey] = productCount;
       }
 
-      Map<String, dynamic> skuCountsWithUUID = {userUUID: skuCounts};
+// Note : get already existing data from storage and currect user data in it
+      Map<String, dynamic> skuCountsWithUUID =
+          await getSavedProductSKUCountsMap();
+      skuCountsWithUUID[userUUID] = skuCounts;
 
       await storage.write(
         key: Constants.productSKUCounts,
         value: json.encode(skuCountsWithUUID),
       );
+      print("testing");
     } catch (_) {
       return;
+    }
+  }
+
+  Future<Map<String, dynamic>> getSavedProductSKUCountsMap() async {
+    final localStorageStringMap =
+        await storage.read(key: Constants.productSKUCounts);
+    if (localStorageStringMap == null) return {};
+    try {
+      final localStorageMap =
+          json.decode(localStorageStringMap) as Map<String, dynamic>;
+
+      return localStorageMap;
+    } catch (_) {
+      return {};
     }
   }
 

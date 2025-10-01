@@ -1019,8 +1019,14 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                                         i18_local.stockDetails.expireDateLabel,
                                       ),
                                       child: DigitDateFormInput(
-                                        onChange: (val) =>
-                                            field.control.value = val,
+                                        onChange: (val) {
+                                          if (val == '') {
+                                            field.control.value = null;
+                                            return;
+                                          } else {
+                                            field.control.value = val;
+                                          }
+                                        },
                                         firstDate: DateTime.now(),
                                         errorMessage: field.errorText,
                                       ),
@@ -1036,13 +1042,17 @@ class _DynamicTabsPageState extends LocalizedState<DynamicTabsPage>
                               formControlName: _commentsKey,
                               builder: (field) {
                                 return InputField(
-                                  type: InputType.textArea,
-                                  label: localizations.translate(
-                                    i18.stockDetails.commentsLabel,
-                                  ),
-                                  errorMessage: field.errorText,
-                                  onChange: (val) => field.control.value = val,
-                                );
+                                    type: InputType.textArea,
+                                    label: localizations.translate(
+                                      i18.stockDetails.commentsLabel,
+                                    ),
+                                    errorMessage: field.errorText,
+                                    onChange: (val) {
+                                      if (val == '') {
+                                        field.control.value = null;
+                                      }
+                                      field.control.value = val;
+                                    });
                               },
                             ),
                           ],
