@@ -54,14 +54,14 @@ class _NonComplianceUpdateStatusPageState
   static const _status = 'status';
   static const _intervenedBy = 'intervenedBy';
 
-  FormGroup buildForm(String? status, String? intervenedBy) {
+  FormGroup buildForm(String status, String intervenedBy) {
     return fb.group(<String, Object>{
       _status: FormControl<DropdownItem>(
           validators: [Validators.required],
-          value: DropdownItem(code: status ?? '', name: status ?? '')),
+          value: DropdownItem(code: status, name: status)),
       _intervenedBy: FormControl<DropdownItem>(
         validators: [Validators.required],
-        value: DropdownItem(code: intervenedBy ?? '', name: intervenedBy ?? ''),
+        value: DropdownItem(code: intervenedBy, name: intervenedBy),
       )
     });
   }
@@ -74,13 +74,15 @@ class _NonComplianceUpdateStatusPageState
     List<TaskModel> tasks = widget.householdMember.tasks ?? [];
     String? taskClientReferenceId = tasks.firstOrNull?.clientReferenceId;
 
-    String? status = widget.userActionModel?.additionalFields?.fields
-        .firstWhereOrNull((e) => e.key == Constants.status)
-        ?.value;
+    String status = widget.userActionModel?.additionalFields?.fields
+            .firstWhereOrNull((e) => e.key == Constants.status)
+            ?.value ??
+        Constants.statusOptions.first;
 
-    String? intervenedBy = widget.userActionModel?.additionalFields?.fields
-        .firstWhereOrNull((e) => e.key == Constants.intervenedBy)
-        ?.value;
+    String intervenedBy = widget.userActionModel?.additionalFields?.fields
+            .firstWhereOrNull((e) => e.key == Constants.intervenedBy)
+            ?.value ??
+        Constants.intervenedByOptions.first;
 
     return BlocListener<NonComplianceTrackingBloc, NonComplianceTrackingState>(
       listener: (context, state) {
