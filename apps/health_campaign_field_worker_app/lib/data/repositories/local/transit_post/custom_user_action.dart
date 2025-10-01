@@ -177,6 +177,24 @@ class CustomUserActionLocalRepository extends UserActionLocalRepository {
             beneficiaryTag: userActionModel.beneficiaryTag,
             resourceTag: userActionModel.resourceTag,
             action: userActionModel.action,
+            auditDetails: (userActionModel.auditCreatedBy != null &&
+                    userActionModel.auditCreatedTime != null)
+                ? AuditDetails(
+                    createdBy: userActionModel.auditCreatedBy!,
+                    createdTime: userActionModel.auditCreatedTime!,
+                    lastModifiedBy: userActionModel.auditModifiedBy,
+                    lastModifiedTime: userActionModel.auditModifiedTime,
+                  )
+                : null,
+            clientAuditDetails: (userActionModel.clientCreatedBy != null &&
+                    userActionModel.clientCreatedTime != null)
+                ? ClientAuditDetails(
+                    createdBy: userActionModel.clientCreatedBy!,
+                    createdTime: userActionModel.clientCreatedTime!,
+                    lastModifiedBy: userActionModel.clientModifiedBy,
+                    lastModifiedTime: userActionModel.clientModifiedTime,
+                  )
+                : null,
             additionalFields: additionalField == null
                 ? null
                 : UserActionAdditionalFields(
