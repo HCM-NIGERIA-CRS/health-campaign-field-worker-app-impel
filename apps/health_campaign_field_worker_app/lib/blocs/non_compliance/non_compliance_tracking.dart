@@ -65,14 +65,12 @@ class NonComplianceTrackingBloc
     UserActionModel? nonComplianceUserAction = event.nonComplianceUserAction;
     try {
       nonComplianceUserAction = nonComplianceUserAction?.copyWith(
-        clientAuditDetails: ClientAuditDetails(
-            createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
-            createdTime: DateTime.now().millisecondsSinceEpoch,
-            lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid!,
-            lastModifiedTime: DateTime.now().millisecondsSinceEpoch),
-        auditDetails: AuditDetails(
-            createdBy: RegistrationDeliverySingleton().loggedInUserUuid!,
-            createdTime: DateTime.now().millisecondsSinceEpoch,
+        clientAuditDetails: nonComplianceUserAction.clientAuditDetails
+            ?.copyWith(
+                lastModifiedBy:
+                    RegistrationDeliverySingleton().loggedInUserUuid!,
+                lastModifiedTime: DateTime.now().millisecondsSinceEpoch),
+        auditDetails: nonComplianceUserAction.auditDetails?.copyWith(
             lastModifiedBy: RegistrationDeliverySingleton().loggedInUserUuid!,
             lastModifiedTime: DateTime.now().millisecondsSinceEpoch),
       );
