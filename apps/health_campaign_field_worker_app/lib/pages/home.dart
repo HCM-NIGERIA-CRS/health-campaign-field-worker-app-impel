@@ -89,7 +89,9 @@ class _HomePageState extends LocalizedState<HomePage> {
   @override
   initState() {
     super.initState();
-    context.read<DipSearchBloc>().add(const DipSearchEvent.search());
+    context.read<DipSearchBloc>().add(DipSearchEvent.search(
+          beneficiaryTag: context.loggedInUser.uuid,
+        ));
     subscription = Connectivity()
         .onConnectivityChanged
         .listen((List<ConnectivityResult> result) async {
