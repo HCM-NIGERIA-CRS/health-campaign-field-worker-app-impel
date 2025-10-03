@@ -382,6 +382,9 @@ class _NonComplianceTrackingSearchPage
                       size: DigitButtonSize.large,
                       isDisabled: false,
                       onPressed: () {
+                        if (FocusScope.of(context).hasFocus) {
+                          FocusScope.of(context).unfocus();
+                        }
                         context.router.maybePop();
                       },
                     ),

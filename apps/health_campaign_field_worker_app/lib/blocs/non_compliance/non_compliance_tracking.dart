@@ -65,6 +65,7 @@ class NonComplianceTrackingBloc
     UserActionModel? nonComplianceUserAction = event.nonComplianceUserAction;
     try {
       nonComplianceUserAction = nonComplianceUserAction?.copyWith(
+        isSync: false,
         clientAuditDetails: nonComplianceUserAction.clientAuditDetails
             ?.copyWith(
                 lastModifiedBy:

@@ -29,6 +29,7 @@ import '../data/local_store/no_sql/schema/project_types.dart';
 import '../data/local_store/no_sql/schema/row_versions.dart';
 import '../data/local_store/no_sql/schema/service_registry.dart';
 import '../data/repositories/local/inventory_management/custom_stock.dart';
+import '../data/repositories/local/transit_post/custom_user_action.dart';
 import '../data/repositories/remote/downsync.dart';
 import '../data/repositories/remote/transit_post/custom_user_action.dart';
 import '../data/sync_registry.dart';
@@ -243,9 +244,8 @@ class Constants {
         sql,
         ServiceOpLogManager(isar),
       ),
-      LocationTrackerLocalBaseRepository(
-          sql, LocationTrackerOpLogManager(isar)),
       UserActionLocalRepository(sql, UserActionOpLogManager(isar)),
+      CustomUserActionLocalRepository(sql, UserActionOpLogManager(isar)),
     ];
   }
 
