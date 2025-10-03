@@ -141,10 +141,11 @@ class BeneficiaryDownSyncBloc
       if (initialResults.isNotEmpty) {
         // Current response from server is String, Expecting it to be int
         //[TODO: Need to move the dynamic keys to constants
-        int serverTotalCount = initialResults["DownsyncCriteria"]["totalCount"];
+        int? serverTotalCount =
+            initialResults["DownsyncCriteria"]["totalCount"];
 
         emit(BeneficiaryDownSyncState.dataFound(
-          serverTotalCount,
+          serverTotalCount ?? 0,
           event.batchSize,
         ));
       } else {

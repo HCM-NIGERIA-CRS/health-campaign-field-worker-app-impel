@@ -281,6 +281,22 @@ class _NonComplianceTrackingSearchPage
                           }
                         }
 
+                        // sort the user actions
+
+                        List<UserActionModel> sortedUserAction = [];
+
+                        if (actions.isNotEmpty) {
+                          sortedUserAction.addAll(actions.sorted((a, b) {
+                            return (b.clientAuditDetails?.lastModifiedTime ??
+                                    b.clientAuditDetails?.createdTime ??
+                                    0)
+                                .compareTo(
+                                    a.clientAuditDetails?.lastModifiedTime ??
+                                        a.clientAuditDetails?.createdTime ??
+                                        0);
+                          }));
+                        }
+
                         return BlocBuilder<NonComplianceIndividualSearchBloc,
                             searchHouseholdSMCBloc.SearchHouseholdsSMCState>(
                           builder: (context, searchSMCState) {
@@ -336,8 +352,8 @@ class _NonComplianceTrackingSearchPage
                                           context.router.push(
                                               NonComplianceUpdateStatusRoute(
                                             householdMember: i,
-                                            userActionModel:
-                                                actions.firstWhereOrNull(
+                                            userActionModel: sortedUserAction
+                                                .firstWhereOrNull(
                                               (element) =>
                                                   element.resourceTag == id,
                                             ),

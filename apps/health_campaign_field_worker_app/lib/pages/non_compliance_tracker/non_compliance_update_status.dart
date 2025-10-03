@@ -77,12 +77,20 @@ class _NonComplianceUpdateStatusPageState
     String status = widget.userActionModel?.additionalFields?.fields
             .firstWhereOrNull((e) => e.key == Constants.status)
             ?.value ??
-        Constants.statusOptions.first;
+        '';
+
+    status = (status == null || status.trim().isEmpty)
+        ? Constants.statusOptions.first
+        : status;
 
     String intervenedBy = widget.userActionModel?.additionalFields?.fields
             .firstWhereOrNull((e) => e.key == Constants.intervenedBy)
             ?.value ??
-        Constants.intervenedByOptions.first;
+        '';
+
+    intervenedBy = (intervenedBy == null || intervenedBy.trim().isEmpty)
+        ? Constants.intervenedByOptions.first
+        : intervenedBy;
 
     return BlocListener<NonComplianceTrackingBloc, NonComplianceTrackingState>(
       listener: (context, state) {
@@ -248,53 +256,51 @@ class _NonComplianceUpdateStatusPageState
                               AdditionalField(
                                   Constants.intervenedBy, intervenedBy),
                           ];
-                          if (widget.userActionModel != null) {
-                            UserActionModel? nonComplianceUserAction =
-                                widget.userActionModel?.copyWith(
-                                    additionalFields:
-                                        UserActionAdditionalFields(
-                              version: 1,
-                              fields: additionalFields,
-                            ));
-                            context
-                                .read<NonComplianceTrackingBloc>()
-                                .add(NonComplianceTrackingEvent.update(
-                                  nonComplianceUserAction:
-                                      nonComplianceUserAction,
-                                ));
-                          } else {
-                            UserActionModel nonComplianceUserAction =
-                                UserActionModel(
-                                    latitude: latitude,
-                                    longitude: longitude,
-                                    locationAccuracy: locationAccuracy,
-                                    clientReferenceId: clientReferenceId,
-                                    isSync: true,
-                                    timestamp: startTime,
-                                    tenantId: RegistrationDeliverySingleton()
-                                        .tenantId,
-                                    projectId: RegistrationDeliverySingleton()
-                                        .projectId!,
-                                    boundaryCode:
-                                        RegistrationDeliverySingleton()
-                                                .boundary
-                                                ?.code! ??
-                                            "",
-                                    action: "NON_COMPLIANCE",
-                                    beneficiaryTag: context.loggedInUserUuid,
-                                    resourceTag: taskClientReferenceId,
-                                    additionalFields:
-                                        UserActionAdditionalFields(
-                                      version: 1,
-                                      fields: additionalFields,
-                                    ));
-                            context
-                                .read<NonComplianceTrackingBloc>()
-                                .add(NonComplianceTrackingEvent.create(
-                                  nonComplianceUserAction:
-                                      nonComplianceUserAction,
-                                ));
-                          }
+                          // if (widget.userActionModel != null) {
+                          //   UserActionModel? nonComplianceUserAction =
+                          //       widget.userActionModel?.copyWith(
+                          //           additionalFields:
+                          //               UserActionAdditionalFields(
+                          //     version: 1,
+                          //     fields: additionalFields,
+                          //   ));
+                          //   context
+                          //       .read<NonComplianceTrackingBloc>()
+                          //       .add(NonComplianceTrackingEvent.update(
+                          //         nonComplianceUserAction:
+                          //             nonComplianceUserAction,
+                          //       ));
+                          // } else {
+                          UserActionModel nonComplianceUserAction =
+                              UserActionModel(
+                                  latitude: latitude,
+                                  longitude: longitude,
+                                  locationAccuracy: locationAccuracy,
+                                  clientReferenceId: clientReferenceId,
+                                  isSync: false,
+                                  timestamp: startTime,
+                                  tenantId:
+                                      RegistrationDeliverySingleton().tenantId,
+                                  projectId: RegistrationDeliverySingleton()
+                                      .projectId!,
+                                  boundaryCode: RegistrationDeliverySingleton()
+                                          .boundary
+                                          ?.code! ??
+                                      "",
+                                  action: "NON_COMPLIANCE",
+                                  beneficiaryTag: context.loggedInUserUuid,
+                                  resourceTag: taskClientReferenceId,
+                                  rowVersion: 1,
+                                  additionalFields: UserActionAdditionalFields(
+                                    version: 1,
+                                    fields: additionalFields,
+                                  ));
+                          context
+                              .read<NonComplianceTrackingBloc>()
+                              .add(NonComplianceTrackingEvent.create(
+                                nonComplianceUserAction:
+                                    nonComplianceUserAction,
+                              ));
                         },
                       );
                     },
