@@ -352,7 +352,7 @@ class SettlementTitleRow extends StatelessWidget {
   }
 }
 
-class SettlementRow extends StatefulWidget {
+class SettlementRow extends LocalizedStatefulWidget {
   final String settlementCode;
   final SettlementModel? settlementData;
   final Function(DropdownItem) onSelectDate;
@@ -367,7 +367,7 @@ class SettlementRow extends StatefulWidget {
   State<SettlementRow> createState() => _SettlementRowState();
 }
 
-class _SettlementRowState extends State<SettlementRow> {
+class _SettlementRowState extends LocalizedState<SettlementRow> {
   DropdownItem? selectedOption;
 
   @override
@@ -401,7 +401,10 @@ class _SettlementRowState extends State<SettlementRow> {
               child: Container(
             decoration: cellDecoration,
             height: 40,
-            child: Center(child: Text(widget.settlementCode)),
+            child: Center(
+              child: Text(localizations.translate(widget.settlementCode),
+                  textAlign: TextAlign.center),
+            ),
           )),
           const SizedBox(width: 1),
           Expanded(
