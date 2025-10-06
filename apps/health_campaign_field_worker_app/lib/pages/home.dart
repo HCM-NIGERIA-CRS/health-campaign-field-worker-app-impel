@@ -43,9 +43,12 @@ import 'package:survey_form/models/entities/service.dart';
 import 'package:survey_form/router/survey_form_router.gm.dart';
 import 'package:survey_form/utils/utils.dart';
 import 'package:sync_service/blocs/sync/sync.dart';
+import 'package:transit_post/utils/utils.dart';
 
 import '../blocs/app_initialization/app_initialization.dart';
 import '../blocs/auth/auth.dart';
+import '../blocs/daily_implementation_plan/dip_search.dart';
+import '../blocs/localization/app_localization.dart';
 import '../blocs/localization/localization.dart';
 import '../data/local_store/app_shared_preferences.dart';
 import '../data/local_store/no_sql/schema/app_configuration.dart';
@@ -64,9 +67,7 @@ import '../widgets/localized.dart';
 import '../widgets/registration_delivery/custom_beneficiary_progress.dart';
 import '../widgets/showcase/config/showcase_constants.dart';
 import '../widgets/showcase/showcase_button.dart';
-// import 'package:referral_reconciliation/blocs/search_referral_reconciliations.dart';
-// import 'package:referral_reconciliation/router/referral_reconciliation_router.gm.dart';
-// import 'package:referral_reconciliation/pages/search_referral_reconciliations.dart';
+import 'non_compliance_tracker/non_compliance_tracking_search.dart';
 
 @RoutePage()
 class HomePage extends LocalizedStatefulWidget {
@@ -88,7 +89,9 @@ class _HomePageState extends LocalizedState<HomePage> {
   @override
   initState() {
     super.initState();
-
+    context.read<DipSearchBloc>().add(DipSearchEvent.search(
+          beneficiaryTag: context.loggedInUser.uuid,
+        ));
     subscription = Connectivity()
         .onConnectivityChanged
         .listen((List<ConnectivityResult> result) async {
@@ -351,18 +354,18 @@ class _HomePageState extends LocalizedState<HomePage> {
           },
         ),
       ),
-      i18.home.beneficiaryLabel:
-          homeShowcaseData.distributorBeneficiaries.buildWith(
-        child: HomeItemCard(
-          icon: Icons.family_restroom_rounded,
-          label: i18.home.beneficiaryLabel,
-          onPressed: () async {
-            RegistrationDeliverySingleton()
-                .setHouseholdType(HouseholdType.family);
-            context.router.push(const CustomRegistrationDeliveryWrapperRoute());
-          },
-        ),
-      ),
+      // i18.home.beneficiaryLabel:
+      //     homeShowcaseData.distributorBeneficiaries.buildWith(
+      //   child: HomeItemCard(
+      //     icon: Icons.family_restroom_rounded,
+      //     label: i18.home.beneficiaryLabel,
+      //     onPressed: () async {
+      //       RegistrationDeliverySingleton()
+      //           .setHouseholdType(HouseholdType.family);
+      //       context.router.push(const CustomRegistrationDeliveryWrapperRoute());
+      //     },
+      //   ),
+      // ),
       i18.home.beneficiaryReferralLabel:
           homeShowcaseData.hfBeneficiaryReferral.buildWith(
         child: HomeItemCard(
@@ -551,6 +554,44 @@ class _HomePageState extends LocalizedState<HomePage> {
           customIcon: Constants.beneficiaryIdDownload,
         ),
       ),
+      i18.home.dailyImplementationPlanLabel:
+          homeShowcaseData.dailyImplementationPlan.buildWith(
+        child: BlocBuilder<DipSearchBloc, DipSearchState>(
+          builder: (context, state) {
+            UserActionModel? dipUserAction;
+            if (state is DipSearchSettlementState) {
+              dipUserAction = state.selectedDipUserAction;
+            }
+            return HomeItemCard(
+              label: i18.home.dailyImplementationPlanLabel,
+              onPressed: () {
+                showDIPDialog(context, localizations, dipUserAction);
+              },
+              icon: Icons.people,
+            );
+          },
+        ),
+      ),
+      i18.home.campaignDeliverySelection:
+          homeShowcaseData.campaignDeliverySelection.buildWith(
+        child: HomeItemCard(
+          label: i18.home.campaignDeliverySelection,
+          onPressed: () {
+            context.router.push(CampaignDeliverySelectRoute());
+          },
+          icon: Icons.groups,
+        ),
+      ),
+      i18.home.nonComplianceTracking:
+          homeShowcaseData.nonComplianceTracking.buildWith(
+        child: HomeItemCard(
+          label: i18.home.nonComplianceTracking,
+          onPressed: () {
+            context.router.push(const NonComplianceTrackingWrapperRoute());
+          },
+          icon: Icons.announcement,
+        ),
+      ),
     };
 
     final Map<String, GlobalKey> homeItemsShowcaseMap = {
@@ -564,8 +605,8 @@ class _HomePageState extends LocalizedState<HomePage> {
       i18.home.beneficiaryReferralLabel:
           homeShowcaseData.hfBeneficiaryReferral.showcaseKey,
 
-      i18.home.beneficiaryLabel:
-          homeShowcaseData.distributorBeneficiaries.showcaseKey,
+      // i18.home.beneficiaryLabel:
+      //     homeShowcaseData.distributorBeneficiaries.showcaseKey,
 
       i18.home.manageStockLabel:
           homeShowcaseData.warehouseManagerManageStock.showcaseKey,
@@ -575,6 +616,12 @@ class _HomePageState extends LocalizedState<HomePage> {
       i18.home.syncDataLabel: homeShowcaseData.distributorSyncData.showcaseKey,
       i18.home.fileComplaint:
           homeShowcaseData.distributorFileComplaint.showcaseKey,
+      i18.home.dailyImplementationPlanLabel:
+          homeShowcaseData.dailyImplementationPlan.showcaseKey,
+      i18.home.campaignDeliverySelection:
+          homeShowcaseData.campaignDeliverySelection.showcaseKey,
+      i18.home.nonComplianceTracking:
+          homeShowcaseData.nonComplianceTracking.showcaseKey,
       i18.home.db: homeShowcaseData.db.showcaseKey,
       i18.home.dashboard: homeShowcaseData.dashBoard.showcaseKey,
       i18.home.clfLabel: homeShowcaseData.clf.showcaseKey,
@@ -587,31 +634,32 @@ class _HomePageState extends LocalizedState<HomePage> {
 
     final homeItemsLabel = <String>[
       // INFO: Need to add items label of package Here
-      i18.home.mySurveyForm,
-
+      i18.home.dailyImplementationPlanLabel,
+      i18.home.campaignDeliverySelection,
+      i18.home.nonComplianceTracking,
+      // i18.home.mySurveyForm,
       i18.home.manageAttendanceLabel,
-
       i18.home.beneficiaryReferralLabel,
-      i18.home.beneficiaryLabel,
+      // i18.home.beneficiaryLabel,
       i18.home.manageStockLabel,
       i18.home.stockReconciliationLabel,
       i18.home.viewReportsLabel,
-      i18.home.viewSummaryReportsLabel,
+      // hide the summary report feature
+      // TODO : should be done via role action
+      // i18.home.viewSummaryReportsLabel,
       i18.home.syncDataLabel,
       i18.home.fileComplaint,
+      i18.home.beneficiaryIdLabel,
       i18.home.db,
       i18.home.dashboard,
-      i18.home.beneficiaryIdLabel,
     ];
 
     final List<String> filteredLabels = homeItemsLabel
         .where(
-          (element) =>
-              state.actionsWrapper.actions
-                  .map((e) => e.displayName)
-                  .toList()
-                  .contains(element) ||
-              element == i18.home.db,
+          (element) => state.actionsWrapper.actions
+              .map((e) => e.displayName)
+              .toList()
+              .contains(element),
         )
         .toList();
 
@@ -672,8 +720,8 @@ class _HomePageState extends LocalizedState<HomePage> {
 
                 context.read<
                     LocalRepository<IndividualModel, IndividualSearchModel>>(),
-                // context.read<
-                //     LocalRepository<UserActionModel, UserActionSearchModel>>(),
+                context.read<
+                    LocalRepository<UserActionModel, UserActionSearchModel>>(),
               ],
               remoteRepositories: [
                 // INFO : Need to add repo repo of package Here
@@ -711,8 +759,8 @@ class _HomePageState extends LocalizedState<HomePage> {
                 context.read<
                     RemoteRepository<PgrServiceModel, PgrServiceSearchModel>>(),
 
-                // context.read<
-                //     RemoteRepository<UserActionModel, UserActionSearchModel>>(),
+                context.read<
+                    RemoteRepository<UserActionModel, UserActionSearchModel>>(),
               ],
             ),
           );
@@ -841,29 +889,6 @@ void setPackagesSingleton(BuildContext context) {
           loggedInUser: context.loggedInUserModel,
         );
 
-        InventorySingleton().setInitialData(
-          isWareHouseMgr: context.loggedInUserRoles
-              .where(
-                  (role) => role.code == RolesType.warehouseManager.toValue())
-              .toList()
-              .isNotEmpty,
-          isDistributor: context.loggedInUserRoles
-              .where(
-                (role) =>
-                    role.code == RolesType.distributor.toValue() ||
-                    role.code == RolesType.communityDistributor.toValue(),
-              )
-              .toList()
-              .isNotEmpty,
-          projectId: context.projectId,
-          loggedInUserUuid: context.loggedInUserUuid,
-          transportTypes: appConfiguration.transportTypes
-              ?.map((e) => InventoryTransportTypes()
-                ..name = e.code
-                ..code = e.code)
-              .toList(),
-        );
-
         DashboardSingleton().setInitialData(
             projectId: context.projectId,
             tenantId: envConfig.variables.tenantId,
@@ -914,19 +939,117 @@ void setPackagesSingleton(BuildContext context) {
           userName: context.loggedInUser.name ?? '',
         );
         ComplaintsSingleton().setBoundary(boundary: context.boundary);
-        SurveyFormSingleton().setInitialData(
-          projectId: context.projectId,
-          projectName: context.selectedProject.name,
-          loggedInIndividualId: context.loggedInIndividualId ?? '',
+
+        TransitPostSingleton().setInitialData(
+          resources: context.selectedProjectType?.resources,
+          transitPostType: appConfiguration.transitPostType
+                  ?.map((element) => element.code)
+                  .toList() ??
+              [],
           loggedInUserUuid: context.loggedInUserUuid,
-          appVersion: Constants().version,
-          roles: context.read<AuthBloc>().state.maybeMap(
-              orElse: () => const Offstage(),
-              authenticated: (res) {
-                return res.userModel.roles
-                    .map((e) => e.code.snakeCase.toUpperCase())
-                    .toList();
-              }),
+          projectId: context.selectedProject.id,
+          minAge: context.selectedProjectType?.validMinAge,
+          maxAge: context.selectedProjectType?.validMaxAge,
+        );
+      });
+}
+
+void showDIPDialog(
+  BuildContext context,
+  AppLocalizations localizations,
+  UserActionModel? dipUserAction,
+) {
+  showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (dipUserAction == null)
+                GestureDetector(
+                  onTap: () {
+                    context.router.push(SelectSettlementsRoute());
+
+                    Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.orange[800]!,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white,
+                    ),
+                    padding: const EdgeInsets.all(16),
+                    child: Center(
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.edit_note_outlined,
+                            size: 24,
+                            color: Colors.orange[800],
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            localizations.translate(
+                                i18.dailyImplementationFlow.createDIPLabel),
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.orange[800],
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              if (dipUserAction != null)
+                GestureDetector(
+                  onTap: () {
+                    context.router.push(const SelectSettlementsDateViewRoute());
+                    Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    width: 400,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.orange[800]!,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white,
+                    ),
+                    padding: const EdgeInsets.all(16),
+                    child: Center(
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.remove_red_eye,
+                            size: 24,
+                            color: Colors.orange[800],
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            localizations.translate(
+                              i18.dailyImplementationFlow.viewDIPLabel,
+                            ),
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.orange[800],
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         );
       });
 }

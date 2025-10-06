@@ -24,18 +24,18 @@ bool checkStatusSMC(List<TaskModel>? tasks, ProjectCycle? currentCycle) {
     return true;
   }
 
-  if (tasks.firstWhereOrNull((e) =>
-          e.additionalFields?.fields.firstWhereOrNull(
-            (element) =>
-                element.key ==
-                    additional_fields_local.AdditionalFieldsType.deliveryType
-                        .toValue() &&
-                element.value == EligibilityAssessmentStatus.smcDone.name,
-          ) !=
-          null) ==
-      null) {
-    return true;
-  }
+  // if (tasks.firstWhereOrNull((e) =>
+  //         e.additionalFields?.fields.firstWhereOrNull(
+  //           (element) =>
+  //               element.key ==
+  //                   additional_fields_local.AdditionalFieldsType.deliveryType
+  //                       .toValue() &&
+  //               element.value == EligibilityAssessmentStatus.smcDone.name,
+  //         ) !=
+  //         null) ==
+  //     null) {
+  //   return true;
+  // }
 
   final lastTask = tasks.last;
   final lastTaskCreatedTime = lastTask.clientAuditDetails?.createdTime;
@@ -162,18 +162,7 @@ bool checkBeneficiaryReferredSMC(
   }
   var successfulTask = tasks!
       .where(
-        (element) =>
-            element.status == Status.beneficiaryReferred.toValue() &&
-            element.additionalFields?.fields.firstWhereOrNull(
-                  (e) =>
-                      e.key ==
-                          additional_fields_local
-                              .AdditionalFieldsType.deliveryType
-                              .toValue() &&
-                      e.value == EligibilityAssessmentStatus.smcDone.name,
-                ) !=
-                null,
-      )
+          (element) => element.status == Status.beneficiaryReferred.toValue())
       .lastOrNull;
 
   final successfulTaskCreatedTime =
@@ -199,20 +188,8 @@ bool checkBeneficiaryInEligibleSMC(
     return false;
   }
   var successfulTask = tasks!
-      .where(
-        (element) =>
-            element.status ==
-                status_local.Status.beneficiaryInEligible.toValue() &&
-            element.additionalFields?.fields.firstWhereOrNull(
-                  (e) =>
-                      e.key ==
-                          additional_fields_local
-                              .AdditionalFieldsType.deliveryType
-                              .toValue() &&
-                      e.value == EligibilityAssessmentStatus.smcDone.name,
-                ) !=
-                null,
-      )
+      .where((element) =>
+          element.status == status_local.Status.beneficiaryInEligible.toValue())
       .lastOrNull;
 
   final successfulTaskCreatedTime =
@@ -338,18 +315,7 @@ bool assessmentSMCPending(List<TaskModel>? tasks, ProjectCycle? currentCycle) {
   }
   var successfulTask = tasks!
       .where(
-        (element) =>
-            element.status == Status.administeredSuccess.toValue() &&
-            element.additionalFields?.fields.firstWhereOrNull(
-                  (e) =>
-                      e.key ==
-                          additional_fields_local
-                              .AdditionalFieldsType.deliveryType
-                              .toValue() &&
-                      e.value == EligibilityAssessmentStatus.smcDone.name,
-                ) !=
-                null,
-      )
+          (element) => element.status == Status.administeredSuccess.toValue())
       .lastOrNull;
 
   final successfulTaskCreatedTime =

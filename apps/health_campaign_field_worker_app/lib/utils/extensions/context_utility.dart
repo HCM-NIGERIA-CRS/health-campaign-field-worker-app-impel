@@ -26,6 +26,7 @@ extension ContextUtilityExtensions on BuildContext {
 
   String get projectId => selectedProject.id;
 
+  // returns project type code
   String? get projectTypeCode {
     final projectType = selectedProject.projectType;
 
@@ -97,6 +98,21 @@ extension ContextUtilityExtensions on BuildContext {
     return selectedBeneficiary;
   }
 
+  BoundaryModel get wardBoundary {
+    final boundaryBloc = _get<BoundaryBloc>();
+    final boundaryState = boundaryBloc.state;
+
+    final selectedWardBoundary = boundaryState.boundaryList
+        .where((element) => element.label == "Settlement")
+        .firstOrNull;
+
+    if (selectedWardBoundary == null) {
+      throw AppException('No ward boundary is selected');
+    }
+
+    return selectedWardBoundary;
+  }
+
   BoundaryModel get boundary {
     final boundaryBloc = _get<BoundaryBloc>();
     final boundaryState = boundaryBloc.state;
@@ -120,6 +136,7 @@ extension ContextUtilityExtensions on BuildContext {
     InventorySingleton().setBoundaryName(boundaryName: selectedBoundary.code!);
     ComplaintsSingleton().setBoundary(boundary: selectedBoundary);
     SurveyFormSingleton().setBoundary(boundary: selectedBoundary);
+    TransitPostSingleton().setBoundary(boundary: selectedBoundary);
     return selectedBoundary;
   }
 
@@ -156,12 +173,44 @@ extension ContextUtilityExtensions on BuildContext {
     try {
       bool isDistributorUser = loggedInUserRoles
           .where(
-            (role) => role.code == RolesType.communityDistributor.toValue(),
+            (role) => role.code == RolesType.distributor.toValue(),
           )
           .toList()
           .isNotEmpty;
 
       return isDistributorUser;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Map<String, int> getAllProductSkuCounts() {
+    final authBloc = _get<AuthBloc>();
+    final counts = authBloc.state.whenOrNull(
+      authenticated: (
+        accessToken,
+        refreshToken,
+        userModel,
+        actionsWrapper,
+        individualId,
+        productSkuCounts,
+      ) {
+        return productSkuCounts;
+      },
+    );
+    return counts ?? {};
+  }
+
+  bool get isWFP {
+    try {
+      bool isWardFocalPoint = loggedInUserRoles
+          .where(
+            (role) => (role.code == RolesType.wardFocalPerson.toValue()),
+          )
+          .toList()
+          .isNotEmpty;
+
+      return isWardFocalPoint;
     } catch (_) {
       return false;
     }
@@ -176,10 +225,7 @@ extension ContextUtilityExtensions on BuildContext {
         userModel,
         actionsWrapper,
         individualId,
-        spaq1,
-        spaq2,
-        blueVas,
-        redVas,
+        productSkuCounts,
       ) {
         return userModel.roles;
       },
@@ -201,10 +247,7 @@ extension ContextUtilityExtensions on BuildContext {
         userModel,
         actionsWrapper,
         individualId,
-        spaq1,
-        spaq2,
-        blueVas,
-        redVas,
+        productSkuCounts,
       ) {
         return individualId;
       },
@@ -243,10 +286,7 @@ extension ContextUtilityExtensions on BuildContext {
         userModel,
         actions,
         individualId,
-        spaq1,
-        spaq2,
-        blueVas,
-        redVas,
+        productSkuCounts,
       ) {
         return userModel;
       },
@@ -281,113 +321,13 @@ extension ContextUtilityExtensions on BuildContext {
     return false;
   }
 
-  int get spaq1 {
-    final authBloc = _get<AuthBloc>();
-    final spaq1 = authBloc.state.whenOrNull(
-      authenticated: (
-        accessToken,
-        refreshToken,
-        userModel,
-        actionsWrapper,
-        individualId,
-        spaq1,
-        spaq2,
-        blueVas,
-        redVas,
-      ) {
-        return spaq1;
-      },
-    );
-
-    if (spaq1 == null) {
-      return 0;
-    }
-
-    return spaq1;
-  }
-
-  int get spaq2 {
-    final authBloc = _get<AuthBloc>();
-    final spaq2 = authBloc.state.whenOrNull(
-      authenticated: (
-        accessToken,
-        refreshToken,
-        userModel,
-        actionsWrapper,
-        individualId,
-        spaq1,
-        spaq2,
-        blueVas,
-        redVas,
-      ) {
-        return spaq2;
-      },
-    );
-
-    if (spaq2 == null) {
-      return 0;
-    }
-
-    return spaq2;
-  }
-
-//vas
-
-  int get blueVas {
-    final authBloc = _get<AuthBloc>();
-    final blueVas = authBloc.state.whenOrNull(
-      authenticated: (
-        accessToken,
-        refreshToken,
-        userModel,
-        actionsWrapper,
-        individualId,
-        spaq1,
-        spaq2,
-        blueVas,
-        redVas,
-      ) {
-        return blueVas;
-      },
-    );
-
-    if (blueVas == null) {
-      return 0;
-    }
-
-    return blueVas;
-  }
-
-  int get redVas {
-    final authBloc = _get<AuthBloc>();
-    final redVas = authBloc.state.whenOrNull(
-      authenticated: (
-        accessToken,
-        refreshToken,
-        userModel,
-        actionsWrapper,
-        individualId,
-        spaq1,
-        spaq2,
-        blueVas,
-        redVas,
-      ) {
-        return redVas;
-      },
-    );
-
-    if (redVas == null) {
-      return 0;
-    }
-
-    return redVas;
-  }
-
   bool get isCommunityDistributor {
     try {
       bool communityDistributor = loggedInUserRoles
           .where(
-            (role) => role.code == RolesType.communityDistributor.toValue(),
+            (role) =>
+                role.code == RolesType.distributor.toValue() ||
+                role.code == RolesType.communityDistributor.toValue(),
           )
           .toList()
           .isNotEmpty;
@@ -402,7 +342,61 @@ extension ContextUtilityExtensions on BuildContext {
     try {
       String? boundaryLevel = selectedProject.address?.boundaryType;
 
-      if (boundaryLevel == Constants.districtBoundaryLevel) {
+      if (boundaryLevel == Constants.lgaBoundaryLevel) {
+        bool isLGA = loggedInUserRoles
+            .where((role) => role.code == RolesType.warehouseManager.toValue())
+            .toList()
+            .isNotEmpty;
+
+        return isLGA;
+      }
+      return false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  bool get isStateCold {
+    try {
+      String? boundaryLevel = selectedProject.address?.boundaryType;
+
+      if (boundaryLevel == Constants.stateBoundaryLevel) {
+        bool isState = loggedInUserRoles
+            .where((role) => role.code == RolesType.warehouseManager.toValue())
+            .toList()
+            .isNotEmpty;
+
+        return isState;
+      }
+      return false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  bool get isNationalWarehouseManager {
+    try {
+      String? boundaryLevel = selectedProject.address?.boundaryType;
+
+      if (boundaryLevel == Constants.countryBoundaryLevel) {
+        bool isNational = loggedInUserRoles
+            .where((role) => role.code == RolesType.warehouseManager.toValue())
+            .toList()
+            .isNotEmpty;
+
+        return isNational;
+      }
+      return false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  bool get isWardLevel {
+    try {
+      String? boundaryLevel = selectedProject.address?.boundaryType;
+
+      if (boundaryLevel == Constants.wardBoundaryLevel) {
         bool isDownSyncEnabled = loggedInUserRoles
             .where((role) => role.code == RolesType.warehouseManager.toValue())
             .toList()

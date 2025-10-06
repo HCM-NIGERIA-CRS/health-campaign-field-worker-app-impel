@@ -33,10 +33,14 @@ import 'package:registration_delivery/models/entities/status.dart';
 import 'package:registration_delivery/router/registration_delivery_router.gm.dart';
 import 'package:registration_delivery/utils/i18_key_constants.dart' as i18;
 import 'package:registration_delivery/utils/utils.dart';
+import '../../blocs/registration_delivery/current_flow.dart';
 import '../../blocs/registration_delivery/custom_search_household.dart'
     as customSearchHouseholdBloc;
+import '../../models/entities/project_types.dart';
 import '../../utils/utils.dart';
 import '../../utils/date_utils.dart' as digits;
+import '../../utils/i18_key_constants.dart' as i18_local;
+import '../../utils/constants.dart' as local_constants;
 import '../../widgets/custom_back_navigation.dart';
 import 'package:registration_delivery/widgets/localized.dart';
 import 'package:registration_delivery/widgets/member_card/member_card.dart';
@@ -47,6 +51,7 @@ import '../../utils/app_enums.dart';
 import '../../utils/registration_delivery/utils_smc.dart';
 import '../../widgets/registration_delivery/custom_member_card.dart';
 import '../../utils/utils.dart' as local_utils;
+import '../../utils/date_utils.dart' as digits;
 
 @RoutePage()
 class CustomHouseholdOverviewPage extends LocalizedStatefulWidget {
@@ -90,8 +95,11 @@ class _CustomHouseholdOverviewPageState
         },
         child: BlocBuilder<HouseholdOverviewBloc, HouseholdOverviewState>(
           builder: (ctx, state) {
+            // if projectType oncho then show button irrespective of count exceeded or not
             bool showAddMemberButton =
-                showAddMember(state.householdMemberWrapper);
+                context.projectTypeCode == ProjectTypes.pmo.toValue()
+                    ? true
+                    : showAddMember(state.householdMemberWrapper);
             return Scaffold(
               body: state.loading
                   ? const Center(child: CircularProgressIndicator())
@@ -349,6 +357,9 @@ class _CustomHouseholdOverviewPageState
                                                   state.householdMemberWrapper
                                                       .household);
 
+                                          final totalMemberInHousehold =
+                                              totalMemberCount(childrenCount);
+
                                           if (RegistrationDeliverySingleton()
                                                   .householdType ==
                                               HouseholdType.community) {
@@ -416,10 +427,7 @@ class _CustomHouseholdOverviewPageState
                                                   localizations.translate(
                                                     i18.deliverIntervention
                                                         .memberCountText,
-                                                  ): state
-                                                      .householdMemberWrapper
-                                                      .household
-                                                      ?.memberCount,
+                                                  ): totalMemberInHousehold,
                                                   localizations.translate(
                                                     i18.householdDetails
                                                         .noOfChildrenBelow5YearsLabel,
@@ -657,10 +665,41 @@ class _CustomHouseholdOverviewPageState
                                                 checkIfBeneficiaryRefused(
                                               taskData,
                                             );
-                                            final isBeneficiaryReferred =
-                                                checkBeneficiaryReferredSMC(
-                                                    taskData,
-                                                    context.selectedCycle);
+
+                                            final isBeneficiaryAbsent =
+                                                local_utils
+                                                    .checkIfBeneficiaryAbsent(
+                                              taskData,
+                                            );
+
+                                            // get height of individual if present and check eligibility based on minimum eligible height
+                                            final height =
+                                                getIndividualHeight(e);
+                                            bool ineligibleBasedOnHeight;
+
+                                            if (height == null ||
+                                                height.isEmpty) {
+                                              ineligibleBasedOnHeight = false;
+                                            } else {
+                                              ineligibleBasedOnHeight =
+                                                  inEligibilityBasedOnHeight(
+                                                      height);
+                                            }
+
+                                            // calculate age and decide the flow and route
+
+                                            String dob = e.dateOfBirth!;
+                                            DateTime? dateOfBirth =
+                                                DigitDateUtils
+                                                    .getFormattedDateToDateTime(
+                                                        dob);
+
+                                            final age =
+                                                DigitDateUtils.calculateAge(
+                                                    dateOfBirth!);
+
+                                            final polioFlow = isPolioFlow(age);
+                                            final onchoFlow = isOnchoFlow(age);
 
                                             return BlocBuilder<
                                                 ProductVariantBloc,
@@ -676,6 +715,8 @@ class _CustomHouseholdOverviewPageState
                                                       variant: value,
                                                       isHead: isHead,
                                                       individual: e,
+                                                      polioFlow: polioFlow,
+                                                      onchoFlow: onchoFlow,
                                                       projectBeneficiaries:
                                                           projectBeneficiary ??
                                                               [],
@@ -742,12 +783,23 @@ class _CustomHouseholdOverviewPageState
                                                                             ?.clientReferenceId),
                                                               ),
                                                             ),
-                                                            children: [
-                                                              CustomIndividualDetailsRoute(
-                                                                isHeadOfHousehold:
-                                                                    isHead,
-                                                              ),
-                                                            ],
+                                                            children: context
+                                                                        .projectTypeCode ==
+                                                                    ProjectTypes
+                                                                        .polio
+                                                                        .toValue()
+                                                                ? [
+                                                                    CustomIndividualDetailsRoute(
+                                                                      isHeadOfHousehold:
+                                                                          isHead,
+                                                                    ),
+                                                                  ]
+                                                                : [
+                                                                    CustomIndividualDetailsPolioSMCRoute(
+                                                                      isHeadOfHousehold:
+                                                                          isHead,
+                                                                    )
+                                                                  ],
                                                           ),
                                                         );
                                                         callReloadEvent(
@@ -846,52 +898,10 @@ class _CustomHouseholdOverviewPageState
                                                               ]),
                                                         );
                                                       },
-                                                      isNotEligibleSMC:
-                                                          RegistrationDeliverySingleton()
-                                                                      .projectType
-                                                                      ?.cycles !=
-                                                                  null
-                                                              ? !checkEligibilityForAgeAndSideEffectAll(
-                                                                  DigitDOBAgeConvertor(
-                                                                    years:
-                                                                        ageInYears,
-                                                                    months:
-                                                                        ageInMonths,
-                                                                  ),
-                                                                  RegistrationDeliverySingleton()
-                                                                      .projectType,
-                                                                  (taskData ??
-                                                                              [])
-                                                                          .isNotEmpty
-                                                                      ? taskData
-                                                                          ?.lastOrNull
-                                                                      : null,
-                                                                  sideEffectData,
-                                                                )
-                                                              : false,
-                                                      isNotEligibleVAS: true,
-                                                      // info disable vas flow , but code kept for future use
-                                                      // RegistrationDeliverySingleton()
-                                                      //             .projectType
-                                                      //             ?.cycles !=
-                                                      //         null
-                                                      //     ? !checkEligibilityForAgeAndSideEffectAll(
-                                                      //         DigitDOBAgeConvertor(
-                                                      //           years: ageInYears,
-                                                      //           months: ageInMonths,
-                                                      //         ),
-                                                      //         RegistrationDeliverySingleton()
-                                                      //             .selectedProject
-                                                      //             ?.additionalDetails
-                                                      //             ?.additionalProjectType,
-                                                      //         (taskData ?? [])
-                                                      //                 .isNotEmpty
-                                                      //             ? taskData
-                                                      //                 ?.lastOrNull
-                                                      //             : null,
-                                                      //         sideEffectData,
-                                                      //       )
-                                                      //     : false,
+                                                      isNotEligibleSMC: height ==
+                                                              null
+                                                          ? false
+                                                          : ineligibleBasedOnHeight,
                                                       name: e.name?.givenName ??
                                                           ' - - ',
                                                       years: (e.dateOfBirth ==
@@ -919,16 +929,13 @@ class _CustomHouseholdOverviewPageState
                                                                       .now(),
                                                             ).months),
                                                       gender: e.gender?.name,
-                                                      isBeneficiaryRefused:
-                                                          false,
-                                                      isBeneficiaryReferred:
-                                                          isBeneficiaryReferred,
-                                                      isSMCDelivered:
+                                                      isBeneficiaryAbsent:
+                                                          isBeneficiaryAbsent,
+                                                      isDelivered:
                                                           !assessmentSMCPending(
                                                               taskData,
                                                               context
                                                                   .selectedCycle),
-                                                      isVASDelivered: false,
                                                       localizations:
                                                           localizations,
                                                       projectBeneficiaryClientReferenceId:
@@ -983,15 +990,17 @@ class _CustomHouseholdOverviewPageState
             RegistrationDeliverySingleton().beneficiaryType!,
       ),
     );
-    await context.router.popAndPush(
+    await context.router.push(
       CustomBeneficiaryRegistrationWrapperRoute(
         initialState: BeneficiaryRegistrationAddMemberState(
           addressModel: address,
           householdModel: household!,
         ),
-        children: [
-          CustomIndividualDetailsRoute(),
-        ],
+        children: context.projectTypeCode == ProjectTypes.polio.toValue()
+            ? [
+                CustomIndividualDetailsRoute(),
+              ]
+            : [CustomIndividualDetailsPolioSMCRoute()],
       ),
     );
   }

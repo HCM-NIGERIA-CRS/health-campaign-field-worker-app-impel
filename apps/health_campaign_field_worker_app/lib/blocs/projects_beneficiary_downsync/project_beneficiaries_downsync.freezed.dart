@@ -21,8 +21,13 @@ mixin _$BeneficiaryDownSyncEvent {
     required TResult Function(String projectId, String boundaryCode,
             int batchSize, int initialServerCount, String boundaryName)
         downSync,
-    required TResult Function(String projectId, String boundaryCode,
-            int pendingSyncCount, int batchSize, String boundaryName)
+    required TResult Function(
+            String? projectId,
+            bool? useProjectId,
+            String boundaryCode,
+            int pendingSyncCount,
+            int batchSize,
+            String boundaryName)
         checkForData,
     required TResult Function(
             List<AppConfiguration> appConfiguration,
@@ -40,8 +45,13 @@ mixin _$BeneficiaryDownSyncEvent {
     TResult? Function(String projectId, String boundaryCode, int batchSize,
             int initialServerCount, String boundaryName)?
         downSync,
-    TResult? Function(String projectId, String boundaryCode,
-            int pendingSyncCount, int batchSize, String boundaryName)?
+    TResult? Function(
+            String? projectId,
+            bool? useProjectId,
+            String boundaryCode,
+            int pendingSyncCount,
+            int batchSize,
+            String boundaryName)?
         checkForData,
     TResult? Function(List<AppConfiguration> appConfiguration, String projectId,
             String boundaryCode, int pendingSyncCount, String boundaryName)?
@@ -55,7 +65,7 @@ mixin _$BeneficiaryDownSyncEvent {
     TResult Function(String projectId, String boundaryCode, int batchSize,
             int initialServerCount, String boundaryName)?
         downSync,
-    TResult Function(String projectId, String boundaryCode,
+    TResult Function(String? projectId, bool? useProjectId, String boundaryCode,
             int pendingSyncCount, int batchSize, String boundaryName)?
         checkForData,
     TResult Function(List<AppConfiguration> appConfiguration, String projectId,
@@ -234,8 +244,13 @@ class _$DownSyncBeneficiaryEventImpl implements DownSyncBeneficiaryEvent {
     required TResult Function(String projectId, String boundaryCode,
             int batchSize, int initialServerCount, String boundaryName)
         downSync,
-    required TResult Function(String projectId, String boundaryCode,
-            int pendingSyncCount, int batchSize, String boundaryName)
+    required TResult Function(
+            String? projectId,
+            bool? useProjectId,
+            String boundaryCode,
+            int pendingSyncCount,
+            int batchSize,
+            String boundaryName)
         checkForData,
     required TResult Function(
             List<AppConfiguration> appConfiguration,
@@ -257,8 +272,13 @@ class _$DownSyncBeneficiaryEventImpl implements DownSyncBeneficiaryEvent {
     TResult? Function(String projectId, String boundaryCode, int batchSize,
             int initialServerCount, String boundaryName)?
         downSync,
-    TResult? Function(String projectId, String boundaryCode,
-            int pendingSyncCount, int batchSize, String boundaryName)?
+    TResult? Function(
+            String? projectId,
+            bool? useProjectId,
+            String boundaryCode,
+            int pendingSyncCount,
+            int batchSize,
+            String boundaryName)?
         checkForData,
     TResult? Function(List<AppConfiguration> appConfiguration, String projectId,
             String boundaryCode, int pendingSyncCount, String boundaryName)?
@@ -276,7 +296,7 @@ class _$DownSyncBeneficiaryEventImpl implements DownSyncBeneficiaryEvent {
     TResult Function(String projectId, String boundaryCode, int batchSize,
             int initialServerCount, String boundaryName)?
         downSync,
-    TResult Function(String projectId, String boundaryCode,
+    TResult Function(String? projectId, bool? useProjectId, String boundaryCode,
             int pendingSyncCount, int batchSize, String boundaryName)?
         checkForData,
     TResult Function(List<AppConfiguration> appConfiguration, String projectId,
@@ -360,7 +380,8 @@ abstract class _$$DownSyncCheckTotalCountEventImplCopyWith<$Res> {
       __$$DownSyncCheckTotalCountEventImplCopyWithImpl<$Res>;
   @useResult
   $Res call(
-      {String projectId,
+      {String? projectId,
+      bool? useProjectId,
       String boundaryCode,
       int pendingSyncCount,
       int batchSize,
@@ -380,17 +401,22 @@ class __$$DownSyncCheckTotalCountEventImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? projectId = null,
+    Object? projectId = freezed,
+    Object? useProjectId = freezed,
     Object? boundaryCode = null,
     Object? pendingSyncCount = null,
     Object? batchSize = null,
     Object? boundaryName = null,
   }) {
     return _then(_$DownSyncCheckTotalCountEventImpl(
-      projectId: null == projectId
+      projectId: freezed == projectId
           ? _value.projectId
           : projectId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
+      useProjectId: freezed == useProjectId
+          ? _value.useProjectId
+          : useProjectId // ignore: cast_nullable_to_non_nullable
+              as bool?,
       boundaryCode: null == boundaryCode
           ? _value.boundaryCode
           : boundaryCode // ignore: cast_nullable_to_non_nullable
@@ -417,13 +443,16 @@ class _$DownSyncCheckTotalCountEventImpl
     implements DownSyncCheckTotalCountEvent {
   const _$DownSyncCheckTotalCountEventImpl(
       {required this.projectId,
+      required this.useProjectId,
       required this.boundaryCode,
       required this.pendingSyncCount,
       required this.batchSize,
       required this.boundaryName});
 
   @override
-  final String projectId;
+  final String? projectId;
+  @override
+  final bool? useProjectId;
   @override
   final String boundaryCode;
   @override
@@ -435,7 +464,7 @@ class _$DownSyncCheckTotalCountEventImpl
 
   @override
   String toString() {
-    return 'BeneficiaryDownSyncEvent.checkForData(projectId: $projectId, boundaryCode: $boundaryCode, pendingSyncCount: $pendingSyncCount, batchSize: $batchSize, boundaryName: $boundaryName)';
+    return 'BeneficiaryDownSyncEvent.checkForData(projectId: $projectId, useProjectId: $useProjectId, boundaryCode: $boundaryCode, pendingSyncCount: $pendingSyncCount, batchSize: $batchSize, boundaryName: $boundaryName)';
   }
 
   @override
@@ -445,6 +474,8 @@ class _$DownSyncCheckTotalCountEventImpl
             other is _$DownSyncCheckTotalCountEventImpl &&
             (identical(other.projectId, projectId) ||
                 other.projectId == projectId) &&
+            (identical(other.useProjectId, useProjectId) ||
+                other.useProjectId == useProjectId) &&
             (identical(other.boundaryCode, boundaryCode) ||
                 other.boundaryCode == boundaryCode) &&
             (identical(other.pendingSyncCount, pendingSyncCount) ||
@@ -456,8 +487,8 @@ class _$DownSyncCheckTotalCountEventImpl
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, projectId, boundaryCode,
-      pendingSyncCount, batchSize, boundaryName);
+  int get hashCode => Object.hash(runtimeType, projectId, useProjectId,
+      boundaryCode, pendingSyncCount, batchSize, boundaryName);
 
   @JsonKey(ignore: true)
   @override
@@ -473,8 +504,13 @@ class _$DownSyncCheckTotalCountEventImpl
     required TResult Function(String projectId, String boundaryCode,
             int batchSize, int initialServerCount, String boundaryName)
         downSync,
-    required TResult Function(String projectId, String boundaryCode,
-            int pendingSyncCount, int batchSize, String boundaryName)
+    required TResult Function(
+            String? projectId,
+            bool? useProjectId,
+            String boundaryCode,
+            int pendingSyncCount,
+            int batchSize,
+            String boundaryName)
         checkForData,
     required TResult Function(
             List<AppConfiguration> appConfiguration,
@@ -486,8 +522,8 @@ class _$DownSyncCheckTotalCountEventImpl
     required TResult Function() downSyncReport,
     required TResult Function() resetState,
   }) {
-    return checkForData(
-        projectId, boundaryCode, pendingSyncCount, batchSize, boundaryName);
+    return checkForData(projectId, useProjectId, boundaryCode, pendingSyncCount,
+        batchSize, boundaryName);
   }
 
   @override
@@ -496,8 +532,13 @@ class _$DownSyncCheckTotalCountEventImpl
     TResult? Function(String projectId, String boundaryCode, int batchSize,
             int initialServerCount, String boundaryName)?
         downSync,
-    TResult? Function(String projectId, String boundaryCode,
-            int pendingSyncCount, int batchSize, String boundaryName)?
+    TResult? Function(
+            String? projectId,
+            bool? useProjectId,
+            String boundaryCode,
+            int pendingSyncCount,
+            int batchSize,
+            String boundaryName)?
         checkForData,
     TResult? Function(List<AppConfiguration> appConfiguration, String projectId,
             String boundaryCode, int pendingSyncCount, String boundaryName)?
@@ -505,8 +546,8 @@ class _$DownSyncCheckTotalCountEventImpl
     TResult? Function()? downSyncReport,
     TResult? Function()? resetState,
   }) {
-    return checkForData?.call(
-        projectId, boundaryCode, pendingSyncCount, batchSize, boundaryName);
+    return checkForData?.call(projectId, useProjectId, boundaryCode,
+        pendingSyncCount, batchSize, boundaryName);
   }
 
   @override
@@ -515,7 +556,7 @@ class _$DownSyncCheckTotalCountEventImpl
     TResult Function(String projectId, String boundaryCode, int batchSize,
             int initialServerCount, String boundaryName)?
         downSync,
-    TResult Function(String projectId, String boundaryCode,
+    TResult Function(String? projectId, bool? useProjectId, String boundaryCode,
             int pendingSyncCount, int batchSize, String boundaryName)?
         checkForData,
     TResult Function(List<AppConfiguration> appConfiguration, String projectId,
@@ -526,8 +567,8 @@ class _$DownSyncCheckTotalCountEventImpl
     required TResult orElse(),
   }) {
     if (checkForData != null) {
-      return checkForData(
-          projectId, boundaryCode, pendingSyncCount, batchSize, boundaryName);
+      return checkForData(projectId, useProjectId, boundaryCode,
+          pendingSyncCount, batchSize, boundaryName);
     }
     return orElse();
   }
@@ -576,13 +617,15 @@ class _$DownSyncCheckTotalCountEventImpl
 abstract class DownSyncCheckTotalCountEvent
     implements BeneficiaryDownSyncEvent {
   const factory DownSyncCheckTotalCountEvent(
-      {required final String projectId,
+      {required final String? projectId,
+      required final bool? useProjectId,
       required final String boundaryCode,
       required final int pendingSyncCount,
       required final int batchSize,
       required final String boundaryName}) = _$DownSyncCheckTotalCountEventImpl;
 
-  String get projectId;
+  String? get projectId;
+  bool? get useProjectId;
   String get boundaryCode;
   int get pendingSyncCount;
   int get batchSize;
@@ -725,8 +768,13 @@ class _$DownSyncGetBatchSizeEventImpl implements DownSyncGetBatchSizeEvent {
     required TResult Function(String projectId, String boundaryCode,
             int batchSize, int initialServerCount, String boundaryName)
         downSync,
-    required TResult Function(String projectId, String boundaryCode,
-            int pendingSyncCount, int batchSize, String boundaryName)
+    required TResult Function(
+            String? projectId,
+            bool? useProjectId,
+            String boundaryCode,
+            int pendingSyncCount,
+            int batchSize,
+            String boundaryName)
         checkForData,
     required TResult Function(
             List<AppConfiguration> appConfiguration,
@@ -748,8 +796,13 @@ class _$DownSyncGetBatchSizeEventImpl implements DownSyncGetBatchSizeEvent {
     TResult? Function(String projectId, String boundaryCode, int batchSize,
             int initialServerCount, String boundaryName)?
         downSync,
-    TResult? Function(String projectId, String boundaryCode,
-            int pendingSyncCount, int batchSize, String boundaryName)?
+    TResult? Function(
+            String? projectId,
+            bool? useProjectId,
+            String boundaryCode,
+            int pendingSyncCount,
+            int batchSize,
+            String boundaryName)?
         checkForData,
     TResult? Function(List<AppConfiguration> appConfiguration, String projectId,
             String boundaryCode, int pendingSyncCount, String boundaryName)?
@@ -767,7 +820,7 @@ class _$DownSyncGetBatchSizeEventImpl implements DownSyncGetBatchSizeEvent {
     TResult Function(String projectId, String boundaryCode, int batchSize,
             int initialServerCount, String boundaryName)?
         downSync,
-    TResult Function(String projectId, String boundaryCode,
+    TResult Function(String? projectId, bool? useProjectId, String boundaryCode,
             int pendingSyncCount, int batchSize, String boundaryName)?
         checkForData,
     TResult Function(List<AppConfiguration> appConfiguration, String projectId,
@@ -886,8 +939,13 @@ class _$DownSyncReportEventImpl implements DownSyncReportEvent {
     required TResult Function(String projectId, String boundaryCode,
             int batchSize, int initialServerCount, String boundaryName)
         downSync,
-    required TResult Function(String projectId, String boundaryCode,
-            int pendingSyncCount, int batchSize, String boundaryName)
+    required TResult Function(
+            String? projectId,
+            bool? useProjectId,
+            String boundaryCode,
+            int pendingSyncCount,
+            int batchSize,
+            String boundaryName)
         checkForData,
     required TResult Function(
             List<AppConfiguration> appConfiguration,
@@ -908,8 +966,13 @@ class _$DownSyncReportEventImpl implements DownSyncReportEvent {
     TResult? Function(String projectId, String boundaryCode, int batchSize,
             int initialServerCount, String boundaryName)?
         downSync,
-    TResult? Function(String projectId, String boundaryCode,
-            int pendingSyncCount, int batchSize, String boundaryName)?
+    TResult? Function(
+            String? projectId,
+            bool? useProjectId,
+            String boundaryCode,
+            int pendingSyncCount,
+            int batchSize,
+            String boundaryName)?
         checkForData,
     TResult? Function(List<AppConfiguration> appConfiguration, String projectId,
             String boundaryCode, int pendingSyncCount, String boundaryName)?
@@ -926,7 +989,7 @@ class _$DownSyncReportEventImpl implements DownSyncReportEvent {
     TResult Function(String projectId, String boundaryCode, int batchSize,
             int initialServerCount, String boundaryName)?
         downSync,
-    TResult Function(String projectId, String boundaryCode,
+    TResult Function(String? projectId, bool? useProjectId, String boundaryCode,
             int pendingSyncCount, int batchSize, String boundaryName)?
         checkForData,
     TResult Function(List<AppConfiguration> appConfiguration, String projectId,
@@ -1032,8 +1095,13 @@ class _$DownSyncResetStateEventImpl implements DownSyncResetStateEvent {
     required TResult Function(String projectId, String boundaryCode,
             int batchSize, int initialServerCount, String boundaryName)
         downSync,
-    required TResult Function(String projectId, String boundaryCode,
-            int pendingSyncCount, int batchSize, String boundaryName)
+    required TResult Function(
+            String? projectId,
+            bool? useProjectId,
+            String boundaryCode,
+            int pendingSyncCount,
+            int batchSize,
+            String boundaryName)
         checkForData,
     required TResult Function(
             List<AppConfiguration> appConfiguration,
@@ -1054,8 +1122,13 @@ class _$DownSyncResetStateEventImpl implements DownSyncResetStateEvent {
     TResult? Function(String projectId, String boundaryCode, int batchSize,
             int initialServerCount, String boundaryName)?
         downSync,
-    TResult? Function(String projectId, String boundaryCode,
-            int pendingSyncCount, int batchSize, String boundaryName)?
+    TResult? Function(
+            String? projectId,
+            bool? useProjectId,
+            String boundaryCode,
+            int pendingSyncCount,
+            int batchSize,
+            String boundaryName)?
         checkForData,
     TResult? Function(List<AppConfiguration> appConfiguration, String projectId,
             String boundaryCode, int pendingSyncCount, String boundaryName)?
@@ -1072,7 +1145,7 @@ class _$DownSyncResetStateEventImpl implements DownSyncResetStateEvent {
     TResult Function(String projectId, String boundaryCode, int batchSize,
             int initialServerCount, String boundaryName)?
         downSync,
-    TResult Function(String projectId, String boundaryCode,
+    TResult Function(String? projectId, bool? useProjectId, String boundaryCode,
             int pendingSyncCount, int batchSize, String boundaryName)?
         checkForData,
     TResult Function(List<AppConfiguration> appConfiguration, String projectId,

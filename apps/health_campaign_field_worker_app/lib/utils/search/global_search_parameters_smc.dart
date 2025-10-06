@@ -6,6 +6,8 @@ class GlobalSearchParametersSMC {
   final double? maxRadius;
   final String? nameSearch;
   final String? beneficiaryId;
+  final bool? isChildAbsentEnabled;
+  final bool? isHouseNonCompliant;
   final int? offset;
   final int? limit;
   final List<String>? filter;
@@ -18,6 +20,8 @@ class GlobalSearchParametersSMC {
       required this.maxRadius,
       required this.nameSearch,
       required this.beneficiaryId,
+      required this.isChildAbsentEnabled,
+      required this.isHouseNonCompliant,
       required this.offset,
       required this.limit,
       required this.filter,

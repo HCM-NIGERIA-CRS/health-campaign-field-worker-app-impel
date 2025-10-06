@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.digit.hcm">
+    package="org.egov.training.ng">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -35,7 +35,7 @@
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:fullBackupOnly="false"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_1"
         android:label="DIGIT">
         <service
             android:name=".LocationService"

@@ -21,6 +21,7 @@ import 'package:registration_delivery/widgets/inventory/no_facilities_assigned_d
 
 import '../../../utils/app_enums.dart';
 import '../../../widgets/custom_back_navigation.dart';
+import '../../../widgets/custom_pop_route.dart';
 import '../../../widgets/localized.dart';
 import 'package:registration_delivery/blocs/delivery_intervention/deliver_intervention.dart';
 import 'package:registration_delivery/blocs/household_overview/household_overview.dart';
@@ -44,6 +45,7 @@ class CustomReferBeneficiarySMCPage extends LocalizedStatefulWidget {
   final List<String>? referralReasons;
   final String quantityWasted;
   final String? productVariantId;
+  final AddressModel? addressModelCaptured;
 
   const CustomReferBeneficiarySMCPage({
     super.key,
@@ -54,6 +56,7 @@ class CustomReferBeneficiarySMCPage extends LocalizedStatefulWidget {
     this.isReadministrationUnSuccessful = false,
     this.quantityWasted = "00",
     this.productVariantId,
+    this.addressModelCaptured,
     this.referralReasons,
   });
   @override
@@ -154,8 +157,8 @@ class CustomReferBeneficiarySMCPageState
             return WillPopScope(
               onWillPop: () => _onBackPressed(
                   context, widget.isReadministrationUnSuccessful),
-              child: Scaffold(
-                body: Scaffold(
+              child: GlobalBackHandler(
+                child: Scaffold(
                   body: ReactiveFormBuilder(
                     form: () => buildForm(healthFacilities),
                     builder: (context, form, child) => ScrollableContent(
@@ -321,99 +324,103 @@ class CustomReferBeneficiarySMCPageState
 
                                         final clientReferenceId =
                                             IdGen.i.identifier;
+
+                                        final addressModel = widget
+                                                .addressModelCaptured
+                                                ?.copyWith(
+                                                    rowVersion: 1,
+                                                    relatedClientReferenceId:
+                                                        clientReferenceId,
+                                                    id: null) ??
+                                            widget.individual.address?.first
+                                                .copyWith(
+                                              rowVersion: 1,
+                                              relatedClientReferenceId:
+                                                  clientReferenceId,
+                                              id: null,
+                                            );
+
+                                        final taskModel = TaskModel(
+                                          projectBeneficiaryClientReferenceId:
+                                              widget
+                                                  .projectBeneficiaryClientRefId,
+                                          clientReferenceId: clientReferenceId,
+                                          tenantId:
+                                              envConfig.variables.tenantId,
+                                          rowVersion: 1,
+                                          auditDetails: AuditDetails(
+                                            createdBy: context.loggedInUserUuid,
+                                            createdTime: context
+                                                .millisecondsSinceEpoch(),
+                                          ),
+                                          projectId: context.projectId,
+                                          status: Status.beneficiaryReferred
+                                              .toValue(),
+                                          clientAuditDetails:
+                                              ClientAuditDetails(
+                                            createdBy: context.loggedInUserUuid,
+                                            createdTime: context
+                                                .millisecondsSinceEpoch(),
+                                            lastModifiedBy:
+                                                context.loggedInUserUuid,
+                                            lastModifiedTime: context
+                                                .millisecondsSinceEpoch(),
+                                          ),
+                                          additionalFields:
+                                              TaskAdditionalFields(
+                                            version: 1,
+                                            fields: [
+                                              AdditionalField(
+                                                'taskStatus',
+                                                Status.beneficiaryReferred
+                                                    .toValue(),
+                                              ),
+                                              if (widget
+                                                  .isReadministrationUnSuccessful)
+                                                AdditionalField(
+                                                  'quantityWasted',
+                                                  widget.quantityWasted
+                                                              .toString()
+                                                              .length ==
+                                                          1
+                                                      ? "0${widget.quantityWasted}"
+                                                      : widget.quantityWasted
+                                                          .toString(),
+                                                ),
+                                              if (widget
+                                                  .isReadministrationUnSuccessful)
+                                                const AdditionalField(
+                                                  'unsuccessfullDelivery',
+                                                  'true',
+                                                ),
+                                              if (widget.productVariantId !=
+                                                  null)
+                                                AdditionalField(
+                                                  'productVariantId',
+                                                  widget.productVariantId,
+                                                ),
+                                              AdditionalField(
+                                                additional_fields_local
+                                                    .AdditionalFieldsType
+                                                    .deliveryType
+                                                    .toValue(),
+                                                EligibilityAssessmentStatus
+                                                    .smcDone.name,
+                                              ),
+                                              ...getIndividualAdditionalFields(
+                                                  widget.individual),
+                                            ],
+                                          ),
+                                          address: addressModel,
+                                        );
                                         context
                                             .read<DeliverInterventionBloc>()
                                             .add(
                                               DeliverInterventionSubmitEvent(
-                                                task: TaskModel(
-                                                  projectBeneficiaryClientReferenceId:
-                                                      widget
-                                                          .projectBeneficiaryClientRefId,
-                                                  clientReferenceId:
-                                                      clientReferenceId,
-                                                  tenantId: envConfig
-                                                      .variables.tenantId,
-                                                  rowVersion: 1,
-                                                  auditDetails: AuditDetails(
-                                                    createdBy: context
-                                                        .loggedInUserUuid,
-                                                    createdTime: context
-                                                        .millisecondsSinceEpoch(),
-                                                  ),
-                                                  projectId: context.projectId,
-                                                  status: Status
-                                                      .beneficiaryReferred
-                                                      .toValue(),
-                                                  clientAuditDetails:
-                                                      ClientAuditDetails(
-                                                    createdBy: context
-                                                        .loggedInUserUuid,
-                                                    createdTime: context
-                                                        .millisecondsSinceEpoch(),
-                                                    lastModifiedBy: context
-                                                        .loggedInUserUuid,
-                                                    lastModifiedTime: context
-                                                        .millisecondsSinceEpoch(),
-                                                  ),
-                                                  additionalFields:
-                                                      TaskAdditionalFields(
-                                                    version: 1,
-                                                    fields: [
-                                                      AdditionalField(
-                                                        'taskStatus',
-                                                        Status
-                                                            .beneficiaryReferred
-                                                            .toValue(),
-                                                      ),
-                                                      if (widget
-                                                          .isReadministrationUnSuccessful)
-                                                        AdditionalField(
-                                                          'quantityWasted',
-                                                          widget.quantityWasted
-                                                                      .toString()
-                                                                      .length ==
-                                                                  1
-                                                              ? "0${widget.quantityWasted}"
-                                                              : widget
-                                                                  .quantityWasted
-                                                                  .toString(),
-                                                        ),
-                                                      if (widget
-                                                          .isReadministrationUnSuccessful)
-                                                        const AdditionalField(
-                                                          'unsuccessfullDelivery',
-                                                          'true',
-                                                        ),
-                                                      if (widget
-                                                              .productVariantId !=
-                                                          null)
-                                                        AdditionalField(
-                                                          'productVariantId',
-                                                          widget
-                                                              .productVariantId,
-                                                        ),
-                                                      AdditionalField(
-                                                        additional_fields_local
-                                                            .AdditionalFieldsType
-                                                            .deliveryType
-                                                            .toValue(),
-                                                        EligibilityAssessmentStatus
-                                                            .smcDone.name,
-                                                      ),
-                                                      ...getIndividualAdditionalFields(
-                                                          widget.individual),
-                                                    ],
-                                                  ),
-                                                  address: widget
-                                                      .individual.address?.first
-                                                      .copyWith(
-                                                    relatedClientReferenceId:
-                                                        clientReferenceId,
-                                                    id: null,
-                                                  ),
-                                                ),
+                                                task: taskModel,
                                                 isEditing: false,
                                                 boundaryModel: context.boundary,
+                                                navigateToSummary: false,
                                               ),
                                             );
 
@@ -438,10 +445,13 @@ class CustomReferBeneficiarySMCPageState
                                         ).then(
                                           (value) => context.router.popAndPush(
                                             CustomHouseholdAcknowledgementRoute(
-                                              enableViewHousehold: true,
-                                              eligibilityAssessmentType:
-                                                  EligibilityAssessmentType.vas,
-                                            ),
+                                                enableViewHousehold: true,
+                                                isAddChild: true,
+                                                eligibilityAssessmentType:
+                                                    EligibilityAssessmentType
+                                                        .vas,
+                                                individualModel:
+                                                    widget.individual),
                                           ),
                                         );
                                       }
