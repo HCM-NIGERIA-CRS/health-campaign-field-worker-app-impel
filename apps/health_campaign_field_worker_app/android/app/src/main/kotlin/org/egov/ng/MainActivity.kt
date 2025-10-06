@@ -1,4 +1,4 @@
-package org.egov.training.ng
+package org.egov.ng
 
 import android.content.BroadcastReceiver
 import android.content.Context
