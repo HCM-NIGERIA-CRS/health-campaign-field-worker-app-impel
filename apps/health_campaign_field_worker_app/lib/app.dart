@@ -1,7 +1,8 @@
+import 'package:attendance_management/models/entities/attendance_log.dart';
 import 'package:attendance_management/attendance_management.dart';
+import 'package:attendance_management/models/entities/attendance_register.dart';
 import 'package:digit_components/theme/theme.dart';
 import 'package:digit_data_model/data_model.dart';
-import 'package:digit_data_model/models/entities/user_action.dart';
 import 'package:digit_dss/digit_dss.dart';
 import 'package:digit_scanner/blocs/scanner.dart';
 import 'package:digit_ui_components/services/location_bloc.dart';
@@ -17,32 +18,19 @@ import 'package:registration_delivery/data/repositories/local/household_global_s
 import 'package:registration_delivery/data/repositories/local/individual_global_search.dart';
 import 'package:registration_delivery/registration_delivery.dart';
 import 'package:survey_form/survey_form.dart';
-import 'package:transit_post/data/repositories/local/user_action.dart';
-import 'package:transit_post/data/repositories/oplog/oplog.dart';
-import 'package:transit_post/data/repositories/remote/user_action.dart';
 
 import 'blocs/app_initialization/app_initialization.dart';
 import 'blocs/auth/auth.dart';
-import 'blocs/compliance/consent_household.dart';
-import 'blocs/daily_implementation_plan/daily_implementation_plan.dart';
-import 'blocs/daily_implementation_plan/dip_all_search.dart';
-import 'blocs/daily_implementation_plan/dip_search.dart';
 import 'blocs/inventory_management/stock_bloc.dart';
 import 'blocs/localization/localization.dart';
-import 'blocs/non_compliance/non_compliance_all_search.dart';
-import 'blocs/non_compliance/non_compliance_search.dart';
-import 'blocs/non_compliance/non_compliance_tracking.dart';
 import 'blocs/project/project.dart';
-import 'blocs/registration_delivery/current_flow.dart';
 import 'blocs/search/individual_global_search_smc.dart';
-import 'blocs/search/non_compliance_search.dart';
 import 'blocs/search/search_households_smc.dart';
 import 'blocs/summary_report/custom_distribution_summary_report.dart';
 import 'data/local_store/app_shared_preferences.dart';
 import 'data/network_manager.dart';
 import 'data/remote_client.dart';
 import 'data/repositories/local/search/individual_global_search_smc.dart';
-import 'data/repositories/local/transit_post/custom_user_action.dart';
 import 'data/repositories/remote/bandwidth_check.dart';
 import 'data/repositories/remote/localization.dart';
 import 'data/repositories/remote/mdms.dart';
@@ -106,24 +94,6 @@ class MainApplicationState extends State<MainApplication>
             IndividualOpLogManager(widget.isar),
           ),
         ),
-        RepositoryProvider<UserActionLocalRepository>(
-          create: (context) => UserActionLocalRepository(
-            widget.sql,
-            UserActionOpLogManager(widget.isar),
-          ),
-        ),
-        RepositoryProvider<CustomUserActionLocalRepository>(
-          create: (context) => CustomUserActionLocalRepository(
-            widget.sql,
-            UserActionOpLogManager(widget.isar),
-          ),
-        ),
-        // RepositoryProvider<UserActionLocalRepository>(
-        //   create: (context) => UserActionLocalRepository(
-        //     widget.sql,
-        //     UserActionOpLogManager(widget.isar),
-        //   ),
-        // ),
       ],
       child: BlocProvider(
         create: (context) => AppInitializationBloc(
@@ -247,9 +217,6 @@ class MainApplicationState extends State<MainApplication>
                   individualRemoteRepository: ctx.read<
                       RemoteRepository<IndividualModel,
                           IndividualSearchModel>>(),
-                  productVariantLocalRepository: ctx.read<
-                      LocalRepository<ProductVariantModel,
-                          ProductVariantSearchModel>>(),
                 )..add(
                     AuthAutoLoginEvent(
                       tenantId: envConfig.variables.tenantId,
@@ -335,29 +302,6 @@ class MainApplicationState extends State<MainApplication>
                                         IndividualGlobalSearchSMCRepository>(),
                                 houseHoldGlobalSearchRepository: context
                                     .read<HouseHoldGlobalSearchRepository>())),
-                        BlocProvider(
-                            create: (_) => NonComplianceIndividualSearchBloc(
-                                userUid: RegistrationDeliverySingleton()
-                                    .loggedInUserUuid!,
-                                projectId:
-                                    RegistrationDeliverySingleton().projectId!,
-                                individual: individual,
-                                householdMember: householdMember,
-                                household: household,
-                                projectBeneficiary: projectBeneficiary,
-                                taskDataRepository: task,
-                                beneficiaryType: RegistrationDeliverySingleton()
-                                    .beneficiaryType!,
-                                sideEffectDataRepository: sideEffect,
-                                addressRepository: context
-                                    .read<RegistrationDeliveryAddressRepo>(),
-                                referralDataRepository: referral,
-                                individualGlobalSearchSMCRepository:
-                                    context.read<
-                                        IndividualGlobalSearchSMCRepository>(),
-                                houseHoldGlobalSearchRepository: context
-                                    .read<HouseHoldGlobalSearchRepository>())),
-
                         BlocProvider(
                           create: (localizationModulesList != null &&
                                   firstLanguage != null)
@@ -452,12 +396,6 @@ class MainApplicationState extends State<MainApplication>
                             stockRemoteRepository: ctx.read<
                                 RemoteRepository<StockModel,
                                     StockSearchModel>>(),
-                            userActionLocalRepository: ctx.read<
-                                LocalRepository<UserActionModel,
-                                    UserActionSearchModel>>(),
-                            userActionRemoteRepository: ctx.read<
-                                RemoteRepository<UserActionModel,
-                                    UserActionSearchModel>>(),
                             attendanceLogLocalRepository: ctx.read<
                                 LocalRepository<AttendanceLogModel,
                                     AttendanceLogSearchModel>>(),
@@ -496,7 +434,7 @@ class MainApplicationState extends State<MainApplication>
                         ),
                         BlocProvider(
                           create: (context) => ProductVariantBloc(
-                            const ProductVariantLoadingState(),
+                            const ProductVariantEmptyState(),
                             context.repository<ProductVariantModel,
                                 ProductVariantSearchModel>(),
                             context.repository<ProjectResourceModel,
@@ -511,118 +449,6 @@ class MainApplicationState extends State<MainApplication>
                                 ProjectFacilitySearchModel>(),
                           ),
                         ),
-                        // BlocProvider(
-                        //   create: (_) {
-                        //     return CustomTransitPostBloc(
-                        //       const CustomTransitPostState(),
-                        //       customUserActionLocalRepository: context
-                        //           .read<CustomUserActionLocalRepository>(),
-                        //       userActionLocalRepository:
-                        //           context.read<UserActionLocalRepository>(),
-                        //       userActionRemoteRepository: context.repository<
-                        //           UserActionModel, UserActionSearchModel>(),
-                        //     );
-                        //   },
-                        //   lazy: false,
-                        // ),
-                        // BlocProvider(
-                        //   create: (_) {
-                        //     return FixedPostBloc(
-                        //       const FixedPostState(),
-                        //       userActionLocalRepository:
-                        //           context.read<UserActionLocalRepository>(),
-                        //       customUserActionLocalRepository: context
-                        //           .read<CustomUserActionLocalRepository>(),
-                        //       userActionRemoteRepository: context.repository<
-                        //           UserActionModel, UserActionSearchModel>(),
-                        //     );
-                        //   },
-                        //   lazy: false,
-                        // ),
-                        BlocProvider(
-                          create: (ctx) => DailyImplementationPlanBloc(
-                            const DailyImplementationPlanState.init(),
-                            customUserActionLocalRepository:
-                                CustomUserActionLocalRepository(widget.sql,
-                                    UserActionOpLogManager(widget.isar)),
-                          ),
-                        ),
-                        BlocProvider(
-                          create: (ctx) => DipSearchBloc(
-                            const DipSearchState.init(),
-                            customUserActionLocalRepository:
-                                CustomUserActionLocalRepository(widget.sql,
-                                    UserActionOpLogManager(widget.isar)),
-                          ),
-                        ),
-
-                        // BlocProvider(
-                        //   create: (ctx) => DipAllSearchBloc(
-                        //     const DipAllSearchState.init(),
-                        //     customUserActionLocalRepository:
-                        //         CustomUserActionLocalRepository(widget.sql,
-                        //             UserActionOpLogManager(widget.isar)),
-                        //   ),
-                        // ),
-
-                        BlocProvider(
-                          create: (ctx) => NonComplianceTrackingBloc(
-                            const NonComplianceTrackingState.init(),
-                            userActionLocalRepository:
-                                UserActionLocalRepository(widget.sql,
-                                    UserActionOpLogManager(widget.isar)),
-                            customUserActionLocalRepository:
-                                CustomUserActionLocalRepository(widget.sql,
-                                    UserActionOpLogManager(widget.isar)),
-                          ),
-                        ),
-                        BlocProvider(
-                          create: (ctx) => NonComplianceSearchBloc(
-                            const NonComplianceSearchState.init(),
-                            userActionLocalRepository:
-                                UserActionLocalRepository(widget.sql,
-                                    UserActionOpLogManager(widget.isar)),
-                            customUserActionLocalRepository:
-                                CustomUserActionLocalRepository(widget.sql,
-                                    UserActionOpLogManager(widget.isar)),
-                          ),
-                        ),
-                        BlocProvider(
-                          create: (ctx) => NonComplianceAllSearchBloc(
-                            const NonComplianceAllSearchState.init(),
-                            userActionLocalRepository:
-                                UserActionLocalRepository(widget.sql,
-                                    UserActionOpLogManager(widget.isar)),
-                            customUserActionLocalRepository:
-                                CustomUserActionLocalRepository(widget.sql,
-                                    UserActionOpLogManager(widget.isar)),
-                          ),
-                        ),
-                        BlocProvider(
-                          create: (ctx) => CurrentFlowBloc(
-                            const CurrentFlowState.set(),
-                          ),
-                        ),
-                        BlocProvider(
-                            create: (ctx) => ConsentHouseholdBloc(
-                                  const ConsentHouseholdState(),
-                                  individualRepository: ctx.repository<
-                                      IndividualModel, IndividualSearchModel>(),
-                                  householdRepository: ctx.repository<
-                                      HouseholdModel, HouseholdSearchModel>(),
-                                  householdMemberRepository: ctx.repository<
-                                      HouseholdMemberModel,
-                                      HouseholdMemberSearchModel>(),
-                                  projectBeneficiaryRepository: ctx.repository<
-                                      ProjectBeneficiaryModel,
-                                      ProjectBeneficiarySearchModel>(),
-                                  taskDataRepository: ctx
-                                      .repository<TaskModel, TaskSearchModel>(),
-                                  beneficiaryType:
-                                      RegistrationDeliverySingleton()
-                                              .beneficiaryType ??
-                                          BeneficiaryType.individual,
-                                )),
                       ],
                       child: BlocBuilder<LocalizationBloc, LocalizationState>(
                         builder: (context, langState) {
@@ -688,8 +514,9 @@ class MainApplicationState extends State<MainApplication>
                                 orElse: () => [
                                   const UnauthenticatedRouteWrapper(),
                                 ],
-                                authenticated:
-                                    (_, __, ___, ____, _____, ______) => [
+                                authenticated: (_, __, ___, ____, _____, ______,
+                                        _______, ________, _________) =>
+                                    [
                                   AuthenticatedRouteWrapper(),
                                 ],
                               ),

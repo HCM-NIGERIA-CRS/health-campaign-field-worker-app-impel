@@ -52,25 +52,8 @@ class AppConfiguration {
   @Name('ID_TYPE_OPTIONS_POPULATOR')
   late List<IdTypeOptions>? idTypeOptions;
 
-  @Name('DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR')
-  late List<DeliveryCommentOptions>? redoseDeliveryCommentsOptions;
   @Name('DELIVERY_COMMENT_OPTIONS_POPULATOR')
   late List<DeliveryCommentOptions>? deliveryCommentOptions;
-  @Name('AGE_RANGE_OPTIONS')
-  late List<AgeRangeOptions>? ageRangeOptions;
-  @Name('HEIGHT_RANGE_OPTIONS')
-  late List<HeightRangeOptions>? heightRangeOptions;
-
-  @Name("STOCK_MANUFACTURER")
-  late List<DeliveryCommentOptions>? stockManufacturer;
-  @Name("STATUS_VVM")
-  late List<DeliveryCommentOptions>? statusVVM;
-
-  @Name("DIP_DAYS")
-  late List<DeliveryCommentOptions>? dipDays;
-
-  @Name('USER_ACTION_DAILY_PLAN')
-  late List<DailyActionPlanConfig>? dailyPlanConfigs;
 
   @Name('TRANSPORT_TYPES')
   late List<TransportTypes>? transportTypes;
@@ -98,14 +81,9 @@ class AppConfiguration {
   @Name('BENEFICIARY_ID_CONFIG')
   late List<BeneficiaryIdConfig>? beneficiaryIdConfig;
 
-  @Name('TRANSIT_POST_TYPE')
-  late List<TransitPostType>? transitPostType;
-
   late List<ReferralReasons>? referralReasons;
   late List<HouseStructureTypes>? houseStructureTypes;
   late List<RefusalReasons>? refusalReasons;
-  @Name('NON_COMPLIANCE_REASONS')
-  late List<NonComplianceReasons>? nonComplianceReasons;
   late PrivacyPolicy? privacyPolicyConfig;
 }
 
@@ -135,30 +113,6 @@ class IdTypeOptions {
 
 @embedded
 class DeliveryCommentOptions {
-  late String name;
-  late String code;
-}
-
-@embedded
-class AgeRangeOptions {
-  late String name;
-  late String code;
-}
-
-@embedded
-class HeightRangeOptions {
-  late String name;
-  late String code;
-}
-
-@embedded
-class DailyActionPlanConfig {
-  late String key;
-  late String value;
-}
-
-@embedded
-class NonComplianceReasons {
   late String name;
   late String code;
 }
@@ -201,13 +155,6 @@ class TransportTypes {
 class ComplaintTypes {
   late String name;
   late String code;
-}
-
-@embedded
-class TransitPostType {
-  late String name;
-  late String code;
-  late bool active;
 }
 
 @embedded

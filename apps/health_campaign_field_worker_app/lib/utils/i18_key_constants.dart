@@ -14,7 +14,6 @@ const privacyPolicy = PrivacyPolicy();
 const dashBoard = Dashboard();
 
 const caregiverConsent = CaregiverConsent();
-const dailyImplementationFlow = DailyImplementationFlow();
 
 const householdLocationShowcase = HouseholdLocationShowcase();
 const householdLocation = HouseholdLocation();
@@ -45,13 +44,9 @@ const deliverIntervention = DeliverIntervention();
 const checklist = Checklist();
 const referBeneficiary = ReferBeneficiary();
 const householdDetails = HouseholdDetails();
-const transitFixedPost = TransitFixedPost();
 
 class Common {
   const Common();
-  String get nonComplianceTrackingLabel => 'NON_COMPLIANCE_TRACKING_LABEL';
-  String get nonComplianceUpdateStatusLabel =>
-      'NON_COMPLIANCE_UPDATE_STATUS_LABEL';
 
   String get coreCommonContinue => 'CORE_COMMON_CONTINUE';
   String get coreCommonWarning => 'CORE_COMMON_WARNING';
@@ -68,8 +63,6 @@ class Common {
   String get coreCommonMobileNumber => 'CORE_COMMON_MOBILE_NUMBER';
 
   String get coreCommonSubmit => 'CORE_COMMON_SUBMIT';
-
-  String get coreCommonFinish => 'CORE_COMMON_FINISH';
 
   String get coreCommonSave => 'CORE_COMMON_SAVE';
 
@@ -171,18 +164,6 @@ class HouseholdOverView {
   String get householdOverViewSMCAssessmentActionText =>
       'HOUSEHOLD_OVER_VIEW_SMC_ASSESSMENT_ACTION_TEXT';
 
-  String get householdOverViewDeliverActionText =>
-      'HOUSEHOLD_OVER_VIEW_DELIVER_ACTION_TEXT';
-
-  String get householdOverViewRevisitAbsentText =>
-      'HOUSEHOLD_OVER_VIEW_REVISIT_ABSENT_TEXT';
-
-  String get householdOverViewRevisitAbsentHeadText =>
-      'HOUSEHOLD_OVER_VIEW_REVISIT_ABSENT_HEAD_TEXT';
-
-  String get householdOverViewAdministerHeadText =>
-      'HOUSEHOLD_OVER_VIEW_ADMINISTER_HEAD_TEXT';
-
   String get householdOverViewVASAssessmentActionText =>
       'HOUSEHOLD_OVER_VIEW_VAS_ASSESSMENT_ACTION_TEXT';
 
@@ -205,17 +186,10 @@ class HouseholdOverView {
 
   String get householdOverViewBeneficiaryReferredVASLabel =>
       'HOUSEHOLD_OVER_VIEW_BENEFICIARY_REFERRED_VAS_LABEL';
-
-  String get nonCompliantHouseholdStatus => 'HOUSEHOLD_NON_COMPLIANT_STATUS';
 }
 
 class DeliverIntervention {
   const DeliverIntervention();
-
-  String get recordDoseLabel => 'BENEFICIARY_DETAILS_RECORD_DOSE_BUTTON_LABEL';
-
-  String get campaignDeliverySelectionLabel =>
-      'CAMPAIGN_DELIVERY_SELECTION_LABEL';
 
   String get patternValidationFailed => 'PATTERN_VALIDATION_FAILED';
 
@@ -247,27 +221,12 @@ class DeliverIntervention {
   String get beneficiaryIneligibleDescription => 'BENEFICIARY_INELIGIBLE_DESC';
   String get beneficiaryReferralDescription => 'BENEFICIARY_REFERRAL_DESC';
   String get spaqRedirectionScreenDescription => 'SPAQ_REDIRECTED_SCREEN_DESC';
-  String get deliverintervention => 'DELIVER_INTERVENTION';
+  String get deliversmcintervention => 'DELIVER_SMC_INTERVENTION';
   String get deliverVASIntervention => 'DELIVER_VAS_INTERVENTION';
   String get recordsmcdeliverdetails => 'RECORD_SMC_DELIVER_DETAILS';
   String get doseadministeredby => 'DOSE_ADMINISTERED_BY_LABEL';
   String get proceedToVASLabel => 'PROCEED_TO_VAS_LABEL';
   String get proceedToVASDescription => 'PROCEED_TO_VAS_DESCRIPTION';
-
-  String get noOfChildrenVaccinated => 'CHILDREN_VACCINATED';
-  String get polioDeliverySummary => 'POLIO_DELIVERY_SUMMARY';
-  String get onchoDeliverySummary => 'ONCHO_DELIVERY_SUMMARY';
-  String get measlesDeliverySummary => 'MEASLES_DELIVERY_SUMMARY';
-  String get vaccinateBeneficiary => 'VACCINATE_BENEFICIARY';
-  String get selectAgeRange => 'SELECT_AGE_RANGE';
-  String get selectGender => 'SELECT_GENDER';
-  String get selectHeightRange => 'SELECT_HEIGHT_RANGE';
-
-  String get ninetoElevenAgeRange => 'NINE_ELEVEN_AGE_RANGE';
-  String get twelvetofiftyNineAgeRange => 'TWELVE_FIFTYNINE_AGE_RANGE';
-  String get selectAgeRangeMessage => 'SELECT_AGE_RANGE';
-
-  String get disabilityLabel => 'DELIVER_INTERVENTION_DISABILITY_LABEL';
 }
 
 class Checklist {
@@ -357,12 +316,6 @@ class ReferBeneficiary {
   String get validationForReferralAge => 'REFERRAL_AGE_VALIDATION';
 }
 
-class TransitFixedPost {
-  const TransitFixedPost();
-  String get fixedTypeSelectionLabel => 'FIXED_POST_TYPE_SELECTION_LABEL';
-  String get fixedPostnameLabel => 'FIXED_POST_NAME_LABEL';
-}
-
 class HouseholdDetails {
   const HouseholdDetails();
 
@@ -375,11 +328,6 @@ class HouseholdDetails {
   String get noOfMembersCountLabel => 'NO_OF_MEMBERS_COUNT_LABEL';
   String get viewHouseHoldDetailsActionSMC =>
       'VIEW_HOUSEHOLD_DETAILS_ACTION_LABEL_SMC';
-  String get householdNumberLabel => 'HOUSEHOLD_NUMBER_LABEL';
-
-  String get noOfChildrenAbsentLabel => 'NO_OF_CHILDREN_ABSENT_LABEL';
-  String get noOfChildrenAFPLabel => 'NO_OF_CHILDREN_AFP_LABEL';
-  String get guineaWormCountLabel => 'NO_OF_GUINEA_WORM_COUNT_LABEL';
 
   String get reasonLabelText => 'REASON_LABEL_TEXT';
   String get householdDetailsDescriptionSMC =>
@@ -394,9 +342,6 @@ class HouseholdDetails {
   String get cardAztTitle => 'HOUSEHOLD_CONSENT_LABELL';
   String get treatNextChildAction =>
       'VIEW_HOUSEHOLD_DETAILS_TREAT_NEXT_CHILD_ACTION_LABEL';
-
-  String get householdConsentDescription => 'HOUSEHOLD_CONSENT_DESCRIPTION';
-  String get householdConsentAction => 'HOUSEHOLD_CONSENT_ACTION_LABEL';
 }
 
 class ForgotPassword {
@@ -490,23 +435,6 @@ class HomeShowcase {
 class StockDetails {
   const StockDetails();
 
-  String get minNumberLabel => 'MIN_NUMBER_LABEL';
-  String get mrnNumberLabel => 'MRN_NUMBER_LABEL';
-  String get selectMINNumber => 'STOCK_DETAILS_SELECT_MIN_NUMBER';
-  String get selectMRNNumber => 'STOCK_DETAILS_SELECT_MRN_NUMBER';
-  String get noTransactionsFound => 'STOCK_DETAILS_NO_TRANSACTIONS_FOUND';
-  String get resource => 'STOCK_DETAILS_RESOURCE';
-  String get stockReceiptDetails => 'STOCK_DETAILS_STOCK_RECEIPT_DETAILS';
-  String get stockIssueDetails => 'STOCK_DETAILS_STOCK_ISSUE_DETAILS';
-  String get stockReturnDetails => 'STOCK_DETAILS_STOCK_RETURN_DETAILS';
-  String get waybillNumber => 'STOCK_DETAILS_WAYBILL_NUMBER';
-  String get damageStockLabel => 'STOCK_DETAILS_DAMAGE_QUANTITY';
-  String get emptyVialsLabel => 'STOCK_DETAILS_EMPTY_OPENED_VIALS_LABEL';
-  String get unusableVvmFirst => 'UNUSABLE_VVM_THREE_FOURTH_VIALS_LABEL';
-  String get unusableVvmSecond => 'UNUSABLE_VVM_FIRST_SECOND_VIALS_LABEL';
-  String get blisters => 'STOCK_DETAILS_BLISTERS';
-  String get capsules => 'STOCK_DETAILS_CAPSULES';
-
   String get reconciliationCommentRequired => 'RECONCILIATION_COMMENT_REQUIRED';
 
   String get cddCodeLabel => 'CDD_CODE_LABEL';
@@ -531,19 +459,12 @@ class StockDetails {
   }
 
   String get transportTypeLabel => 'STOCK_DETAILS_TYPE_OF_TRANSPORT_LABEL';
-  String get statusVvmLabel => 'STOCK_DETAILS_STATUS_OF_VVM';
-  String get statusIvmLabel => 'STOCK_DETAILS_STATUS_OF_IVM';
-  String get manufacturerLabel => 'STOCK_DETAILS_STATUS_OF_MANUFACTURER_LABEL';
-  String get expireDateLabel => 'STOCK_DETAILS_EXPIRE_DATE_LABEL';
 
   String get quantityUnusedReturnedLabel =>
       'STOCK_DETAILS_UNUSED_QUANTITY_RETURNED';
 
   String get quantityPartialReturnedLabel =>
       'STOCK_DETAILS_PARTIAL_QUANTITY_RETURNED';
-
-  String get quantityDamageReturnedLabel =>
-      'STOCK_DETAILS_DAMAGE_QUANTITY_RETURNED';
 
   String get quantityReturnedMaxError =>
       'STOCK_DETAILS_RETURNED_MAX_QUANTITY_ERROR';
@@ -555,8 +476,6 @@ class StockDetails {
 
   String get recordStockReturnedDescription =>
       'STOCK_DETAILS_RECORD_STOCK_RETURNED_DESCRIPTION';
-
-  String get voucherSerialNumberLabel => 'STOCK_DETAILS_VOUCHER_SERIAL_NUMBER';
 }
 
 class StockReconciliationDetails {
@@ -811,31 +730,6 @@ class CaregiverConsent {
 
   String get caregiverConsentActionLabelText =>
       'CARE_GIVER_CONSENT_ACTION_LABEL_TEXT';
-  String get reasonForNonComplianceLabel =>
-      'CARE_GIVER_CONSENT_REASON_NON_COMPLIANCE';
-  String get householdSummaryComplianceLabel =>
-      'HOUSEHOLD_SUMMARY_COMPLIANCE_LABEL';
-}
-
-class DailyImplementationFlow {
-  const DailyImplementationFlow();
-
-  String get dip => 'TEAM_1_DIP_LABEL';
-  String get obrRound => 'OBR_ROUND_LABEL';
-  String get selectBoundaryLabel => 'SELECT_BOUNDARY_HEADING_LABEL';
-  String get dateOfEntry => 'SELECT_DATE_OF_ENTRY';
-  String get administrativeUnitLabel => 'SELECT_ADMINISTRATIVE_UNIT_LABEL';
-  String get wfpSupervisorLabel => 'SELECT_WFP_SUPERVISOR_LABEL';
-  String get boundaryLabel => 'SELECT_BOUNDARY_LABEL';
-  String get createDIPLabel => 'CREATE_DIP_LABEL';
-  String get viewDIPLabel => 'VIEW_DIP_LABEL';
-
-  String get selectDateForAllSettlements => 'SELECT_DATE_FOR_ALL_SETTLEMENTS';
-  String get settlements => 'SETTLEMENTS_LABEL';
-  String get dateOfVisit => 'DATE_OF_VISIT_LABEL';
-
-  String get no_daily_implementation_plan_found =>
-      'NO_DAILY_IMPLEMENTATION_PLAN_FOUND';
 }
 
 class ComplaintsDetailsShowcase {
@@ -979,9 +873,6 @@ class Home {
 
   String get beneficiaryLabel => 'HOME_BENEFICIARY_LABEL';
 
-  String get transitPostLabel => 'HOME_TRANSIT_POST_LABEL';
-  String get fixedPostLabel => 'HOME_FIXED_POST_LABEL';
-
   String get beneficiaryDistributionLabel =>
       'HOME_BENEFICIARY_DISTRIBUTION_LABEL';
 
@@ -1021,24 +912,11 @@ class Home {
 
   String get clfLabel => "HOME_COMMUNAL_LIVING_FACILITIES_LABEL";
   String get beneficiaryIdLabel => 'HOME_BENEFICIARY_ID_LABEL';
-  String get dailyImplementationPlanLabel => 'HOME_DIP_LABEL';
-  String get campaignDeliverySelection =>
-      'HOME_CAMPAIGN_DELIVERY_SELECTION_LABEL';
-  String get nonComplianceTracking => 'HOME_NON_COMPLIANCE_TRACKING_LABEL';
-
   String get viewSummaryReportsLabel => 'VIEW_SUMMARY_REPORTS_LABEL';
 }
 
 class AcknowledgementSuccess {
   const AcknowledgementSuccess();
-
-  String get materialIssueHeading => "MATERIAL_ISSUE_HEADING";
-  String get materialReceiveHeading => "MATERIAL_RECEIVE_HEADING";
-  String get materialReturnHeading => "MATERIAL_RETURN_HEADING";
-
-  String get materialIssueDescription => "MATERIAL_ISSUE_DESCRIPTION";
-  String get materialReceiveDescription => "MATERIAL_RECEIVE_DESCRIPTION";
-  String get materialReturnDescription => "MATERIAL_RETURN_DESCRIPTION";
 
   String get mrrnNumberDescription => "MRRN_NUMBER_DESCRIPTION";
 
@@ -1392,9 +1270,6 @@ class SearchBeneficiary {
   String get proximityLabel => 'PROXIMITY_LABEL';
   String get beneficiaryIdValidInfoDescription =>
       'BENEFICIARY_ID_VALID_INFO_DESCRIPTION';
-
-  String get nonComplianceSearchInfoDescription =>
-      'NON_COMPLIANCE_SEARCH_INFO_DESCRIPTION';
 }
 
 class IndividualDetails {
@@ -1429,7 +1304,6 @@ class IndividualDetails {
   String get separatorLabelText => 'SEPARATOR_LABEL_TEXT';
 
   String get genderLabelText => 'GENDER_LABEL_TEXT';
-  String get selectGenderLabelText => 'SELECT_GENDER_LABEL';
 
   String get dobErrorText => 'DOB_ERROR_MESSAGE';
 
@@ -1456,21 +1330,10 @@ class IndividualDetails {
 
   String get linkVoucherToIndividual => 'LINK_VOUCHER_TO_INDIVIDUAL';
   String get beneficiarySearchTextLabel => 'SEARCH_BY_BENEFICIARY_ID';
-  String get absentSearchTextLabel => 'SEARCH_CHILD_ABSENT';
-  String get nonCompliantHouseSearchTextLabel =>
-      'SEARCH_NON_COMPLIANT_HOUSE_SEARCH';
 }
 
 class BeneficiaryDetails {
   const BeneficiaryDetails();
-
-  String get dialogTitle => 'DIP_DIALOG_TITLE';
-
-  String get dialogContent => 'DIP_DIALOG_CONTENT';
-
-  String get beneficiaryHeight => "BENEFICIARY_HEIGHT_LABEL";
-
-  String get noResourceFound => "NO_RESOURCE_FOUND";
 
   String get validationForExcessStockReturn =>
       "ERROR_VALIDATION_FOR_EXCESS_STOCK_RETURN";
@@ -1500,7 +1363,6 @@ class BeneficiaryDetails {
   String get beneficiaryDoseUnit => 'BENEFICIARY_DETAILS_DOSE_UNIT';
   String get spaq1DoseUnit => 'SPAQ1_STOCK_ZERO';
   String get spaq2DoseUnit => 'SPAQ2_STOCK_ZERO';
-  String get productSkuCountUnit => 'PRODUCT_SKU_STOCK_ZERO';
 
   String get beneficiarysDetailsLabelText => 'BENEFICIARY_DETAILS_LABEL_TEXT';
   String get beneficiarysDetailsEditIconLabelText =>
@@ -1579,8 +1441,6 @@ class BeneficiaryDetails {
   String get recordCycle => 'BENEFICIARY_DETAILS_RECORD_CYCLE';
 
   String get currentSmcCycleLabel => 'BENEFICIARY_DETAILS_CURRENT_SMC_CYCLE';
-  String get reasonForNonComplianceNeeded => 'REASON_FOR_NON_COMPLIANCE_NEEDED';
-  String get houseHeadNameNeeded => 'HEAD_NAME_NEEDED';
   String get invalidChildCount => 'INVALID_CHILD_COUNT_MESSAGE';
   String get noHealthFacilityError => 'NO_HEALTH_FACILITY_ERROR';
 }

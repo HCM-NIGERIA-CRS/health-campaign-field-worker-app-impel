@@ -5,7 +5,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../../models/auth/auth_model.dart';
 import '../../../models/role_actions/role_actions_model.dart';
-import '../../../utils/utils.dart';
 
 class LocalSecureStore {
   static const accessTokenKey = 'accessTokenKey';
@@ -20,13 +19,12 @@ class LocalSecureStore {
   static const isAppInActiveKey = 'isAppInActiveKey';
   static const manualSyncKey = 'manualSyncKey';
   static const selectedProjectTypeKey = 'selectedProjectType';
-  static const polioKey = "Polio - nOPV, bOPV";
-  static const measlesKey = "Measles - MRV";
+  static const spaq1Key = 'spaq1';
+  static const spaq2Key = 'spaq2';
+  static const blueVasKey = 'blueVas';
+  static const redVasKey = 'redVas';
 
-  List<String> keysToKeep = [
-    polioKey,
-    measlesKey
-  ]; // TODO : add the latest product sku key to prevent the delete
+  List<String> keysToKeep = [spaq1Key, spaq2Key,blueVasKey,redVasKey];
 
   final storage = const FlutterSecureStorage();
 
@@ -154,88 +152,145 @@ class LocalSecureStore {
     }
   }
 
-  Future<Map<String, int>> getAllProductSKUCounts(
-      List<ProductVariantModel> selectedProducts) async {
-    try {
-      List<String> productCountKeys = extractAllProductCounts(selectedProducts);
-      final Map<String, int> result = {};
-
-      for (final key in productCountKeys) {
-        final productCount = await getProductSKUCounts(key);
-        result[key] = productCount;
-      }
-      return result;
-    } catch (_) {
-      return {};
-    }
-  }
-
-  Future<int> getProductSKUCounts(String productCountKey) async {
+  Future<int> get spaq1 async {
     final userBody = await storage.read(key: userObjectKey);
     if (userBody == null) return 0;
-    final localStorageStringMap =
-        await storage.read(key: Constants.productSKUCounts);
-    if (localStorageStringMap == null) return 0;
+    final spaq1MapString = await storage.read(key: spaq1Key);
+
+    if (spaq1MapString == null) return 0;
+
     try {
       final user = UserRequestModel.fromJson(json.decode(userBody));
-      final userUUID = user.uuid;
-      final localStorageMap =
-          json.decode(localStorageStringMap) as Map<String, dynamic>;
-      if (localStorageMap[userUUID] != null) {
-        final productCountMap =
-            localStorageMap[userUUID] as Map<String, dynamic>;
-        final totalCount = productCountMap[productCountKey] ?? 0;
-        return totalCount;
-      }
-      return 0;
+
+      Map<String, dynamic> spaq1Map = json.decode(spaq1MapString);
+
+      return spaq1Map[user.uuid] != null ? spaq1Map[user.uuid] as int : 0;
     } catch (_) {
       return 0;
     }
   }
 
-  Future<void> setProductSKUCounts(Map<String, int> productCounts) async {
+  Future<int> get spaq2 async {
+    final userBody = await storage.read(key: userObjectKey);
+    if (userBody == null) return 0;
+    final spaq2MapString = await storage.read(key: spaq2Key);
+
+    if (spaq2MapString == null) return 0;
+
+    try {
+      final user = UserRequestModel.fromJson(json.decode(userBody));
+
+      Map<String, dynamic> spaq2Map = json.decode(spaq2MapString);
+
+      return spaq2Map[user.uuid] != null ? spaq2Map[user.uuid] as int : 0;
+    } catch (_) {
+      return 0;
+    }
+  }
+
+// for VAS
+  Future<int> get blueVas async {
+    final userBody = await storage.read(key: userObjectKey);
+    if (userBody == null) return 0;
+    final blueVasMapString = await storage.read(key: blueVasKey);
+
+    if (blueVasMapString == null) return 0;
+
+    try {
+      final user = UserRequestModel.fromJson(json.decode(userBody));
+
+      Map<String, dynamic> blueVasMap = json.decode(blueVasMapString);
+
+      return blueVasMap[user.uuid] != null ? blueVasMap[user.uuid] as int : 0;
+    } catch (_) {
+      return 0;
+    }
+  }
+  Future<int> get redVas async {
+    final userBody = await storage.read(key: userObjectKey);
+    if (userBody == null) return 0;
+    final redVasMapString = await storage.read(key: redVasKey);
+
+    if (redVasMapString == null) return 0;
+
+    try {
+      final user = UserRequestModel.fromJson(json.decode(userBody));
+
+      Map<String, dynamic> redVasMap = json.decode(redVasMapString);
+
+      return redVasMap[user.uuid] != null ? redVasMap[user.uuid] as int : 0;
+    } catch (_) {
+      return 0;
+    }
+  }
+
+  Future<void> setSpaqCounts(int spaq1, int spaq2, int blueVas,int redVas) async {
     final userBody = await storage.read(key: userObjectKey);
     if (userBody == null) return;
 
     try {
       final user = UserRequestModel.fromJson(json.decode(userBody));
-      final userUUID = user.uuid;
 
-      Map<String, int> skuCounts = {};
+      final spaq1MapString = await storage.read(key: spaq1Key);
+      final spaq2MapString = await storage.read(key: spaq2Key);
+      final blueVasMapString = await storage.read(key: blueVasKey);
+      final redVasMapString = await storage.read(key: redVasKey);
+      Map<String, dynamic> spaq1Map = {};
+      Map<String, dynamic> spaq2Map = {};
 
-      for (final entry in productCounts.entries) {
-        final productCountKey = entry.key;
-        final productCount = entry.value;
+      Map<String, dynamic> blueVasMap = {};
+      Map<String, dynamic> redVasMap = {};
 
-        skuCounts[productCountKey] = productCount;
+      if (spaq1MapString != null) {
+        try {
+          spaq1Map = json.decode(spaq1MapString);
+        } catch (_) {}
       }
 
-// Note : get already existing data from storage and currect user data in it
-      Map<String, dynamic> skuCountsWithUUID =
-          await getSavedProductSKUCountsMap();
-      skuCountsWithUUID[userUUID] = skuCounts;
+      if (spaq2MapString != null) {
+        try {
+          spaq2Map = json.decode(spaq2MapString);
+        } catch (_) {}
+      }
+
+      if (blueVasMapString != null) {
+        try {
+          blueVasMap = json.decode(blueVasMapString);
+        } catch (_) {}
+      }
+
+      if (redVasMapString != null) {
+        try {
+          redVasMap = json.decode(redVasMapString);
+        } catch (_) {}
+      }
+
+      spaq1Map[user.uuid] = spaq1;
+      spaq2Map[user.uuid] = spaq2;
+
+      blueVasMap[user.uuid] = blueVas;
+      redVasMap[user.uuid] = redVas;
 
       await storage.write(
-        key: Constants.productSKUCounts,
-        value: json.encode(skuCountsWithUUID),
+        key: spaq1Key,
+        value: json.encode(spaq1Map),
       );
-      print("testing");
+
+      await storage.write(
+        key: spaq2Key,
+        value: json.encode(spaq2Map),
+      );
+
+      await storage.write(
+        key: blueVasKey,
+        value: json.encode(blueVasMap),
+      );
+      await storage.write(
+        key: redVasKey,
+        value: json.encode(redVasMap),
+      );
     } catch (_) {
       return;
-    }
-  }
-
-  Future<Map<String, dynamic>> getSavedProductSKUCountsMap() async {
-    final localStorageStringMap =
-        await storage.read(key: Constants.productSKUCounts);
-    if (localStorageStringMap == null) return {};
-    try {
-      final localStorageMap =
-          json.decode(localStorageStringMap) as Map<String, dynamic>;
-
-      return localStorageMap;
-    } catch (_) {
-      return {};
     }
   }
 
@@ -316,13 +371,14 @@ class LocalSecureStore {
   }
 
   Future<void> deleteAll() async {
-    // await storage.deleteAll();
+
+   // await storage.deleteAll();
 
     Map<String, String> allValues = await storage.readAll();
     List<String> allKeys = allValues.keys.toList();
 
     List<String> keysToDelete =
-        allKeys.where((key) => key != Constants.productSKUCounts).toList();
+        allKeys.where((key) => !keysToKeep.contains(key)).toList();
 
     for (String key in keysToDelete) {
       await storage.delete(key: key);

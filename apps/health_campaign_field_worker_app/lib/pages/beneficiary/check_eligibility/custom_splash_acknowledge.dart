@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:digit_data_model/models/entities/individual.dart';
 import 'package:digit_ui_components/enum/app_enums.dart';
 import 'package:digit_ui_components/widgets/atoms/digit_button.dart';
 import 'package:digit_ui_components/widgets/molecules/panel_cards.dart';
@@ -16,7 +15,6 @@ import '../../../utils/app_enums.dart';
 
 @RoutePage()
 class CustomSplashAcknowledgementPage extends LocalizedStatefulWidget {
-  final IndividualModel? individual;
   final EligibilityAssessmentType eligibilityAssessmentType;
   final bool? enableBackToSearch;
   const CustomSplashAcknowledgementPage({
@@ -24,7 +22,6 @@ class CustomSplashAcknowledgementPage extends LocalizedStatefulWidget {
     super.appLocalizations,
     this.enableBackToSearch,
     required this.eligibilityAssessmentType,
-    required this.individual,
   });
 
   @override
@@ -42,7 +39,6 @@ class CustomSplashAcknowledgementPageState
         if (mounted) {
           try {
             context.router.push(CustomDoseAdministeredRoute(
-              selectedIndividual: widget.individual,
               eligibilityAssessmentType: widget.eligibilityAssessmentType,
             ));
           } catch (e) {

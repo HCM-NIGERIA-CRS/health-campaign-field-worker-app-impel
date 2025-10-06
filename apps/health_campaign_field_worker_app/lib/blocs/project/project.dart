@@ -9,7 +9,6 @@ import 'package:attendance_management/models/entities/attendance_register.dart';
 import 'package:attendance_management/attendance_management.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:digit_data_model/data_model.dart';
-import 'package:digit_data_model/models/entities/user_action.dart';
 import 'package:digit_dss/digit_dss.dart';
 import 'package:digit_ui_components/utils/app_logger.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,10 +25,8 @@ import '../../data/local_store/no_sql/schema/app_configuration.dart';
 import '../../data/local_store/no_sql/schema/row_versions.dart';
 import '../../data/local_store/secure_store/secure_store.dart';
 import '../../data/repositories/local/inventory_management/custom_stock.dart';
-import '../../data/repositories/local/transit_post/custom_user_action.dart';
 import '../../data/repositories/remote/bandwidth_check.dart';
 import '../../data/repositories/remote/mdms.dart';
-import '../../data/repositories/remote/transit_post/custom_user_action.dart';
 import '../../models/app_config/app_config_model.dart';
 import '../../models/auth/auth_model.dart';
 import '../../models/entities/roles_type.dart';
@@ -118,12 +115,6 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
   final RemoteRepository<StockModel, StockSearchModel> stockRemoteRepository;
   final LocalRepository<StockModel, StockSearchModel> stockLocalRepository;
 
-  /// Stock Repositories
-  final RemoteRepository<UserActionModel, UserActionSearchModel>
-      userActionRemoteRepository;
-  final LocalRepository<UserActionModel, UserActionSearchModel>
-      userActionLocalRepository;
-
   final DashboardRemoteRepository dashboardRemoteRepository;
   BuildContext context;
 
@@ -157,8 +148,6 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     required this.dashboardRemoteRepository,
     required this.stockLocalRepository,
     required this.stockRemoteRepository,
-    required this.userActionLocalRepository,
-    required this.userActionRemoteRepository,
     required this.context,
   })  : localSecureStore = localSecureStore ?? LocalSecureStore.instance,
         super(const ProjectState()) {
@@ -640,16 +629,6 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
       ));
     }
 
-    try {
-      await downloadUserActionDataBasedOnRole(
-          event.model.address?.boundaryType);
-    } catch (_) {
-      emit(state.copyWith(
-        loading: false,
-        syncError: ProjectSyncErrorType.userAction,
-      ));
-    }
-
     final getSelectedProjectType = await localSecureStore.selectedProjectType;
     final currentRunningCycle = getSelectedProjectType?.cycles
         ?.where(
@@ -733,12 +712,12 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
 
     // info : assumption both roles will not be assigned to user
 
-    if (userRoles.contains(RolesType.warehouseManager.toValue()) &&
-        boundaryType == Constants.stateBoundaryLevel) {
+    if (userRoles.contains(RolesType.healthFacilitySupervisor.toValue())) {
+      // final receiverIds = projectFacilities.map((e) => e.facilityId).toList();
       List<String> receiverIds =
           projectFacilities.map((e) => e.facilityId).toList();
       receiverIds = receiverIds
-          .where((e) => facilityIdUsageMap[e] == Constants.stateWarehouse)
+          .where((e) => facilityIdUsageMap[e] == Constants.healthFacility)
           .toList();
       final stockSearchModel = StockSearchModel(
         receiverId: receiverIds,
@@ -746,15 +725,15 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
       );
       final stockEntriesDownloaded =
           await downloadStockEntries(stockSearchModel);
-
       // info : create entries in the local repository
+
       await createStockDownloadedEntries(stockEntriesDownloaded);
     } else if (userRoles.contains(RolesType.warehouseManager.toValue()) &&
-        boundaryType == Constants.lgaBoundaryLevel) {
+        boundaryType == Constants.districtBoundaryLevel) {
       List<String> receiverIds =
           projectFacilities.map((e) => e.facilityId).toList();
       receiverIds = receiverIds
-          .where((e) => facilityIdUsageMap[e] == Constants.lgaWarehouse)
+          .where((e) => facilityIdUsageMap[e] == Constants.lgaFacility)
           .toList();
       final stockSearchModel = StockSearchModel(
         receiverId: receiverIds,
@@ -765,24 +744,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
 
       // info : create entries in the local repository
       await createStockDownloadedEntries(stockEntriesDownloaded);
-    } else if (userRoles.contains(RolesType.warehouseManager.toValue()) &&
-        boundaryType == Constants.wardBoundaryLevel) {
-      List<String> receiverIds =
-          projectFacilities.map((e) => e.facilityId).toList();
-      receiverIds = receiverIds
-          .where((e) => facilityIdUsageMap[e] == Constants.wardWarehouse)
-          .toList();
-      final stockSearchModel = StockSearchModel(
-        receiverId: receiverIds,
-        transactionType: [TransactionType.dispatched.toValue()],
-      );
-      final stockEntriesDownloaded =
-          await downloadStockEntries(stockSearchModel);
-
-      // info : create entries in the local repository
-      await createStockDownloadedEntries(stockEntriesDownloaded);
-    } else if (userRoles.contains(RolesType.communityDistributor.toValue()) ||
-        userRoles.contains(RolesType.distributor.toValue())) {
+    } else if (userRoles.contains(RolesType.communityDistributor.toValue())) {
       final receiverIds = [context.loggedInUserUuid];
       final stockSearchModel = StockSearchModel(
         receiverId: receiverIds,
@@ -814,46 +776,6 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
         limit: initialLimit, offSet: offset);
 
     return stockEntries;
-  }
-
-  FutureOr<void> downloadUserActionDataBasedOnRole(
-    String? boundaryType,
-  ) async {
-    if (context.isDistributor || context.isWFP) {
-      List<UserActionModel> userActionModelDownloaded =
-          await downloadUserActions(UserActionSearchModel());
-      if (context.isDistributor) {
-        List<UserActionModel> filteredUserActionModelDownloaded =
-            userActionModelDownloaded
-                .where((element) => element.action == Constants.dipAction)
-                .toList();
-        await (userActionLocalRepository as CustomUserActionLocalRepository)
-            .bulkUserActionCreate(filteredUserActionModelDownloaded);
-      } else if (context.isWFP) {
-        List<UserActionModel> filteredUserActionModelDownloaded =
-            userActionModelDownloaded
-                .where((element) =>
-                    element.action == Constants.nonComplianceAction)
-                .toList();
-        await (userActionLocalRepository as CustomUserActionLocalRepository)
-            .bulkUserActionCreate(filteredUserActionModelDownloaded);
-      }
-    }
-  }
-
-  FutureOr<void> createUserActionDownloadedEntries(
-      List<UserActionModel> userActions) async {}
-
-  FutureOr<List<UserActionModel>> downloadUserActions(
-      UserActionSearchModel userActionSearchModel) async {
-    var offset = 0;
-    var initialLimit = Constants.apiCallLimit;
-
-    final userActionModels =
-        await (userActionRemoteRepository as CustomUserActionRemoteRepository)
-            .search(userActionSearchModel, limit: initialLimit, offSet: offset);
-
-    return userActionModels;
   }
 }
 
@@ -891,6 +813,5 @@ enum ProjectSyncErrorType {
   projectFacilities,
   productVariants,
   serviceDefinitions,
-  boundary,
-  userAction,
+  boundary
 }

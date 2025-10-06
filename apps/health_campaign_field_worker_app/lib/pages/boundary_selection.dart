@@ -41,8 +41,7 @@ class _BoundarySelectionPageState
   int i = 0;
   int pendingSyncCount = 0;
   final clickedStatus = ValueNotifier<bool>(false);
-  StreamController<double> downloadProgress =
-      StreamController<double>.broadcast();
+  StreamController<double> downloadProgress = StreamController<double>();
 
   Map<String, TextEditingController> dropdownControllers = {};
   late StreamSubscription syncSubscription;
@@ -187,7 +186,6 @@ class _BoundarySelectionPageState
                                             .add(
                                               DownSyncCheckTotalCountEvent(
                                                 projectId: context.projectId,
-                                                useProjectId: !context.isWFP,
                                                 boundaryCode: selectedBoundary!
                                                     .value!.code
                                                     .toString(),
@@ -264,10 +262,8 @@ class _BoundarySelectionPageState
                                                 : i18.acknowledgementSuccess
                                                     .goToHome,
                                           ),
-                                          // passed boundaryCode here if present and same is used on acknowledgement page
-                                          boundaryName: (selectedBoundary
-                                                      .value?.code ??
-                                                  selectedBoundary.value?.name)
+                                          boundaryName: selectedBoundary
+                                              .value!.name
                                               .toString(),
                                         ),
                                         dialogType:
@@ -321,7 +317,7 @@ class _BoundarySelectionPageState
                                         i18.beneficiaryDetails.downloadreport,
                                       )}\n\n\n${localizations.translate(
                                         i18.beneficiaryDetails.boundary,
-                                      )} ${localizations.translate(result.locality ?? result.boundaryName ?? "")}\n${localizations.translate(
+                                      )} ${result.boundaryName}\n${localizations.translate(
                                         i18.beneficiaryDetails.status,
                                       )} ${localizations.translate(
                                         i18.beneficiaryDetails
@@ -347,9 +343,7 @@ class _BoundarySelectionPageState
                                         descriptionTableData: {
                                           localizations.translate(
                                             i18.beneficiaryDetails.boundary,
-                                          ): localizations.translate(
-                                              result.locality ??
-                                                  result.boundaryName!),
+                                          ): result.boundaryName!,
                                           localizations.translate(
                                             i18.beneficiaryDetails.status,
                                           ): localizations.translate(
@@ -481,10 +475,7 @@ class _BoundarySelectionPageState
                                             onPressed: () async {
                                               if (!form.valid ||
                                                   validateAllBoundarySelection(
-                                                    context.isWFP ||
-                                                        context
-                                                            .isCommunityDistributor ||
-                                                        context.isWardLevel,
+                                                    !context.isWarehouseManager,
                                                   )) {
                                                 clickedStatus.value = false;
                                                 Toast.showToast(
@@ -511,10 +502,9 @@ class _BoundarySelectionPageState
 
                                                 if (context.mounted) {
                                                   if (isOnline &&
-                                                          (isDistributor &&
-                                                              Constants
-                                                                  .isDownSyncEnabled) ||
-                                                      context.isWFP) {
+                                                      isDistributor &&
+                                                      Constants
+                                                          .isDownSyncEnabled) {
                                                     context
                                                         .read<
                                                             BeneficiaryDownSyncBloc>()
@@ -755,7 +745,7 @@ class _BoundarySelectionPageState
   }
 
   void resetChildDropdowns(String parentLabel, BoundaryState state) {
-    final labelList = filterBoundaryLabelListBasedOnRole(doFilter, state);
+    final labelList = state.selectedBoundaryMap.keys.toList();
     final parentIndex = labelList.indexOf(parentLabel);
     if (state.boundaryList.isNotEmpty) {
       leastLevelBoundaries = (state.boundaryList.map((e) => e.code!).toList());
@@ -825,9 +815,7 @@ class _BoundarySelectionPageState
   }
 
   bool enableFilter() {
-    return context.isStateCold ||
-        context.isLGA ||
-        context.isNationalWarehouseManager;
+    return context.isWarehouseManager || context.isHealthFacilitySupervisor;
   }
 
   void listenToSyncCount() async {

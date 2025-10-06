@@ -86,7 +86,7 @@ class CustomStockDetailsPageState
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.digitTextTheme(context);
-    final isWFP = context.isWFP;
+    final isHealthFacilitySupervisor = context.isHealthFacilitySupervisor;
 
     bool isWareHouseMgr = InventorySingleton().isWareHouseMgr;
 
@@ -380,6 +380,31 @@ class CustomStockDetailsPageState
                                           .control(_deliveryTeamKey)
                                           .value as String?;
 
+                                      int spaq1 = 0;
+                                      int spaq2 = 0;
+
+                                      int totalQuantity = 0;
+                                      int totalRemainingQuantityInMl =
+                                          context.spaq1;
+
+                                      int totalExpectedUnusedBottles =
+                                          totalRemainingQuantityInMl ~/
+                                              Constants.mlPerBottle;
+
+                                      int totalExpectedPartialQuantityInMl =
+                                          totalRemainingQuantityInMl %
+                                              Constants.mlPerBottle;
+
+                                      int totalExpectedPartialBottles =
+                                          totalRemainingQuantityInMl %
+                                                      Constants.mlPerBottle !=
+                                                  0
+                                              ? 1
+                                              : 0;
+
+                                      spaq1 =
+                                          totalQuantity * Constants.mlPerBottle;
+
                                       String? senderId;
                                       String? senderType;
                                       String? receiverId;
@@ -429,13 +454,27 @@ class CustomStockDetailsPageState
                                             .control(_productVariantKey)
                                             .value as List<ProductVariantModel>;
 
+                                        ProductVariantModel? spaq1Product =
+                                            selectedProducts.firstWhereOrNull(
+                                                (element) =>
+                                                    element.sku ==
+                                                    Constants.spaq1);
+                                        ProductVariantModel? spaq2Product =
+                                            selectedProducts.firstWhereOrNull(
+                                                (element) =>
+                                                    element.sku ==
+                                                    Constants.spaq2);
                                         final receivedFrom = form
                                             .control(_secondaryPartyKey)
                                             .value as String;
                                         context.read<StockBloc>().add(
                                               StockSelectedEvent(
-                                                selectedProducts:
-                                                    selectedProducts,
+                                                selectedProducts: [
+                                                  if (spaq1Product != null)
+                                                    spaq1Product,
+                                                  if (spaq2Product != null)
+                                                    spaq2Product,
+                                                ],
                                                 secondaryPartyType:
                                                     deliveryTeamSelected
                                                         ? "STAFF"
@@ -488,6 +527,16 @@ class CustomStockDetailsPageState
                                       )),
                                     ),
                                     fetched: (productVariants) {
+                                      ProductVariantModel? spaq1 =
+                                          productVariants
+                                              .firstWhereOrNull((element) =>
+                                                  element.sku ==
+                                                  Constants.spaq1);
+                                      ProductVariantModel? spaq2 =
+                                          productVariants
+                                              .firstWhereOrNull((element) =>
+                                                  element.sku ==
+                                                  Constants.spaq2);
                                       return ReactiveWrapperField(
                                         formControlName: _productVariantKey,
                                         validationMessages: {
@@ -506,8 +555,10 @@ class CustomStockDetailsPageState
                                               // errorText: field.errorText,
                                               selectionType:
                                                   SelectionType.defaultSelect,
-                                              options: productVariants
-                                                  .map((variant) {
+                                              options: [
+                                                if (spaq1 != null) spaq1,
+                                                if (spaq2 != null) spaq2
+                                              ].map((variant) {
                                                 return DropdownItem(
                                                   name: localizations.translate(
                                                       variant.sku ??
@@ -551,62 +602,19 @@ class CustomStockDetailsPageState
                                             [];
 
                                         if (context.selectedProject.address
-                                                ?.boundaryType ==
-                                            Constants.zoneBoundaryLevel) {
+                                                    ?.boundaryType ==
+                                                Constants.stateBoundaryLevel ||
+                                            context.selectedProject.address
+                                                    ?.boundaryType ==
+                                                Constants.stateBoundaryLevel) {
                                           filteredFacilities = entryType ==
                                                   StockRecordEntryType.receipt
-                                              ? facilities
+                                              ? allFacilities //TODO: changed from facilities
                                                   .where((element) =>
                                                       element.usage ==
-                                                      Constants
-                                                          .nationalWarehouse)
+                                                      Constants.centralFacility)
                                                   .toList()
-                                              : facilities
-                                                  .where((element) =>
-                                                      element.usage ==
-                                                      Constants.stateWarehouse)
-                                                  .toList();
-                                        } else if (context.selectedProject
-                                                .address?.boundaryType ==
-                                            Constants.stateBoundaryLevel) {
-                                          filteredFacilities = entryType ==
-                                                  StockRecordEntryType.receipt
-                                              ? facilities
-                                                  .where((element) =>
-                                                      element.usage ==
-                                                      Constants.zonalWarehouse)
-                                                  .toList()
-                                              : facilities
-                                                  .where((element) =>
-                                                      element.usage ==
-                                                      Constants.lgaFacility)
-                                                  .toList();
-                                        } else if (context.selectedProject
-                                                .address?.boundaryType ==
-                                            Constants.lgaBoundaryLevel) {
-                                          filteredFacilities = entryType ==
-                                                  StockRecordEntryType.receipt
-                                              ? facilities
-                                                  .where((element) =>
-                                                      element.usage ==
-                                                      Constants.stateFacility)
-                                                  .toList()
-                                              : facilities
-                                                  .where((element) =>
-                                                      element.usage ==
-                                                      Constants.wardFacility)
-                                                  .toList();
-                                        } else if (context.selectedProject
-                                                .address?.boundaryType ==
-                                            Constants.wardBoundaryLevel) {
-                                          filteredFacilities = entryType ==
-                                                  StockRecordEntryType.receipt
-                                              ? facilities
-                                                  .where((element) =>
-                                                      element.usage ==
-                                                      Constants.lgaFacility)
-                                                  .toList()
-                                              : facilities
+                                              : allFacilities //TODO: changed from facilities
                                                   .where((element) =>
                                                       element.usage ==
                                                       Constants.healthFacility)
@@ -614,15 +622,15 @@ class CustomStockDetailsPageState
                                         } else {
                                           filteredFacilities = context
                                                   .isDistributor
-                                              ? facilities
+                                              ? allFacilities //TODO: changed from facilities
                                                   .where((element) =>
                                                       element.usage ==
-                                                      Constants.wardFacility)
+                                                      Constants.healthFacility)
                                                   .toList()
                                               : entryType ==
                                                       StockRecordEntryType
                                                           .receipt
-                                                  ? facilities
+                                                  ? allFacilities //TODO: changed from facilities
                                                       .where((element) =>
                                                           element.usage ==
                                                           Constants.lgaFacility)
@@ -630,13 +638,15 @@ class CustomStockDetailsPageState
                                                   : [];
                                         }
 
-                                        facilities = context.isWFP &&
-                                                entryType !=
-                                                    StockRecordEntryType.receipt
-                                            ? []
-                                            : filteredFacilities.isEmpty
-                                                ? facilities
-                                                : filteredFacilities;
+                                        facilities =
+                                            context.isHealthFacilitySupervisor &&
+                                                    entryType !=
+                                                        StockRecordEntryType
+                                                            .receipt
+                                                ? []
+                                                : filteredFacilities.isEmpty
+                                                    ? facilities
+                                                    : filteredFacilities;
 
                                         final teamFacilities = [
                                           FacilityModel(
@@ -662,12 +672,13 @@ class CustomStockDetailsPageState
                                                 final facility =
                                                     await context.router.push(
                                                         CustomInventoryFacilitySelectionRoute(
-                                                  facilities: (isWFP &&
-                                                          entryType !=
-                                                              StockRecordEntryType
-                                                                  .receipt)
-                                                      ? teamFacilities
-                                                      : facilities,
+                                                  facilities:
+                                                      (isHealthFacilitySupervisor &&
+                                                              entryType !=
+                                                                  StockRecordEntryType
+                                                                      .receipt)
+                                                          ? teamFacilities
+                                                          : facilities,
                                                 )) as FacilityModel?;
 
                                                 if (facility == null) return;

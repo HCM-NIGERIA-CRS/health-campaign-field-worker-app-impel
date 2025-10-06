@@ -57,14 +57,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.5.0"
-  asn1lib:
-    dependency: transitive
-    description:
-      name: asn1lib
-      sha256: "9a8f69025044eb466b9b60ef3bc3ac99b4dc6c158ae9c56d25eeccf5bc56d024"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.6.5"
   async:
     dependency: transitive
     description:
@@ -304,14 +296,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.3"
-  change_app_package_name:
-    dependency: "direct main"
-    description:
-      name: change_app_package_name
-      sha256: "8e43b754fe960426904d77ed4c62fa8c9834deaf6e293ae40963fa447482c4c5"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.5.0"
   characters:
     dependency: transitive
     description:
@@ -372,10 +356,10 @@ packages:
     dependency: "direct main"
     description:
       name: complaints
-      sha256: "6c83c0f9bf9e099d958817b923ff9d1e7de777ffb6ae0cb960b816548e8fd80f"
+      sha256: "40215bb0c0c260048b7767057b302676706ffd282f35f22b5027cea0800ef80e"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.3-dev.1-enumeration"
+    version: "1.0.2"
   connectivity_plus:
     dependency: "direct main"
     description:
@@ -525,10 +509,10 @@ packages:
     dependency: "direct main"
     description:
       name: digit_data_model
-      sha256: "1ecec018de0a07fc98fb1cdef0ae89e1192a3e3182e608c96fdd182aa2e95046"
+      sha256: "7afbe29d6cdc6b3c1f83174d55cc5fa09d34b2205d5791894f9f36d11d2217a1"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.4"
+    version: "1.0.7-dev.2-idGen"
   digit_dss:
     dependency: "direct main"
     description:
@@ -557,10 +541,10 @@ packages:
     dependency: "direct main"
     description:
       name: digit_scanner
-      sha256: "1bf24bdaf71f99de0f1281136478bb141f058a984752176ffa63ad580b467e18"
+      sha256: c8f82938906a11c516d445d7e5e27b7e6c6a1d07e0a608c2f90f63dd234241a5
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.6+2"
+    version: "1.0.5+1"
   digit_showcase:
     dependency: "direct main"
     description:
@@ -641,14 +625,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.8.5+1"
-  encrypt:
-    dependency: transitive
-    description:
-      name: encrypt
-      sha256: "62d9aa4670cc2a8798bab89b39fc71b6dfbacf615de6cf5001fb39f7e4a996a2"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.0.3"
   equatable:
     dependency: transitive
     description:
@@ -1368,10 +1344,10 @@ packages:
     dependency: "direct main"
     description:
       name: inventory_management
-      sha256: f295e5d88daf6197b5a0ab2e011f122b102c52c526420a0865f7a4ed6409a6af
+      sha256: "2b3e900966fc88ca415bf117d08750cd221685a9db42b099cf456c8a9a04c2a7"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.7-dev.1"
+    version: "1.0.5-dev.1"
   io:
     dependency: transitive
     description:
@@ -1788,14 +1764,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.9.3+7"
-  pointycastle:
-    dependency: transitive
-    description:
-      name: pointycastle
-      sha256: "4be0097fcf3fd3e8449e53730c631200ebc7b88016acecab2b0da2f0149222fe"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.9.1"
   pool:
     dependency: transitive
     description:
@@ -1888,18 +1856,18 @@ packages:
     dependency: "direct main"
     description:
       name: referral_reconciliation
-      sha256: "2f3587105c2229ed089a23bc7084b8a2b2fbd5b69d119e9d1b80850def33848d"
+      sha256: "5d3ea365246978776c0d247d9dbe35ebc04b7df1b85d7f38db20ec7e4021b977"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.6"
+    version: "1.0.4+2"
   registration_delivery:
     dependency: "direct main"
     description:
       name: registration_delivery
-      sha256: d4f425342adecd02eb813c1dbbffbba0b5d8d95b9ef2535e70659269f920fe74
+      sha256: "6e40669c6978317ba853f7779a73757a32c9bfcbf2d8efac10ce9e5831c572b3"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.7+1"
+    version: "1.0.7-dev.2-idGen"
   remove_emoji_input_formatter:
     dependency: transitive
     description:
@@ -2117,10 +2085,10 @@ packages:
     dependency: "direct main"
     description:
       name: survey_form
-      sha256: "26c02064d6d74928ce458fe25eb037ee9a131952f3aa6e03480b70277473b635"
+      sha256: e81e71beff6c4982ff6944ad34da056ea5b4adba860d9552a5eb554356dd816d
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.3"
+    version: "1.0.1+3"
   sync_http:
     dependency: transitive
     description:
@@ -2133,10 +2101,10 @@ packages:
     dependency: "direct main"
     description:
       name: sync_service
-      sha256: "3d2ea69d48ca024077ffb7b3f086dbab9459ffcfabb204463f7bc347b874fdfe"
+      sha256: "992cd5889a192716c9e77fe29bd10b9f3dc771797d6a91a7a94bc34193b21444"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.4"
+    version: "1.0.1"
   synchronized:
     dependency: transitive
     description:
@@ -2201,14 +2169,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
-  transit_post:
-    dependency: "direct main"
-    description:
-      name: transit_post
-      sha256: d994c0f845ff150093729f5608d84b0e9afa5f6a806e7f4fb1ee07129aa2346d
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0+1"
   type_plus:
     dependency: transitive
     description:

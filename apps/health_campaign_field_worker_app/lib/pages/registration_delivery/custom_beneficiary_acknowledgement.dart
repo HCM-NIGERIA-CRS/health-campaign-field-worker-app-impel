@@ -13,7 +13,6 @@ import 'package:registration_delivery/router/registration_delivery_router.gm.dar
 import '../../blocs/registration_delivery/custom_beneficairy_registration.dart';
 import '../../blocs/registration_delivery/custom_search_household.dart';
 import '../../models/entities/identifier_types.dart';
-import '../../router/app_router.dart';
 import '../../utils/utils.dart';
 import '../../widgets/digit_ui_component/custom_panel_card.dart';
 import '../../utils/i18_key_constants.dart' as i18_local;
@@ -73,11 +72,11 @@ class CustomBeneficiaryAcknowledgementPageState
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(spacer2),
-        child: BlocConsumer<registration_delivery.SearchHouseholdsBloc,
-            registration_delivery.SearchHouseholdsState>(
+        child: BlocConsumer<CustomSearchHouseholdsBloc,
+            CustomSearchHouseholdsState>(
           listener: (context, searchHouseholdsState) {},
           builder: (context, searchHouseholdsState) {
-            registration_delivery.HouseholdMemberWrapper? i =
+            HouseholdMemberWrapper? i =
                 searchHouseholdsState.householdMembers.lastOrNull;
             registration_delivery.HouseholdMemberWrapper?
                 householdMemberWrapper;
@@ -107,18 +106,13 @@ class CustomBeneficiaryAcknowledgementPageState
                   subTitle: subtitleMap(
                       householdMemberWrapper, state.householdModel?.id),
                   actions: [
-                    if (householdMemberWrapper != null &&
-                        (widget.enableViewHousehold == true))
+                    if (householdMemberWrapper != null)
                       DigitButton(
                           label: localizations.translate(
                             i18.householdDetails.viewHouseHoldDetailsAction,
                           ),
                           onPressed: () {
-                            (context.router.parent() as StackRouter).maybePop();
-                            context.router.popUntil((route) =>
-                                route.settings.name ==
-                                SearchBeneficiaryRoute.name);
-                            context.router.push(
+                            context.router.popAndPush(
                               BeneficiaryWrapperRoute(
                                 wrapper: householdMemberWrapper!,
                               ),
@@ -130,10 +124,7 @@ class CustomBeneficiaryAcknowledgementPageState
                         label: localizations.translate(
                             i18.acknowledgementSuccess.actionLabelText),
                         onPressed: () {
-                          (context.router.parent() as StackRouter).maybePop();
-                          context.router.popUntil((route) =>
-                              route.settings.name ==
-                              CustomSearchBeneficiaryRoute.name);
+                          context.router.maybePop();
                         },
                         type: DigitButtonType.secondary,
                         size: DigitButtonSize.large),

@@ -1,4 +1,3 @@
-import 'package:digit_data_model/models/entities/user_action.dart';
 import 'package:survey_form/survey_form.dart';
 import 'package:attendance_management/attendance_management.dart';
 import 'package:complaints/models/pgr_complaints.dart';
@@ -76,14 +75,6 @@ class EntityMapper extends EntityMapperListener {
 
       case "complaints":
         final entity = PgrServiceModelMapper.fromJson(entityString);
-        return entity;
-
-      case "userLocation":
-        final entity = UserActionModelMapper.fromJson(entityString);
-        return entity;
-
-      case "userAction":
-        final entity = UserActionModelMapper.fromJson(entityString);
         return entity;
 
       default:

@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:digit_scanner/blocs/scanner.dart';
+import 'package:digit_scanner/pages/qr_scanner.dart';
 import 'package:digit_ui_components/digit_components.dart';
 import 'package:digit_ui_components/theme/digit_extended_theme.dart';
 import 'package:digit_ui_components/widgets/atoms/input_wrapper.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_campaign_field_worker_app/router/app_router.dart';
 import 'package:intl/intl.dart';
 import 'package:inventory_management/pages/facility_selection.dart';
+import 'package:inventory_management/router/inventory_router.gm.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 import 'package:inventory_management/utils/i18_key_constants.dart' as i18;
@@ -19,6 +21,7 @@ import 'package:inventory_management/blocs/record_stock.dart';
 import 'package:inventory_management/utils/utils.dart';
 import 'package:inventory_management/widgets/inventory/no_facilities_assigned_dialog.dart';
 
+import '../../router/app_router.dart';
 import '../../utils/utils.dart';
 import '../../widgets/custom_back_navigation.dart';
 
@@ -68,7 +71,6 @@ class CustomWarehouseDetailsPageState
     final theme = Theme.of(context);
     final recordStockBloc = BlocProvider.of<RecordStockBloc>(context);
     final textTheme = theme.digitTextTheme(context);
-    bool isWareHouseMgr = InventorySingleton().isWareHouseMgr;
 
     return InventorySingleton().projectId.isEmpty
         ? Center(
@@ -85,43 +87,22 @@ class CustomWarehouseDetailsPageState
               final facilities = facilityState.whenOrNull(
                     fetched: (facilities, allfacilities) {
                       if (ctx.selectedProject.address?.boundaryType ==
-                              Constants.countryBoundaryLevel &&
-                          isWareHouseMgr) {
+                          Constants.stateBoundaryLevel) {
                         List<FacilityModel> filteredFacilities = facilities
                             .where(
                               (element) =>
-                                  element.usage == Constants.zonalWarehouse,
+                                  element.usage == Constants.stateFacility,
                             )
                             .toList();
                         facilities = filteredFacilities.isEmpty
                             ? facilities
                             : filteredFacilities;
-                      } else if (ctx.selectedProject.address?.boundaryType ==
-                              Constants.stateBoundaryLevel &&
-                          isWareHouseMgr) {
+                      } else {
                         List<FacilityModel> filteredFacilities = facilities
-                            .where((element) =>
-                                element.usage == Constants.stateWarehouse)
-                            .toList();
-                        facilities = filteredFacilities.isEmpty
-                            ? facilities
-                            : filteredFacilities;
-                      } else if (ctx.selectedProject.address?.boundaryType ==
-                              Constants.lgaBoundaryLevel &&
-                          isWareHouseMgr) {
-                        List<FacilityModel> filteredFacilities = facilities
-                            .where((element) =>
-                                element.usage == Constants.lgaWarehouse)
-                            .toList();
-                        facilities = filteredFacilities.isEmpty
-                            ? facilities
-                            : filteredFacilities;
-                      } else if (ctx.selectedProject.address?.boundaryType ==
-                              Constants.wardBoundaryLevel &&
-                          isWareHouseMgr) {
-                        List<FacilityModel> filteredFacilities = facilities
-                            .where((element) =>
-                                element.usage == Constants.wardWarehouse)
+                            .where(
+                              (element) =>
+                                  element.usage == Constants.healthFacility,
+                            )
                             .toList();
                         facilities = filteredFacilities.isEmpty
                             ? facilities
@@ -276,11 +257,9 @@ class CustomWarehouseDetailsPageState
                                                     );
                                                     if ((InventorySingleton()
                                                                 .isWareHouseMgr &&
-                                                            !context
-                                                                .isStateCold &&
                                                             !context.isLGA &&
                                                             !context
-                                                                .isWardLevel &&
+                                                                .isHealthFacilitySupervisor &&
                                                             !context
                                                                 .isCommunityDistributor) ||
                                                         (recordStockBloc.state

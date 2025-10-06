@@ -36,8 +36,7 @@ class BeneficiariesReportState extends LocalizedState<BeneficiariesReportPage> {
   List<DownsyncModel> downSyncList = [];
   int pendingSyncCount = 0;
   BoundaryModel? selectedBoundary;
-  StreamController<double> downloadProgress =
-      StreamController<double>.broadcast();
+  StreamController<double> downloadProgress = StreamController<double>();
   late StreamSubscription? syncSubscription;
 
   @override
@@ -126,7 +125,6 @@ class BeneficiariesReportState extends LocalizedState<BeneficiariesReportPage> {
                       ) =>
                           context.read<BeneficiaryDownSyncBloc>().add(
                                 DownSyncCheckTotalCountEvent(
-                                  useProjectId: !context.isWFP,
                                   projectId: context.projectId,
                                   boundaryCode: boundaryCode,
                                   pendingSyncCount: pendingSyncCount,
@@ -234,7 +232,7 @@ class BeneficiariesReportState extends LocalizedState<BeneficiariesReportPage> {
                           i18.beneficiaryDetails.downloadreport,
                         )}\n\n\n${localizations.translate(
                           i18.beneficiaryDetails.boundary,
-                        )} ${localizations.translate(result.locality ?? result.boundaryName ?? "")}\n${localizations.translate(
+                        )} ${result.boundaryName}\n${localizations.translate(
                           i18.beneficiaryDetails.status,
                         )} ${localizations.translate(
                           i18.beneficiaryDetails.downloadcompleted,
@@ -250,8 +248,7 @@ class BeneficiariesReportState extends LocalizedState<BeneficiariesReportPage> {
                           descriptionTableData: {
                             localizations.translate(
                               i18.beneficiaryDetails.boundary,
-                            ): localizations.translate(
-                                result.locality ?? result.boundaryName ?? ""),
+                            ): result.boundaryName!,
                             localizations.translate(
                               i18.beneficiaryDetails.status,
                             ): localizations.translate(
@@ -360,8 +357,7 @@ class BeneficiariesReportState extends LocalizedState<BeneficiariesReportPage> {
                                   label: localizations.translate(
                                     i18.beneficiaryDetails.boundary,
                                   ),
-                                  value: localizations.translate(
-                                      e.locality ?? e.boundaryName ?? "")),
+                                  value: e.boundaryName!),
                               LabelValueItem(
                                   labelFlex: 5,
                                   label: localizations.translate(

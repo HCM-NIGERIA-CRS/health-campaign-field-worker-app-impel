@@ -81,23 +81,8 @@ class HCMWrapperModel with _$HCMWrapperModel {
     required List<CheckListTypes> checklistTypes,
     @JsonKey(name: 'ID_TYPE_OPTIONS_POPULATOR')
     required List<IdTypeOptions> idTypeOptions,
-    @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_REDOSE_POPULATOR')
-    required List<DeliveryCommentOptions> redoseDeliveryCommentsOptions,
     @JsonKey(name: 'DELIVERY_COMMENT_OPTIONS_POPULATOR')
     required List<DeliveryCommentOptions> deliveryCommentOptions,
-    @JsonKey(name: 'AGE_RANGE_OPTIONS')
-    required List<AgeRangeOptions> ageRangeOptions,
-    @JsonKey(name: 'STOCK_MANUFACTURER')
-    required List<DeliveryCommentOptions> stockManufacturer,
-    @JsonKey(name: 'STATUS_VVM')
-    required List<DeliveryCommentOptions> statusVVM,
-    @JsonKey(name: 'DIP_DAYS') required List<DeliveryCommentOptions> dipDays,
-    @JsonKey(name: 'HEIGHT_RANGE_OPTIONS')
-    required List<HeightRangeOptions> heightRangeOptions,
-    @JsonKey(name: 'USER_ACTION_DAILY_PLAN')
-    required List<DailyActionPlanConfig> dailyPlanConfigs,
-    @JsonKey(name: 'NON_COMPLIANCE_REASONS')
-    required List<NonComplianceReasons> nonComplianceReasons,
     @JsonKey(name: 'BACKEND_INTERFACE')
     required List<BackendInterface> backendInterface,
     @JsonKey(name: 'CALL_SUPPORT')
@@ -116,7 +101,6 @@ class HCMWrapperModel with _$HCMWrapperModel {
     @JsonKey(name: 'REFUSAL_REASONS') List<CommonMasterModel>? refusalReasons,
     @JsonKey(name: 'FIREBASE_CONFIG')
     required List<FirebaseConfig>? firebaseConfig,
-    @JsonKey(name: 'TRANSIT_POST_TYPE') List<TransitPostType>? transitPostType,
   }) = _HCMWrapperModel;
 
   factory HCMWrapperModel.fromJson(
@@ -253,50 +237,6 @@ class DeliveryCommentOptions with _$DeliveryCommentOptions {
 }
 
 @freezed
-class AgeRangeOptions with _$AgeRangeOptions {
-  factory AgeRangeOptions({
-    required String name,
-    required String code,
-  }) = _AgeRangeOptions;
-
-  factory AgeRangeOptions.fromJson(Map<String, dynamic> json) =>
-      _$AgeRangeOptionsFromJson(json);
-}
-
-@freezed
-class HeightRangeOptions with _$HeightRangeOptions {
-  factory HeightRangeOptions({
-    required String name,
-    required String code,
-  }) = _HeightRangeOptions;
-
-  factory HeightRangeOptions.fromJson(Map<String, dynamic> json) =>
-      _$HeightRangeOptionsFromJson(json);
-}
-
-@freezed
-class DailyActionPlanConfig with _$DailyActionPlanConfig {
-  factory DailyActionPlanConfig({
-    required String key,
-    required String value,
-  }) = _DailyActionPlanConfig;
-
-  factory DailyActionPlanConfig.fromJson(Map<String, dynamic> json) =>
-      _$DailyActionPlanConfigFromJson(json);
-}
-
-@freezed
-class NonComplianceReasons with _$NonComplianceReasons {
-  factory NonComplianceReasons({
-    required String name,
-    required String code,
-  }) = _NonComplianceReasons;
-
-  factory NonComplianceReasons.fromJson(Map<String, dynamic> json) =>
-      _$NonComplianceReasonsFromJson(json);
-}
-
-@freezed
 class DeletionReasonOptions with _$DeletionReasonOptions {
   factory DeletionReasonOptions({
     required String value,
@@ -316,18 +256,6 @@ class GenderOptions with _$GenderOptions {
 
   factory GenderOptions.fromJson(Map<String, dynamic> json) =>
       _$GenderOptionsFromJson(json);
-}
-
-@freezed
-class TransitPostType with _$TransitPostType {
-  factory TransitPostType({
-    required String name,
-    required String code,
-    required bool active,
-  }) = _TransitPostType;
-
-  factory TransitPostType.fromJson(Map<String, dynamic> json) =>
-      _$TransitPostTypeFromJson(json);
 }
 
 @freezed

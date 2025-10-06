@@ -48,9 +48,7 @@ class _AcknowledgementPageState extends LocalizedState<AcknowledgementPage> {
                       .map((e) => LabelValueItem(
                           labelFlex: 5,
                           label: e,
-                          value: localizations.translate(
-                              widget.descriptionTableData?[e].toString() ??
-                                  i18.common.coreCommonNA)))
+                          value: widget.descriptionTableData?[e].toString()))
                       .toList(),
                 ),
               ]

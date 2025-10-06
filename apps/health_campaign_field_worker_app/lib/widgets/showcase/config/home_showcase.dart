@@ -25,8 +25,6 @@ class _HomePageShowcaseData {
         deleteAll,
         db,
         closedHouseHold,
-        dailyImplementationPlan,
-        campaignDeliverySelection,
       ];
 
   final distributorProgressBar = ShowcaseItemBuilder(
@@ -116,15 +114,5 @@ class _HomePageShowcaseData {
 
   final beneficiaryId = ShowcaseItemBuilder(
     messageLocalizationKey: i18.home.beneficiaryIdLabel,
-  );
-
-  final dailyImplementationPlan = ShowcaseItemBuilder(
-    messageLocalizationKey: i18.home.dailyImplementationPlanLabel,
-  );
-  final campaignDeliverySelection = ShowcaseItemBuilder(
-    messageLocalizationKey: i18.home.dailyImplementationPlanLabel,
-  );
-  final nonComplianceTracking = ShowcaseItemBuilder(
-    messageLocalizationKey: i18.home.nonComplianceTracking,
   );
 }

@@ -1,10 +1,5 @@
 library app_utils;
 
-import 'package:digit_data_model/data_model.dart';
-import 'package:digit_data_model/models/entities/user_action.dart';
-import 'package:digit_data_model/utils/utils.dart';
-import 'package:digit_location_tracker/utils/utils.dart';
-import 'package:digit_ui_components/utils/date_utils.dart';
 import 'package:inventory_management/inventory_management.dart';
 import 'package:referral_reconciliation/referral_reconciliation.dart'
     as referral_reconciliation_mappers;
@@ -21,6 +16,11 @@ import 'package:complaints/complaints.init.dart' as complaints_mappers;
 import '../../utils/i18_key_constants.dart' as i18_local;
 import 'package:inventory_management/utils/i18_key_constants.dart' as i18_stock;
 
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:inventory_management/inventory_management.init.dart'
     as inventory_mappers;
 
@@ -52,16 +52,13 @@ import 'package:reactive_forms/reactive_forms.dart';
 import '../blocs/app_initialization/app_initialization.dart';
 import '../blocs/projects_beneficiary_downsync/project_beneficiaries_downsync.dart';
 import '../data/local_store/app_shared_preferences.dart';
-
 import '../data/local_store/no_sql/schema/localization.dart';
 import '../data/local_store/secure_store/secure_store.dart';
 import '../models/app_config/app_config_model.dart';
-import '../models/entities/status.dart' as local_status;
+import '../models/entities/roles_type.dart';
 import '../router/app_router.dart';
 import '../widgets/progress_indicator/progress_indicator.dart';
 import 'constants.dart';
-import '../../utils/date_utils.dart' as digits;
-
 import 'extensions/extensions.dart';
 
 export 'app_exception.dart';
@@ -195,26 +192,6 @@ performBackgroundService({
   }
 }
 
-List<String> extractAllProductCounts(List<ProductVariantModel> variants) {
-  return variants.map((variant) => variant.sku).whereType<String>().toList();
-}
-
-String getStockRecordLabel(StockModel? stock) {
-  String label = i18_local.stockDetails.stockReceiptDetails;
-
-  if (stock != null) {
-    if (stock.transactionReason == "RETURNED") {
-      label = i18_local.stockDetails.stockReturnDetails;
-    } else if (stock.transactionType == "RECEIVED") {
-      label = i18_local.stockDetails.stockReceiptDetails;
-    } else if (stock.transactionType == "DISPATCHED") {
-      label = i18_local.stockDetails.stockIssueDetails;
-    }
-  }
-
-  return label;
-}
-
 String? formatBeneficiaryId(String? id) {
   if (id == null) return null;
   final buffer = StringBuffer();
@@ -225,26 +202,6 @@ String? formatBeneficiaryId(String? id) {
     }
   }
   return buffer.toString();
-}
-
-bool checkIfBeneficiaryAbsent(
-  List<TaskModel>? tasks,
-) {
-  final isBeneficiaryAbsent = (tasks != null &&
-      (tasks ?? []).isNotEmpty &&
-      tasks.last.status == local_status.Status.beneficiaryAbsent.toValue());
-
-  return isBeneficiaryAbsent;
-}
-
-bool checkIfBeneficiaryNotAdministered(
-  List<TaskModel>? tasks,
-) {
-  final isNotAdministered = (tasks != null &&
-      (tasks ?? []).isNotEmpty &&
-      tasks.last.status == local_status.Status.notAdministered.toValue());
-
-  return isNotAdministered;
 }
 
 String formatDateFromMillis(int millis) {
@@ -285,42 +242,6 @@ String formatAgeRange(String condition) {
   return condition;
 }
 
-String? getIndividualHeight(IndividualModel? individual) {
-  final value = individual?.additionalFields?.fields
-      .firstWhere(
-        (f) => f.key == "height",
-        orElse: () => const AdditionalField("height", null),
-      )
-      .value;
-
-  if (value == null) return null;
-  if (value is int) return value.toString();
-  if (value is String && value.trim().isNotEmpty) return value.trim();
-
-  return null;
-}
-
-bool inEligibilityBasedOnHeight(dynamic height) {
-  // Null check
-  if (height == null) return false; // ineligible
-
-  int? parsedHeight;
-
-  // Handle int and String inputs
-  if (height is int) {
-    parsedHeight = height;
-  } else if (height is String && height.trim().isNotEmpty) {
-    parsedHeight = int.tryParse(height.trim());
-  }
-
-  // If parsing failed or height is less than or equal to min
-  if (parsedHeight == null || parsedHeight < Constants.minValidHeightOncho) {
-    return true; // ineligible
-  }
-
-  return false;
-}
-
 bool validateStockSubmission({
   required num availableBalance,
   required num stockReturned,
@@ -331,11 +252,12 @@ bool validateStockSubmission({
 }
 
 String customFormatAgeRange(String condition) {
-  // Case 1: Matches patterns like "20<ageandage<30"
   final regex =
       RegExp(r'(\d+)\s*<\s*ageandage\s*<\s*(\d+)', caseSensitive: false);
   final match = regex.firstMatch(condition);
   if (match != null && match.groupCount == 2) {
+    // final min = match.group(1);
+    // final max = match.group(2);
     int min = int.parse(match.group(1)!);
     int max = int.parse(match.group(2)!);
 
@@ -345,33 +267,6 @@ String customFormatAgeRange(String condition) {
     print('min: $min, max: $max');
     return '$min - $max months';
   }
-
-  // Case 2: Matches "age>59andheight>140andheight<159"
-  final complexRegex = RegExp(
-      r'age\s*>\s*(\d+)\s*and\s*height\s*>\s*(\d+)\s*and\s*height\s*<\s*(\d+)',
-      caseSensitive: false);
-  final complexMatch = complexRegex.firstMatch(condition);
-
-  if (complexMatch != null && complexMatch.groupCount == 3) {
-    int ageMin = int.parse(complexMatch.group(1)!);
-    int heightMin = int.parse(complexMatch.group(2)!);
-    int heightMax = int.parse(complexMatch.group(3)!);
-
-    // Adjust height by +/- 1
-    int adjHeightMin = heightMin + 1;
-    int adjHeightMax = heightMax - 1;
-
-    return '$adjHeightMin-$adjHeightMax heights';
-  }
-
-  // Case 3: If condition starts with age but we only want height part
-  final ageHeightRegex =
-      RegExp(r'age\s*>\s*\d+\s*and\s*(height.*)', caseSensitive: false);
-  final ageHeightMatch = ageHeightRegex.firstMatch(condition);
-  if (ageHeightMatch != null) {
-    return ageHeightMatch.group(1)!; // return only height part
-  }
-
   return condition;
 }
 
@@ -455,40 +350,6 @@ int getPregnantWomenCount(HouseholdModel? householdCaptured) {
   }
 }
 
-void decideFlowBasedOnAge(
-    DigitDOBAgeConvertor age, bool polioFlow, bool onchoFlow) {
-  final ageInMonths = (age.years * 12) + age.months;
-
-  if (ageInMonths >= Constants.polioMinValidAgeInMonths &&
-      ageInMonths <= Constants.polioMaxValidAgeInMonths) {
-    polioFlow = true;
-  }
-
-  if (age.years > Constants.onchoMinValidAgeInMonths) {
-    onchoFlow = true;
-  }
-}
-
-bool isPolioFlow(DigitDOBAgeConvertor age) {
-  final ageInMonths = (age.years * 12) + age.months;
-  if (ageInMonths >= Constants.polioMinValidAgeInMonths &&
-      ageInMonths <= Constants.polioMaxValidAgeInMonths) {
-    return true;
-  }
-
-  return false;
-}
-
-bool isOnchoFlow(
-  DigitDOBAgeConvertor age,
-) {
-  final ageInMonths = (age.years * 12) + age.months;
-  if (ageInMonths >= Constants.onchoMinValidAgeInMonths) {
-    return true;
-  }
-  return false;
-}
-
 bool showAddMember(HouseholdMemberWrapper? wrapper) {
   int childrenCount = 0;
   // assumption only child are added
@@ -525,23 +386,6 @@ dynamic getValueForTheKey(String key, HouseholdModel? householdModel) {
       .firstOrNull;
 
   return object == null ? object : object.value;
-}
-
-int totalMemberCount(dynamic childrenCount) {
-  // return 1 for head of the family
-  // childrenCount can be null, int, String, double
-  if (childrenCount == null) {
-    return 1;
-  } else {
-    if (childrenCount is String) {
-      return (int.tryParse(childrenCount) ?? 0) + 1;
-    } else if (childrenCount is int) {
-      return childrenCount + 1;
-    } else if (childrenCount is double) {
-      return childrenCount.toInt() + 1;
-    }
-  }
-  return 1;
 }
 
 Map<String, dynamic>? customValidMobileNumber(
@@ -924,52 +768,6 @@ List<dss_mappers.DashboardConfigSchema?> filterDashboardConfig(
               element != null && element.projectTypeCode == projectTypeCode)
           .toList() ??
       [];
-}
-
-Future<List<UserActionModel>> parseLocationData(List<String> logs) async {
-  List<UserActionModel> locationDataList = [];
-
-  for (var log in logs) {
-    final pattern = RegExp(
-        r'Latitude:\s*(-?\d+\.\d+),\s*Longitude:\s*(-?\d+\.\d+),\s*Accuracy:\s*(\d+\.\d+),\s*isSync:\s*(\w+),\s*timestamp:\s*(\d+)');
-
-    final match = pattern.firstMatch(log);
-    if (match != null) {
-      final latitude = double.parse(match.group(1)!);
-      final longitude = double.parse(match.group(2)!);
-      final accuracy = double.parse(match.group(3)!);
-      final isSync = match.group(4)!.toLowerCase() == 'true';
-      final timestamp = int.parse(match.group(5)!);
-
-      locationDataList.add(UserActionModel(
-        latitude: latitude,
-        longitude: longitude,
-        locationAccuracy: accuracy,
-        tenantId: LocationTrackerSingleton().tenantId,
-        clientReferenceId: IdGen.instance.identifier,
-        isSync: isSync,
-        timestamp: timestamp,
-        boundaryCode: LocationTrackerSingleton().boundaryName,
-        action: 'LOCATION_CAPTURE',
-        projectId: LocationTrackerSingleton().projectId,
-        rowVersion: 1,
-        auditDetails: AuditDetails(
-          createdBy: LocationTrackerSingleton().loggedInUserUuid,
-          createdTime: DateTime.now().millisecondsSinceEpoch,
-          lastModifiedBy: LocationTrackerSingleton().loggedInUserUuid,
-          lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
-        ),
-        clientAuditDetails: ClientAuditDetails(
-          createdBy: LocationTrackerSingleton().loggedInUserUuid,
-          createdTime: DateTime.now().millisecondsSinceEpoch,
-          lastModifiedBy: LocationTrackerSingleton().loggedInUserUuid,
-          lastModifiedTime: DateTime.now().millisecondsSinceEpoch,
-        ),
-      ));
-    }
-  }
-
-  return locationDataList;
 }
 
 getSelectedLanguage(AppInitialized state, int index) {

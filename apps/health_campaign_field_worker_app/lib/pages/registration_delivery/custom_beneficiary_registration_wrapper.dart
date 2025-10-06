@@ -17,7 +17,6 @@ import 'package:registration_delivery/models/entities/task.dart';
 import 'package:registration_delivery/models/entities/unique_id_pool.dart';
 import 'package:registration_delivery/utils/extensions/extensions.dart';
 import 'package:registration_delivery/utils/utils.dart';
-import 'package:survey_form/models/entities/service.dart';
 
 import '../../blocs/registration_delivery/custom_beneficairy_registration.dart';
 
@@ -63,10 +62,20 @@ class CustomBeneficiaryRegistrationWrapperPage extends StatelessWidget
 
     return BlocProvider(
       create: (_) => HouseholdOverviewBloc(
-        HouseholdOverviewState(
-          householdMemberWrapper: HouseholdMemberWrapper(
-            household: initialState.householdModel,
-            headOfHousehold: initialState.maybeWhen(
+          HouseholdOverviewState(
+            householdMemberWrapper: HouseholdMemberWrapper(
+              household: initialState.householdModel,
+              headOfHousehold: initialState.maybeWhen(
+                  orElse: () => null,
+                  editHousehold: (addressModel,
+                          householdModel,
+                          individualModel,
+                          registrationDate,
+                          projectBeneficiaryModel,
+                          loading,
+                          headOfHousehold) =>
+                      headOfHousehold),
+              members: initialState.maybeWhen(
                 orElse: () => null,
                 editHousehold: (addressModel,
                         householdModel,
@@ -75,48 +84,36 @@ class CustomBeneficiaryRegistrationWrapperPage extends StatelessWidget
                         projectBeneficiaryModel,
                         loading,
                         headOfHousehold) =>
-                    headOfHousehold),
-            members: initialState.maybeWhen(
-              orElse: () => null,
-              editHousehold: (addressModel,
-                      householdModel,
-                      individualModel,
-                      registrationDate,
-                      projectBeneficiaryModel,
-                      loading,
-                      headOfHousehold) =>
-                  individualModel,
-            ),
-            projectBeneficiaries: initialState.maybeWhen(
-              orElse: () => null,
-              editHousehold: (addressModel,
-                      householdModel,
-                      individualModel,
-                      registrationDate,
-                      projectBeneficiaryModel,
-                      loading,
-                      headOfHousehold) =>
-                  projectBeneficiaryModel != null
-                      ? [projectBeneficiaryModel]
-                      : [],
+                    individualModel,
+              ),
+              projectBeneficiaries: initialState.maybeWhen(
+                orElse: () => null,
+                editHousehold: (addressModel,
+                        householdModel,
+                        individualModel,
+                        registrationDate,
+                        projectBeneficiaryModel,
+                        loading,
+                        headOfHousehold) =>
+                    projectBeneficiaryModel != null
+                        ? [projectBeneficiaryModel]
+                        : [],
+              ),
             ),
           ),
-        ),
-        individualRepository: individual,
-        householdRepository: household,
-        householdMemberRepository: householdMember,
-        projectBeneficiaryRepository: projectBeneficiary,
-        beneficiaryType: RegistrationDeliverySingleton().beneficiaryType!,
-        taskDataRepository: task,
-        sideEffectDataRepository: sideEffect,
-        individualGlobalSearchRepository: individualGlobalSearch,
-        referralDataRepository: referral,
-        serviceDataRepository:
-            context.repository<ServiceModel, ServiceSearchModel>(context),
-      )..add(HouseholdOverviewReloadEvent(
-          projectId: RegistrationDeliverySingleton().selectedProject!.id,
-          projectBeneficiaryType:
-              RegistrationDeliverySingleton().beneficiaryType!)),
+          individualRepository: individual,
+          householdRepository: household,
+          householdMemberRepository: householdMember,
+          projectBeneficiaryRepository: projectBeneficiary,
+          beneficiaryType: RegistrationDeliverySingleton().beneficiaryType!,
+          taskDataRepository: task,
+          sideEffectDataRepository: sideEffect,
+          individualGlobalSearchRepository: individualGlobalSearch,
+          referralDataRepository: referral)
+        ..add(HouseholdOverviewReloadEvent(
+            projectId: RegistrationDeliverySingleton().selectedProject!.id,
+            projectBeneficiaryType:
+                RegistrationDeliverySingleton().beneficiaryType!)),
       child: MultiBlocProvider(
         providers: [
           BlocProvider(

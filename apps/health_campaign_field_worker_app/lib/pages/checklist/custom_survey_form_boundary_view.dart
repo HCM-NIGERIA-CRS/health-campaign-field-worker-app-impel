@@ -12,7 +12,6 @@ import 'package:survey_form/widgets/back_navigation_help_header.dart';
 import 'package:survey_form/widgets/localized.dart';
 
 import '../../router/app_router.dart';
-import '../../widgets/custom_pop_route.dart';
 
 @RoutePage()
 class CustomSurveyFormBoundaryViewPage extends LocalizedStatefulWidget {
@@ -34,69 +33,67 @@ class CustomSurveyFormBoundaryViewPageState
     final theme = Theme.of(context);
     final textTheme = theme.digitTextTheme(context);
 
-    return GlobalBackHandler(
-      child: Scaffold(
-        body: ScrollableContent(
-          header: const Column(children: [
-            BackNavigationHelpHeaderWidget(),
-          ]),
-          footer: DigitCard(
+    return Scaffold(
+      body: ScrollableContent(
+        header: const Column(children: [
+          BackNavigationHelpHeaderWidget(),
+        ]),
+        footer: DigitCard(
+            cardType: CardType.primary,
+            margin: const EdgeInsets.only(top: spacer2),
+            children: [
+              DigitButton(
+                type: DigitButtonType.primary,
+                label: localizations.translate(
+                  i18.common.coreCommonContinue,
+                ),
+                size: DigitButtonSize.large,
+                mainAxisSize: MainAxisSize.max,
+                onPressed: () =>
+                    context.router.push(CustomSurveyFormViewRoute()),
+              ),
+            ]),
+        children: [
+          DigitCard(
+              margin: const EdgeInsets.all(spacer2),
               cardType: CardType.primary,
-              margin: const EdgeInsets.only(top: spacer2),
               children: [
-                DigitButton(
-                  type: DigitButtonType.primary,
-                  label: localizations.translate(
-                    i18.common.coreCommonContinue,
+                Text(
+                  localizations.translate(
+                    i18.surveyForm.surveyFormDetailLabel,
                   ),
-                  size: DigitButtonSize.large,
-                  mainAxisSize: MainAxisSize.max,
-                  onPressed: () =>
-                      context.router.push(CustomSurveyFormViewRoute()),
+                  style: textTheme.headingXl,
+                ),
+                LabeledField(
+                  label: localizations.translate(
+                    i18.surveyForm.surveyFormdate,
+                  ),
+                  child: DigitDateFormInput(
+                    readOnly: true,
+                    editable: false,
+                    initialValue:
+                        DateFormat('dd MMMM yyyy').format(DateTime.now()),
+                    controller: TextEditingController(
+                      text: DateFormat('dd MMMM yyyy').format(DateTime.now()),
+                    ),
+                  ),
+                ),
+                LabeledField(
+                  label: localizations.translate(
+                    i18.householdLocation.administrationAreaFormLabel,
+                  ),
+                  child: DigitTextFormInput(
+                    readOnly: true,
+                    initialValue: localizations.translate(
+                        SurveyFormSingleton().boundary!.code.toString()),
+                    controller: TextEditingController(
+                      text: localizations.translate(
+                          SurveyFormSingleton().boundary!.code.toString()),
+                    ),
+                  ),
                 ),
               ]),
-          children: [
-            DigitCard(
-                margin: const EdgeInsets.all(spacer2),
-                cardType: CardType.primary,
-                children: [
-                  Text(
-                    localizations.translate(
-                      i18.surveyForm.surveyFormDetailLabel,
-                    ),
-                    style: textTheme.headingXl,
-                  ),
-                  LabeledField(
-                    label: localizations.translate(
-                      i18.surveyForm.surveyFormdate,
-                    ),
-                    child: DigitDateFormInput(
-                      readOnly: true,
-                      editable: false,
-                      initialValue:
-                          DateFormat('dd MMMM yyyy').format(DateTime.now()),
-                      controller: TextEditingController(
-                        text: DateFormat('dd MMMM yyyy').format(DateTime.now()),
-                      ),
-                    ),
-                  ),
-                  LabeledField(
-                    label: localizations.translate(
-                      i18.householdLocation.administrationAreaFormLabel,
-                    ),
-                    child: DigitTextFormInput(
-                      readOnly: true,
-                      initialValue: localizations.translate(
-                          SurveyFormSingleton().boundary!.code.toString()),
-                      controller: TextEditingController(
-                        text: localizations.translate(
-                            SurveyFormSingleton().boundary!.code.toString()),
-                      ),
-                    ),
-                  ),
-                ]),
-          ],
-        ),
+        ],
       ),
     );
   }

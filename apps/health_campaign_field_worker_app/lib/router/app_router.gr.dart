@@ -55,17 +55,6 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
-    CampaignDeliverySelectRoute.name: (routeData) {
-      final args = routeData.argsAs<CampaignDeliverySelectRouteArgs>(
-          orElse: () => const CampaignDeliverySelectRouteArgs());
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: CampaignDeliverySelectPage(
-          key: args.key,
-          appLocalizations: args.appLocalizations,
-        ),
-      );
-    },
     CaregiverConsentRoute.name: (routeData) {
       final args = routeData.argsAs<CaregiverConsentRouteArgs>(
           orElse: () => const CaregiverConsentRouteArgs());
@@ -103,19 +92,6 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
-    CustomBeneficiaryDetailsHeadRoute.name: (routeData) {
-      final args = routeData.argsAs<CustomBeneficiaryDetailsHeadRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: CustomBeneficiaryDetailsHeadPage(
-          eligibilityAssessmentType: args.eligibilityAssessmentType,
-          individualSelected: args.individualSelected,
-          isHead: args.isHead,
-          key: args.key,
-          appLocalizations: args.appLocalizations,
-        ),
-      );
-    },
     CustomBeneficiaryDetailsRoute.name: (routeData) {
       final args = routeData.argsAs<CustomBeneficiaryDetailsRouteArgs>();
       return AutoRoutePage<dynamic>(
@@ -123,7 +99,6 @@ abstract class _$AppRouter extends RootStackRouter {
         child: CustomBeneficiaryDetailsPage(
           eligibilityAssessmentType: args.eligibilityAssessmentType,
           individualSelected: args.individualSelected,
-          isHead: args.isHead,
           key: args.key,
           appLocalizations: args.appLocalizations,
         ),
@@ -174,20 +149,6 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
-    CustomDeliverInterventionHeadRoute.name: (routeData) {
-      final args = routeData.argsAs<CustomDeliverInterventionHeadRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: CustomDeliverInterventionHeadPage(
-          key: args.key,
-          appLocalizations: args.appLocalizations,
-          eligibilityAssessmentType: args.eligibilityAssessmentType,
-          selectedIndividual: args.selectedIndividual,
-          isRevisit: args.isRevisit,
-          isEditing: args.isEditing,
-        ),
-      );
-    },
     CustomDeliverInterventionRoute.name: (routeData) {
       final args = routeData.argsAs<CustomDeliverInterventionRouteArgs>();
       return AutoRoutePage<dynamic>(
@@ -197,7 +158,6 @@ abstract class _$AppRouter extends RootStackRouter {
           appLocalizations: args.appLocalizations,
           eligibilityAssessmentType: args.eligibilityAssessmentType,
           selectedIndividual: args.selectedIndividual,
-          isRevisit: args.isRevisit,
           isEditing: args.isEditing,
         ),
       );
@@ -234,7 +194,6 @@ abstract class _$AppRouter extends RootStackRouter {
           key: args.key,
           appLocalizations: args.appLocalizations,
           eligibilityAssessmentType: args.eligibilityAssessmentType,
-          selectedIndividual: args.selectedIndividual,
         ),
       );
     },
@@ -247,23 +206,6 @@ abstract class _$AppRouter extends RootStackRouter {
           appLocalizations: args.appLocalizations,
           facilities: args.facilities,
         ),
-      );
-    },
-    CustomFixedPostRecordVaccinationRoute.name: (routeData) {
-      final args =
-          routeData.argsAs<CustomFixedPostRecordVaccinationRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: CustomFixedPostRecordVaccinationPage(
-          key: args.key,
-          postType: args.postType,
-        ),
-      );
-    },
-    CustomFixedPostSelectionRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const CustomFixedPostSelectionPage(),
       );
     },
     CustomHFCreateReferralWrapperRoute.name: (routeData) {
@@ -287,7 +229,6 @@ abstract class _$AppRouter extends RootStackRouter {
         child: CustomHouseHoldDetailsPage(
           key: args.key,
           appLocalizations: args.appLocalizations,
-          isConsent: args.isConsent,
         ),
       );
     },
@@ -301,7 +242,6 @@ abstract class _$AppRouter extends RootStackRouter {
           enableViewHousehold: args.enableViewHousehold,
           isAddChild: args.isAddChild,
           eligibilityAssessmentType: args.eligibilityAssessmentType,
-          individualModel: args.individualModel,
         ),
       );
     },
@@ -340,40 +280,12 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
-    CustomHouseholdSummaryRoute.name: (routeData) {
-      final args = routeData.argsAs<CustomHouseholdSummaryRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: CustomHouseholdSummaryPage(
-          householdNumber: args.householdNumber,
-          headName: args.headName,
-          reasonNonCompliance: args.reasonNonCompliance,
-          latitude: args.latitude,
-          longitude: args.longitude,
-          locationAccuracy: args.locationAccuracy,
-          key: args.key,
-          appLocalizations: args.appLocalizations,
-        ),
-      );
-    },
     CustomIndividualDetailsRoute.name: (routeData) {
       final args = routeData.argsAs<CustomIndividualDetailsRouteArgs>(
           orElse: () => const CustomIndividualDetailsRouteArgs());
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: CustomIndividualDetailsPage(
-          key: args.key,
-          appLocalizations: args.appLocalizations,
-          isHeadOfHousehold: args.isHeadOfHousehold,
-        ),
-      );
-    },
-    CustomIndividualDetailsPolioSMCRoute.name: (routeData) {
-      final args = routeData.argsAs<CustomIndividualDetailsPolioSMCRouteArgs>(
-          orElse: () => const CustomIndividualDetailsPolioSMCRouteArgs());
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: CustomIndividualDetailsPolioSMCPage(
           key: args.key,
           appLocalizations: args.appLocalizations,
           isHeadOfHousehold: args.isHeadOfHousehold,
@@ -474,7 +386,6 @@ abstract class _$AppRouter extends RootStackRouter {
           isReadministrationUnSuccessful: args.isReadministrationUnSuccessful,
           quantityWasted: args.quantityWasted,
           productVariantId: args.productVariantId,
-          addressModelCaptured: args.addressModelCaptured,
           referralReasons: args.referralReasons,
         ),
       );
@@ -584,7 +495,6 @@ abstract class _$AppRouter extends RootStackRouter {
           appLocalizations: args.appLocalizations,
           enableBackToSearch: args.enableBackToSearch,
           eligibilityAssessmentType: args.eligibilityAssessmentType,
-          individual: args.individual,
         ),
       );
     },
@@ -691,27 +601,15 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
-    CustomTransitPostRecordVaccinationRoute.name: (routeData) {
-      final args =
-          routeData.argsAs<CustomTransitPostRecordVaccinationRouteArgs>();
+    CustomTransactionalDetailsRoute.name: (routeData) {
+      final args = routeData.argsAs<CustomTransactionalDetailsRouteArgs>(
+          orElse: () => const CustomTransactionalDetailsRouteArgs());
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: CustomTransitPostRecordVaccinationPage(
+        child: CustomTransactionalDetailsPage(
           key: args.key,
-          postType: args.postType,
+          appLocalizations: args.appLocalizations,
         ),
-      );
-    },
-    CustomTransitPostSelectionRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const CustomTransitPostSelectionPage(),
-      );
-    },
-    CustomTransitPostWrapperRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const CustomTransitPostWrapperPage(),
       );
     },
     CustomWarehouseDetailsRoute.name: (routeData) {
@@ -751,7 +649,6 @@ abstract class _$AppRouter extends RootStackRouter {
           projectBeneficiaryClientReferenceId:
               args.projectBeneficiaryClientReferenceId,
           showBackButton: args.showBackButton,
-          addressModelCaptured: args.addressModelCaptured,
           eligibilityAssessmentType: args.eligibilityAssessmentType,
           appLocalizations: args.appLocalizations,
         ),
@@ -782,34 +679,6 @@ abstract class _$AppRouter extends RootStackRouter {
         child: LoginPage(
           key: args.key,
           appLocalizations: args.appLocalizations,
-        ),
-      );
-    },
-    NonComplianceTrackingSearchRoute.name: (routeData) {
-      final args = routeData.argsAs<NonComplianceTrackingSearchRouteArgs>(
-          orElse: () => const NonComplianceTrackingSearchRouteArgs());
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: NonComplianceTrackingSearchPage(
-          key: args.key,
-          appLocalizations: args.appLocalizations,
-        ),
-      );
-    },
-    NonComplianceTrackingWrapperRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const NonComplianceTrackingWrapperPage(),
-      );
-    },
-    NonComplianceUpdateStatusRoute.name: (routeData) {
-      final args = routeData.argsAs<NonComplianceUpdateStatusRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: NonComplianceUpdateStatusPage(
-          key: args.key,
-          householdMember: args.householdMember,
-          userActionModel: args.userActionModel,
         ),
       );
     },
@@ -856,18 +725,6 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
-    ReceiveStockRoute.name: (routeData) {
-      final args = routeData.argsAs<ReceiveStockRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: ReceiveStockPage(
-          key: args.key,
-          appLocalizations: args.appLocalizations,
-          mrnNumber: args.mrnNumber,
-          stockRecords: args.stockRecords,
-        ),
-      );
-    },
     RecordRedoseRoute.name: (routeData) {
       final args = routeData.argsAs<RecordRedoseRouteArgs>();
       return AutoRoutePage<dynamic>(
@@ -877,29 +734,6 @@ abstract class _$AppRouter extends RootStackRouter {
           appLocalizations: args.appLocalizations,
           isEditing: args.isEditing,
           tasks: args.tasks,
-        ),
-      );
-    },
-    SelectSettlementsDateRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const SelectSettlementsDatePage(),
-      );
-    },
-    SelectSettlementsDateViewRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const SelectSettlementsDateViewPage(),
-      );
-    },
-    SelectSettlementsRoute.name: (routeData) {
-      final args = routeData.argsAs<SelectSettlementsRouteArgs>(
-          orElse: () => const SelectSettlementsRouteArgs());
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: SelectSettlementsPage(
-          key: args.key,
-          appLocalizations: args.appLocalizations,
         ),
       );
     },
@@ -942,6 +776,18 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    ViewStockRecordsLGARoute.name: (routeData) {
+      final args = routeData.argsAs<ViewStockRecordsLGARouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: ViewStockRecordsLGAPage(
+          key: args.key,
+          appLocalizations: args.appLocalizations,
+          mrnNumber: args.mrnNumber,
+          stockRecords: args.stockRecords,
+        ),
+      );
+    },
     ViewStockRecordsRoute.name: (routeData) {
       final args = routeData.argsAs<ViewStockRecordsRouteArgs>();
       return AutoRoutePage<dynamic>(
@@ -966,7 +812,6 @@ abstract class _$AppRouter extends RootStackRouter {
     ...AttendanceRoute().pagesMap,
     ...ComplaintsRoute().pagesMap,
     ...SurveyFormRoute().pagesMap,
-    ...TransitPostRoute().pagesMap,
   };
 }
 
@@ -1107,45 +952,6 @@ class BoundarySelectionRouteArgs {
   @override
   String toString() {
     return 'BoundarySelectionRouteArgs{key: $key, appLocalizations: $appLocalizations}';
-  }
-}
-
-/// generated route for
-/// [CampaignDeliverySelectPage]
-class CampaignDeliverySelectRoute
-    extends PageRouteInfo<CampaignDeliverySelectRouteArgs> {
-  CampaignDeliverySelectRoute({
-    Key? key,
-    AppLocalizations? appLocalizations,
-    List<PageRouteInfo>? children,
-  }) : super(
-          CampaignDeliverySelectRoute.name,
-          args: CampaignDeliverySelectRouteArgs(
-            key: key,
-            appLocalizations: appLocalizations,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'CampaignDeliverySelectRoute';
-
-  static const PageInfo<CampaignDeliverySelectRouteArgs> page =
-      PageInfo<CampaignDeliverySelectRouteArgs>(name);
-}
-
-class CampaignDeliverySelectRouteArgs {
-  const CampaignDeliverySelectRouteArgs({
-    this.key,
-    this.appLocalizations,
-  });
-
-  final Key? key;
-
-  final AppLocalizations? appLocalizations;
-
-  @override
-  String toString() {
-    return 'CampaignDeliverySelectRouteArgs{key: $key, appLocalizations: $appLocalizations}';
   }
 }
 
@@ -1291,67 +1097,12 @@ class CustomBeneficiaryAcknowledgementRouteArgs {
 }
 
 /// generated route for
-/// [CustomBeneficiaryDetailsHeadPage]
-class CustomBeneficiaryDetailsHeadRoute
-    extends PageRouteInfo<CustomBeneficiaryDetailsHeadRouteArgs> {
-  CustomBeneficiaryDetailsHeadRoute({
-    required EligibilityAssessmentType eligibilityAssessmentType,
-    IndividualModel? individualSelected,
-    bool? isHead,
-    Key? key,
-    RegistrationDeliveryLocalization? appLocalizations,
-    List<PageRouteInfo>? children,
-  }) : super(
-          CustomBeneficiaryDetailsHeadRoute.name,
-          args: CustomBeneficiaryDetailsHeadRouteArgs(
-            eligibilityAssessmentType: eligibilityAssessmentType,
-            individualSelected: individualSelected,
-            isHead: isHead,
-            key: key,
-            appLocalizations: appLocalizations,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'CustomBeneficiaryDetailsHeadRoute';
-
-  static const PageInfo<CustomBeneficiaryDetailsHeadRouteArgs> page =
-      PageInfo<CustomBeneficiaryDetailsHeadRouteArgs>(name);
-}
-
-class CustomBeneficiaryDetailsHeadRouteArgs {
-  const CustomBeneficiaryDetailsHeadRouteArgs({
-    required this.eligibilityAssessmentType,
-    this.individualSelected,
-    this.isHead,
-    this.key,
-    this.appLocalizations,
-  });
-
-  final EligibilityAssessmentType eligibilityAssessmentType;
-
-  final IndividualModel? individualSelected;
-
-  final bool? isHead;
-
-  final Key? key;
-
-  final RegistrationDeliveryLocalization? appLocalizations;
-
-  @override
-  String toString() {
-    return 'CustomBeneficiaryDetailsHeadRouteArgs{eligibilityAssessmentType: $eligibilityAssessmentType, individualSelected: $individualSelected, isHead: $isHead, key: $key, appLocalizations: $appLocalizations}';
-  }
-}
-
-/// generated route for
 /// [CustomBeneficiaryDetailsPage]
 class CustomBeneficiaryDetailsRoute
     extends PageRouteInfo<CustomBeneficiaryDetailsRouteArgs> {
   CustomBeneficiaryDetailsRoute({
     required EligibilityAssessmentType eligibilityAssessmentType,
     IndividualModel? individualSelected,
-    bool? isHead,
     Key? key,
     RegistrationDeliveryLocalization? appLocalizations,
     List<PageRouteInfo>? children,
@@ -1360,7 +1111,6 @@ class CustomBeneficiaryDetailsRoute
           args: CustomBeneficiaryDetailsRouteArgs(
             eligibilityAssessmentType: eligibilityAssessmentType,
             individualSelected: individualSelected,
-            isHead: isHead,
             key: key,
             appLocalizations: appLocalizations,
           ),
@@ -1377,7 +1127,6 @@ class CustomBeneficiaryDetailsRouteArgs {
   const CustomBeneficiaryDetailsRouteArgs({
     required this.eligibilityAssessmentType,
     this.individualSelected,
-    this.isHead,
     this.key,
     this.appLocalizations,
   });
@@ -1386,15 +1135,13 @@ class CustomBeneficiaryDetailsRouteArgs {
 
   final IndividualModel? individualSelected;
 
-  final bool? isHead;
-
   final Key? key;
 
   final RegistrationDeliveryLocalization? appLocalizations;
 
   @override
   String toString() {
-    return 'CustomBeneficiaryDetailsRouteArgs{eligibilityAssessmentType: $eligibilityAssessmentType, individualSelected: $individualSelected, isHead: $isHead, key: $key, appLocalizations: $appLocalizations}';
+    return 'CustomBeneficiaryDetailsRouteArgs{eligibilityAssessmentType: $eligibilityAssessmentType, individualSelected: $individualSelected, key: $key, appLocalizations: $appLocalizations}';
   }
 }
 
@@ -1555,65 +1302,6 @@ class CustomComplaintsInboxRouteArgs {
 }
 
 /// generated route for
-/// [CustomDeliverInterventionHeadPage]
-class CustomDeliverInterventionHeadRoute
-    extends PageRouteInfo<CustomDeliverInterventionHeadRouteArgs> {
-  CustomDeliverInterventionHeadRoute({
-    Key? key,
-    RegistrationDeliveryLocalization? appLocalizations,
-    required EligibilityAssessmentType eligibilityAssessmentType,
-    IndividualModel? selectedIndividual,
-    bool? isRevisit,
-    bool isEditing = false,
-    List<PageRouteInfo>? children,
-  }) : super(
-          CustomDeliverInterventionHeadRoute.name,
-          args: CustomDeliverInterventionHeadRouteArgs(
-            key: key,
-            appLocalizations: appLocalizations,
-            eligibilityAssessmentType: eligibilityAssessmentType,
-            selectedIndividual: selectedIndividual,
-            isRevisit: isRevisit,
-            isEditing: isEditing,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'CustomDeliverInterventionHeadRoute';
-
-  static const PageInfo<CustomDeliverInterventionHeadRouteArgs> page =
-      PageInfo<CustomDeliverInterventionHeadRouteArgs>(name);
-}
-
-class CustomDeliverInterventionHeadRouteArgs {
-  const CustomDeliverInterventionHeadRouteArgs({
-    this.key,
-    this.appLocalizations,
-    required this.eligibilityAssessmentType,
-    this.selectedIndividual,
-    this.isRevisit,
-    this.isEditing = false,
-  });
-
-  final Key? key;
-
-  final RegistrationDeliveryLocalization? appLocalizations;
-
-  final EligibilityAssessmentType eligibilityAssessmentType;
-
-  final IndividualModel? selectedIndividual;
-
-  final bool? isRevisit;
-
-  final bool isEditing;
-
-  @override
-  String toString() {
-    return 'CustomDeliverInterventionHeadRouteArgs{key: $key, appLocalizations: $appLocalizations, eligibilityAssessmentType: $eligibilityAssessmentType, selectedIndividual: $selectedIndividual, isRevisit: $isRevisit, isEditing: $isEditing}';
-  }
-}
-
-/// generated route for
 /// [CustomDeliverInterventionPage]
 class CustomDeliverInterventionRoute
     extends PageRouteInfo<CustomDeliverInterventionRouteArgs> {
@@ -1622,7 +1310,6 @@ class CustomDeliverInterventionRoute
     RegistrationDeliveryLocalization? appLocalizations,
     required EligibilityAssessmentType eligibilityAssessmentType,
     IndividualModel? selectedIndividual,
-    bool? isRevisit,
     bool isEditing = false,
     List<PageRouteInfo>? children,
   }) : super(
@@ -1632,7 +1319,6 @@ class CustomDeliverInterventionRoute
             appLocalizations: appLocalizations,
             eligibilityAssessmentType: eligibilityAssessmentType,
             selectedIndividual: selectedIndividual,
-            isRevisit: isRevisit,
             isEditing: isEditing,
           ),
           initialChildren: children,
@@ -1650,7 +1336,6 @@ class CustomDeliverInterventionRouteArgs {
     this.appLocalizations,
     required this.eligibilityAssessmentType,
     this.selectedIndividual,
-    this.isRevisit,
     this.isEditing = false,
   });
 
@@ -1662,13 +1347,11 @@ class CustomDeliverInterventionRouteArgs {
 
   final IndividualModel? selectedIndividual;
 
-  final bool? isRevisit;
-
   final bool isEditing;
 
   @override
   String toString() {
-    return 'CustomDeliverInterventionRouteArgs{key: $key, appLocalizations: $appLocalizations, eligibilityAssessmentType: $eligibilityAssessmentType, selectedIndividual: $selectedIndividual, isRevisit: $isRevisit, isEditing: $isEditing}';
+    return 'CustomDeliverInterventionRouteArgs{key: $key, appLocalizations: $appLocalizations, eligibilityAssessmentType: $eligibilityAssessmentType, selectedIndividual: $selectedIndividual, isEditing: $isEditing}';
   }
 }
 
@@ -1758,7 +1441,6 @@ class CustomDoseAdministeredRoute
     Key? key,
     RegistrationDeliveryLocalization? appLocalizations,
     required EligibilityAssessmentType eligibilityAssessmentType,
-    required IndividualModel? selectedIndividual,
     List<PageRouteInfo>? children,
   }) : super(
           CustomDoseAdministeredRoute.name,
@@ -1766,7 +1448,6 @@ class CustomDoseAdministeredRoute
             key: key,
             appLocalizations: appLocalizations,
             eligibilityAssessmentType: eligibilityAssessmentType,
-            selectedIndividual: selectedIndividual,
           ),
           initialChildren: children,
         );
@@ -1782,7 +1463,6 @@ class CustomDoseAdministeredRouteArgs {
     this.key,
     this.appLocalizations,
     required this.eligibilityAssessmentType,
-    required this.selectedIndividual,
   });
 
   final Key? key;
@@ -1791,11 +1471,9 @@ class CustomDoseAdministeredRouteArgs {
 
   final EligibilityAssessmentType eligibilityAssessmentType;
 
-  final IndividualModel? selectedIndividual;
-
   @override
   String toString() {
-    return 'CustomDoseAdministeredRouteArgs{key: $key, appLocalizations: $appLocalizations, eligibilityAssessmentType: $eligibilityAssessmentType, selectedIndividual: $selectedIndividual}';
+    return 'CustomDoseAdministeredRouteArgs{key: $key, appLocalizations: $appLocalizations, eligibilityAssessmentType: $eligibilityAssessmentType}';
   }
 }
 
@@ -1841,59 +1519,6 @@ class CustomFacilitySelectionSMCRouteArgs {
   String toString() {
     return 'CustomFacilitySelectionSMCRouteArgs{key: $key, appLocalizations: $appLocalizations, facilities: $facilities}';
   }
-}
-
-/// generated route for
-/// [CustomFixedPostRecordVaccinationPage]
-class CustomFixedPostRecordVaccinationRoute
-    extends PageRouteInfo<CustomFixedPostRecordVaccinationRouteArgs> {
-  CustomFixedPostRecordVaccinationRoute({
-    Key? key,
-    required String postType,
-    List<PageRouteInfo>? children,
-  }) : super(
-          CustomFixedPostRecordVaccinationRoute.name,
-          args: CustomFixedPostRecordVaccinationRouteArgs(
-            key: key,
-            postType: postType,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'CustomFixedPostRecordVaccinationRoute';
-
-  static const PageInfo<CustomFixedPostRecordVaccinationRouteArgs> page =
-      PageInfo<CustomFixedPostRecordVaccinationRouteArgs>(name);
-}
-
-class CustomFixedPostRecordVaccinationRouteArgs {
-  const CustomFixedPostRecordVaccinationRouteArgs({
-    this.key,
-    required this.postType,
-  });
-
-  final Key? key;
-
-  final String postType;
-
-  @override
-  String toString() {
-    return 'CustomFixedPostRecordVaccinationRouteArgs{key: $key, postType: $postType}';
-  }
-}
-
-/// generated route for
-/// [CustomFixedPostSelectionPage]
-class CustomFixedPostSelectionRoute extends PageRouteInfo<void> {
-  const CustomFixedPostSelectionRoute({List<PageRouteInfo>? children})
-      : super(
-          CustomFixedPostSelectionRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'CustomFixedPostSelectionRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for
@@ -1957,14 +1582,12 @@ class CustomHouseHoldDetailsRoute
   CustomHouseHoldDetailsRoute({
     Key? key,
     RegistrationDeliveryLocalization? appLocalizations,
-    bool? isConsent,
     List<PageRouteInfo>? children,
   }) : super(
           CustomHouseHoldDetailsRoute.name,
           args: CustomHouseHoldDetailsRouteArgs(
             key: key,
             appLocalizations: appLocalizations,
-            isConsent: isConsent,
           ),
           initialChildren: children,
         );
@@ -1979,18 +1602,15 @@ class CustomHouseHoldDetailsRouteArgs {
   const CustomHouseHoldDetailsRouteArgs({
     this.key,
     this.appLocalizations,
-    this.isConsent,
   });
 
   final Key? key;
 
   final RegistrationDeliveryLocalization? appLocalizations;
 
-  final bool? isConsent;
-
   @override
   String toString() {
-    return 'CustomHouseHoldDetailsRouteArgs{key: $key, appLocalizations: $appLocalizations, isConsent: $isConsent}';
+    return 'CustomHouseHoldDetailsRouteArgs{key: $key, appLocalizations: $appLocalizations}';
   }
 }
 
@@ -2004,7 +1624,6 @@ class CustomHouseholdAcknowledgementRoute
     bool? enableViewHousehold,
     bool? isAddChild,
     required EligibilityAssessmentType eligibilityAssessmentType,
-    IndividualModel? individualModel,
     List<PageRouteInfo>? children,
   }) : super(
           CustomHouseholdAcknowledgementRoute.name,
@@ -2014,7 +1633,6 @@ class CustomHouseholdAcknowledgementRoute
             enableViewHousehold: enableViewHousehold,
             isAddChild: isAddChild,
             eligibilityAssessmentType: eligibilityAssessmentType,
-            individualModel: individualModel,
           ),
           initialChildren: children,
         );
@@ -2032,7 +1650,6 @@ class CustomHouseholdAcknowledgementRouteArgs {
     this.enableViewHousehold,
     this.isAddChild,
     required this.eligibilityAssessmentType,
-    this.individualModel,
   });
 
   final Key? key;
@@ -2045,11 +1662,9 @@ class CustomHouseholdAcknowledgementRouteArgs {
 
   final EligibilityAssessmentType eligibilityAssessmentType;
 
-  final IndividualModel? individualModel;
-
   @override
   String toString() {
-    return 'CustomHouseholdAcknowledgementRouteArgs{key: $key, appLocalizations: $appLocalizations, enableViewHousehold: $enableViewHousehold, isAddChild: $isAddChild, eligibilityAssessmentType: $eligibilityAssessmentType, individualModel: $individualModel}';
+    return 'CustomHouseholdAcknowledgementRouteArgs{key: $key, appLocalizations: $appLocalizations, enableViewHousehold: $enableViewHousehold, isAddChild: $isAddChild, eligibilityAssessmentType: $eligibilityAssessmentType}';
   }
 }
 
@@ -2181,75 +1796,6 @@ class CustomHouseholdOverviewRouteArgs {
 }
 
 /// generated route for
-/// [CustomHouseholdSummaryPage]
-class CustomHouseholdSummaryRoute
-    extends PageRouteInfo<CustomHouseholdSummaryRouteArgs> {
-  CustomHouseholdSummaryRoute({
-    required String? householdNumber,
-    required String? headName,
-    required String? reasonNonCompliance,
-    required double latitude,
-    required double longitude,
-    required double locationAccuracy,
-    Key? key,
-    RegistrationDeliveryLocalization? appLocalizations,
-    List<PageRouteInfo>? children,
-  }) : super(
-          CustomHouseholdSummaryRoute.name,
-          args: CustomHouseholdSummaryRouteArgs(
-            householdNumber: householdNumber,
-            headName: headName,
-            reasonNonCompliance: reasonNonCompliance,
-            latitude: latitude,
-            longitude: longitude,
-            locationAccuracy: locationAccuracy,
-            key: key,
-            appLocalizations: appLocalizations,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'CustomHouseholdSummaryRoute';
-
-  static const PageInfo<CustomHouseholdSummaryRouteArgs> page =
-      PageInfo<CustomHouseholdSummaryRouteArgs>(name);
-}
-
-class CustomHouseholdSummaryRouteArgs {
-  const CustomHouseholdSummaryRouteArgs({
-    required this.householdNumber,
-    required this.headName,
-    required this.reasonNonCompliance,
-    required this.latitude,
-    required this.longitude,
-    required this.locationAccuracy,
-    this.key,
-    this.appLocalizations,
-  });
-
-  final String? householdNumber;
-
-  final String? headName;
-
-  final String? reasonNonCompliance;
-
-  final double latitude;
-
-  final double longitude;
-
-  final double locationAccuracy;
-
-  final Key? key;
-
-  final RegistrationDeliveryLocalization? appLocalizations;
-
-  @override
-  String toString() {
-    return 'CustomHouseholdSummaryRouteArgs{householdNumber: $householdNumber, headName: $headName, reasonNonCompliance: $reasonNonCompliance, latitude: $latitude, longitude: $longitude, locationAccuracy: $locationAccuracy, key: $key, appLocalizations: $appLocalizations}';
-  }
-}
-
-/// generated route for
 /// [CustomIndividualDetailsPage]
 class CustomIndividualDetailsRoute
     extends PageRouteInfo<CustomIndividualDetailsRouteArgs> {
@@ -2290,50 +1836,6 @@ class CustomIndividualDetailsRouteArgs {
   @override
   String toString() {
     return 'CustomIndividualDetailsRouteArgs{key: $key, appLocalizations: $appLocalizations, isHeadOfHousehold: $isHeadOfHousehold}';
-  }
-}
-
-/// generated route for
-/// [CustomIndividualDetailsPolioSMCPage]
-class CustomIndividualDetailsPolioSMCRoute
-    extends PageRouteInfo<CustomIndividualDetailsPolioSMCRouteArgs> {
-  CustomIndividualDetailsPolioSMCRoute({
-    Key? key,
-    RegistrationDeliveryLocalization? appLocalizations,
-    bool isHeadOfHousehold = false,
-    List<PageRouteInfo>? children,
-  }) : super(
-          CustomIndividualDetailsPolioSMCRoute.name,
-          args: CustomIndividualDetailsPolioSMCRouteArgs(
-            key: key,
-            appLocalizations: appLocalizations,
-            isHeadOfHousehold: isHeadOfHousehold,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'CustomIndividualDetailsPolioSMCRoute';
-
-  static const PageInfo<CustomIndividualDetailsPolioSMCRouteArgs> page =
-      PageInfo<CustomIndividualDetailsPolioSMCRouteArgs>(name);
-}
-
-class CustomIndividualDetailsPolioSMCRouteArgs {
-  const CustomIndividualDetailsPolioSMCRouteArgs({
-    this.key,
-    this.appLocalizations,
-    this.isHeadOfHousehold = false,
-  });
-
-  final Key? key;
-
-  final RegistrationDeliveryLocalization? appLocalizations;
-
-  final bool isHeadOfHousehold;
-
-  @override
-  String toString() {
-    return 'CustomIndividualDetailsPolioSMCRouteArgs{key: $key, appLocalizations: $appLocalizations, isHeadOfHousehold: $isHeadOfHousehold}';
   }
 }
 
@@ -2657,7 +2159,6 @@ class CustomReferBeneficiarySMCRoute
     bool isReadministrationUnSuccessful = false,
     String quantityWasted = "00",
     String? productVariantId,
-    AddressModel? addressModelCaptured,
     List<String>? referralReasons,
     List<PageRouteInfo>? children,
   }) : super(
@@ -2671,7 +2172,6 @@ class CustomReferBeneficiarySMCRoute
             isReadministrationUnSuccessful: isReadministrationUnSuccessful,
             quantityWasted: quantityWasted,
             productVariantId: productVariantId,
-            addressModelCaptured: addressModelCaptured,
             referralReasons: referralReasons,
           ),
           initialChildren: children,
@@ -2693,7 +2193,6 @@ class CustomReferBeneficiarySMCRouteArgs {
     this.isReadministrationUnSuccessful = false,
     this.quantityWasted = "00",
     this.productVariantId,
-    this.addressModelCaptured,
     this.referralReasons,
   });
 
@@ -2713,13 +2212,11 @@ class CustomReferBeneficiarySMCRouteArgs {
 
   final String? productVariantId;
 
-  final AddressModel? addressModelCaptured;
-
   final List<String>? referralReasons;
 
   @override
   String toString() {
-    return 'CustomReferBeneficiarySMCRouteArgs{key: $key, appLocalizations: $appLocalizations, isEditing: $isEditing, projectBeneficiaryClientRefId: $projectBeneficiaryClientRefId, individual: $individual, isReadministrationUnSuccessful: $isReadministrationUnSuccessful, quantityWasted: $quantityWasted, productVariantId: $productVariantId, addressModelCaptured: $addressModelCaptured, referralReasons: $referralReasons}';
+    return 'CustomReferBeneficiarySMCRouteArgs{key: $key, appLocalizations: $appLocalizations, isEditing: $isEditing, projectBeneficiaryClientRefId: $projectBeneficiaryClientRefId, individual: $individual, isReadministrationUnSuccessful: $isReadministrationUnSuccessful, quantityWasted: $quantityWasted, productVariantId: $productVariantId, referralReasons: $referralReasons}';
   }
 }
 
@@ -3070,7 +2567,6 @@ class CustomSplashAcknowledgementRoute
     RegistrationDeliveryLocalization? appLocalizations,
     bool? enableBackToSearch,
     required EligibilityAssessmentType eligibilityAssessmentType,
-    required IndividualModel? individual,
     List<PageRouteInfo>? children,
   }) : super(
           CustomSplashAcknowledgementRoute.name,
@@ -3079,7 +2575,6 @@ class CustomSplashAcknowledgementRoute
             appLocalizations: appLocalizations,
             enableBackToSearch: enableBackToSearch,
             eligibilityAssessmentType: eligibilityAssessmentType,
-            individual: individual,
           ),
           initialChildren: children,
         );
@@ -3096,7 +2591,6 @@ class CustomSplashAcknowledgementRouteArgs {
     this.appLocalizations,
     this.enableBackToSearch,
     required this.eligibilityAssessmentType,
-    required this.individual,
   });
 
   final Key? key;
@@ -3107,11 +2601,9 @@ class CustomSplashAcknowledgementRouteArgs {
 
   final EligibilityAssessmentType eligibilityAssessmentType;
 
-  final IndividualModel? individual;
-
   @override
   String toString() {
-    return 'CustomSplashAcknowledgementRouteArgs{key: $key, appLocalizations: $appLocalizations, enableBackToSearch: $enableBackToSearch, eligibilityAssessmentType: $eligibilityAssessmentType, individual: $individual}';
+    return 'CustomSplashAcknowledgementRouteArgs{key: $key, appLocalizations: $appLocalizations, enableBackToSearch: $enableBackToSearch, eligibilityAssessmentType: $eligibilityAssessmentType}';
   }
 }
 
@@ -3485,70 +2977,42 @@ class CustomSurveyformRouteArgs {
 }
 
 /// generated route for
-/// [CustomTransitPostRecordVaccinationPage]
-class CustomTransitPostRecordVaccinationRoute
-    extends PageRouteInfo<CustomTransitPostRecordVaccinationRouteArgs> {
-  CustomTransitPostRecordVaccinationRoute({
+/// [CustomTransactionalDetailsPage]
+class CustomTransactionalDetailsRoute
+    extends PageRouteInfo<CustomTransactionalDetailsRouteArgs> {
+  CustomTransactionalDetailsRoute({
     Key? key,
-    required String postType,
+    InventoryLocalization? appLocalizations,
     List<PageRouteInfo>? children,
   }) : super(
-          CustomTransitPostRecordVaccinationRoute.name,
-          args: CustomTransitPostRecordVaccinationRouteArgs(
+          CustomTransactionalDetailsRoute.name,
+          args: CustomTransactionalDetailsRouteArgs(
             key: key,
-            postType: postType,
+            appLocalizations: appLocalizations,
           ),
           initialChildren: children,
         );
 
-  static const String name = 'CustomTransitPostRecordVaccinationRoute';
+  static const String name = 'CustomTransactionalDetailsRoute';
 
-  static const PageInfo<CustomTransitPostRecordVaccinationRouteArgs> page =
-      PageInfo<CustomTransitPostRecordVaccinationRouteArgs>(name);
+  static const PageInfo<CustomTransactionalDetailsRouteArgs> page =
+      PageInfo<CustomTransactionalDetailsRouteArgs>(name);
 }
 
-class CustomTransitPostRecordVaccinationRouteArgs {
-  const CustomTransitPostRecordVaccinationRouteArgs({
+class CustomTransactionalDetailsRouteArgs {
+  const CustomTransactionalDetailsRouteArgs({
     this.key,
-    required this.postType,
+    this.appLocalizations,
   });
 
   final Key? key;
 
-  final String postType;
+  final InventoryLocalization? appLocalizations;
 
   @override
   String toString() {
-    return 'CustomTransitPostRecordVaccinationRouteArgs{key: $key, postType: $postType}';
+    return 'CustomTransactionalDetailsRouteArgs{key: $key, appLocalizations: $appLocalizations}';
   }
-}
-
-/// generated route for
-/// [CustomTransitPostSelectionPage]
-class CustomTransitPostSelectionRoute extends PageRouteInfo<void> {
-  const CustomTransitPostSelectionRoute({List<PageRouteInfo>? children})
-      : super(
-          CustomTransitPostSelectionRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'CustomTransitPostSelectionRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [CustomTransitPostWrapperPage]
-class CustomTransitPostWrapperRoute extends PageRouteInfo<void> {
-  const CustomTransitPostWrapperRoute({List<PageRouteInfo>? children})
-      : super(
-          CustomTransitPostWrapperRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'CustomTransitPostWrapperRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for
@@ -3663,7 +3127,6 @@ class EligibilityChecklistViewRoute
     IndividualModel? individual,
     String? projectBeneficiaryClientReferenceId,
     bool? showBackButton,
-    AddressModel? addressModelCaptured,
     required EligibilityAssessmentType eligibilityAssessmentType,
     AppLocalizations? appLocalizations,
     List<PageRouteInfo>? children,
@@ -3676,7 +3139,6 @@ class EligibilityChecklistViewRoute
             projectBeneficiaryClientReferenceId:
                 projectBeneficiaryClientReferenceId,
             showBackButton: showBackButton,
-            addressModelCaptured: addressModelCaptured,
             eligibilityAssessmentType: eligibilityAssessmentType,
             appLocalizations: appLocalizations,
           ),
@@ -3696,7 +3158,6 @@ class EligibilityChecklistViewRouteArgs {
     this.individual,
     this.projectBeneficiaryClientReferenceId,
     this.showBackButton,
-    this.addressModelCaptured,
     required this.eligibilityAssessmentType,
     this.appLocalizations,
   });
@@ -3711,15 +3172,13 @@ class EligibilityChecklistViewRouteArgs {
 
   final bool? showBackButton;
 
-  final AddressModel? addressModelCaptured;
-
   final EligibilityAssessmentType eligibilityAssessmentType;
 
   final AppLocalizations? appLocalizations;
 
   @override
   String toString() {
-    return 'EligibilityChecklistViewRouteArgs{key: $key, referralClientRefId: $referralClientRefId, individual: $individual, projectBeneficiaryClientReferenceId: $projectBeneficiaryClientReferenceId, showBackButton: $showBackButton, addressModelCaptured: $addressModelCaptured, eligibilityAssessmentType: $eligibilityAssessmentType, appLocalizations: $appLocalizations}';
+    return 'EligibilityChecklistViewRouteArgs{key: $key, referralClientRefId: $referralClientRefId, individual: $individual, projectBeneficiaryClientReferenceId: $projectBeneficiaryClientReferenceId, showBackButton: $showBackButton, eligibilityAssessmentType: $eligibilityAssessmentType, appLocalizations: $appLocalizations}';
   }
 }
 
@@ -3808,103 +3267,6 @@ class LoginRouteArgs {
   @override
   String toString() {
     return 'LoginRouteArgs{key: $key, appLocalizations: $appLocalizations}';
-  }
-}
-
-/// generated route for
-/// [NonComplianceTrackingSearchPage]
-class NonComplianceTrackingSearchRoute
-    extends PageRouteInfo<NonComplianceTrackingSearchRouteArgs> {
-  NonComplianceTrackingSearchRoute({
-    Key? key,
-    RegistrationDeliveryLocalization? appLocalizations,
-    List<PageRouteInfo>? children,
-  }) : super(
-          NonComplianceTrackingSearchRoute.name,
-          args: NonComplianceTrackingSearchRouteArgs(
-            key: key,
-            appLocalizations: appLocalizations,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'NonComplianceTrackingSearchRoute';
-
-  static const PageInfo<NonComplianceTrackingSearchRouteArgs> page =
-      PageInfo<NonComplianceTrackingSearchRouteArgs>(name);
-}
-
-class NonComplianceTrackingSearchRouteArgs {
-  const NonComplianceTrackingSearchRouteArgs({
-    this.key,
-    this.appLocalizations,
-  });
-
-  final Key? key;
-
-  final RegistrationDeliveryLocalization? appLocalizations;
-
-  @override
-  String toString() {
-    return 'NonComplianceTrackingSearchRouteArgs{key: $key, appLocalizations: $appLocalizations}';
-  }
-}
-
-/// generated route for
-/// [NonComplianceTrackingWrapperPage]
-class NonComplianceTrackingWrapperRoute extends PageRouteInfo<void> {
-  const NonComplianceTrackingWrapperRoute({List<PageRouteInfo>? children})
-      : super(
-          NonComplianceTrackingWrapperRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'NonComplianceTrackingWrapperRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [NonComplianceUpdateStatusPage]
-class NonComplianceUpdateStatusRoute
-    extends PageRouteInfo<NonComplianceUpdateStatusRouteArgs> {
-  NonComplianceUpdateStatusRoute({
-    Key? key,
-    required HouseholdMemberWrapper householdMember,
-    required UserActionModel? userActionModel,
-    List<PageRouteInfo>? children,
-  }) : super(
-          NonComplianceUpdateStatusRoute.name,
-          args: NonComplianceUpdateStatusRouteArgs(
-            key: key,
-            householdMember: householdMember,
-            userActionModel: userActionModel,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'NonComplianceUpdateStatusRoute';
-
-  static const PageInfo<NonComplianceUpdateStatusRouteArgs> page =
-      PageInfo<NonComplianceUpdateStatusRouteArgs>(name);
-}
-
-class NonComplianceUpdateStatusRouteArgs {
-  const NonComplianceUpdateStatusRouteArgs({
-    this.key,
-    required this.householdMember,
-    required this.userActionModel,
-  });
-
-  final Key? key;
-
-  final HouseholdMemberWrapper householdMember;
-
-  final UserActionModel? userActionModel;
-
-  @override
-  String toString() {
-    return 'NonComplianceUpdateStatusRouteArgs{key: $key, householdMember: $householdMember, userActionModel: $userActionModel}';
   }
 }
 
@@ -4062,54 +3424,6 @@ class QRScannerRouteArgs {
 }
 
 /// generated route for
-/// [ReceiveStockPage]
-class ReceiveStockRoute extends PageRouteInfo<ReceiveStockRouteArgs> {
-  ReceiveStockRoute({
-    Key? key,
-    RegistrationDeliveryLocalization? appLocalizations,
-    required String mrnNumber,
-    required List<StockModel> stockRecords,
-    List<PageRouteInfo>? children,
-  }) : super(
-          ReceiveStockRoute.name,
-          args: ReceiveStockRouteArgs(
-            key: key,
-            appLocalizations: appLocalizations,
-            mrnNumber: mrnNumber,
-            stockRecords: stockRecords,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'ReceiveStockRoute';
-
-  static const PageInfo<ReceiveStockRouteArgs> page =
-      PageInfo<ReceiveStockRouteArgs>(name);
-}
-
-class ReceiveStockRouteArgs {
-  const ReceiveStockRouteArgs({
-    this.key,
-    this.appLocalizations,
-    required this.mrnNumber,
-    required this.stockRecords,
-  });
-
-  final Key? key;
-
-  final RegistrationDeliveryLocalization? appLocalizations;
-
-  final String mrnNumber;
-
-  final List<StockModel> stockRecords;
-
-  @override
-  String toString() {
-    return 'ReceiveStockRouteArgs{key: $key, appLocalizations: $appLocalizations, mrnNumber: $mrnNumber, stockRecords: $stockRecords}';
-  }
-}
-
-/// generated route for
 /// [RecordRedosePage]
 class RecordRedoseRoute extends PageRouteInfo<RecordRedoseRouteArgs> {
   RecordRedoseRoute({
@@ -4154,72 +3468,6 @@ class RecordRedoseRouteArgs {
   @override
   String toString() {
     return 'RecordRedoseRouteArgs{key: $key, appLocalizations: $appLocalizations, isEditing: $isEditing, tasks: $tasks}';
-  }
-}
-
-/// generated route for
-/// [SelectSettlementsDatePage]
-class SelectSettlementsDateRoute extends PageRouteInfo<void> {
-  const SelectSettlementsDateRoute({List<PageRouteInfo>? children})
-      : super(
-          SelectSettlementsDateRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'SelectSettlementsDateRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [SelectSettlementsDateViewPage]
-class SelectSettlementsDateViewRoute extends PageRouteInfo<void> {
-  const SelectSettlementsDateViewRoute({List<PageRouteInfo>? children})
-      : super(
-          SelectSettlementsDateViewRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'SelectSettlementsDateViewRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [SelectSettlementsPage]
-class SelectSettlementsRoute extends PageRouteInfo<SelectSettlementsRouteArgs> {
-  SelectSettlementsRoute({
-    Key? key,
-    InventoryLocalization? appLocalizations,
-    List<PageRouteInfo>? children,
-  }) : super(
-          SelectSettlementsRoute.name,
-          args: SelectSettlementsRouteArgs(
-            key: key,
-            appLocalizations: appLocalizations,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'SelectSettlementsRoute';
-
-  static const PageInfo<SelectSettlementsRouteArgs> page =
-      PageInfo<SelectSettlementsRouteArgs>(name);
-}
-
-class SelectSettlementsRouteArgs {
-  const SelectSettlementsRouteArgs({
-    this.key,
-    this.appLocalizations,
-  });
-
-  final Key? key;
-
-  final InventoryLocalization? appLocalizations;
-
-  @override
-  String toString() {
-    return 'SelectSettlementsRouteArgs{key: $key, appLocalizations: $appLocalizations}';
   }
 }
 
@@ -4360,6 +3608,55 @@ class ViewStockRecordsCDDRouteArgs {
   @override
   String toString() {
     return 'ViewStockRecordsCDDRouteArgs{key: $key, appLocalizations: $appLocalizations, mrnNumber: $mrnNumber, stockRecords: $stockRecords}';
+  }
+}
+
+/// generated route for
+/// [ViewStockRecordsLGAPage]
+class ViewStockRecordsLGARoute
+    extends PageRouteInfo<ViewStockRecordsLGARouteArgs> {
+  ViewStockRecordsLGARoute({
+    Key? key,
+    RegistrationDeliveryLocalization? appLocalizations,
+    required String mrnNumber,
+    required List<StockModel> stockRecords,
+    List<PageRouteInfo>? children,
+  }) : super(
+          ViewStockRecordsLGARoute.name,
+          args: ViewStockRecordsLGARouteArgs(
+            key: key,
+            appLocalizations: appLocalizations,
+            mrnNumber: mrnNumber,
+            stockRecords: stockRecords,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'ViewStockRecordsLGARoute';
+
+  static const PageInfo<ViewStockRecordsLGARouteArgs> page =
+      PageInfo<ViewStockRecordsLGARouteArgs>(name);
+}
+
+class ViewStockRecordsLGARouteArgs {
+  const ViewStockRecordsLGARouteArgs({
+    this.key,
+    this.appLocalizations,
+    required this.mrnNumber,
+    required this.stockRecords,
+  });
+
+  final Key? key;
+
+  final RegistrationDeliveryLocalization? appLocalizations;
+
+  final String mrnNumber;
+
+  final List<StockModel> stockRecords;
+
+  @override
+  String toString() {
+    return 'ViewStockRecordsLGARouteArgs{key: $key, appLocalizations: $appLocalizations, mrnNumber: $mrnNumber, stockRecords: $stockRecords}';
   }
 }
 
