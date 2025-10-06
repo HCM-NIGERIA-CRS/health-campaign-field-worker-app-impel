@@ -31,5 +31,7 @@ enum RolesType {
   spaqManager,
   @MappableValue("HEALTH_FACILITY_SUPERVISOR")
   healthFacilitySupervisor,
+  @MappableValue("WARD_FOCAL_PERSON")
+  wardFocalPerson,
   ;
 }

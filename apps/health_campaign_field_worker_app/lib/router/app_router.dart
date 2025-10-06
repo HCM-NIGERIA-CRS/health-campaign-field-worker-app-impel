@@ -1,13 +1,14 @@
 import 'package:complaints/blocs/localization/app_localization.dart';
+import 'package:digit_data_model/models/entities/user_action.dart';
 import 'package:digit_scanner/blocs/app_localization.dart';
-import 'package:survey_form/router/survey_form_router.gm.dart';
+import 'package:registration_delivery/blocs/search_households/search_households.dart';
 import 'package:survey_form/router/survey_form_router.dart';
 import 'package:attendance_management/router/attendance_router.dart';
 import 'package:attendance_management/router/attendance_router.gm.dart';
 import 'package:complaints/router/complaints_router.dart';
 import 'package:complaints/router/complaints_router.gm.dart';
-import 'package:health_campaign_field_worker_app/blocs/registration_delivery/custom_beneficairy_registration.dart';
-import 'package:referral_reconciliation/pages/search_referral_reconciliations.dart';
+import 'package:transit_post/router/transit_post_router.gm.dart';
+import '../blocs/registration_delivery/custom_beneficairy_registration.dart';
 import 'package:referral_reconciliation/router/referral_reconciliation_router.gm.dart';
 import 'package:referral_reconciliation/router/referral_reconciliation_router.dart';
 import 'package:registration_delivery/blocs/app_localization.dart';
@@ -18,10 +19,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:digit_data_model/data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:inventory_management/blocs/app_localization.dart';
-// import 'package:inventory_management/blocs/inventory_report.dart';
 import 'package:inventory_management/router/inventory_router.dart';
 import 'package:inventory_management/router/inventory_router.gm.dart';
 import 'package:inventory_management/blocs/record_stock.dart' as _i15;
+import 'package:transit_post/router/transit_post_router.dart';
 
 import '../blocs/inventory_management/custom_inventory_report.dart';
 import '../blocs/localization/app_localization.dart';
@@ -37,14 +38,21 @@ import '../pages/beneficiary/check_eligibility/inventory_facility_selection_smc.
 import '../pages/beneficiary/check_eligibility/refer_beneficiary_smc.dart';
 import '../pages/beneficiary/check_eligibility/refer_beneficiary_vas.dart';
 import '../pages/complaints/custom_complaints_inbox.dart';
+import '../pages/custom_household_summary.dart';
+import '../pages/daily_Implementation_plan/select_settlements_date.dart';
+import '../pages/daily_Implementation_plan/select_settlements_date_view.dart';
+import '../pages/daily_Implementation_plan/select_settlements_date_view_list.dart';
 import '../pages/inventory_management/custom_inventory_facility_selection.dart';
 import '../pages/inventory_management/qr_scanner.dart';
-import '../pages/inventory_management/view_record_lga.dart';
+import '../pages/inventory_management/receive_stock.dart';
+import '../pages/non_compliance_tracker/non_compliance_tracking_search.dart';
+import '../pages/non_compliance_tracker/non_compliance_tracking_wrapper.dart';
+import '../pages/non_compliance_tracker/non_compliance_update_status.dart';
 import '../pages/registration_delivery/custom_complaints_details.dart';
 import '../pages/boundary_selection.dart';
 import '../pages/home.dart';
 import '../pages/inventory_management/custom_manage_stock.dart';
-import '../pages/inventory_management/custom_transactional_details.dart';
+// import '../pages/inventory_management/custom_transactional_details.dart';
 import '../pages/inventory_management/custom_inventory_report_selection.dart';
 import '../pages/inventory_management/custom_stock_details.dart';
 import '../pages/inventory_management/custom_stock_reconciliation.dart';
@@ -52,11 +60,9 @@ import '../pages/inventory_management/custom_warehouse_details.dart';
 import '../pages/inventory_management/custom_inventory_report_details.dart';
 import '../pages/inventory_management/custom_min_number.dart';
 import '../pages/inventory_management/view_transactions_page.dart';
-import '../pages/inventory_management/custom_stock_details_in_tabs.dart';
 import '../pages/inventory_management/custom_acknowledgement.dart';
 import '../pages/inventory_management/view_stock_records.dart';
 import 'package:inventory_management/models/entities/stock.dart';
-import '../pages/inventory_management/custom_min_number.dart';
 import '../pages/inventory_management/view_all_transactions_page.dart';
 import '../pages/inventory_management/view_record_cdd.dart';
 import '../pages/inventory_management/qrscanner.dart';
@@ -89,14 +95,11 @@ import 'package:referral_reconciliation/blocs/app_localization.dart';
 import '../pages/referral_reconcillation/custom_record_referral_details.dart';
 import '../pages/referral_reconcillation/custom_hf_referral_wrapper_page.dart';
 import '../pages/referral_reconcillation/custom_record_facility_page.dart';
-import '../pages/referral_reconcillation/custom_record_referral_details.dart';
 import '../pages/referral_reconcillation/custom_referral_reason_checklist_page.dart';
 import '../pages/referral_reconcillation/custom_referral_reason_checklist_preview_page.dart';
 import '../pages/referral_reconcillation/custom_referral_facility_selection_page.dart';
 import 'package:referral_reconciliation/models/entities/hf_referral.dart';
 import '../utils/app_enums.dart';
-import 'package:survey_form/router/survey_form_router.dart';
-import 'package:survey_form/router/survey_form_router.gm.dart';
 import 'package:inventory_management/blocs/record_stock.dart';
 import 'package:survey_form/blocs/app_localization.dart';
 import '../pages/checklist/custom_survey_form_view.dart';
@@ -106,6 +109,18 @@ import '../pages/checklist/custom_survey_form_boundary_view.dart';
 import '../pages/checklist/custom_survey_form_acknowledgement.dart';
 import '../pages/checklist/custom_survey_form_wrapper.dart';
 import '../pages/summary_report/custom_distribution_summary_report.dart';
+import '../pages/transit_post/custom_transit_post_selection.dart';
+import '../pages/transit_post/custom_fixed_post_selection.dart';
+import '../pages/transit_post/custom_transit_post_record_vaccination.dart';
+import '../pages/transit_post/custom_fixed_post_record_vaccination.dart';
+import '../pages/transit_post/custom_transit_post_wrapper.dart';
+
+import '../pages/campaign_delivery_select.dart';
+
+import '../pages/daily_Implementation_plan/select_settlements.dart';
+import '../pages/beneficiary/check_eligibility/custom_deliver_intervention_head_page.dart';
+import '../pages/beneficiary/check_eligibility/custom_beneficiary_details_head_page.dart';
+import '../pages/registration_delivery/custom_individual_details_polio_smc.dart';
 
 part 'app_router.gr.dart';
 
@@ -118,6 +133,7 @@ part 'app_router.gr.dart';
     AttendanceRoute,
     ComplaintsRoute,
     SurveyFormRoute,
+    TransitPostRoute,
   ],
 )
 class AppRouter extends _$AppRouter {
@@ -142,6 +158,23 @@ class AppRouter extends _$AppRouter {
       path: '/',
       children: [
         AutoRoute(page: HomeRoute.page, path: 'home'),
+        AutoRoute(
+            page: CampaignDeliverySelectRoute.page,
+            path: 'campaign-delivery-select'),
+        AutoRoute(
+            page: NonComplianceTrackingWrapperRoute.page,
+            path: 'non-compliance-tracking-wrapper',
+            children: [
+              AutoRoute(
+                page: NonComplianceTrackingSearchRoute.page,
+                path: 'non-compliance-tracking-search',
+                initial: true,
+              ),
+              AutoRoute(
+                page: NonComplianceUpdateStatusRoute.page,
+                path: 'non-compliance-update-status',
+              )
+            ]),
         AutoRoute(page: BeneficiaryIdDownSyncRoute.page),
         AutoRoute(page: ProfileRoute.page, path: 'profile'),
         AutoRoute(page: UserQRDetailsRoute.page, path: 'user-qr-code'),
@@ -158,7 +191,7 @@ class AppRouter extends _$AppRouter {
           path: 'qr-scanner',
         ),
         AutoRoute(
-          page: ViewStockRecordsLGARoute.page,
+          page: ReceiveStockRoute.page,
           path: 'custom-stock-view-lga',
         ),
         AutoRoute(
@@ -178,25 +211,23 @@ class AppRouter extends _$AppRouter {
           page: ViewTransactionsRoute.page,
           path: 'beneficiary-downsync-report',
         ),
-        // INFO : Need to add Router of package Here
-        // SurveyForm Route
+
+        AutoRoute(
+          page: SelectSettlementsRoute.page,
+          path: 'select-settlements',
+        ),
+        AutoRoute(
+          page: SelectSettlementsDateRoute.page,
+          path: 'select-settlements-date',
+        ),
+        AutoRoute(
+          page: SelectSettlementsDateViewRoute.page,
+          path: 'select-settlements-date-view',
+        ),
         // AutoRoute(
-        //     page: SurveyFormWrapperRoute.page,
-        //     path: 'surveyForm',
-        //     children: [
-        //       AutoRoute(
-        //         page: SurveyformRoute.page,
-        //         path: '',
-        //       ),
-        //       AutoRoute(
-        //           page: SurveyFormBoundaryViewRoute.page,
-        //           path: 'view-boundary'),
-        //       AutoRoute(page: SurveyFormViewRoute.page, path: 'view'),
-        //       AutoRoute(page: SurveyFormPreviewRoute.page, path: 'preview'),
-        //       AutoRoute(
-        //           page: SurveyFormAcknowledgementRoute.page,
-        //           path: 'surveyForm-acknowledgement'),
-        //     ]),
+        //   page: SelectSettlementsDateViewListRoute.page,
+        //   path: 'select-settlements-date-view-list',
+        // ),
 
         // Attendance Route
         AutoRoute(
@@ -283,6 +314,43 @@ class AppRouter extends _$AppRouter {
           path: 'search-referrals',
         ),
 
+        // Transit post routes
+        AutoRoute(
+            page: CustomTransitPostWrapperRoute.page,
+            path: 'custom-transit-post-wrapper',
+            children: [
+              AutoRoute(
+                page: TransitPostSelectionRoute.page,
+                // initial: true,
+                path: 'transit-post-selection',
+              ),
+              AutoRoute(
+                page: CustomTransitPostSelectionRoute.page,
+                initial: true,
+                path: 'custom-transit-post-selection',
+              ),
+              AutoRoute(
+                page: CustomFixedPostSelectionRoute.page,
+                // initial: true,
+                path: 'custom-fixed-post-selection',
+              ),
+              AutoRoute(
+                  page: TransitPostRecordVaccinationRoute.page,
+                  path: 'transit-post-record'),
+              AutoRoute(
+                  page: CustomTransitPostRecordVaccinationRoute.page,
+                  path: 'custom-transit-post-record'),
+              AutoRoute(
+                  page: CustomFixedPostRecordVaccinationRoute.page,
+                  path: 'custom-fixed-post-record'),
+              RedirectRoute(
+                  path: 'transit-post-record',
+                  redirectTo: 'custom-transit-post-record'),
+              AutoRoute(
+                  page: TransitPostAcknowledgmentRoute.page,
+                  path: 'transit-post-acknowledgment')
+            ]),
+
         AutoRoute(
             page: CustomRegistrationDeliveryWrapperRoute.page,
             path: 'custom-registration-delivery-wrapper',
@@ -316,6 +384,10 @@ class AppRouter extends _$AppRouter {
                     initial: true,
                   ),
                   AutoRoute(
+                    page: CustomHouseholdSummaryRoute.page,
+                    path: 'household-summary',
+                  ),
+                  AutoRoute(
                     page: CaregiverConsentRoute.page,
                     path: 'house-details',
                   ),
@@ -329,9 +401,10 @@ class AppRouter extends _$AppRouter {
                   AutoRoute(
                       page: CustomIndividualDetailsRoute.page,
                       path: 'custom-individual-details'),
-                  // AutoRoute(
-                  //     page: HouseHoldDetailsRoute.page,
-                  //     path: 'household-details'),
+                  AutoRoute(
+                      page: CustomIndividualDetailsPolioSMCRoute.page,
+                      path: 'custom-individual-details-polio-smc'),
+
                   AutoRoute(
                       page: CustomHouseHoldDetailsRoute.page,
                       path: 'household-details'),
@@ -349,7 +422,7 @@ class AppRouter extends _$AppRouter {
                   // ),
                   AutoRoute(
                     page: CustomBeneficiaryAcknowledgementRoute.page,
-                    path: 'beneficiary-acknowledgement',
+                    path: 'custom-beneficiary-acknowledgement',
                   ),
                 ],
               ),
@@ -375,6 +448,10 @@ class AppRouter extends _$AppRouter {
                     page: CustomBeneficiaryDetailsRoute.page,
                     path: 'custom-beneficiary-details',
                   ),
+                  AutoRoute(
+                    page: CustomBeneficiaryDetailsHeadRoute.page,
+                    path: 'custom-beneficiary-details-head',
+                  ),
                   // RedirectRoute(
                   //   path: 'beneficiary-details',
                   //   redirectTo: 'custom-beneficiary-details',
@@ -382,6 +459,10 @@ class AppRouter extends _$AppRouter {
                   AutoRoute(
                     page: CustomDeliverInterventionRoute.page,
                     path: 'custom-deliver-intervention',
+                  ),
+                  AutoRoute(
+                    page: CustomDeliverInterventionHeadRoute.page,
+                    path: 'custom-deliver-intervention-head',
                   ),
                   // AutoRoute(
                   //   page: DeliverInterventionRoute.page,
@@ -541,10 +622,10 @@ class AppRouter extends _$AppRouter {
               path: 'details',
               redirectTo: 'custom-details',
             ),
-            AutoRoute(
-              page: CustomTransactionalDetailsRoute.page,
-              path: 'custom-transaction-details',
-            ),
+            // AutoRoute(
+            //   page: CustomTransactionalDetailsRoute.page,
+            //   path: 'custom-transaction-details',
+            // ),
             AutoRoute(
               page: ViewAllTransactionsRoute.page,
               path: 'custom-all-transactions',

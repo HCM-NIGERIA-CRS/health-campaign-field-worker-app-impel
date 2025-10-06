@@ -305,6 +305,78 @@ class MdmsRepository {
       return deliveryCommentOption;
     }).toList();
 
+    final List<DeliveryCommentOptions>? redoseDeliveryCommentOptions =
+        element?.redoseDeliveryCommentsOptions.map((element) {
+      final redoseDeliveryCommentOption = DeliveryCommentOptions()
+        ..name = element.name
+        ..code = element.code;
+
+      return redoseDeliveryCommentOption;
+    }).toList();
+
+    final List<DeliveryCommentOptions>? dipDays =
+        element?.dipDays.map((element) {
+      final dipDay = DeliveryCommentOptions()
+        ..name = element.name
+        ..code = element.code;
+
+      return dipDay;
+    }).toList();
+
+    final List<AgeRangeOptions>? ageRangeOptions =
+        element?.ageRangeOptions.map((element) {
+      final ageRangeOption = AgeRangeOptions()
+        ..name = element.name
+        ..code = element.code;
+
+      return ageRangeOption;
+    }).toList();
+
+    final List<HeightRangeOptions>? heightRangeOptions =
+        element?.heightRangeOptions.map((element) {
+      final heightRangeOption = HeightRangeOptions()
+        ..name = element.name
+        ..code = element.code;
+
+      return heightRangeOption;
+    }).toList();
+
+    final List<DeliveryCommentOptions>? stockManufacturer =
+        element?.stockManufacturer.map((element) {
+      final stockManufacturer = DeliveryCommentOptions()
+        ..name = element.name
+        ..code = element.code;
+
+      return stockManufacturer;
+    }).toList();
+
+    final List<DeliveryCommentOptions>? statusVVM =
+        element?.statusVVM.map((element) {
+      final statusVVM = DeliveryCommentOptions()
+        ..name = element.name
+        ..code = element.code;
+
+      return statusVVM;
+    }).toList();
+
+    final List<DailyActionPlanConfig>? dailyPlanConfigs =
+        element?.dailyPlanConfigs.map((element) {
+      final dailyPlanConfig = DailyActionPlanConfig()
+        ..key = element.key
+        ..value = element.value;
+
+      return dailyPlanConfig;
+    }).toList();
+
+    final List<NonComplianceReasons>? nonComplianceReasons =
+        element?.nonComplianceReasons.map((element) {
+      final nonComplianceReasons = NonComplianceReasons()
+        ..name = element.name
+        ..code = element.code;
+
+      return nonComplianceReasons;
+    }).toList();
+
     final List<Interfaces>? interfaceList =
         element?.backendInterface.first.interface.map((e) {
       final config = Config()..localStoreTTL = e.config.localStoreTTL;
@@ -332,6 +404,15 @@ class MdmsRepository {
     appConfiguration.idTypeOptions = idTypeOptions;
     appConfiguration.privacyPolicyConfig = privacyPolicy;
     appConfiguration.deliveryCommentOptions = deliveryCommentOptions;
+    appConfiguration.redoseDeliveryCommentsOptions =
+        redoseDeliveryCommentOptions;
+    appConfiguration.dipDays = dipDays;
+    appConfiguration.ageRangeOptions = ageRangeOptions;
+    appConfiguration.heightRangeOptions = heightRangeOptions;
+    appConfiguration.stockManufacturer = stockManufacturer;
+    appConfiguration.statusVVM = statusVVM;
+    appConfiguration.dailyPlanConfigs = dailyPlanConfigs;
+    appConfiguration.nonComplianceReasons = nonComplianceReasons;
     appConfiguration.beneficiaryIdConfig = beneficiaryIdConfig;
     appConfiguration.householdDeletionReasonOptions =
         householdDeletionReasonOptions;
@@ -360,6 +441,15 @@ class MdmsRepository {
         ..code = e.code
         ..active = e.active;
       return searchFilters;
+    }).toList();
+
+    appConfiguration.transitPostType =
+        result.hcmWrapperModel?.transitPostType?.map((e) {
+      final transitPostType = TransitPostType()
+        ..name = e.name
+        ..code = e.code
+        ..active = e.active;
+      return transitPostType;
     }).toList();
 
     appConfiguration.symptomsTypes =

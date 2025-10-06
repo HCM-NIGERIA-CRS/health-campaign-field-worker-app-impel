@@ -17,11 +17,12 @@ import '../../router/app_router.dart';
 import '../../utils/utils.dart';
 import '../../widgets/action_card/all_transactions_card.dart';
 import '../../widgets/custom_back_navigation.dart';
-import 'view_record_lga.dart';
+import 'receive_stock.dart';
 import 'package:collection/collection.dart';
+import '../../widgets/localized.dart';
 
 @RoutePage()
-class ViewAllTransactionsScreen extends StatefulWidget {
+class ViewAllTransactionsScreen extends LocalizedStatefulWidget {
   final String? warehouseId;
   const ViewAllTransactionsScreen({super.key, required this.warehouseId});
 
@@ -30,7 +31,8 @@ class ViewAllTransactionsScreen extends StatefulWidget {
       _ViewAllTransactionsScreenState();
 }
 
-class _ViewAllTransactionsScreenState extends State<ViewAllTransactionsScreen> {
+class _ViewAllTransactionsScreenState
+    extends LocalizedState<ViewAllTransactionsScreen> {
   @override
   void initState() {
     super.initState();
@@ -50,8 +52,9 @@ class _ViewAllTransactionsScreenState extends State<ViewAllTransactionsScreen> {
     List<StockModel> result;
     List<StockModel> receivedResult;
     // check for valid user
-    if (context.isLGA ||
-        context.isHealthFacilitySupervisor ||
+    if (context.isStateCold ||
+        context.isLGA ||
+        context.isWardLevel ||
         InventorySingleton().isDistributor) {
       result = await repository.search(StockSearchModel(
           transactionType: [TransactionType.dispatched.toValue()],
@@ -150,7 +153,7 @@ class _ViewAllTransactionsScreenState extends State<ViewAllTransactionsScreen> {
 
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => ViewStockRecordsLGAPage(
+        builder: (context) => ReceiveStockPage(
           mrnNumber: mrnNumber,
           stockRecords: [stock],
         ),
@@ -254,7 +257,7 @@ class _ViewAllTransactionsScreenState extends State<ViewAllTransactionsScreen> {
                                                 0),
                                         items: [
                                           {
-                                            'name':
+                                            'name': localizations.translate(
                                                 stock.additionalFields?.fields
                                                         .firstWhere(
                                                           (field) =>
@@ -267,7 +270,7 @@ class _ViewAllTransactionsScreenState extends State<ViewAllTransactionsScreen> {
                                                         )
                                                         .value
                                                         ?.toString() ??
-                                                    'N/A',
+                                                    'N/A'),
                                             'quantity':
                                                 (stock.quantity ?? 0).toString()
                                           }

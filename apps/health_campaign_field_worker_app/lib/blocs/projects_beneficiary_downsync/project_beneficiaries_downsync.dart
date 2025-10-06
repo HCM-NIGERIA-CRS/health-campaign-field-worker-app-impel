@@ -16,6 +16,7 @@ import 'package:sync_service/sync_service_lib.dart';
 import '../../data/local_store/no_sql/schema/app_configuration.dart';
 import '../../data/local_store/secure_store/secure_store.dart';
 import '../../data/repositories/remote/bandwidth_check.dart';
+import '../../data/repositories/remote/downsync.dart';
 import '../../models/downsync/downsync.dart';
 import '../../utils/background_service.dart';
 import '../../utils/environment_config.dart';
@@ -123,7 +124,9 @@ class BeneficiaryDownSyncBloc
           : existingDownSyncData.first.lastSyncedTime;
 
       //To get the server totalCount,
-      final initialResults = await downSyncRemoteRepository.downSync(
+      final initialResults =
+          await (downSyncRemoteRepository as DownsyncRemoteRepository)
+              .customDownSync(
         DownsyncSearchModel(
           locality: event.boundaryCode,
           offset: existingDownSyncData.firstOrNull?.offset ?? 0,
@@ -133,14 +136,16 @@ class BeneficiaryDownSyncBloc
           tenantId: envConfig.variables.tenantId,
           projectId: event.projectId,
         ),
+        useProjectId: event.useProjectId,
       );
       if (initialResults.isNotEmpty) {
         // Current response from server is String, Expecting it to be int
         //[TODO: Need to move the dynamic keys to constants
-        int serverTotalCount = initialResults["DownsyncCriteria"]["totalCount"];
+        int? serverTotalCount =
+            initialResults["DownsyncCriteria"]["totalCount"];
 
         emit(BeneficiaryDownSyncState.dataFound(
-          serverTotalCount,
+          serverTotalCount ?? 0,
           event.batchSize,
         ));
       } else {
@@ -193,7 +198,9 @@ class BeneficiaryDownSyncBloc
           if (offset < totalCount) {
             emit(BeneficiaryDownSyncState.inProgress(offset, totalCount));
             //Make the batch API call
-            final downSyncResults = await downSyncRemoteRepository.downSync(
+            final downSyncResults =
+                await (downSyncRemoteRepository as DownsyncRemoteRepository)
+                    .customDownSync(
               DownsyncSearchModel(
                 locality: event.boundaryCode,
                 offset: offset,
@@ -204,6 +211,7 @@ class BeneficiaryDownSyncBloc
                 lastSyncedTime: lastSyncedTime,
                 isDeleted: true,
               ),
+              useProjectId: false,
             );
             // check if the API response is there or it failed
             if (downSyncResults.isNotEmpty) {
@@ -286,7 +294,8 @@ class BeneficiaryDownSyncEvent with _$BeneficiaryDownSyncEvent {
   }) = DownSyncBeneficiaryEvent;
 
   const factory BeneficiaryDownSyncEvent.checkForData({
-    required String projectId,
+    required String? projectId,
+    required bool? useProjectId,
     required String boundaryCode,
     required int pendingSyncCount,
     required int batchSize,

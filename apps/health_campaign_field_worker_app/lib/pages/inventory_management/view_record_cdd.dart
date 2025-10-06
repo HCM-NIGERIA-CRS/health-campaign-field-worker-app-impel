@@ -46,9 +46,13 @@ class _ViewStockRecordsCDDPageState
     with SingleTickerProviderStateMixin {
   late final List<FormGroup> _forms;
   late TabController _tabController;
+  List<String> skuList = [];
 
   @override
   void initState() {
+    context
+        .read<AuthBloc>()
+        .add(const AuthUpdateProductSKUCountsEvent(skuCountUpdates: {}));
     super.initState();
     _forms = widget.stockRecords
         .map((_) => FormGroup({
@@ -205,9 +209,6 @@ class _ViewStockRecordsCDDPageState
         );
       }).toList();
 
-      int spaq1Count = 0;
-      int spaq2Count = 0;
-
       for (final stock in updatedStocks) {
         context.read<RecordStockBloc>().add(
               RecordStockSaveStockDetailsEvent(
@@ -223,25 +224,30 @@ class _ViewStockRecordsCDDPageState
             .value
             .toString());
 
+        Map<String, int> skuCounts = context
+            .getAllProductSkuCounts()
+            .map((key, value) => MapEntry(key, value));
+        if (skuCounts.isNotEmpty) {
+          skuList = skuCounts.keys.toList();
+        }
+
         String productName = stock.additionalFields?.fields
             .firstWhereOrNull((element) => element.key == "productName")
             ?.value;
 
-        if (productName == Constants.spaq1) {
-          spaq1Count = totalQty;
-        } else if (productName == Constants.spaq2) {
-          spaq2Count = totalQty;
+        if (skuList.contains(productName)) {
+          skuCounts[productName] = (skuCounts[productName] ?? 0) + totalQty;
         }
+        context.read<AuthBloc>().add(
+              AuthUpdateProductSKUCountsEvent(
+                skuCountUpdates: skuCounts,
+              ),
+            );
+
+        await Future.delayed(
+          const Duration(milliseconds: 500),
+        );
       }
-      context.read<AuthBloc>().add(
-            AuthAddSpaqCountsEvent(
-              spaq1Count: spaq1Count,
-              spaq2Count: spaq2Count,
-              blueVasCount: 0,
-              redVasCount: 0,
-            ),
-          );
-      await Future.delayed(const Duration(milliseconds: 500));
       context.router.push(
         CustomAcknowledgementRoute(
             mrnNumber: widget.mrnNumber,

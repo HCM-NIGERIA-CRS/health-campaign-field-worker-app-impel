@@ -17,6 +17,10 @@ import 'package:inventory_management/utils/utils.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sync_service/sync_service_lib.dart';
+import 'package:transit_post/data/repositories/local/user_action.dart';
+import 'package:transit_post/data/repositories/oplog/oplog.dart';
+import 'package:transit_post/data/repositories/remote/user_action.dart';
+import 'package:transit_post/utils/utils.dart';
 
 import '../data/local_store/no_sql/schema/app_configuration.dart';
 import '../data/local_store/no_sql/schema/entity_mapper.dart';
@@ -25,7 +29,9 @@ import '../data/local_store/no_sql/schema/project_types.dart';
 import '../data/local_store/no_sql/schema/row_versions.dart';
 import '../data/local_store/no_sql/schema/service_registry.dart';
 import '../data/repositories/local/inventory_management/custom_stock.dart';
+import '../data/repositories/local/transit_post/custom_user_action.dart';
 import '../data/repositories/remote/downsync.dart';
+import '../data/repositories/remote/transit_post/custom_user_action.dart';
 import '../data/sync_registry.dart';
 import '../data/sync_service_mapper.dart';
 import '../firebase_options.dart';
@@ -84,6 +90,9 @@ class Constants {
     }
   }
 
+  static const String consentsKey = 'consent';
+  static const String isNoConsentEdit = 'isNoConsentEdit';
+
   static const String localizationApiPath = 'localization/messages/v1/_search';
   static const String surveyFormPreviewDateFormat = 'dd MMMM yyyy';
   static const String defaultDateFormat = 'dd/MM/yyyy';
@@ -97,22 +106,51 @@ class Constants {
   static const String reDoseQuantityKey = 'reDoseQuantity';
   static const String healthFacility = 'Health Facility';
   static const String lgaBoundaryLevel = 'LGA';
+  static const String wardBoundaryLevel = 'Ward';
   static const String districtBoundaryLevel = 'DISTRICT';
   static const String provincialBoundaryLevel = 'Provincia';
   static const String centralFacility = 'Central Facility';
+  static const String nationalWarehouse = 'National Warehouse';
+  static const String wardWarehouse = 'Ward Warehouse';
+  static const String lgaWarehouse = 'LGA Warehouse';
+  static const String stateWarehouse = "State Warehouse";
+  static const String zoneBoundaryLevel = 'Country';
   static const String stateBoundaryLevel = 'State';
+  static const String countryBoundaryLevel = "Country";
   static const String provinceBoundaryLevel = 'PROVINCE';
-  static const String stateFacility = 'State Facility';
-  static const String lgaFacility = 'LGA Facility'; // specific to smc
+  static const String stateFacility = 'State Warehouse';
+  static const String zonalWarehouse = 'Zonal Warehouse';
+  static const String lgaFacility = 'LGA Warehouse'; // specific to smc
+  static const String wardFacility = 'Ward Warehouse';
   static const int validMinAge = 3;
   static const int validMaxAge = 59;
   static const String pipeSeparator = '||';
+  static const String consent = 'consent';
+  static const String householdNumber = 'householdNumber';
+  static const String reasonForNonCompliance = 'reasonForNonCompliance';
 
   static const int mlPerBottle = 30;
   static const int apiCallLimit = 1000;
   static const int beneficiaryIdLength = 9;
   static const String headConsent = 'caregiver_consent_registration';
-  static const int dailyTarget = 100;
+  static const String childrenAbsent = 'childrenAbsent';
+  static const String childrenAFP = 'childrenAFP';
+  static const String guineaWorm = 'guineaWorm';
+  static const int dailyTarget = 40;
+  static const int onchoMinValidAgeInMonths = 60;
+  static const int smcMinValidAgeInMonths = 3;
+  static const int smcMaxValidAgeInMonths = 59;
+  static const int polioMaxValidAgeInMonths = 59;
+  static const int polioMinValidAgeInMonths = 0;
+
+  static const String boundaryCode = "BoundaryCode";
+  static const String supervisorName = "SupervisorName";
+  static const String data = "Data";
+
+  static const String status = "Status";
+  static const String intervenedBy = "IntervenedBy";
+
+  static const String productSKUCounts = "productSKUCounts";
 
   // for stock validation
 
@@ -121,8 +159,25 @@ class Constants {
   static const String blueVAS = "Blue VAS";
   static const String redVAS = "Red VAS";
 
+  static const int minValidHeightOncho = 90;
+  static const String dipAction = "DAILY_PLAN";
+  static const String nonComplianceAction = "NON_COMPLIANCE";
+
+  static const String polioFlow = "polioFlow";
+  static const String measlesFlow = "measlesFlow";
+  static const String onchoFlow = "onchoFlow";
+
+  static const String polioProductVariantId = 'PVAR-2025-05-08-000001';
+  static const String measlesProductVariantId = 'PVAR-2025-05-08-000001';
+  static const String onchoProductVariantId = 'PVAR-2025-05-08-000001';
+  static const String spaq1ProductVariantId = 'PVAR-2025-05-08-000001';
+  static const String spaq2ProductVariantId = 'PVAR-2025-05-08-000001';
+
   static const String productVariantId1 = 'PVAR-2025-05-08-000001';
   static const String productVariantId2 = 'PVAR-2025-05-08-000002';
+
+  static const String polioVariant = 'Polio - nOPV, bOPV';
+  static const String measlesVariant = 'Measles - MRV';
 
   // todo enable before cycle2
   static const bool isDownSyncEnabled = false;
@@ -189,6 +244,8 @@ class Constants {
         sql,
         ServiceOpLogManager(isar),
       ),
+      UserActionLocalRepository(sql, UserActionOpLogManager(isar)),
+      CustomUserActionLocalRepository(sql, UserActionOpLogManager(isar)),
     ];
   }
 
@@ -287,6 +344,8 @@ class Constants {
           ServiceDefinitionRemoteRepository(dio, actionMap: actions),
         if (value == DataModelType.service)
           ServiceRemoteRepository(dio, actionMap: actions),
+        if (value == DataModelType.userAction)
+          CustomUserActionRemoteRepository(dio, actionMap: actions),
       ]);
     }
 
@@ -313,6 +372,19 @@ class Constants {
     KeyValue('CORE_COMMON_NO', false),
   ];
 
+  static List<String> statusOptions = [
+    'Resolved, Pending Vaccination',
+    'Open',
+    'Escalated',
+  ];
+
+  static List<String> intervenedByOptions = [
+    'Traditional Leader',
+    'Religious Leader',
+    'Community Influence',
+    'Others (LGA Team, Monitors, etc)',
+  ];
+
   void setInitialDataOfPackages() {
     DigitDataModelSingleton().setData(
         syncDownRetryCount: envConfig.variables.syncDownRetryCount,
@@ -331,7 +403,9 @@ class Constants {
     SyncServiceSingleton().setRegistries(SyncServiceRegistry());
     SyncServiceSingleton().registries?.registerSyncRegistries({
       DataModelType.complaints: (remote) => CustomSyncRegistry(remote),
+      DataModelType.userAction: (remote) => CustomSyncRegistry(remote),
     });
+    TransitPostSingleton().setTenantId(envConfig.variables.tenantId);
     SurveyFormSingleton().setTenantId(envConfig.variables.tenantId);
     AttendanceSingleton().setTenantId(envConfig.variables.tenantId);
     InventorySingleton().setTenantId(tenantId: envConfig.variables.tenantId);

@@ -8,8 +8,10 @@ import 'package:inventory_management/utils/utils.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../utils/utils.dart';
+import '../localized.dart';
+import '../../utils/i18_key_constants.dart' as i18_local;
 
-class MinNumberCard extends StatelessWidget {
+class MinNumberCard extends LocalizedStatefulWidget {
   final String minNumber;
   final String cddCode;
   final String date;
@@ -27,7 +29,11 @@ class MinNumberCard extends StatelessWidget {
     this.waybillNumber,
     required this.entryType,
   });
+  @override
+  State<MinNumberCard> createState() => _MinNumberCardState();
+}
 
+class _MinNumberCardState extends LocalizedState<MinNumberCard> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -56,7 +62,7 @@ class MinNumberCard extends StatelessWidget {
               ),
               padding: const EdgeInsets.all(8.0), // Replace spacer2
               child: Text(
-                minNumber,
+                widget.minNumber,
                 style: const TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -64,29 +70,29 @@ class MinNumberCard extends StatelessWidget {
                 ),
               ),
             ),
-            if (context.isHealthFacilitySupervisor &&
-                entryType == StockRecordEntryType.dispatch)
+            if (context.isWardLevel &&
+                widget.entryType == StockRecordEntryType.dispatch)
               Container(
                 height: 200,
                 width: 200,
                 alignment: Alignment.center,
                 child: QrImageView(
-                  data: data,
+                  data: widget.data,
                   version: QrVersions.auto,
                   size: 250.0,
                 ),
               ),
-            if (context.isHealthFacilitySupervisor &&
-                entryType == StockRecordEntryType.dispatch)
+            if (context.isWardLevel &&
+                widget.entryType == StockRecordEntryType.dispatch)
               const SizedBox(height: 8.0), // Replace spacer2
-            Text(cddCode),
+            Text(widget.cddCode),
             const SizedBox(height: 8.0), // Replace spacer2
             Text(
-              date,
+              widget.date,
               style: textTheme.bodyL,
             ),
             const SizedBox(height: 8.0), // Replace spacer2
-            ...items.map((item) {
+            ...widget.items.map((item) {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8.0), // Replace spacer2
                 child: Row(
@@ -102,7 +108,7 @@ class MinNumberCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8.0), // Replace spacer2
                     Text(
-                      "${item['quantity']!} ${item['name']!.contains('SPAQ') ? 'Blisters' : 'Capsules'}",
+                      "${item['quantity']!} ${item['name']!.contains('SPAQ') ? localizations.translate(i18_local.stockDetails.blisters) : localizations.translate(i18_local.stockDetails.capsules)}",
                       style: textTheme.bodyL,
                     ),
                   ],
@@ -110,17 +116,20 @@ class MinNumberCard extends StatelessWidget {
               );
             }).toList(),
             const SizedBox(height: 8.0), // Replace spacer2
-            if (waybillNumber != null && waybillNumber!.trim().isNotEmpty)
+            if (widget.waybillNumber != null &&
+                widget.waybillNumber!.trim().isNotEmpty)
               Row(
                 children: [
-                  Text("Waybill",
+                  Text(
+                      localizations
+                          .translate(i18_local.stockDetails.waybillNumber),
                       style: textTheme.bodyL.copyWith(
                         fontWeight: FontWeight.bold,
                       )),
                   const SizedBox(
                     width: 16.0, // Replace spacer4 with 16.0
                   ),
-                  Text(waybillNumber!),
+                  Text(widget.waybillNumber!),
                 ],
               ),
           ],
