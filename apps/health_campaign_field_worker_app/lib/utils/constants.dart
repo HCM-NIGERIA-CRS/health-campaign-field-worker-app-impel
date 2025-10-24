@@ -245,7 +245,6 @@ class Constants {
         ServiceOpLogManager(isar),
       ),
       UserActionLocalRepository(sql, UserActionOpLogManager(isar)),
-      // CustomUserActionLocalRepository(sql, UserActionOpLogManager(isar)),
     ];
   }
 
