@@ -113,6 +113,7 @@ class SyncServiceMapper extends SyncEntityMapperListener {
           case DataModelType.hFReferral:
           case DataModelType.attendance:
           case DataModelType.service:
+          case DataModelType.userAction:
             return true;
           default:
             return false;
